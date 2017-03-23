@@ -1,4 +1,5 @@
 import logging
+import os
 from flask import (
     Flask,
     flash,
@@ -16,10 +17,11 @@ from wtforms import IntegerField, StringField
 app = Flask(__name__)
 
 # Config
-app.config['SECRET_KEY'] = 'iajgjknrooiajsefkm'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'iajgjknrooiajsefkm')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-app.config['CACHE_TYPE'] = 'simple'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite')
+app.config['CACHE_TYPE'] = os.environ.get('CACHE_TYPE', 'simple')
+app.config['CACHE_REDIS_URL'] = os.environ.get('REDIS_URL')
 
 db = SQLAlchemy()
 migrate = Migrate()
