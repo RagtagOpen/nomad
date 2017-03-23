@@ -1,12 +1,19 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>Share The Ride</title>
+  <meta charset="utf-8">
+  <title>Share The Ride</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
 </head>
 <body>
+  <div class="container">
 {% for message in get_flashed_messages() %}
-    <div class=flash>{{ message }}</div>
+  <div class=flash>{{ message }}</div>
 {% endfor %}
 {% block body %}{% endblock %}
+  </div>
 </body>
 </html>
