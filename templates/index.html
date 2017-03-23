@@ -1,0 +1,25 @@
+{% extends "_template.html" %}
+{% block body %}
+<h1>Available Carpools</h1>
+
+<a href="{{ url_for('new_carpool') }}">Add Carpool</a>
+
+<table>
+    <tr>
+        <td>Driver</td>
+        <td>Leaving</td>
+        <td>Going To</td>
+        <td></td>
+    </tr>
+{% for pool in pools %}
+    <tr>
+        <td>{{ pool.riders|length }} of {{ pool.max_riders }} riders</td>
+        <td>{{ pool.from_place }} at {{ pool.leave_time }}</td>
+        <td>{{ pool.to_place }} returning at {{ pool.return_time }}</td>
+        <td><a href="{{ url_for('new_carpool_rider', carpool_id=pool.id) }}">Inquire</a></td>
+    </tr>
+{% else %}
+    <tr><td colspan='3'>No rides yet!</td></tr>
+{% endfor %}
+</table>
+{% endblock %}

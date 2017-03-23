@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+<head>
+<title>Share The Ride</title>
+</head>
+<body>
+{% for message in get_flashed_messages() %}
+    <div class=flash>{{ message }}</div>
+{% endfor %}
+{% block body %}{% endblock %}
+</body>
+</html>
