@@ -1,3 +1,5 @@
+{% extends "_template.html" %}
+{% block body %}
 <h1>Rider Interest</h1>
 <form method="post">
     {{ form.hidden_tag() }}
@@ -8,3 +10,4 @@
     </dl>
     <p><input type="submit" value="Register"></p>
 </form>
+{% endblock %}
