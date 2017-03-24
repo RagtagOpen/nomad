@@ -11,10 +11,14 @@
 </head>
 <body>
   <div class="container">
-{% for message in get_flashed_messages() %}
-  <p class="alert alert-{{ message.kind or 'error' }}">{{ message }}</p>
-{% endfor %}
-{% block body %}{% endblock %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <p class="alert alert-{{ category or 'error' }}">{{ message }}</p>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  {% block body %}{% endblock %}
   </div>
 </body>
 </html>

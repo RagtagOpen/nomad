@@ -2,9 +2,16 @@
 {% block body %}
 <h1>Rider Interest</h1>
 <form method="post">
-    {{ form.hidden_tag() }}
-    {{ form.email.label }}
-    {{ form.email(size=40) }}
-    <input type="submit" value="Register" />
+  {{ form.hidden_tag() }}
+  {{ form.email.label }}
+  {{ form.email(size=40) }}
+  {% if field.errors %}
+  <ul class="errors">
+  {% for error in field.errors %}
+    <li>{{ error }}</li>
+  {% endfor %}
+  </ul>
+  {% endif %}
+  <input type="submit" value="Register" />
 </form>
 {% endblock %}
