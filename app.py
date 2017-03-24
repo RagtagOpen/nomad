@@ -89,11 +89,10 @@ class DriverForm(FlaskForm):
             InputRequired("Where are you leaving from?"),
         ]
     )
-    depart_time = StringField(
+    depart_time = DateTimeField(
         "Depart Time",
         [
             InputRequired("When are you leaving?"),
-            DateTimeField(),
         ]
     )
     going_to = StringField(
@@ -102,11 +101,10 @@ class DriverForm(FlaskForm):
             InputRequired("Where are going to?"),
         ]
     )
-    return_time = StringField(
+    return_time = DateTimeField(
         "Return Time",
         [
             InputRequired("When do you plan to return?"),
-            DateTimeField(),
         ]
     )
 
