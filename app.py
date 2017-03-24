@@ -70,7 +70,7 @@ class Carpool(db.Model):
 # Forms
 class DriverForm(FlaskForm):
     email = EmailField(
-        "Email",
+        "Your Email",
         [
             InputRequired("Please enter your email"),
             Email("Please enter a valid email"),

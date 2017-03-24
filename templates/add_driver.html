@@ -3,14 +3,32 @@
 <h1>Driver Interest</h1>
 <form method="post">
     {{ form.hidden_tag() }}
-    <dl>
-    {{ form.email.label }} {{ form.email(size=40) }}<br/>
-    {{ form.car_size.label }} {{ form.car_size }}<br/>
-    {{ form.leaving_from.label }} {{ form.leaving_from }}<br/>
-    {{ form.depart_time.label }} {{ form.depart_time }}<br/>
-    {{ form.going_to.label }} {{ form.going_to }}<br/>
-    {{ form.return_time.label }} {{ form.return_time }}<br/>
-    </dl>
-    <p><input type="submit" value="Register"></p>
+    <div class="row">
+        <div class="five columns">
+        {{ form.email.label }} {{ form.email(size=40) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="five columns">
+        {{ form.car_size.label }} {{ form.car_size }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="five columns">
+            {{ form.leaving_from.label }} {{ form.leaving_from(size=40) }}
+        </div>
+        <div class="five columns">
+            {{ form.depart_time.label }} {{ form.depart_time }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="five columns">
+            {{ form.going_to.label }} {{ form.going_to(size=40) }}
+        </div>
+        <div class="five columns">
+            {{ form.return_time.label }} {{ form.return_time }}
+        </div>
+    </div>
+    <input type="submit" value="Register" />
 </form>
 {% endblock %}
