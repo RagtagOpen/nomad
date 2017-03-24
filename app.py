@@ -11,7 +11,9 @@ from flask_caching import Cache
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, StringField
+from wtforms.fields import StringField, IntegerField, DateTimeField
+from wtforms.fields.html5 import EmailField
+from wtforms.validators import InputRequired, NumberRange, Email
 
 
 app = Flask(__name__)
@@ -67,16 +69,56 @@ class Carpool(db.Model):
 
 # Forms
 class DriverForm(FlaskForm):
-    email = StringField()
-    car_size = IntegerField()
-    leaving_from = StringField()
-    going_to = StringField()
+    email = EmailField(
+        "Email",
+        [
+            InputRequired("Please enter your email"),
+            Email("Please enter a valid email"),
+        ]
+    )
+    car_size = IntegerField(
+        "Number of Seats",
+        [
+            InputRequired("Please provide the number of seats in your car"),
+            NumberRange(1, 10),
+        ]
+    )
+    leaving_from = StringField(
+        "Leaving From",
+        [
+            InputRequired("Where are you leaving from?"),
+        ]
+    )
+    depart_time = StringField(
+        "Depart Time",
+        [
+            InputRequired("When are you leaving?"),
+            DateTimeField(),
+        ]
+    )
+    going_to = StringField(
+        "Going To",
+        [
+            InputRequired("Where are going to?"),
+        ]
+    )
+    return_time = StringField(
+        "Return Time",
+        [
+            InputRequired("When do you plan to return?"),
+            DateTimeField(),
+        ]
+    )
 
 
 class RiderForm(FlaskForm):
-    email = StringField()
-    leaving_from = StringField()
-    going_to = StringField()
+    email = EmailField(
+        "Email",
+        [
+            InputRequired("Please enter your email"),
+            Email("Please enter a valid email"),
+        ]
+    )
 
 
 # Routes
@@ -99,6 +141,8 @@ def new_carpool():
         c = Carpool(
             from_place=driver_form.leaving_from.data,
             to_place=driver_form.going_to.data,
+            leave_time=driver_form.depart_time.data,
+            return_time=driver_form.return_time.data,
             max_riders=driver_form.car_size.data,
             driver_id=p.id,
         )
