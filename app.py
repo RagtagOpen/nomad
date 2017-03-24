@@ -147,7 +147,8 @@ def new_carpool():
         db.session.add(c)
         db.session.commit()
 
-        flash("Thanks for adding your carpool!")
+        flash("Thanks for adding your carpool!",
+              kind='success')
 
         return redirect(url_for('home'))
 
@@ -161,7 +162,8 @@ def new_carpool_rider(carpool_id):
     rider_form = RiderForm()
     if rider_form.validate_on_submit():
         if len(carpool.riders) + 1 > carpool.max_riders:
-            flash("There isn't enough space for you on this ride. Try another one?")
+            flash("There isn't enough space for you on "
+                  "this ride. Try another one?", kind='error')
             return redirect(url_for('home'))
 
         p = Person(email=rider_form.email.data)
@@ -169,7 +171,8 @@ def new_carpool_rider(carpool_id):
         carpool.riders.append(p)
         db.session.commit()
 
-        flash("You've been added to the list for this carpool!")
+        flash("You've been added to the list for this carpool!",
+              kind='success')
 
         return redirect(url_for('home'))
 

@@ -7,11 +7,12 @@
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton-alerts.css') }}">
 </head>
 <body>
   <div class="container">
 {% for message in get_flashed_messages() %}
-  <div class=flash>{{ message }}</div>
+  <p class="alert alert-{{ message.kind or 'error' }}">{{ message }}</p>
 {% endfor %}
 {% block body %}{% endblock %}
   </div>
