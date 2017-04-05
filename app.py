@@ -89,13 +89,6 @@ class Carpool(db.Model):
 
 # Forms
 class DriverForm(FlaskForm):
-    email = EmailField(
-        "Your Email",
-        [
-            InputRequired("Please enter your email"),
-            Email("Please enter a valid email"),
-        ]
-    )
     car_size = IntegerField(
         "Number of Seats",
         [
@@ -139,6 +132,15 @@ class RiderForm(FlaskForm):
     )
 
 
+class ProfileForm(FlaskForm):
+    name = StringField(
+        "Name",
+        [
+            InputRequired("Please enter your name"),
+        ]
+    )
+
+
 @lm.user_loader
 def load_user(id):
     return Person.query.get(int(id))
@@ -166,6 +168,22 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    profile_form = ProfileForm(name=current_user.name)
+    if profile_form.validate_on_submit():
+        current_user.name = profile_form.name.data
+        db.session.add(current_user)
+        db.session.commit()
+
+        flash("You updated your profile.", 'success')
+
+        return redirect(url_for('profile'))
+
+    return render_template('profile.html', form=profile_form)
 
 
 @app.route('/privacy.html')
@@ -204,15 +222,13 @@ def oauth_callback(provider):
 def new_carpool():
     driver_form = DriverForm()
     if driver_form.validate_on_submit():
-        p = Person(email=driver_form.email.data)
-        db.session.add(p)
         c = Carpool(
             from_place=driver_form.leaving_from.data,
             to_place=driver_form.going_to.data,
             leave_time=driver_form.depart_time.data,
             return_time=driver_form.return_time.data,
             max_riders=driver_form.car_size.data,
-            driver_id=p.id,
+            driver_id=current_user.id,
         )
         db.session.add(c)
         db.session.commit()

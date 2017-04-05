@@ -11,6 +11,13 @@
 </head>
 <body>
   <div class="container">
+  <div>
+    {% if current_user.is_authenticated %}
+    Hi <a href="{{ url_for('profile') }}">{{ current_user.name }}</a>! <a href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+    <a href="{{ url_for('login') }}">Login</a>
+    {% endif %}
+  </div>
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}

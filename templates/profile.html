@@ -1,0 +1,25 @@
+{% extends "_template.html" %}
+{% block body %}
+<h1>Your Profile</h1>
+
+<p><a href="{{ url_for('index') }}"><< Back</a></p>
+
+<form method="post">
+    {{ form.hidden_tag() }}
+    <div class="row">
+        <div class="five columns">
+        {{ form.name.label }}
+        {{ form.name }}
+        {% if form.name.errors %}
+        <ul class="errors">
+        {% for error in form.name.errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+        </div>
+    </div>
+    <input type="submit" value="Update Your Profile" />
+</form>
+
+{% endblock %}
