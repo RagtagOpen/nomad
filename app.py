@@ -8,9 +8,18 @@ from flask import (
     url_for,
 )
 from flask_caching import Cache
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
+from oauth import OAuthSignIn
 from wtforms.fields import StringField, IntegerField, DateTimeField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import InputRequired, NumberRange, Email
@@ -24,13 +33,23 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite')
 app.config['CACHE_TYPE'] = os.environ.get('CACHE_TYPE', 'simple')
 app.config['CACHE_REDIS_URL'] = os.environ.get('REDIS_URL')
+app.config['OAUTH_CREDENTIALS'] = {
+    'facebook': {
+        'id': os.environ.get('FACEBOOK_APP_ID'),
+        'secret': os.environ.get('FACEBOOK_APP_SECRET'),
+    }
+}
 
 db = SQLAlchemy()
 migrate = Migrate()
 cache = Cache()
+lm = LoginManager()
+
 cache.init_app(app)
 db.init_app(app)
 migrate.init_app(app, db)
+lm.init_app(app)
+lm.login_view = 'login'
 
 logger = app.logger
 logger.setLevel(logging.INFO)
@@ -46,11 +65,12 @@ riders = db.Table(
 )
 
 
-class Person(db.Model):
+class Person(UserMixin, db.Model):
     __tablename__ = 'people'
 
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True)
+    social_id = db.Column(db.String(64), nullable=False, unique=True)
+    email = db.Column(db.String(120))
     name = db.Column(db.String(80))
 
 
@@ -119,9 +139,14 @@ class RiderForm(FlaskForm):
     )
 
 
+@lm.user_loader
+def load_user(id):
+    return Person.query.get(int(id))
+
+
 # Routes
 @app.route('/')
-def home():
+def index():
     pools = Carpool.query
 
     return render_template(
@@ -130,7 +155,52 @@ def home():
     )
 
 
+@app.route('/login')
+def login():
+    return render_template(
+        'login.html',
+    )
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
+@app.route('/privacy.html')
+def privacy():
+    return render_template('privacy.html')
+
+
+@app.route('/authorize/<provider>')
+def oauth_authorize(provider):
+    if not current_user.is_anonymous:
+        return redirect(url_for('index'))
+    oauth = OAuthSignIn.get_provider(provider)
+    return oauth.authorize()
+
+
+@app.route('/callback/<provider>')
+def oauth_callback(provider):
+    if not current_user.is_anonymous:
+        return redirect(url_for('index'))
+    oauth = OAuthSignIn.get_provider(provider)
+    social_id, username, email = oauth.callback()
+    if social_id is None:
+        flash('Authentication failed.')
+        return redirect(url_for('index'))
+    user = Person.query.filter_by(social_id=social_id).first()
+    if not user:
+        user = Person(social_id=social_id, name=username, email=email)
+        db.session.add(user)
+        db.session.commit()
+    login_user(user, True)
+    return redirect(url_for('index'))
+
+
 @app.route('/carpools/new', methods=['GET', 'POST'])
+@login_required
 def new_carpool():
     driver_form = DriverForm()
     if driver_form.validate_on_submit():
@@ -149,12 +219,13 @@ def new_carpool():
 
         flash("Thanks for adding your carpool!", 'success')
 
-        return redirect(url_for('home'))
+        return redirect(url_for('index'))
 
     return render_template('add_driver.html', form=driver_form)
 
 
 @app.route('/carpools/<int:carpool_id>/newrider', methods=['GET', 'POST'])
+@login_required
 def new_carpool_rider(carpool_id):
     carpool = Carpool.query.get_or_404(carpool_id)
 
@@ -163,7 +234,7 @@ def new_carpool_rider(carpool_id):
         if len(carpool.riders) + 1 > carpool.max_riders:
             flash("There isn't enough space for you on "
                   "this ride. Try another one?", 'error')
-            return redirect(url_for('home'))
+            return redirect(url_for('index'))
 
         p = Person(email=rider_form.email.data)
         db.session.add(p)
@@ -172,6 +243,6 @@ def new_carpool_rider(carpool_id):
 
         flash("You've been added to the list for this carpool!", 'success')
 
-        return redirect(url_for('home'))
+        return redirect(url_for('index'))
 
     return render_template('add_rider.html', form=rider_form)

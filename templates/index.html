@@ -2,7 +2,11 @@
 {% block body %}
 <h1>Available Carpools</h1>
 
+{% if current_user.is_authenticated %}
 <a href="{{ url_for('new_carpool') }}">Add Carpool</a>
+{% else %}
+<a href="{{ url_for('oauth_authorize', provider='facebook') }}">Login with Facebook</a>
+{% endif %}
 
 <table>
   <thead>
@@ -19,7 +23,11 @@
       <td>{{ pool.riders|length }} of {{ pool.max_riders }} riders</td>
       <td>{{ pool.from_place }} at {{ pool.leave_time }}</td>
       <td>{{ pool.to_place }} returning at {{ pool.return_time }}</td>
+{% if current_user.is_authenticated %}
       <td><a href="{{ url_for('new_carpool_rider', carpool_id=pool.id) }}">Inquire</a></td>
+{% else %}
+      <td></td>
+{% endif %}
     </tr>
 {% else %}
     <tr><td colspan='3'>No rides yet!</td></tr>
