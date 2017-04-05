@@ -37,7 +37,11 @@ app.config['OAUTH_CREDENTIALS'] = {
     'facebook': {
         'id': os.environ.get('FACEBOOK_APP_ID'),
         'secret': os.environ.get('FACEBOOK_APP_SECRET'),
-    }
+    },
+    'google': {
+        'id': os.environ.get('GOOGLE_APP_ID'),
+        'secret': os.environ.get('GOOGLE_APP_SECRET'),
+    },
 }
 
 db = SQLAlchemy()
