@@ -22,6 +22,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from oauth import OAuthSignIn
 from wtforms.fields import (
+    BooleanField,
     DateTimeField,
     IntegerField,
     StringField,
@@ -135,14 +136,13 @@ class DriverForm(FlaskForm):
 
 
 class RiderForm(FlaskForm):
-    email = StringField(
-        "Email",
+    gender = StringField(
+        "Gender",
         [
-            InputRequired("Please enter your email"),
-            Email("Please enter a valid email"),
+            InputRequired("Please enter your gender"),
         ]
     )
-    submit = SubmitField(u'Submit')
+    submit = SubmitField(u'Request A Seat')
 
 
 class ProfileForm(FlaskForm):
@@ -153,6 +153,24 @@ class ProfileForm(FlaskForm):
         ]
     )
     submit = SubmitField(u'Update Your Profile')
+
+
+class CancelCarpoolDriverForm(FlaskForm):
+    reason = StringField(
+        "Reason",
+        description="Describe why you're canceling your carpool. This will be visible to your riders."
+    )
+    cancel = SubmitField(u"Nevermind, Go Back")
+    submit = SubmitField(u"Cancel Your Ride")
+
+
+class CancelCarpoolRiderForm(FlaskForm):
+    reason = StringField(
+        "Reason",
+        description="Describe why you're canceling your ride request. This will be visible to your driver."
+    )
+    cancel = SubmitField(u"Nevermind, Go Back")
+    submit = SubmitField(u"Cancel Your Ride")
 
 
 @lm.user_loader
@@ -254,6 +272,14 @@ def new_carpool():
     return render_template('add_driver.html', form=driver_form)
 
 
+@app.route('/carpools/<int:carpool_id>', methods=['GET', 'POST'])
+@login_required
+def carpool_details(carpool_id):
+    carpool = Carpool.query.get_or_404(carpool_id)
+
+    return render_template('carpool_details.html', pool=carpool)
+
+
 @app.route('/carpools/<int:carpool_id>/newrider', methods=['GET', 'POST'])
 @login_required
 def new_carpool_rider(carpool_id):
@@ -264,15 +290,57 @@ def new_carpool_rider(carpool_id):
         if len(carpool.riders) + 1 > carpool.max_riders:
             flash("There isn't enough space for you on "
                   "this ride. Try another one?", 'error')
-            return redirect(url_for('index'))
+            return redirect(url_for('carpool_details', carpool_id=carpool_id))
 
-        p = Person(email=rider_form.email.data)
-        db.session.add(p)
-        carpool.riders.append(p)
+        if current_user in carpool.riders:
+            flash("You've already requested a seat on "
+                  "this ride. Try another one or cancel your "
+                  "existing request.", 'error')
+            return redirect(url_for('carpool_details', carpool_id=carpool_id))
+
+        carpool.riders.append(current_user)
         db.session.commit()
 
         flash("You've been added to the list for this carpool!", 'success')
 
-        return redirect(url_for('index'))
+        return redirect(url_for('carpool_details', carpool_id=carpool_id))
 
     return render_template('add_rider.html', form=rider_form)
+
+
+@app.route('/carpools/<int:carpool_id>/cancelrider', methods=['GET', 'POST'])
+@login_required
+def cancel_carpool_rider(carpool_id):
+    carpool = Carpool.query.get_or_404(carpool_id)
+
+    cancel_form = CancelCarpoolRiderForm()
+    if cancel_form.validate_on_submit():
+        if cancel_form.submit.data:
+            carpool.riders.remove(current_user)
+            db.session.commit()
+
+            flash("Your seat request was deleted", 'success')
+
+        return redirect(url_for('carpool_details', carpool_id=carpool_id))
+
+    return render_template('cancel_carpool_rider.html', form=cancel_form)
+
+
+@app.route('/carpools/<int:carpool_id>/cancel', methods=['GET', 'POST'])
+@login_required
+def cancel_carpool(carpool_id):
+    carpool = Carpool.query.get_or_404(carpool_id)
+
+    cancel_form = CancelCarpoolDriverForm()
+    if cancel_form.validate_on_submit():
+        if cancel_form.submit.data:
+            db.session.delete(carpool)
+            db.session.commit()
+
+            flash("Your carpool was deleted", 'success')
+
+            return redirect(url_for('index'))
+        else:
+            return redirect(url_for('carpool_details', carpool_id=carpool_id))
+
+    return render_template('cancel_carpool.html', form=cancel_form)

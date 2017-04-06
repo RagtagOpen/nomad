@@ -13,20 +13,14 @@
       <th>Capacity</th>
       <th>Leaving</th>
       <th>Going To</th>
-      <th></th>
     </tr>
   </thead>
   <tbody>
 {% for pool in pools %}
     <tr>
       <td>{{ pool.max_riders - pool.riders|length }} available</td>
-      <td>{{ pool.from_place }} at {{ pool.leave_time }}</td>
+      <td><a href="{{ url_for('carpool_details', carpool_id=pool.id) }}">{{ pool.from_place }} at {{ pool.leave_time }}</a></td>
       <td>{{ pool.to_place }} returning at {{ pool.return_time }}</td>
-{% if current_user.is_authenticated %}
-      <td><a href="{{ url_for('new_carpool_rider', carpool_id=pool.id) }}">Inquire</a></td>
-{% else %}
-      <td></td>
-{% endif %}
     </tr>
 {% else %}
     <tr><td colspan='3'>No rides yet!</td></tr>
