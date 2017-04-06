@@ -6,23 +6,25 @@
     <h1>Carpool Details</h1>
 </div>
 
-<h3>Riders&nbsp;<small>{{ pool.riders|length }} of {{ pool.max_riders }} seats</small></h3>
-
 {% if current_user in pool.riders %}
 <a class="btn btn-default" href="{{ url_for('cancel_carpool_rider', carpool_id=pool.id) }}" role="button">Cancel your seat request</a>
+
 {% elif pool.driver_id != current_user.id %}
 <a class="btn btn-default" href="{{ url_for('new_carpool_rider', carpool_id=pool.id) }}" role="button">Request a seat</a>
+
 {% else %}
 <a class="btn btn-default" href="{{ url_for('cancel_carpool', carpool_id=pool.id) }}" role="button">Cancel your carpool</a>
-{% endif %}
 
+{% if pool.riders %}
 <ul>
-{%- for rider in pool.riders %}
+{% for rider in pool.riders %}
     <li>{{ rider.name }}</li>
-{% else %}
-    <li><em>(No Riders Yet)</em></li>
 {% endfor %}
 </ul>
+{% else %}
+    <p>No riders in your carpool yet.</p>
+{% endif %}
 
+{% endif %}
 
 {% endblock %}
