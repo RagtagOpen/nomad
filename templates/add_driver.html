@@ -1,69 +1,10 @@
-{% extends "_template.html" %}
-{% block body %}
-<h1>Driver Interest</h1>
-<form method="post">
-    {{ form.hidden_tag() }}
-    <div class="row">
-        <div class="five columns">
-        {{ form.car_size.label }}
-        {{ form.car_size }}
-        {% if form.car_size.errors %}
-        <ul class="errors">
-        {% for error in form.car_size.errors %}
-        <li>{{ error }}</li>
-        {% endfor %}
-        </ul>
-        {% endif %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="five columns">
-            {{ form.leaving_from.label }}
-            {{ form.leaving_from(size=40) }}
-            {% if form.leaving_from.errors %}
-            <ul class="errors">
-            {% for error in form.leaving_from.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-            </ul>
-            {% endif %}
-        </div>
-        <div class="five columns">
-            {{ form.depart_time.label }}
-            {{ form.depart_time }}
-            {% if form.depart_time.errors %}
-            <ul class="errors">
-            {% for error in form.depart_time.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-            </ul>
-            {% endif %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="five columns">
-            {{ form.going_to.label }}
-            {{ form.going_to(size=40) }}
-            {% if form.going_to.errors %}
-            <ul class="errors">
-            {% for error in form.going_to.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-            </ul>
-            {% endif %}
-        </div>
-        <div class="five columns">
-            {{ form.return_time.label }}
-            {{ form.return_time }}
-            {% if form.return_time.errors %}
-            <ul class="errors">
-            {% for error in form.return_time.errors %}
-            <li>{{ error }}</li>
-            {% endfor %}
-            </ul>
-            {% endif %}
-        </div>
-    </div>
-    <input type="submit" value="Register" />
-</form>
+{%- extends "_template.html" %}
+
+{% block site %}
+<div class='page-header'>
+    <h1>Add a Carpool</h1>
+</div>
+
+{{ form|render_form() }}
+
 {% endblock %}

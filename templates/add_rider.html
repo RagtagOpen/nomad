@@ -1,17 +1,10 @@
-{% extends "_template.html" %}
-{% block body %}
-<h1>Rider Interest</h1>
-<form method="post">
-  {{ form.hidden_tag() }}
-  {{ form.email.label }}
-  {{ form.email(size=40) }}
-  {% if field.errors %}
-  <ul class="errors">
-  {% for error in field.errors %}
-    <li>{{ error }}</li>
-  {% endfor %}
-  </ul>
-  {% endif %}
-  <input type="submit" value="Register" />
-</form>
+{%- extends "_template.html" %}
+
+{% block site %}
+<div class='page-header'>
+    <h1>Join a Carpool</h1>
+</div>
+
+{{ form|render_form() }}
+
 {% endblock %}

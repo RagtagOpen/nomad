@@ -1,14 +1,13 @@
-{% extends "_template.html" %}
-{% block body %}
-<h1>Available Carpools</h1>
+{%- extends "_template.html" %}
 
-{% if current_user.is_authenticated %}
-<a href="{{ url_for('new_carpool') }}">Add Carpool</a>
-{% else %}
-<a href="{{ url_for('oauth_authorize', provider='facebook') }}">Login with Facebook</a>
-{% endif %}
+{% block site %}
+<div class='page-header'>
+  <h1>Available Carpools</h1>
+</div>
 
-<table>
+<a class="btn btn-default" href="{{ url_for('new_carpool') }}" role="button">Add A Carpool</a>
+
+<table class="table table-hover">
   <thead>
     <tr>
       <th>Capacity</th>
@@ -20,7 +19,7 @@
   <tbody>
 {% for pool in pools %}
     <tr>
-      <td>{{ pool.riders|length }} of {{ pool.max_riders }} riders</td>
+      <td>{{ pool.max_riders - pool.riders|length }} available</td>
       <td>{{ pool.from_place }} at {{ pool.leave_time }}</td>
       <td>{{ pool.to_place }} returning at {{ pool.return_time }}</td>
 {% if current_user.is_authenticated %}

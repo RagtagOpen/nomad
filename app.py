@@ -7,6 +7,7 @@ from flask import (
     render_template,
     url_for,
 )
+from flask_bootstrap import Bootstrap
 from flask_caching import Cache
 from flask_login import (
     LoginManager,
@@ -20,8 +21,12 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from oauth import OAuthSignIn
-from wtforms.fields import StringField, IntegerField, DateTimeField
-from wtforms.fields.html5 import EmailField
+from wtforms.fields import (
+    DateTimeField,
+    IntegerField,
+    StringField,
+    SubmitField,
+)
 from wtforms.validators import InputRequired, NumberRange, Email
 
 
@@ -44,6 +49,7 @@ app.config['OAUTH_CREDENTIALS'] = {
     },
 }
 
+Bootstrap(app)
 db = SQLAlchemy()
 migrate = Migrate()
 cache = Cache()
@@ -98,7 +104,8 @@ class DriverForm(FlaskForm):
         [
             InputRequired("Please provide the number of seats in your car"),
             NumberRange(1, 10),
-        ]
+        ],
+        description="Seats available (besides the driver)",
     )
     leaving_from = StringField(
         "Leaving From",
@@ -124,16 +131,18 @@ class DriverForm(FlaskForm):
             InputRequired("When do you plan to return?"),
         ]
     )
+    submit = SubmitField(u'Add Your Ride')
 
 
 class RiderForm(FlaskForm):
-    email = EmailField(
+    email = StringField(
         "Email",
         [
             InputRequired("Please enter your email"),
             Email("Please enter a valid email"),
         ]
     )
+    submit = SubmitField(u'Submit')
 
 
 class ProfileForm(FlaskForm):
@@ -143,6 +152,7 @@ class ProfileForm(FlaskForm):
             InputRequired("Please enter your name"),
         ]
     )
+    submit = SubmitField(u'Update Your Profile')
 
 
 @lm.user_loader

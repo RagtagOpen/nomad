@@ -1,31 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Share The Ride</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/normalize.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/skeleton-alerts.css') }}">
-</head>
-<body>
+{%- extends "bootstrap/base.html" %}
+{% import "bootstrap/utils.html" as utils %}
+
+{% block title %}Share Your Ride{% endblock %}
+
+{% import "bootstrap/fixes.html" as fixes %}
+{% block head %}
+{{super()}}
+{{fixes.ie8()}}
+{%- endblock %}
+
+{% block content %}
+  <nav class="navbar navbar-default">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('index') }}">Carpools</a>
+{% if current_user.is_authenticated %}
+      <p class="navbar-text navbar-right">Signed in as <a href="{{ url_for('profile') }}" class="navbar-link">{{ current_user.name }}</a>. <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a>.</p>
+{% else %}
+      <p class="navbar-text navbar-right"><a href="{{ url_for('login') }}" class="navbar-link">Login</a></p>
+{% endif %}
+    </div>
+  </nav>
   <div class="container">
-  <div>
-    {% if current_user.is_authenticated %}
-    Hi <a href="{{ url_for('profile') }}">{{ current_user.name }}</a>! <a href="{{ url_for('logout') }}">Logout</a>
-    {% else %}
-    <a href="{{ url_for('login') }}">Login</a>
-    {% endif %}
+  {%- with messages = get_flashed_messages(with_categories=True) %}
+  {%- if messages %}
+    <div class="row">
+      <div class="col-md-12">
+        {{utils.flashed_messages(messages)}}
+      </div>
+    </div>
+  {%- endif %}
+  {%- endwith %}
+  {% block site %}{% endblock %}
   </div>
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <p class="alert alert-{{ category or 'error' }}">{{ message }}</p>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
-  {% block body %}{% endblock %}
-  </div>
-</body>
-</html>
+{%- endblock %}

@@ -1,5 +1,7 @@
-{% extends "_template.html" %}
-{% block body %}
+{% extends "bootstrap/base.html" %}
+{% block title %}Share Your Ride - Login{% endblock %}
+
+{% block content %}
 <h1>Login</h1>
 
 <p><a href="{{ url_for('oauth_authorize', provider='facebook') }}">Login with Facebook</a></p>
