@@ -3,6 +3,11 @@
 
 {% block title %}Share Your Ride{% endblock %}
 
+{% block scripts %}
+{{super()}}
+<script src="{{url_for('.static', filename='js/site.js')}}"></script>
+{% endblock %}
+
 {% import "bootstrap/fixes.html" as fixes %}
 {% block head %}
 {{super()}}
