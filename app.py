@@ -348,8 +348,8 @@ def cancel_carpool(carpool_id):
     if cancel_form.validate_on_submit():
         if cancel_form.submit.data:
             _email_carpool_cancelled(
-                carpool_id,
-                cancel_form.reason,
+                carpool,
+                cancel_form.reason.data,
                 not app.debug)
             db.session.delete(carpool)
             db.session.commit()
@@ -363,8 +363,7 @@ def cancel_carpool(carpool_id):
     return render_template('cancel_carpool.html', form=cancel_form)
 
 
-def _email_carpool_cancelled(carpool_id, reason, send=False):
-    carpool = Carpool.query.get(int(carpool_id))
+def _email_carpool_cancelled(carpool, reason, send=False):
     driver = Person.query.get(int(carpool.driver_id))
     riders = carpool.riders
     if len(riders) == 0:
@@ -375,6 +374,7 @@ def _email_carpool_cancelled(carpool_id, reason, send=False):
 
     subject = 'Carpool session on {} cancelled'.format(carpool.leave_time)
 
+    # TODO: This should be an HTML template stored elsewhere
     body = '''
         Hello rider,
 
@@ -400,5 +400,5 @@ def _email_carpool_cancelled(carpool_id, reason, send=False):
                 conn.send(msg)
     else:
         for rider in riders:
-            print 'sent message to {} with subject {} and body {}'.format(
-                rider.email, subject, body)
+            logger.info('sent message to {} with subject {} and body {}'.format(
+                rider.email, subject, body))
