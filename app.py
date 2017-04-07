@@ -51,7 +51,6 @@ app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
 app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'from@example.com')
 
-'''
 app.config['OAUTH_CREDENTIALS'] = {
     'facebook': {
         'id': os.environ.get('FACEBOOK_APP_ID'),
@@ -62,7 +61,6 @@ app.config['OAUTH_CREDENTIALS'] = {
         'secret': os.environ.get('GOOGLE_APP_SECRET'),
     },
 }
-'''
 
 Bootstrap(app)
 db = SQLAlchemy()
