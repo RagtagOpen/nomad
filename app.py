@@ -173,18 +173,33 @@ class CancelCarpoolRiderForm(FlaskForm):
     submit = SubmitField(u"Cancel Your Ride")
 
 
+class DateSearchForm(FlaskForm):
+    depart_time = DateTimeField("Depart Time")
+    return_time = DateTimeField("Return Time")
+    submit = SubmitField(u'Search')
+
+
 @lm.user_loader
 def load_user(id):
     return Person.query.get(int(id))
 
 
 # Routes
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    pools = Carpool.query
+    search_form = DateSearchForm()
+    depart_time = search_form.depart_time.data
+    return_time = search_form.return_time.data
+
+    if depart_time and return_time and depart_time > return_time:
+        flash('Depart Time must be before Return Time', 'error')
+        pools = Carpool.query
+    else:
+        pools = _filter_carpools_by_date(depart_time, return_time)
 
     return render_template(
         'index.html',
+        form=search_form,
         pools=pools,
     )
 
@@ -344,3 +359,23 @@ def cancel_carpool(carpool_id):
             return redirect(url_for('carpool_details', carpool_id=carpool_id))
 
     return render_template('cancel_carpool.html', form=cancel_form)
+
+
+def _filter_carpools_by_date(leave_time, return_time):
+    if leave_time and return_time:
+        pools = Carpool.query.filter(
+            Carpool.leave_time >= leave_time,
+            Carpool.return_time <= return_time
+        )
+    elif leave_time:
+        pools = Carpool.query.filter(
+            Carpool.leave_time >= leave_time
+        )
+    elif return_time:
+        pools = Carpool.query.filter(
+            Carpool.return_time <= return_time
+        )
+    else:
+        pools = Carpool.query
+
+    return pools
