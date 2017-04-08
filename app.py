@@ -173,7 +173,8 @@ class ProfileForm(FlaskForm):
 class CancelCarpoolDriverForm(FlaskForm):
     reason = StringField(
         "Reason",
-        description="Describe why you're canceling your carpool. This will be visible to your riders."
+        description="Describe why you're canceling your carpool. "
+                    "This will be visible to your riders."
     )
     cancel = SubmitField(u"Nevermind, Go Back")
     submit = SubmitField(u"Cancel Your Ride")
@@ -182,7 +183,8 @@ class CancelCarpoolDriverForm(FlaskForm):
 class CancelCarpoolRiderForm(FlaskForm):
     reason = StringField(
         "Reason",
-        description="Describe why you're canceling your ride request. This will be visible to your driver."
+        description="Describe why you're canceling your ride request. "
+                    "This will be visible to your driver."
     )
     cancel = SubmitField(u"Nevermind, Go Back")
     submit = SubmitField(u"Cancel Your Ride")
@@ -371,7 +373,7 @@ def cancel_carpool(carpool_id):
             db.session.delete(carpool)
             db.session.commit()
 
-            flash("Your carpool was deleted", 'success')
+            flash("Your carpool was canceled", 'success')
 
             return redirect(url_for('index'))
         else:
