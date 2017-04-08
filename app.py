@@ -131,7 +131,8 @@ class DriverForm(FlaskForm):
         "Depart Time",
         [
             InputRequired("When are you leaving?"),
-        ]
+        ],
+        format='%m/%d/%Y %H:%M',
     )
     going_to = StringField(
         "Going To",
@@ -143,7 +144,8 @@ class DriverForm(FlaskForm):
         "Return Time",
         [
             InputRequired("When do you plan to return?"),
-        ]
+        ],
+        format='%m/%d/%Y %H:%M',
     )
     submit = SubmitField(u'Add Your Ride')
 
