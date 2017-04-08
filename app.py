@@ -89,14 +89,23 @@ class Carpool(db.Model):
     __tablename__ = 'carpools'
 
     id = db.Column(db.Integer, primary_key=True)
-    from_place = db.Column(db.String(120))
-    to_place = db.Column(db.String(120))
+    from_place = db.Relationship('Location', backref='carpool', lazy='dynamic')
+    to_place = db.Relationship('Location', backref='carpool', lazy='dynamic')
     leave_time = db.Column(db.DateTime(timezone=True))
     return_time = db.Column(db.DateTime(timezone=True))
     max_riders = db.Column(db.Integer)
     driver_id = db.Column(db.Integer, db.ForeignKey('people.id'))
     riders = db.relationship('Person', secondary=riders)
 
+# TODO: Establish from and to
+class Location(db.Model):
+    __tablename__ = 'location'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120))
+    latitude = db.Column(db.String(64))
+    longitude = db.Column(db.String(64))
+    carpool_id = db.Column(db.Integer, db.ForeignKey('carpool.id'))
 
 # Forms
 class DriverForm(FlaskForm):
