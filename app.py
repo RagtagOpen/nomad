@@ -17,6 +17,10 @@ from flask_login import (
     login_user,
     logout_user,
 )
+from flask_mail import (
+    Mail,
+    Message
+)
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
@@ -30,7 +34,6 @@ from wtforms.fields import (
 )
 from wtforms.validators import InputRequired, NumberRange, Email
 
-
 app = Flask(__name__)
 
 # Config
@@ -39,6 +42,15 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite')
 app.config['CACHE_TYPE'] = os.environ.get('CACHE_TYPE', 'simple')
 app.config['CACHE_REDIS_URL'] = os.environ.get('REDIS_URL')
+app.config['DEBUG'] = os.environ.get('DEBUG', True)
+
+# Mail config
+app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'localhost')
+app.config['MAIL_PORT'] = os.environ.get('MAIL_PORT', 25)
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'from@example.com')
+
 app.config['OAUTH_CREDENTIALS'] = {
     'facebook': {
         'id': os.environ.get('FACEBOOK_APP_ID'),
@@ -58,6 +70,7 @@ lm = LoginManager()
 
 cache.init_app(app)
 db.init_app(app)
+mail = Mail(app)
 migrate.init_app(app, db)
 lm.init_app(app)
 lm.login_view = 'login'
@@ -334,6 +347,10 @@ def cancel_carpool(carpool_id):
     cancel_form = CancelCarpoolDriverForm()
     if cancel_form.validate_on_submit():
         if cancel_form.submit.data:
+            _email_carpool_cancelled(
+                carpool,
+                cancel_form.reason.data,
+                not app.debug)
             db.session.delete(carpool)
             db.session.commit()
 
@@ -344,3 +361,44 @@ def cancel_carpool(carpool_id):
             return redirect(url_for('carpool_details', carpool_id=carpool_id))
 
     return render_template('cancel_carpool.html', form=cancel_form)
+
+
+def _email_carpool_cancelled(carpool, reason, send=False):
+    driver = Person.query.get(int(carpool.driver_id))
+    riders = carpool.riders
+    if len(riders) == 0:
+        return
+
+    if not reason:
+        reason = 'Reason not given!'
+
+    subject = 'Carpool session on {} cancelled'.format(carpool.leave_time)
+
+    # TODO: This should be an HTML template stored elsewhere
+    body = '''
+        Hello rider,
+
+        Unfortunately, the carpool session for leaving from {} at {} has been
+        cancelled.
+
+        The reason given for the cancellation was: {}.
+
+        Please reach out to {} in order to see if they're willing
+        to reschedule.
+    '''.format(
+            carpool.from_place,
+            carpool.leave_time,
+            reason,
+            driver.email)
+
+    if send:
+        with mail.connect() as conn:
+            for rider in riders:
+                msg = Message(recipients=[rider.email],
+                              body=body,
+                              subject=subject)
+                conn.send(msg)
+    else:
+        for rider in riders:
+            logger.info('sent message to {} with subject {} and body {}'.format(
+                rider.email, subject, body))
