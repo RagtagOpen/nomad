@@ -1,9 +1,13 @@
 {%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
 <div class='page-header'>
   <h1>Available Carpools</h1>
 </div>
+
+{{ wtf.quick_form(form) }}
+<hr/>
 
 <a class="btn btn-default" href="{{ url_for('new_carpool') }}" role="button">Add A Carpool</a>
 
