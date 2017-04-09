@@ -113,6 +113,18 @@ class Carpool(db.Model):
     driver_id = db.Column(db.Integer, db.ForeignKey('people.id'))
     riders = db.relationship('Person', secondary=riders)
 
+    @property
+    def current_user_is_driver(self):
+        return current_user.id == self.driver_id
+
+    @property
+    def driver(self):
+        return Person.query.get(self.driver_id)
+
+    @property
+    def seats_available(self):
+        return self.max_riders - len(self.riders)
+
 
 # Forms
 class DriverForm(FlaskForm):
@@ -425,7 +437,7 @@ def _filter_carpools_by_date(leave_time, return_time):
 
 
 def _email_carpool_cancelled(carpool, reason, send=False):
-    driver = Person.query.get(int(carpool.driver_id))
+    driver = carpool.driver
     riders = carpool.riders
     if len(riders) == 0:
         return

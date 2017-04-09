@@ -6,13 +6,24 @@
     <h1>Carpool Details</h1>
 </div>
 
+<p>
+    {% if pool.current_user_is_driver %}You{% else %}Someone{% endif %} wants to drive from <strong>{{ pool.from_place }}</strong> to <strong>{{ pool.to_place }}</strong> on <strong>{{ pool.leave_time.date() }}</strong> at <strong>{{ pool.leave_time.time() }}</strong>. They're planning on returning at <strong>{{ pool.return_time.time() }}</strong> on <strong>{{ pool.return_time.date() }}</strong>.
+</p>
+
+<p>
+{%- if pool.seats_available > 1 %}
+    There are {{ pool.seats_available }} seats available in this carpool.
+{%- elif pool.seats_available == 1 %}
+    There is 1 seat available in this carpool.
+{%- else %}
+    There are no seats available in this carpool.
+{%- endif %}
+</p>
+
 {% if current_user in pool.riders %}
 <a class="btn btn-default" href="{{ url_for('cancel_carpool_rider', carpool_id=pool.id) }}" role="button">Cancel your seat request</a>
 
-{% elif pool.driver_id != current_user.id %}
-<a class="btn btn-default" href="{{ url_for('new_carpool_rider', carpool_id=pool.id) }}" role="button">Request a seat</a>
-
-{% else %}
+{% elif pool.current_user_is_driver %}
 <a class="btn btn-default" href="{{ url_for('cancel_carpool', carpool_id=pool.id) }}" role="button">Cancel your carpool</a>
 
 {% if pool.riders %}
@@ -25,6 +36,8 @@
     <p>No riders in your carpool yet.</p>
 {% endif %}
 
+{% else %}
+<a class="btn btn-default" href="{{ url_for('new_carpool_rider', carpool_id=pool.id) }}" role="button">Request a seat</a>
 {% endif %}
 
 {% endblock %}
