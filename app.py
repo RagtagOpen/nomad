@@ -150,7 +150,7 @@ class Carpool(db.Model):
     @property
     def seats_available(self):
         return self.max_riders - \
-               self.get_ride_requests_query('confirmed').count()
+               self.get_ride_requests_query('approved').count()
 
 
 # Forms
