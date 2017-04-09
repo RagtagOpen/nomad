@@ -28,6 +28,7 @@ from oauth import OAuthSignIn
 from wtforms.fields import (
     BooleanField,
     DateTimeField,
+    HiddenField,
     IntegerField,
     StringField,
     SubmitField,
@@ -42,6 +43,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite')
 app.config['CACHE_TYPE'] = os.environ.get('CACHE_TYPE', 'simple')
 app.config['CACHE_REDIS_URL'] = os.environ.get('REDIS_URL')
+app.config['GOOGLE_API_KEY'] = 'AIzaSyAB328YPKYwLtMNRkAIdMhvGsi_ihKk7ug'
 app.config['DEBUG'] = os.environ.get('DEBUG', True)
 
 # Mail config
@@ -102,23 +104,21 @@ class Carpool(db.Model):
     __tablename__ = 'carpools'
 
     id = db.Column(db.Integer, primary_key=True)
-    from_place = db.Relationship('Location', backref='carpool', lazy='dynamic')
-    to_place = db.Relationship('Location', backref='carpool', lazy='dynamic')
+
+    from_place = db.Column(db.String(120))
+    from_latitude = db.Column(db.Float)
+    from_longitude = db.Column(db.Float)
+
+    to_place = db.Column(db.String(120))
+    to_latitude = db.Column(db.Float)
+    to_longitude = db.Column(db.Float)
+
     leave_time = db.Column(db.DateTime(timezone=True))
     return_time = db.Column(db.DateTime(timezone=True))
     max_riders = db.Column(db.Integer)
     driver_id = db.Column(db.Integer, db.ForeignKey('people.id'))
+
     riders = db.relationship('Person', secondary=riders)
-
-# TODO: Establish from and to
-class Location(db.Model):
-    __tablename__ = 'location'
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120))
-    latitude = db.Column(db.String(64))
-    longitude = db.Column(db.String(64))
-    carpool_id = db.Column(db.Integer, db.ForeignKey('carpool.id'))
 
 # Forms
 class DriverForm(FlaskForm):
@@ -155,7 +155,10 @@ class DriverForm(FlaskForm):
         ]
     )
     submit = SubmitField(u'Add Your Ride')
-
+    from_longitude = HiddenField(u'Longitude From')
+    from_latitude = HiddenField(u'Latitude From')
+    to_longitude = HiddenField(u'Longitude To')
+    to_latitude = HiddenField(u'Latitude To')
 
 class RiderForm(FlaskForm):
     gender = StringField(
@@ -195,9 +198,13 @@ class CancelCarpoolRiderForm(FlaskForm):
     submit = SubmitField(u"Cancel Your Ride")
 
 
-class DateSearchForm(FlaskForm):
-    depart_time = DateTimeField("Depart Time")
-    return_time = DateTimeField("Return Time")
+class DateLocationSearchForm(FlaskForm):
+    from_longitude = HiddenField(u'Longitude From')
+    from_latitude = HiddenField(u'Latitude From')
+    to_longitude = HiddenField(u'Longitude To')
+    to_latitude = HiddenField(u'Latitude To')
+    depart_time = DateTimeField(u"Depart Time")
+    return_time = DateTimeField(u"Return Time")
     submit = SubmitField(u'Search')
 
 
@@ -209,28 +216,54 @@ def load_user(id):
 # Routes
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    search_form = DateSearchForm()
+    search_form = DateLocationSearchForm()
     depart_time = search_form.depart_time.data
     return_time = search_form.return_time.data
+    from_longitude = search_form.from_longitude.data
+    from_latitude = search_form.from_latitude.data
+    to_longitude = search_form.to_longitude.data
+    to_latitude = search_form.to_latitude.data
 
-    if depart_time and return_time and depart_time > return_time:
-        flash('Depart Time must be before Return Time', 'error')
-        pools = Carpool.query
+    if (from_longitude and from_latitude and to_longitude and to_latitude):
+        pools = _filter_carpools_by_location(
+            float(from_latitude),
+            float(from_longitude),
+            float(to_latitude),
+            float(to_longitude)
+        )
+    elif (depart_time and return_time):
+        if (depart_time > return_time):
+            flash('Depart Time must be before Return Time', 'error')
+            pools = Carpool.query
+        else:
+            pools = _filter_carpools_by_date(depart_time, return_time)
     else:
-        pools = _filter_carpools_by_date(depart_time, return_time)
+        pools = Carpool.query
+
+    starting_locations, ending_locations = _get_all_carpool_locations()
+
+    # Clear the form - doesn't prevent browser form resubmissions howerver
+    search_form = DateLocationSearchForm(formdata=None)
 
     return render_template(
         'index.html',
         form=search_form,
         pools=pools,
+        starting_locations=starting_locations,
+        ending_locations=ending_locations
     )
 
 
 @app.route('/login')
 def login():
+    person = Person.query.get(int(1))
+    login_user(person)
+    return redirect(url_for('index'))
+    '''
     return render_template(
         'login.html',
     )
+    '''
 
 
 @app.route('/logout')
@@ -293,7 +326,11 @@ def new_carpool():
     if driver_form.validate_on_submit():
         c = Carpool(
             from_place=driver_form.leaving_from.data,
+            from_longitude=driver_form.from_longitude.data,
+            from_latitude=driver_form.from_latitude.data,
             to_place=driver_form.going_to.data,
+            to_longitude=driver_form.to_longitude.data,
+            to_latitude=driver_form.to_latitude.data,
             leave_time=driver_form.depart_time.data,
             return_time=driver_form.return_time.data,
             max_riders=driver_form.car_size.data,
@@ -405,6 +442,40 @@ def _filter_carpools_by_date(leave_time, return_time):
         pools = Carpool.query
 
     return pools
+
+
+def _filter_carpools_by_location(from_latitude,
+                                 from_longitude,
+                                 to_latitude,
+                                 to_longitude):
+
+    pools = Carpool.query.filter(
+        Carpool.from_latitude == from_latitude,
+        Carpool.from_longitude == from_longitude,
+        Carpool.to_latitude == to_latitude,
+        Carpool.to_longitude == to_longitude
+    )
+
+    return pools
+
+
+def _get_all_carpool_locations():
+    pools = Carpool.query.all()
+    starting_locations = []
+    ending_locations = []
+    for pool in pools:
+        from_location = {
+            'lng': float(pool.from_longitude),
+            'lat': float(pool.from_latitude)
+        }
+        to_location = {
+            'lng': float(pool.to_longitude),
+            'lat': float(pool.to_latitude)
+        }
+        starting_locations.append(from_location)
+        ending_locations.append(to_location)
+
+    return starting_locations, ending_locations
 
 
 def _email_carpool_cancelled(carpool, reason, send=False):
