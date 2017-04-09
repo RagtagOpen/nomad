@@ -1,10 +1,13 @@
 import logging
 import os
+import datetime
 from flask import (
     Flask,
     flash,
     redirect,
     render_template,
+    request,
+    session,
     url_for,
 )
 from flask_bootstrap import Bootstrap
@@ -25,6 +28,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from oauth import OAuthSignIn
+from urlparse import urlparse, urljoin
 from wtforms.fields import (
     BooleanField,
     DateTimeField,
@@ -84,17 +88,25 @@ logger.addHandler(stream_handler)
 
 
 # Models
-riders = db.Table(
-    'riders',
-    db.Column('person_id', db.Integer, db.ForeignKey('people.id')),
-    db.Column('carpool_id', db.Integer, db.ForeignKey('carpools.id')),
-)
+class RideRequest(db.Model):
+    __tablename__ = 'riders'
+
+    id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('people.id'))
+    carpool_id = db.Column(db.Integer, db.ForeignKey('carpools.id'))
+    person = db.relationship("Person")
+    carpool = db.relationship("Carpool")
+    created_at = db.Column(db.DateTime(timezone=True),
+                           default=datetime.datetime.utcnow)
+    status = db.Column(db.String(120))
 
 
 class Person(UserMixin, db.Model):
     __tablename__ = 'people'
 
     id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime(timezone=True),
+                           default=datetime.datetime.utcnow)
     social_id = db.Column(db.String(64), nullable=False, unique=True)
     email = db.Column(db.String(120))
     name = db.Column(db.String(80))
@@ -104,6 +116,8 @@ class Carpool(db.Model):
     __tablename__ = 'carpools'
 
     id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime(timezone=True),
+                           default=datetime.datetime.utcnow)
 
     from_place = db.Column(db.String(120))
     from_latitude = db.Column(db.Float)
@@ -119,6 +133,35 @@ class Carpool(db.Model):
     driver_id = db.Column(db.Integer, db.ForeignKey('people.id'))
 
     riders = db.relationship('Person', secondary=riders)
+
+    def get_ride_requests_query(self, status=None):
+        query = RideRequest.query.filter_by(carpool_id=self.id)
+
+        if status:
+            query = query.filter_by(status=status)
+
+        return query
+
+    def get_current_user_ride_request(self):
+        if current_user.is_anonymous:
+            return False
+        else:
+            return self.get_ride_requests_query() \
+                       .filter_by(person_id=current_user.id) \
+                       .first()
+
+    @property
+    def current_user_is_driver(self):
+        return current_user.id == self.driver_id
+
+    @property
+    def driver(self):
+        return Person.query.get(self.driver_id)
+
+    @property
+    def seats_available(self):
+        return self.max_riders - \
+               self.get_ride_requests_query('approved').count()
 
 # Forms
 class DriverForm(FlaskForm):
@@ -140,7 +183,8 @@ class DriverForm(FlaskForm):
         "Depart Time",
         [
             InputRequired("When are you leaving?"),
-        ]
+        ],
+        format='%m/%d/%Y %H:%M',
     )
     going_to = StringField(
         "Going To",
@@ -152,7 +196,8 @@ class DriverForm(FlaskForm):
         "Return Time",
         [
             InputRequired("When do you plan to return?"),
-        ]
+        ],
+        format='%m/%d/%Y %H:%M',
     )
     submit = SubmitField(u'Add Your Ride')
     from_longitude = HiddenField(u'Longitude From')
@@ -183,7 +228,8 @@ class ProfileForm(FlaskForm):
 class CancelCarpoolDriverForm(FlaskForm):
     reason = StringField(
         "Reason",
-        description="Describe why you're canceling your carpool. This will be visible to your riders."
+        description="Describe why you're canceling your carpool. "
+                    "This will be visible to your riders."
     )
     cancel = SubmitField(u"Nevermind, Go Back")
     submit = SubmitField(u"Cancel Your Ride")
@@ -192,7 +238,8 @@ class CancelCarpoolDriverForm(FlaskForm):
 class CancelCarpoolRiderForm(FlaskForm):
     reason = StringField(
         "Reason",
-        description="Describe why you're canceling your ride request. This will be visible to your driver."
+        description="Describe why you're canceling your ride request. "
+                    "This will be visible to your driver."
     )
     cancel = SubmitField(u"Nevermind, Go Back")
     submit = SubmitField(u"Cancel Your Ride")
@@ -211,6 +258,21 @@ class DateLocationSearchForm(FlaskForm):
 @lm.user_loader
 def load_user(id):
     return Person.query.get(int(id))
+
+
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and \
+        ref_url.netloc == test_url.netloc
+
+
+def get_redirect_target():
+    for target in request.values.get('next'), request.referrer:
+        if not target:
+            continue
+        if is_safe_url(target):
+            return target
 
 
 # Routes
@@ -256,14 +318,13 @@ def index():
 
 @app.route('/login')
 def login():
-    person = Person.query.get(int(1))
-    login_user(person)
-    return redirect(url_for('index'))
-    '''
+    next_url = request.args.get('next')
+    if next_url and is_safe_url(next_url):
+        session['next'] = next_url
+
     return render_template(
         'login.html',
     )
-    '''
 
 
 @app.route('/logout')
@@ -316,7 +377,8 @@ def oauth_callback(provider):
         db.session.add(user)
         db.session.commit()
     login_user(user, True)
-    return redirect(url_for('index'))
+    next_url = session.pop('next', None) or url_for('index')
+    return redirect(next_url)
 
 
 @app.route('/carpools/new', methods=['GET', 'POST'])
@@ -347,7 +409,6 @@ def new_carpool():
 
 
 @app.route('/carpools/<int:carpool_id>', methods=['GET', 'POST'])
-@login_required
 def carpool_details(carpool_id):
     carpool = Carpool.query.get_or_404(carpool_id)
 
@@ -359,20 +420,29 @@ def carpool_details(carpool_id):
 def new_carpool_rider(carpool_id):
     carpool = Carpool.query.get_or_404(carpool_id)
 
+    if carpool.current_user_is_driver:
+        flash("You can't request a ride on a carpool you're driving in")
+        return redirect(url_for('carpool_details', carpool_id=carpool_id))
+
     rider_form = RiderForm()
     if rider_form.validate_on_submit():
-        if len(carpool.riders) + 1 > carpool.max_riders:
+        if carpool.seats_available < 1:
             flash("There isn't enough space for you on "
                   "this ride. Try another one?", 'error')
             return redirect(url_for('carpool_details', carpool_id=carpool_id))
 
-        if current_user in carpool.riders:
+        if carpool.get_current_user_ride_request():
             flash("You've already requested a seat on "
                   "this ride. Try another one or cancel your "
                   "existing request.", 'error')
             return redirect(url_for('carpool_details', carpool_id=carpool_id))
 
-        carpool.riders.append(current_user)
+        rr = RideRequest(
+            carpool_id=carpool.id,
+            person_id=current_user.id,
+            status='requested',
+        )
+        db.session.add(rr)
         db.session.commit()
 
         flash("You've been added to the list for this carpool!", 'success')
@@ -380,6 +450,62 @@ def new_carpool_rider(carpool_id):
         return redirect(url_for('carpool_details', carpool_id=carpool_id))
 
     return render_template('add_rider.html', form=rider_form)
+
+
+@app.route('/carpools/<int:carpool_id>/request/<int:request_id>/<action>',
+           methods=['GET', 'POST'])
+@login_required
+def modify_ride_request(carpool_id, request_id, action):
+    # carpool = Carpool.query.get_or_404(carpool_id)
+    request = RideRequest.query.get_or_404(request_id)
+
+    # Technically the carpool arg isn't required here,
+    # but it makes the URL prettier so there.
+
+    if request.carpool_id != carpool_id:
+        return redirect(url_for('carpool_details', carpool_id=carpool_id))
+
+    # TODO Check who can modify a ride request. Only:
+    #      1) the driver modifying their carpool
+    #      2) the rider modifying their request
+    #      3) an admin?
+
+    # TODO This big messy if block should be a state machine
+
+    if request.status == 'requested':
+        if action == 'approve':
+            request.status = 'approved'
+            db.session.add(request)
+            db.session.commit()
+            flash("You approved their ride request.")
+            # TODO Send email notification to rider
+        elif action == 'deny':
+            request.status = 'denied'
+            db.session.add(request)
+            db.session.commit()
+            flash("You denied their ride request.")
+            # TODO Send email notification to rider
+
+    elif request.status == 'denied':
+        if action == 'approve':
+            request.status = 'approved'
+            db.session.add(request)
+            db.session.commit()
+            flash("You approved their ride request.")
+            # TODO Send email notification to rider
+
+    elif request.status == 'approved':
+        if action == 'deny':
+            request.status = 'denied'
+            db.session.add(request)
+            db.session.commit()
+            flash("You denied their ride request.")
+            # TODO Send email notification to rider
+
+    else:
+        flash("You can't do that to the ride request.", "error")
+
+    return redirect(url_for('carpool_details', carpool_id=carpool_id))
 
 
 @app.route('/carpools/<int:carpool_id>/cancelrider', methods=['GET', 'POST'])
@@ -415,7 +541,7 @@ def cancel_carpool(carpool_id):
             db.session.delete(carpool)
             db.session.commit()
 
-            flash("Your carpool was deleted", 'success')
+            flash("Your carpool was canceled", 'success')
 
             return redirect(url_for('index'))
         else:
@@ -479,7 +605,7 @@ def _get_all_carpool_locations():
 
 
 def _email_carpool_cancelled(carpool, reason, send=False):
-    driver = Person.query.get(int(carpool.driver_id))
+    driver = carpool.driver
     riders = carpool.riders
     if len(riders) == 0:
         return

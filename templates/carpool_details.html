@@ -6,23 +6,62 @@
     <h1>Carpool Details</h1>
 </div>
 
-<h3>Riders&nbsp;<small>{{ pool.riders|length }} of {{ pool.max_riders }} seats</small></h3>
+<p>
+    {% if pool.current_user_is_driver %}You want{% else %}Someone wants{% endif %} to drive from <strong>{{ pool.from_place }}</strong> to <strong>{{ pool.to_place }}</strong> on <strong>{{ pool.leave_time.date() }}</strong> at <strong>{{ pool.leave_time.time() }}</strong>. They're planning on returning at <strong>{{ pool.return_time.time() }}</strong> on <strong>{{ pool.return_time.date() }}</strong>.
+</p>
 
-{% if current_user in pool.riders %}
+<p>
+{%- if pool.seats_available > 1 %}
+    There are {{ pool.seats_available }} seats available in this carpool.
+{%- elif pool.seats_available == 1 %}
+    There is 1 seat available in this carpool.
+{%- else %}
+    There are no seats available in this carpool.
+{%- endif %}
+</p>
+
+{% if pool.get_current_user_ride_request() %}
 <a class="btn btn-default" href="{{ url_for('cancel_carpool_rider', carpool_id=pool.id) }}" role="button">Cancel your seat request</a>
-{% elif pool.driver_id != current_user.id %}
-<a class="btn btn-default" href="{{ url_for('new_carpool_rider', carpool_id=pool.id) }}" role="button">Request a seat</a>
-{% else %}
-<a class="btn btn-default" href="{{ url_for('cancel_carpool', carpool_id=pool.id) }}" role="button">Cancel your carpool</a>
-{% endif %}
 
+{% elif pool.current_user_is_driver %}
+<a class="btn btn-default" href="{{ url_for('cancel_carpool', carpool_id=pool.id) }}" role="button">Cancel your carpool</a>
+
+<div>
+<h3>Ride Requests</h3>
 <ul>
-{%- for rider in pool.riders %}
-    <li>{{ rider.name }}</li>
-{% else %}
-    <li><em>(No Riders Yet)</em></li>
+{% for request in pool.get_ride_requests_query() %}
+    <li>{{ request.person.name }}&nbsp;<small>
+        {%- if request.status == 'requested' %}
+        (Waiting for your response:&nbsp;
+        <a href="{{ url_for('modify_ride_request',
+                            action='approve',
+                            carpool_id=pool.id,
+                            request_id=request.id) }}">Approve</a>,&nbsp;
+        <a href="{{ url_for('modify_ride_request',
+                            action='deny',
+                            carpool_id=pool.id,
+                            request_id=request.id) }}">Deny</a>)
+        {%- elif request.status == 'approved' %}
+        (You approved their request:&nbsp;
+        <a href="{{ url_for('modify_ride_request',
+                            action='deny',
+                            carpool_id=pool.id,
+                            request_id=request.id) }}">Deny</a>)
+        {%- elif request.status == 'denied' %}
+        (You denied their request:&nbsp;
+        <a href="{{ url_for('modify_ride_request',
+                            action='approve',
+                            carpool_id=pool.id,
+                            request_id=request.id) }}">Approve</a>)
+        {%- endif %}
+        </small>
+    </li>
 {% endfor %}
 </ul>
+</div>
 
+{% else %}
+<a class="btn btn-default" href="{{ url_for('new_carpool_rider', carpool_id=pool.id) }}" role="button">Request a seat</a>
+{% endif %}
 
 {% endblock %}

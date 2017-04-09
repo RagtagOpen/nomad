@@ -1,8 +1,10 @@
-{% extends "bootstrap/base.html" %}
-{% block title %}Share Your Ride - Login{% endblock %}
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
 
-{% block content %}
-<h1>Login</h1>
+{% block site %}
+<div class='page-header'>
+    <h1>Login</h1>
+</div>
 
 <p><a href="{{ url_for('oauth_authorize', provider='facebook') }}">Login with Facebook</a></p>
 <p><a href="{{ url_for('oauth_authorize', provider='google') }}">Login with Google</a></p>
