@@ -20,21 +20,45 @@
 {%- endif %}
 </p>
 
-{% if current_user in pool.riders %}
+{% if pool.get_current_user_ride_request() %}
 <a class="btn btn-default" href="{{ url_for('cancel_carpool_rider', carpool_id=pool.id) }}" role="button">Cancel your seat request</a>
 
 {% elif pool.current_user_is_driver %}
 <a class="btn btn-default" href="{{ url_for('cancel_carpool', carpool_id=pool.id) }}" role="button">Cancel your carpool</a>
 
-{% if pool.riders %}
+<div>
+<h3>Ride Requests</h3>
 <ul>
-{% for rider in pool.riders %}
-    <li>{{ rider.name }}</li>
+{% for request in pool.get_ride_requests_query() %}
+    <li>{{ request.person.name }}&nbsp;<small>
+        {%- if request.status == 'requested' %}
+        (Waiting for your response:&nbsp;
+        <a href="{{ url_for('modify_ride_request',
+                            action='approve',
+                            carpool_id=pool.id,
+                            request_id=request.id) }}">Approve</a>,&nbsp;
+        <a href="{{ url_for('modify_ride_request',
+                            action='deny',
+                            carpool_id=pool.id,
+                            request_id=request.id) }}">Deny</a>)
+        {%- elif request.status == 'approved' %}
+        (You approved their request:&nbsp;
+        <a href="{{ url_for('modify_ride_request',
+                            action='deny',
+                            carpool_id=pool.id,
+                            request_id=request.id) }}">Deny</a>)
+        {%- elif request.status == 'denied' %}
+        (You denied their request:&nbsp;
+        <a href="{{ url_for('modify_ride_request',
+                            action='approve',
+                            carpool_id=pool.id,
+                            request_id=request.id) }}">Approve</a>)
+        {%- endif %}
+        </small>
+    </li>
 {% endfor %}
 </ul>
-{% else %}
-    <p>No riders in your carpool yet.</p>
-{% endif %}
+</div>
 
 {% else %}
 <a class="btn btn-default" href="{{ url_for('new_carpool_rider', carpool_id=pool.id) }}" role="button">Request a seat</a>
