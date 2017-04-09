@@ -5,6 +5,8 @@ from flask import (
     flash,
     redirect,
     render_template,
+    request,
+    session,
     url_for,
 )
 from flask_bootstrap import Bootstrap
@@ -25,6 +27,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from oauth import OAuthSignIn
+from urlparse import urlparse, urljoin
 from wtforms.fields import (
     BooleanField,
     DateTimeField,
@@ -201,6 +204,21 @@ def load_user(id):
     return Person.query.get(int(id))
 
 
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and \
+        ref_url.netloc == test_url.netloc
+
+
+def get_redirect_target():
+    for target in request.values.get('next'), request.referrer:
+        if not target:
+            continue
+        if is_safe_url(target):
+            return target
+
+
 # Routes
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -223,6 +241,10 @@ def index():
 
 @app.route('/login')
 def login():
+    next_url = request.args.get('next')
+    if next_url and is_safe_url(next_url):
+        session['next'] = next_url
+
     return render_template(
         'login.html',
     )
@@ -278,7 +300,8 @@ def oauth_callback(provider):
         db.session.add(user)
         db.session.commit()
     login_user(user, True)
-    return redirect(url_for('index'))
+    next_url = session.pop('next', None) or url_for('index')
+    return redirect(next_url)
 
 
 @app.route('/carpools/new', methods=['GET', 'POST'])
@@ -305,7 +328,6 @@ def new_carpool():
 
 
 @app.route('/carpools/<int:carpool_id>', methods=['GET', 'POST'])
-@login_required
 def carpool_details(carpool_id):
     carpool = Carpool.query.get_or_404(carpool_id)
 
