@@ -5,12 +5,26 @@
 <div class='page-header'>
   <h1>Available Carpools</h1>
 </div>
-
+<h3>Select a start and end location to find possible rides</h3>
+<div id='map' class='map-wrapper' style='width: 100%; height: 400px;'></div>
+<hr/>
+<h2 style='text-align: center;'>~ OR ~</h2>
+<hr/>
+<h3>Select a start and/or end time to find possible rides</h3>
 {{ wtf.quick_form(form) }}
 <hr/>
 
 <a class="btn btn-default" href="{{ url_for('new_carpool') }}" role="button">Add A Carpool</a>
 
+<script>
+    // Namespaced globals! :(
+    carpool_starting_locations = {{ starting_locations|tojson }};
+    carpool_ending_locations = {{ ending_locations|tojson }};
+    document.getElementById('from_latitude').value = null;
+    document.getElementById('from_longitude').value = null;
+    document.getElementById('to_latitude').value = null;
+    document.getElementById('to_longitude').value = null;
+</script>
 <table class="table table-hover">
   <thead>
     <tr>

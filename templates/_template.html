@@ -44,4 +44,9 @@
   {%- endwith %}
   {% block site %}{% endblock %}
   </div>
+<script src="{{url_for('.static', filename='js/map.js')}}"></script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAB328YPKYwLtMNRkAIdMhvGsi_ihKk7ug&libraries=places&callback=initMap">
+</script>
+
 {%- endblock %}
