@@ -132,7 +132,6 @@ class Carpool(db.Model):
     max_riders = db.Column(db.Integer)
     driver_id = db.Column(db.Integer, db.ForeignKey('people.id'))
 
-    riders = db.relationship('Person', secondary=riders)
 
     def get_ride_requests_query(self, status=None):
         query = RideRequest.query.filter_by(carpool_id=self.id)
