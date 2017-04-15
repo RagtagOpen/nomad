@@ -14,15 +14,38 @@
 {% block scripts %}
 {{super()}}
 <script>
+var place = null;
+var map = null;
+
 $(function () {
     $('#depart_date').datetimepicker({
         format: 'MM/DD/YYYY',
         minDate: 'now',
+        useCurrent: false,
+    });
+    $('#submit').on('click', function() {
+        doSearch();
     });
 });
 
+function doSearch() {
+    var url = '{{ url_for('carpool_start_geojson') }}';
+
+    if (place) {
+        url += '?near.lat=' + encodeURIComponent(place.geometry.location.lat());
+        url += '&near.lon=' + encodeURIComponent(place.geometry.location.lng());
+    }
+
+    var date_input = document.getElementById('depart_date');
+    if (date_input.value) {
+        url += '&min_leave_date=' + encodeURIComponent(date_input.value);
+    }
+
+    map.data.loadGeoJson(url, null, mapDataCallback);
+}
+
 function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 38.518, lng: -97.328},
         zoom: 4
     });
@@ -34,23 +57,14 @@ function initMap() {
     });
     from_ac.bindTo('bounds', map);
     from_ac.addListener('place_changed', function() {
-        var place = from_ac.getPlace();
+        var chosen = from_ac.getPlace();
 
-        if (!place.geometry) {
-            console.log("No details available for from autocomplete: '" + place.name + "'");
+        if (!chosen.geometry) {
+            console.log("No details available for from autocomplete: '" + chosen.name + "'");
             return;
         }
 
-        var url = '{{ url_for('carpool_start_geojson') }}';
-        url += '?near.lat=' + encodeURIComponent(place.geometry.location.lat());
-        url += '&near.lon=' + encodeURIComponent(place.geometry.location.lng());
-
-        var date_input = document.getElementById('depart_date');
-        if (date_input.value) {
-            url += '&min_leave_date=' + encodeURIComponent(date_input.value);
-        }
-
-        map.data.loadGeoJson(url, null, mapDataCallback);
+        place = chosen;
     });
 }
 
