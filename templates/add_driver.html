@@ -14,25 +14,25 @@
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript">
-    $(function () {
-        $('#depart_time').datetimepicker({
-            useCurrent: false, //Important! See issue #1075
-            format: 'MM/DD/YYYY HH:mm',
-            minDate: 'now',
-            stepping: 10,
-        });
-        $('#return_time').datetimepicker({
-            format: 'MM/DD/YYYY HH:mm',
-            minDate: 'now',
-            stepping: 10,
-        });
-        $("#depart_time").on("dp.change", function (e) {
-            $('#return_time').data("DateTimePicker").minDate(e.date);
-        });
-        $("#return_time").on("dp.change", function (e) {
-            $('#depart_time').data("DateTimePicker").maxDate(e.date);
-        });
+$(function () {
+    $('#depart_time').datetimepicker({
+        useCurrent: false, //Important! See issue #1075
+        format: 'MM/DD/YYYY HH:mm',
+        minDate: 'now',
+        stepping: 10,
     });
+    $('#return_time').datetimepicker({
+        format: 'MM/DD/YYYY HH:mm',
+        minDate: 'now',
+        stepping: 10,
+    });
+    $("#depart_time").on("dp.change", function (e) {
+        $('#return_time').data("DateTimePicker").minDate(e.date);
+    });
+    $("#return_time").on("dp.change", function (e) {
+        $('#depart_time').data("DateTimePicker").maxDate(e.date);
+    });
+});
 
 function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
@@ -107,6 +107,8 @@ function initMap() {
     <div class='col-md-12'>
         <div id='map'></div>
     </div>
+</div>
+<div class='row'>
     <div class='col-md-6'>
         {{ wtf.form_field(form.leaving_from) }}
         {{ wtf.form_field(form.depart_time) }}

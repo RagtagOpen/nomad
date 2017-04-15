@@ -5,7 +5,7 @@
 {{super()}}
 <style>
     #map {
-        height: 400px;
+        height: 300px;
         width: 100%;
     }
 </style>
@@ -14,12 +14,56 @@
 {% block scripts %}
 {{super()}}
 <script>
+$(function () {
+    $('#depart_date').datetimepicker({
+        format: 'MM/DD/YYYY',
+        minDate: 'now',
+    });
+});
+
 function initMap() {
     var map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 38.518, lng: -97.328},
         zoom: 4
     });
-    map.data.loadGeoJson('{{ url_for('carpool_start_geojson') }}');
+    map.data.loadGeoJson('{{ url_for('carpool_start_geojson') }}', null, mapDataCallback);
+
+    var from_input = document.getElementById('leaving_from');
+    var from_ac = new google.maps.places.Autocomplete(from_input, {
+        componentRestrictions: {country: 'us'}
+    });
+    from_ac.bindTo('bounds', map);
+    from_ac.addListener('place_changed', function() {
+        var place = from_ac.getPlace();
+
+        if (!place.geometry) {
+            console.log("No details available for from autocomplete: '" + place.name + "'");
+            return;
+        }
+
+        var url = '{{ url_for('carpool_start_geojson') }}';
+        url += '?near.lat=' + encodeURIComponent(place.geometry.location.lat());
+        url += '&near.lon=' + encodeURIComponent(place.geometry.location.lng());
+
+        var date_input = document.getElementById('depart_date');
+        if (date_input.value) {
+            url += '&min_leave_date=' + encodeURIComponent(date_input.value);
+        }
+
+        map.data.loadGeoJson(url, null, mapDataCallback);
+    });
+}
+
+function mapDataCallback(features) {
+    var results = $('#search-results');
+    results.empty();
+    for (var i = 0; i < features.length; i++) {
+        var feature = features[i];
+        results.append(
+            '<tr><td>' + feature.getProperty('seats_available') + '</td>' +
+            '<td><a href="' + feature.getId() + '">' + feature.getProperty('from_place') + ' at ' + feature.getProperty('leave_time') + '</a></td>' +
+            '<td>' + feature.getProperty('to_place') + ' at ' + feature.getProperty('return_time') + '</td></tr>');
+    }
 }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
@@ -30,6 +74,33 @@ function initMap() {
     <h1>Find a Carpool</h1>
 </div>
 
-<div id='map'></div>
-
+<div class='row'>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label class="control-label" for="depart_date">Departure Date</label>
+            <input class="form-control" id="depart_date" name="depart_date" required="" type="text" value="">
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="leaving_from">Leaving From</label>
+            <input class="form-control" id="leaving_from" name="leaving_from" required="" type="text" value="">
+        </div>
+        <div class="form-group">
+            <input class="btn btn-default" id="submit" name="submit" type="submit" value="Search">
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div id='map'></div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Capacity</th>
+                    <th>Leaving</th>
+                    <th>Going To</th>
+                </tr>
+            </thead>
+            <tbody id='search-results'>
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
