@@ -420,7 +420,7 @@ def new_carpool():
 
         flash("Thanks for adding your carpool!", 'success')
 
-        return redirect(url_for('index'))
+        return redirect(url_for('carpool_details', carpool_id=c.id))
 
     return render_template('add_driver.html', form=driver_form)
 
