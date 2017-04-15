@@ -25,6 +25,7 @@ python-editor==1.0.3
 rauth==0.7.3
 redis==2.10.5
 requests==2.13.0
+Shapely==1.5.17.post1
 six==1.10.0
 SQLAlchemy==1.1.6
 visitor==0.1.3
