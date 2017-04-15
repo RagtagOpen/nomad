@@ -1,29 +1,99 @@
 {%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
+{% block styles %}
+{{super()}}
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript">
-    $(function () {
-        $('#depart_time').datetimepicker({
-            useCurrent: false, //Important! See issue #1075
-            format: 'MM/DD/YYYY HH:mm',
-            minDate: 'now',
-            stepping: 10,
-        });
-        $('#return_time').datetimepicker({
-            format: 'MM/DD/YYYY HH:mm',
-            minDate: 'now',
-            stepping: 10,
-        });
-        $("#depart_time").on("dp.change", function (e) {
-            $('#return_time').data("DateTimePicker").minDate(e.date);
-        });
-        $("#return_time").on("dp.change", function (e) {
-            $('#depart_time').data("DateTimePicker").maxDate(e.date);
-        });
+$(function () {
+    $('#depart_time').datetimepicker({
+        useCurrent: false, //Important! See issue #1075
+        format: 'MM/DD/YYYY HH:mm',
+        minDate: 'now',
+        stepping: 10,
     });
+    $('#return_time').datetimepicker({
+        format: 'MM/DD/YYYY HH:mm',
+        minDate: 'now',
+        stepping: 10,
+    });
+    $("#depart_time").on("dp.change", function (e) {
+        $('#return_time').data("DateTimePicker").minDate(e.date);
+    });
+    $("#return_time").on("dp.change", function (e) {
+        $('#depart_time').data("DateTimePicker").maxDate(e.date);
+    });
+});
+
+function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 38.518, lng: -97.328},
+        zoom: 4
+    });
+
+    var from_input = document.getElementById('leaving_from');
+    var from_marker = new google.maps.Marker({
+        visible: false,
+        map: map
+    });
+    var from_ac = new google.maps.places.Autocomplete(from_input, {
+        componentRestrictions: {country: 'us'}
+    });
+    from_ac.bindTo('bounds', map);
+    from_ac.addListener('place_changed', function() {
+        var place = from_ac.getPlace();
+        console.log(place);
+        from_marker.setVisible(false);
+
+        if (!place.geometry) {
+            console.log("No details available for from autocomplete: '" + place.name + "'");
+            return;
+        }
+
+        document.getElementById('leaving_from_lat').value = place.geometry.location.lat();
+        document.getElementById('leaving_from_lon').value = place.geometry.location.lng();
+
+        from_marker.setPosition(place.geometry.location);
+        from_marker.setVisible(true);
+    });
+
+    var to_input = document.getElementById('going_to');
+    var to_marker = new google.maps.Marker({
+        visible: false,
+        map: map
+    });
+    var to_ac = new google.maps.places.Autocomplete(to_input, {
+        componentRestrictions: {country: 'us'}
+    });
+    to_ac.bindTo('bounds', map);
+    to_ac.addListener('place_changed', function() {
+        var place = to_ac.getPlace();
+        console.log(place);
+        to_marker.setVisible(false);
+
+        if (!place.geometry) {
+            console.log("No details available for from autocomplete: '" + place.name + "'");
+            return;
+        }
+
+        document.getElementById('going_to_lat').value = place.geometry.location.lat();
+        document.getElementById('going_to_lon').value = place.geometry.location.lng();
+
+        to_marker.setPosition(place.geometry.location);
+        to_marker.setVisible(true);
+    });
+}
 </script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
 {% endblock %}
 
 {% block site %}
@@ -31,6 +101,29 @@
     <h1>Add a Carpool</h1>
 </div>
 
-{{ wtf.quick_form(form) }}
+<form class='form' method='post'>
+{{ form.hidden_tag() }}
+<div class='row'>
+    <div class='col-md-12'>
+        <div id='map'></div>
+    </div>
+</div>
+<div class='row'>
+    <div class='col-md-6'>
+        {{ wtf.form_field(form.leaving_from) }}
+        {{ wtf.form_field(form.depart_time) }}
+        {{ form.leaving_from_lat }}
+        {{ form.leaving_from_lon }}
+    </div>
+    <div class='col-md-6'>
+        {{ wtf.form_field(form.going_to) }}
+        {{ wtf.form_field(form.return_time) }}
+        {{ form.going_to_lat }}
+        {{ form.going_to_lon }}
+        {{ wtf.form_field(form.car_size) }}
+        {{ wtf.form_field(form.submit) }}
+    </div>
+</div>
+</form>
 
 {% endblock %}
