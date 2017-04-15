@@ -4,6 +4,7 @@ import datetime
 from flask import (
     Flask,
     flash,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -27,26 +28,31 @@ from flask_mail import (
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
+from geoalchemy2 import Geometry
+from geoalchemy2.shape import from_shape, to_shape
 from oauth import OAuthSignIn
+from shapely.geometry import mapping
 from urlparse import urlparse, urljoin
 from wtforms.fields import (
     BooleanField,
     DateTimeField,
+    HiddenField,
     IntegerField,
     StringField,
     SubmitField,
 )
-from wtforms.validators import InputRequired, NumberRange, Email
+from wtforms.validators import InputRequired, NumberRange
 
 app = Flask(__name__)
 
 # Config
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'iajgjknrooiajsefkm')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///db.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://localhost/carpools')
 app.config['CACHE_TYPE'] = os.environ.get('CACHE_TYPE', 'simple')
 app.config['CACHE_REDIS_URL'] = os.environ.get('REDIS_URL')
 app.config['DEBUG'] = os.environ.get('DEBUG', True)
+app.config['GOOGLE_MAPS_API_KEY'] = os.environ.get('GOOGLE_MAPS_API_KEY')
 
 # Mail config
 app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'localhost')
@@ -117,7 +123,9 @@ class Carpool(db.Model):
     created_at = db.Column(db.DateTime(timezone=True),
                            default=datetime.datetime.utcnow)
     from_place = db.Column(db.String(120))
+    from_point = db.Column(Geometry('POINT'))
     to_place = db.Column(db.String(120))
+    to_point = db.Column(Geometry('POINT'))
     leave_time = db.Column(db.DateTime(timezone=True))
     return_time = db.Column(db.DateTime(timezone=True))
     max_riders = db.Column(db.Integer)
@@ -169,6 +177,8 @@ class DriverForm(FlaskForm):
             InputRequired("Where are you leaving from?"),
         ]
     )
+    leaving_from_lat = HiddenField()
+    leaving_from_lon = HiddenField()
     depart_time = DateTimeField(
         "Depart Time",
         [
@@ -182,6 +192,8 @@ class DriverForm(FlaskForm):
             InputRequired("Where are going to?"),
         ]
     )
+    going_to_lat = HiddenField()
+    going_to_lon = HiddenField()
     return_time = DateTimeField(
         "Return Time",
         [
@@ -261,6 +273,13 @@ def get_redirect_target():
 # Routes
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    return render_template(
+        'index.html',
+    )
+
+
+@app.route('/carpools/find')
+def find_carpool():
     search_form = DateSearchForm()
     depart_time = search_form.depart_time.data
     return_time = search_form.return_time.data
@@ -272,10 +291,33 @@ def index():
         pools = _filter_carpools_by_date(depart_time, return_time)
 
     return render_template(
-        'index.html',
+        'find_carpool.html',
         form=search_form,
         pools=pools,
     )
+
+
+@app.route('/carpools/starts.geojson')
+def carpool_start_geojson():
+    pools = Carpool.query.filter(Carpool.leave_time >= datetime.datetime.utcnow())
+
+    features = []
+    for pool in pools:
+        if pool.from_point is None:
+            continue
+
+        features.append({
+            'type': 'Feature',
+            'properties': {},
+            'geometry': mapping(to_shape(pool.from_point)),
+        })
+
+    feature_collection = {
+        'type': 'FeatureCollection',
+        'features': features
+    }
+
+    return jsonify(feature_collection)
 
 
 @app.route('/login')
@@ -350,7 +392,13 @@ def new_carpool():
     if driver_form.validate_on_submit():
         c = Carpool(
             from_place=driver_form.leaving_from.data,
+            from_point='SRID=4326;POINT({} {})'.format(
+                driver_form.leaving_from_lon.data,
+                driver_form.leaving_from_lat.data),
             to_place=driver_form.going_to.data,
+            to_point='SRID=4326;POINT({} {})'.format(
+                driver_form.going_to_lon.data,
+                driver_form.going_to_lat.data),
             leave_time=driver_form.depart_time.data,
             return_time=driver_form.return_time.data,
             max_riders=driver_form.car_size.data,

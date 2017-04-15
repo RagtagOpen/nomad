@@ -1,0 +1,35 @@
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+{{super()}}
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script>
+function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 38.518, lng: -97.328},
+        zoom: 4
+    });
+    map.data.loadGeoJson('{{ url_for('carpool_start_geojson') }}');
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
+{% endblock %}
+
+{% block site %}
+<div class='page-header'>
+    <h1>Find a Carpool</h1>
+</div>
+
+<div id='map'></div>
+
+{% endblock %}

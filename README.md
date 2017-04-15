@@ -21,10 +21,34 @@
    source venv/bin/activate
    ```
 
-1. Install the dependencies
+1. Install the database. The app requires PostgreSQL and PostGIS. [This guide](http://www.postgresguide.com/setup/install.html) describes how to get PostgreSQL running on your computer.
+
+   When you have PostgreSQL installed, you need to create a database for the data to go. Use the `psql` command to connect to your PostgreSQL instance:
 
    ```
-   pip install -r requirements-dev.txt
+   $ psql
+   psql (9.6.1, server 9.5.4)
+   Type "help" for help.
+
+   iandees=#
+   ```
+
+   Create the database and add the PostGIS extension:
+   ```
+   iandees=# create database carpools;
+   CREATE DATABASE
+   iandees=# \connect carpools
+   psql (9.6.1, server 9.5.4)
+   You are now connected to database "carpools" as user "iandees".
+   carpools=# create extension postgis;
+   CREATE EXTENSION
+   carpools=# \quit
+   ```
+
+1. Install the Python dependencies.
+
+   ```
+   pip install -r requirements.txt
    ```
 
 1. Set up the Flask framework configuration
