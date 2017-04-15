@@ -29,18 +29,26 @@ $(function () {
 });
 
 function doSearch() {
-    var url = '{{ url_for('carpool_start_geojson') }}';
+    var url = '{{ url_for('carpool_start_geojson') }}?';
+    var parts = [];
 
     if (place) {
-        url += '?near.lat=' + encodeURIComponent(place.geometry.location.lat());
-        url += '&near.lon=' + encodeURIComponent(place.geometry.location.lng());
+        parts.push('near.lat=' + encodeURIComponent(place.geometry.location.lat()));
+        parts.push('near.lon=' + encodeURIComponent(place.geometry.location.lng()));
     }
 
     var date_input = document.getElementById('depart_date');
     if (date_input.value) {
-        url += '&min_leave_date=' + encodeURIComponent(date_input.value);
+        parts.push('min_leave_date=' + encodeURIComponent(date_input.value));
     }
 
+    url += parts.join('&');
+
+    var results = $('#search-results');
+    results.empty();
+    map.data.forEach(function(feature) {
+        map.data.remove(feature);
+    });
     map.data.loadGeoJson(url, null, mapDataCallback);
 }
 
