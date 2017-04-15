@@ -294,6 +294,16 @@ def carpool_start_geojson():
     if request.args.get('ignore_prior') != 'false':
         pools = pools.filter(Carpool.leave_time >= datetime.datetime.utcnow())
 
+    min_leave_date = request.args.get('min_leave_date')
+    if min_leave_date:
+        try:
+            min_leave_date = datetime.datetime.strptime(
+                min_leave_date, '%m/%d/%Y')
+            pools = pools.filter(
+                func.date(Carpool.leave_time) == min_leave_date)
+        except ValueError:
+            abort(400, "Invalid date format for min_leave_date")
+
     near_lat = request.args.get('near.lat')
     near_lon = request.args.get('near.lon')
     if near_lat and near_lon:
