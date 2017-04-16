@@ -37,7 +37,7 @@ class DevelopmentConfig(Config):
 
 
 class TestingConfig(Config):
-    pass
+    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/carpools_test'
 
 
 class ProductionConfig(Config):
