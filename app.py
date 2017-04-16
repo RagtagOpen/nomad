@@ -369,7 +369,11 @@ def profile():
 
         flash("You updated your profile.", 'success')
 
-        return redirect(url_for('profile'))
+        # If they came here from logging in, redirect them to
+        # where they were headed after login.
+        next_url = session.pop('next', None) or url_for('profile')
+
+        return redirect(next_url)
 
     return render_template('profile.html', form=profile_form)
 
@@ -391,18 +395,29 @@ def oauth_authorize(provider):
 def oauth_callback(provider):
     if not current_user.is_anonymous:
         return redirect(url_for('index'))
+
     oauth = OAuthSignIn.get_provider(provider)
     social_id, username, email = oauth.callback()
+
     if social_id is None:
-        flash('Authentication failed.')
+        flash("For some reason, we couldn't log you in. "
+              "Please contact us!", 'error')
         return redirect(url_for('index'))
+
     user = Person.query.filter_by(social_id=social_id).first()
     if not user:
         user = Person(social_id=social_id, name=username, email=email)
         db.session.add(user)
         db.session.commit()
+
     login_user(user, True)
-    next_url = session.pop('next', None) or url_for('index')
+
+    if not username:
+        flash("Thanks for logging in! Please update your profile.", 'success')
+        next_url = url_for('profile')
+    else:
+        next_url = session.pop('next', None) or url_for('index')
+
     return redirect(next_url)
 
 
