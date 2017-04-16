@@ -26,9 +26,9 @@
     <div class="container">
       <a class="navbar-brand" href="{{ url_for('index') }}">Carpools</a>
 {% if current_user.is_authenticated %}
-      <p class="navbar-text navbar-right">Signed in as <a href="{{ url_for('profile') }}" class="navbar-link">{{ current_user.name }}</a>. <a href="{{ url_for('logout') }}" class="navbar-link">Logout</a>.</p>
+      <p class="navbar-text navbar-right">Signed in{% if current_user.name %} as {{ current_user.name }}{% endif %}.&nbsp;<a href="{{ url_for('profile') }}" class="navbar-link"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Profile</a>.&nbsp;<a href="{{ url_for('logout') }}" class="navbar-link"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a>.</p>
 {% else %}
-      <p class="navbar-text navbar-right"><a href="{{ url_for('login') }}" class="navbar-link">Login</a></p>
+      <p class="navbar-text navbar-right"><a href="{{ url_for('login') }}" class="navbar-link"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Login</a></p>
 {% endif %}
     </div>
   </nav>
