@@ -74,7 +74,7 @@ class Carpool(db.Model):
 
     @property
     def riders(self):
-        return self.get_ride_requests_query('confirmed').all()
+        return self.get_ride_requests_query('approved').all()
 
     @property
     def seats_available(self):
