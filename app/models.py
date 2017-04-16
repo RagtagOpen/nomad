@@ -73,6 +73,10 @@ class Carpool(db.Model):
         return Person.query.get(self.driver_id)
 
     @property
+    def riders(self):
+        return self.get_ride_requests_query('confirmed').all()
+
+    @property
     def seats_available(self):
         return self.max_riders - \
                self.get_ride_requests_query('approved').count()
