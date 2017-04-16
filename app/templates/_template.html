@@ -7,7 +7,7 @@
 {{super()}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js" integrity="sha256-1hjUhpc44NwiNg8OwMu2QzJXhD8kcj+sJA3aCQZoUjg=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js" integrity="sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=" crossorigin="anonymous"></script>
-<script src="{{url_for('.static', filename='js/site.js')}}"></script>
+<script src="{{url_for('static', filename='js/site.js')}}"></script>
 {% endblock %}
 
 {% block styles %}
@@ -24,11 +24,11 @@
 {% block content %}
   <nav class="navbar navbar-default">
     <div class="container">
-      <a class="navbar-brand" href="{{ url_for('index') }}">Carpools</a>
+      <a class="navbar-brand" href="{{ url_for('carpool.index') }}">Carpools</a>
 {% if current_user.is_authenticated %}
-      <p class="navbar-text navbar-right">Signed in{% if current_user.name %} as {{ current_user.name }}{% endif %}.&nbsp;<a href="{{ url_for('profile') }}" class="navbar-link"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Profile</a>.&nbsp;<a href="{{ url_for('logout') }}" class="navbar-link"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a>.</p>
+      <p class="navbar-text navbar-right">Signed in{% if current_user.name %} as {{ current_user.name }}{% endif %}&nbsp;<a href="{{ url_for('auth.profile') }}" class="navbar-link"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Profile</a>&nbsp;<a href="{{ url_for('auth.logout') }}" class="navbar-link"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a></p>
 {% else %}
-      <p class="navbar-text navbar-right"><a href="{{ url_for('login') }}" class="navbar-link"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Login</a></p>
+      <p class="navbar-text navbar-right"><a href="{{ url_for('auth.login') }}" class="navbar-link"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Login</a></p>
 {% endif %}
     </div>
   </nav>

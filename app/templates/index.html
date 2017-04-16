@@ -5,7 +5,7 @@
 <div class="jumbotron">
   <h1>Share Your Ride!</h1>
   <p>Join your neighbors carpools to save time, money, and help the environment!</p>
-  <a class="btn btn-primary btn-lg" href="{{ url_for('find_carpool') }}" role="button">Look for a ride</a>
-  <a class="btn btn-link btn-lg" href="{{ url_for('new_carpool') }}" role="button">Add your ride</a>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('carpool.find') }}" role="button">Look for a ride</a>
+  <a class="btn btn-link btn-lg" href="{{ url_for('carpool.new') }}" role="button">Add your ride</a>
 </div>
 {% endblock %}
