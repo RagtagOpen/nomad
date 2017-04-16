@@ -412,7 +412,7 @@ def oauth_callback(provider):
 
     login_user(user, True)
 
-    if not username:
+    if not user.name:
         flash("Thanks for logging in! Please update your profile.", 'success')
         next_url = url_for('profile')
     else:
