@@ -29,7 +29,7 @@ $(function () {
 });
 
 function doSearch() {
-    var url = '{{ url_for('carpool_start_geojson') }}?';
+    var url = '{{ url_for('carpool.start_geojson') }}?';
     var parts = [];
 
     if (place) {
@@ -57,7 +57,7 @@ function initMap() {
         center: {lat: 38.518, lng: -97.328},
         zoom: 4
     });
-    map.data.loadGeoJson('{{ url_for('carpool_start_geojson') }}', null, mapDataCallback);
+    doSearch();
 
     var from_input = document.getElementById('leaving_from');
     var from_ac = new google.maps.places.Autocomplete(from_input, {
