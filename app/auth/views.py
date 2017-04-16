@@ -88,9 +88,17 @@ def oauth_callback(provider):
 @auth_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    profile_form = ProfileForm(name=current_user.name)
+    profile_form = ProfileForm(
+        name=current_user.name,
+        gender=current_user.gender,
+        email=current_user.email,
+        phone_number=current_user.phone_number,
+    )
     if profile_form.validate_on_submit():
         current_user.name = profile_form.name.data
+        current_user.gender = profile_form.gender.data
+        current_user.email = profile_form.email.data
+        current_user.phone_number = profile_form.phone_number.data
         db.session.add(current_user)
         db.session.commit()
 

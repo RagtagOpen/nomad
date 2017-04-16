@@ -6,6 +6,15 @@
     <h1>Your Profile</h1>
 </div>
 
-{{ wtf.quick_form(form) }}
-
+<form class='form' method='post'>
+{{ form.hidden_tag() }}
+<div class='row'>
+    <div class='col-md-6'>
+        {{ wtf.form_field(form.name) }}
+        {{ wtf.form_field(form.gender) }}
+        {{ wtf.form_field(form.email) }}
+        {{ wtf.form_field(form.phone_number, type='tel') }}
+        {{ wtf.form_field(form.submit) }}
+    </div>
+</form>
 {% endblock %}
