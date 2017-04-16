@@ -61,7 +61,7 @@
 </div>
 
 {% else %}
-<a class="btn btn-default" href="{{ url_for('carpool.new_ride_request', carpool_id=pool.id) }}" role="button">Request a seat</a>
+<a class="btn btn-default" href="{{ url_for('carpool.new_rider', carpool_id=pool.id) }}" role="button">Request a seat</a>
 {% endif %}
 
 {% endblock %}
