@@ -43,7 +43,6 @@ def create_app(config_name):
         from raven.contrib.flask import Sentry
         sentry = Sentry(app)
 
-
     from .carpool import pool_bp
     app.register_blueprint(pool_bp)
 
