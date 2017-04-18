@@ -35,15 +35,17 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    pass
+    DEBUG = True
 
 
 class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/circle_test'
+    TESTING = True
 
 
 class ProductionConfig(Config):
-    pass
+    DEBUG = False
+    TESTING = False
 
 
 config = {
