@@ -241,7 +241,7 @@ def cancel(carpool_id):
             db.session.delete(carpool)
             db.session.commit()
 
-            flash("Your carpool was canceled", 'success')
+            flash("Your carpool was cancelled", 'success')
 
             return redirect(url_for('carpool.index'))
         else:
