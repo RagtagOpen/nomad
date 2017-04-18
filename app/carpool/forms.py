@@ -53,6 +53,17 @@ class DriverForm(FlaskForm):
     )
     submit = SubmitField(u'Add Your Ride')
 
+    def validate(self):
+        if not super(DriverForm, self).validate():
+            return False
+
+        if self.depart_time.data >= self.return_time.data:
+            self.depart_time.errors.append(
+                "Departure time must be before return time")
+            return False
+
+        return True
+
 
 class RiderForm(FlaskForm):
     gender = StringField(
