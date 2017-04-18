@@ -20,8 +20,9 @@
 {%- endif %}
 </p>
 
-{% if pool.get_current_user_ride_request() %}
-<a class="btn btn-default" href="{{ url_for('carpool.cancel_rider', carpool_id=pool.id) }}" role="button">Cancel your seat request</a>
+{% set current_user_ride_request = pool.get_current_user_ride_request() %}
+{% if current_user_ride_request %}
+<a class="btn btn-default" href="{{ url_for('carpool.modify_ride_request', carpool_id=pool.id, request_id=current_user_ride_request.id, action='cancel') }}" role="button">Cancel your seat request</a>
 
 {% elif pool.current_user_is_driver %}
 <a class="btn btn-default" href="{{ url_for('carpool.cancel', carpool_id=pool.id) }}" role="button">Cancel your carpool</a>
