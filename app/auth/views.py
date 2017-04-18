@@ -98,7 +98,7 @@ def profile():
 
     # Only tack on the 'choose' thing if they haven't chosen one yet
     if not current_user.preferred_contact_method \
-            and profile_form.preferred_contact.choices[0] != ('', 'choose one'):
+            and not profile_form.preferred_contact.choices[0][0]:
         profile_form.preferred_contact.choices.insert(0, ('', 'choose one'))
 
     if profile_form.validate_on_submit():
