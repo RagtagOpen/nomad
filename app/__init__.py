@@ -39,6 +39,10 @@ def create_app(config_name):
         from flask_sslify import SSLify
         sslify = SSLify(app)
 
+    if not app.debug and not app.testing and not app.config['SENTRY_DSN']:
+        from raven.contrib.flask import Sentry
+        sentry = Sentry(app)
+
     from .carpool import pool_bp
     app.register_blueprint(pool_bp)
 

@@ -27,6 +27,8 @@ class Config:
         },
     }
 
+    SENTRY_DSN = os.environ.get('SENTRY_DSN')
+
     @staticmethod
     def init_app(app):
         pass
