@@ -20,11 +20,14 @@ class RideRequest(db.Model):
 class Person(UserMixin, db.Model):
     __tablename__ = 'people'
 
-    CONTACT_METHODS = [
-        'email',
-        'call',
-        'text',
-    ]
+    CONTACT_EMAIL = 'email'
+    CONTACT_CALL = 'call'
+    CONTACT_TEXT = 'text'
+    CONTACT_METHODS = (
+        CONTACT_EMAIL,
+        CONTACT_CALL,
+        CONTACT_TEXT,
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime(timezone=True),
@@ -34,6 +37,7 @@ class Person(UserMixin, db.Model):
     phone_number = db.Column(db.String(14))
     name = db.Column(db.String(80))
     gender = db.Column(db.String(80))
+    preferred_contact_method = db.Column(db.String(80))
 
 
 @login_manager.user_loader

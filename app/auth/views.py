@@ -93,12 +93,21 @@ def profile():
         gender=current_user.gender,
         email=current_user.email,
         phone_number=current_user.phone_number,
+        preferred_contact=current_user.preferred_contact_method,
     )
+
+    # Only tack on the 'choose' thing if they haven't chosen one yet
+    if not current_user.preferred_contact_method \
+            and not profile_form.preferred_contact.choices[0][0]:
+        profile_form.preferred_contact.choices.insert(0, ('', 'choose one'))
+
     if profile_form.validate_on_submit():
         current_user.name = profile_form.name.data
         current_user.gender = profile_form.gender.data
         current_user.email = profile_form.email.data
         current_user.phone_number = profile_form.phone_number.data
+        current_user.preferred_contact_method = \
+            profile_form.preferred_contact.data
         db.session.add(current_user)
         db.session.commit()
 
