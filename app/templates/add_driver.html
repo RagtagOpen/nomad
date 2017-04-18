@@ -22,15 +22,16 @@ $(function () {
         stepping: 10,
     });
     $('#return_time').datetimepicker({
+        useCurrent: false,
         format: 'MM/DD/YYYY HH:mm',
         minDate: 'now',
         stepping: 10,
     });
     $("#depart_time").on("dp.change", function (e) {
-        $('#return_time').data("DateTimePicker").minDate(e.date);
-    });
-    $("#return_time").on("dp.change", function (e) {
-        $('#depart_time').data("DateTimePicker").maxDate(e.date);
+        var otherDate = $("#return_time").data("DateTimePicker").date()
+        if (!otherDate) {
+            $("#return_time").data("DateTimePicker").date(e.date.add(1, 'days'));
+        }
     });
 });
 
