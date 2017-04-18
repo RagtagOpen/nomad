@@ -35,11 +35,11 @@ def create_app(config_name):
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
-    if not app.debug and not app.testing and not app.config['SSL_DISABLE']:
+    if not app.debug and not app.testing and not app.config.get('SSL_DISABLE'):
         from flask_sslify import SSLify
         sslify = SSLify(app)
 
-    if not app.debug and not app.testing and not app.config['SENTRY_DSN']:
+    if not app.debug and not app.testing and not app.config.get('SENTRY_DSN'):
         from raven.contrib.flask import Sentry
         sentry = Sentry(app)
 
