@@ -199,6 +199,10 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.commit()
             flash("You denied their ride request.")
             # TODO Send email notification to rider
+        elif action == 'cancel':
+            db.session.delete(request)
+            db.session.commit()
+            flash("You cancelled your ride request.")
 
     elif request.status == 'denied':
         if action == 'approve':
@@ -222,25 +226,6 @@ def modify_ride_request(carpool_id, request_id, action):
     return redirect(url_for('carpool.details', carpool_id=carpool_id))
 
 
-@pool_bp.route('/carpools/<int:carpool_id>/cancelrider',
-               methods=['GET', 'POST'])
-@login_required
-def cancel_ride_request(carpool_id):
-    carpool = Carpool.query.get_or_404(carpool_id)
-
-    cancel_form = CancelCarpoolRiderForm()
-    if cancel_form.validate_on_submit():
-        if cancel_form.submit.data:
-            carpool.riders.remove(current_user)
-            db.session.commit()
-
-            flash("Your seat request was deleted", 'success')
-
-        return redirect(url_for('carpool.details', carpool_id=carpool_id))
-
-    return render_template('cancel_carpool_rider.html', form=cancel_form)
-
-
 @pool_bp.route('/carpools/<int:carpool_id>/cancel', methods=['GET', 'POST'])
 @login_required
 def cancel(carpool_id):
@@ -256,7 +241,7 @@ def cancel(carpool_id):
             db.session.delete(carpool)
             db.session.commit()
 
-            flash("Your carpool was canceled", 'success')
+            flash("Your carpool was cancelled", 'success')
 
             return redirect(url_for('carpool.index'))
         else:
