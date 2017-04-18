@@ -8,6 +8,8 @@ class Config:
     CACHE_TYPE = os.environ.get('CACHE_TYPE', 'simple')
     CACHE_REDIS_URL = os.environ.get('REDIS_URL')
     DEBUG = os.environ.get('DEBUG', True)
+    SSLIFY_ENABLE = False
+    SENTRY_ENABLE = False
     GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY')
 
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'localhost')
@@ -46,6 +48,8 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
+    SSLIFY_ENABLE = True
+    SENTRY_ENABLE = True
 
 
 config = {
