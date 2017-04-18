@@ -86,6 +86,10 @@ function mapDataCallback(features) {
             '<td><a href="' + feature.getId() + '">' + feature.getProperty('from_place') + ' at ' + feature.getProperty('leave_time') + '</a></td>' +
             '<td>' + feature.getProperty('to_place') + ' at ' + feature.getProperty('return_time') + '</td></tr>');
     }
+
+    map.data.addListener('click', function(event) {
+        window.location = event.feature.getId();
+    });
 }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>

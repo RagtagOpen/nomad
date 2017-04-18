@@ -250,26 +250,6 @@ def cancel(carpool_id):
     return render_template('cancel_carpool.html', form=cancel_form)
 
 
-def _filter_carpools_by_date(leave_time, return_time):
-    if leave_time and return_time:
-        pools = Carpool.query.filter(
-            Carpool.leave_time >= leave_time,
-            Carpool.return_time <= return_time
-        )
-    elif leave_time:
-        pools = Carpool.query.filter(
-            Carpool.leave_time >= leave_time
-        )
-    elif return_time:
-        pools = Carpool.query.filter(
-            Carpool.return_time <= return_time
-        )
-    else:
-        pools = Carpool.query
-
-    return pools
-
-
 def _email_carpool_cancelled(carpool, reason, send=False):
     driver = carpool.driver
     riders = carpool.riders
