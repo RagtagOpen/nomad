@@ -57,12 +57,26 @@ class DriverForm(FlaskForm):
         if not super(DriverForm, self).validate():
             return False
 
+        result = True
+
+        if not (self.leaving_from_lon.data and self.leaving_from_lat.data):
+            self.leaving_from.errors.append(
+                "No location was found. Try a nearby "
+                "street intersection or business.")
+            result = False
+
+        if not (self.going_to_lon.data and self.going_to_lat.data):
+            self.going_to.errors.append(
+                "No location was found. Try a nearby "
+                "street intersection or business.")
+            result = False
+
         if self.depart_time.data >= self.return_time.data:
             self.depart_time.errors.append(
                 "Departure time must be before return time")
-            return False
+            result = False
 
-        return True
+        return result
 
 
 class RiderForm(FlaskForm):
