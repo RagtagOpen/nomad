@@ -39,13 +39,40 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
 
+    @classmethod
+    def init_app(cls, app):
+        Config.init_app(app)
+
+        # Turn up sqlalchemy logging
+        import logging
+        logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
 
 class TestingConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/circle_test'
     TESTING = True
 
 
-class ProductionConfig(Config):
+class HerokuConfig(Config):
+    SSL_DISABLE = bool(os.environ.get('SSL_DISABLE'))
+
+    @classmethod
+    def init_app(cls, app):
+        Config.init_app(app)
+
+        # handle proxy server headers
+        from werkzeug.contrib.fixers import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+
+        # log to stderr
+        import logging
+        from logging import StreamHandler
+        stream_handler = StreamHandler()
+        stream_handler.setLevel(logging.WARNING)
+        app.logger.addHandler(stream_handler)
+
+
+class ProductionConfig(HerokuConfig):
     DEBUG = False
     TESTING = False
     SSLIFY_ENABLE = True

@@ -7,11 +7,15 @@ from wtforms import (
 from wtforms.validators import (
     Email,
     InputRequired,
-    Length,
     Optional,
     Regexp,
 )
 from ..models import Person
+
+
+class ProfileDeleteForm(FlaskForm):
+    name = StringField("Your Name")
+    submit = SubmitField('Permanently Delete Your Profile')
 
 
 class ProfileForm(FlaskForm):

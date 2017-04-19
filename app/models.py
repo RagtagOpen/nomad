@@ -39,6 +39,19 @@ class Person(UserMixin, db.Model):
     gender = db.Column(db.String(80))
     preferred_contact_method = db.Column(db.String(80))
 
+    def get_ride_requests_query(self, status=None):
+        query = RideRequest.query.filter_by(person_id=self.id)
+
+        if status:
+            query = query.filter_by(status=status)
+
+        return query
+
+    def get_driving_carpools(self):
+        query = Carpool.query.filter_by(driver_id=self.id)
+
+        return query
+
 
 @login_manager.user_loader
 def load_user(id):
