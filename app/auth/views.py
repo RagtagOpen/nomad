@@ -1,4 +1,5 @@
 from flask import (
+    current_app,
     flash,
     redirect,
     render_template,
@@ -9,7 +10,7 @@ from flask import (
 from flask_login import current_user, login_required, login_user, logout_user
 from urlparse import urlparse, urljoin
 from . import auth_bp
-from .forms import ProfileForm
+from .forms import ProfileForm, ProfileDeleteForm
 from .oauth import OAuthSignIn
 from .. import db
 from ..models import Person
@@ -120,6 +121,53 @@ def profile():
         return redirect(next_url)
 
     return render_template('profile.html', form=profile_form)
+
+
+@auth_bp.route('/profile/delete', methods=['GET', 'POST'])
+@login_required
+def profile_delete():
+    profile_form = ProfileDeleteForm()
+
+    if profile_form.validate_on_submit():
+        if profile_form.name.data != current_user.name:
+            flash("The text you entered did not match your name.", 'error')
+            return redirect(url_for('auth.profile'))
+
+        try:
+            # Delete the ride requests for this user
+            for req in current_user.get_ride_requests_query():
+                # FIXME: Notify drivers
+                current_app.logger.info("Deleting user %s's request %s",
+                                        current_user.id, req.id)
+                db.session.delete(req)
+
+            # Delete the carpools for this user
+            for pool in current_user.get_driving_carpools():
+                # FIXME: Cancel ride requests for this pool
+                #        (should send notifications)
+                current_app.logger.info("Deleting user %s's pool %s",
+                                        current_user.id, pool.id)
+                db.session.delete(pool)
+
+            # Delete the user's account
+            current_app.logger.info("Deleting user %s", current_user.id)
+            user = Person.query.get(current_user.id)
+            db.session.delete(user)
+            db.session.commit()
+
+            logout_user()
+        except:
+            db.session.rollback()
+            current_app.logger.exception("Problem deleting user account")
+            flash("There was a problem deleting your profile. "
+                  "Try again or contact us.", 'error')
+            return redirect(url_for('auth.profile'))
+
+        flash("You deleted your profile.", 'success')
+
+        return redirect(url_for('carpool.index'))
+
+    return render_template('profile_delete.html', form=profile_form)
 
 
 @auth_bp.route('/privacy.html')
