@@ -1,5 +1,5 @@
 import logging
-from flask import Flask
+from flask import Flask, g, render_template
 from flask_bootstrap import Bootstrap
 from flask_caching import Cache
 from flask_login import LoginManager
@@ -40,10 +40,19 @@ def create_app(config_name):
         from flask_sslify import SSLify
         sslify = SSLify(app)
 
+    sentry = None
     if not app.debug and not app.testing and app.config.get('SENTRY_ENABLE'):
         app.logger.info("Using Sentry")
         from raven.contrib.flask import Sentry
         sentry = Sentry(app)
+
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        return render_template(
+            '500.html',
+            event_id=g.sentry_event_id,
+            public_dsn=sentry.client.get_public_dsn('https') if sentry else None
+        )
 
     from .carpool import pool_bp
     app.register_blueprint(pool_bp)

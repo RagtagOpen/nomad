@@ -1,0 +1,24 @@
+{%- extends "_template.html" %}
+
+{% block scripts %}
+{{super()}}
+<script src="https://cdn.ravenjs.com/2.3.0/raven.min.js"></script>
+{% endblock %}
+
+{% block site %}
+<div class='page-header'>
+    <h1>Woops! <small>Error 500</small></h1>
+</div>
+
+<p class="bg-danger">You seem to have found an unexpected error.</p>
+
+{% if event_id %}
+<script>
+Raven.showReportDialog({
+    eventId: '{{ event_id }}',
+    dsn: '{{ public_dsn }}'
+});
+</script>
+{% endif %}
+
+{% endblock %}
