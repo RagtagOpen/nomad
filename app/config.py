@@ -8,6 +8,7 @@ class Config:
     CACHE_TYPE = os.environ.get('CACHE_TYPE', 'simple')
     CACHE_REDIS_URL = os.environ.get('REDIS_URL')
     DEBUG = os.environ.get('DEBUG', True)
+    VERBOSE_SQLALCHEMY = False
     SSLIFY_ENABLE = False
     SENTRY_ENABLE = False
     GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY')
@@ -43,9 +44,14 @@ class DevelopmentConfig(Config):
     def init_app(cls, app):
         Config.init_app(app)
 
-        # Turn up sqlalchemy logging
-        import logging
-        logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+        if app.config.get('VERBOSE_SQLALCHEMY'):
+            import logging
+            from logging import StreamHandler
+            stream_handler = StreamHandler()
+            stream_handler.setLevel(logging.INFO)
+            sql_logger = logging.getLogger('sqlalchemy.engine')
+            sql_logger.addHandler(stream_handler)
+            sql_logger.setLevel(logging.INFO)
 
 
 class TestingConfig(Config):
