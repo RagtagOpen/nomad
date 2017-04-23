@@ -54,7 +54,7 @@
 1. Set up the Flask framework configuration
 
    ```
-   export FLASK_APP=app.py
+   export FLASK_APP=wsgi.py
    export FLASK_DEBUG=1
    ```
 
