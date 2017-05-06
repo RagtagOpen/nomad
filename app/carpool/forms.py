@@ -80,12 +80,6 @@ class DriverForm(FlaskForm):
 
 
 class RiderForm(FlaskForm):
-    gender = StringField(
-        "Gender",
-        [
-            InputRequired("Please enter your gender"),
-        ]
-    )
     submit = SubmitField(u'Request A Seat')
 
 

@@ -82,6 +82,7 @@ def start_geojson():
                 'seats_available': pool.seats_available,
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
+                'driver_gender': pool.driver.gender,
             },
         })
 

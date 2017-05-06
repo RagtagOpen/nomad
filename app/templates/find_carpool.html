@@ -83,6 +83,7 @@ function mapDataCallback(features) {
         var feature = features[i];
         results.append(
             '<tr><td>' + feature.getProperty('seats_available') + '</td>' +
+            '<td>' + feature.getProperty('driver_gender') + '</td>' +
             '<td><a href="' + feature.getId() + '">' + feature.getProperty('from_place') + ' at ' + feature.getProperty('leave_time') + '</a></td>' +
             '<td>' + feature.getProperty('to_place') + ' at ' + feature.getProperty('return_time') + '</td></tr>');
     }
@@ -120,6 +121,7 @@ function mapDataCallback(features) {
             <thead>
                 <tr>
                     <th>Capacity</th>
+                    <th>Gender</th>
                     <th>Leaving</th>
                     <th>Going To</th>
                 </tr>
