@@ -7,6 +7,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    session,
     url_for,
 )
 from flask_login import current_user, login_required
@@ -17,7 +18,6 @@ from shapely.geometry import mapping, Point
 from . import pool_bp
 from .forms import (
     CancelCarpoolDriverForm,
-    CancelCarpoolRiderForm,
     DriverForm,
     RiderForm,
 )
@@ -96,6 +96,11 @@ def start_geojson():
 @pool_bp.route('/carpools/new', methods=['GET', 'POST'])
 @login_required
 def new():
+    if not current_user.gender:
+        flash("Please specify your gender before creating a carpool")
+        session['next'] = url_for('carpool.new')
+        return redirect(url_for('auth.profile'))
+
     driver_form = DriverForm()
     if driver_form.validate_on_submit():
         c = Carpool(
