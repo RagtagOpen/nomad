@@ -143,6 +143,11 @@ def new_rider(carpool_id):
         flash("You can't request a ride on a carpool you're driving in")
         return redirect(url_for('carpool.details', carpool_id=carpool_id))
 
+    if not current_user.gender:
+        flash("Please specify your gender before creating a carpool request")
+        session['next'] = url_for('carpool.new_rider', carpool_id=carpool_id)
+        return redirect(url_for('auth.profile'))
+
     rider_form = RiderForm()
     if rider_form.validate_on_submit():
         if carpool.seats_available < 1:
