@@ -7,6 +7,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    session,
     url_for,
 )
 from flask_login import current_user, login_required
@@ -17,7 +18,6 @@ from shapely.geometry import mapping, Point
 from . import pool_bp
 from .forms import (
     CancelCarpoolDriverForm,
-    CancelCarpoolRiderForm,
     DriverForm,
     RiderForm,
 )
@@ -82,6 +82,7 @@ def start_geojson():
                 'seats_available': pool.seats_available,
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
+                'driver_gender': pool.driver.gender,
             },
         })
 
@@ -96,6 +97,11 @@ def start_geojson():
 @pool_bp.route('/carpools/new', methods=['GET', 'POST'])
 @login_required
 def new():
+    if not current_user.gender:
+        flash("Please specify your gender before creating a carpool")
+        session['next'] = url_for('carpool.new')
+        return redirect(url_for('auth.profile'))
+
     driver_form = DriverForm()
     if driver_form.validate_on_submit():
         c = Carpool(
@@ -137,6 +143,11 @@ def new_rider(carpool_id):
     if carpool.current_user_is_driver:
         flash("You can't request a ride on a carpool you're driving in")
         return redirect(url_for('carpool.details', carpool_id=carpool_id))
+
+    if not current_user.gender:
+        flash("Please specify your gender before creating a carpool request")
+        session['next'] = url_for('carpool.new_rider', carpool_id=carpool_id)
+        return redirect(url_for('auth.profile'))
 
     rider_form = RiderForm()
     if rider_form.validate_on_submit():
