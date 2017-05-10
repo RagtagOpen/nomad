@@ -1,0 +1,40 @@
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+<div class='page-header'>
+    <h1>Your Carpools</h1>
+</div>
+
+<div class='row'>
+    <a class="btn btn-default" href="{{ url_for('carpool.new') }}" role="button">Create a new carpool</a>
+</div>
+
+<div class='row'>
+    <div class="col-md-12">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Capacity</th>
+                    <th>Leaving</th>
+                    <th>Going To</th>
+                </tr>
+            </thead>
+            <tbody>
+{% for carpool in carpools %}
+                <tr>
+                    <td>{{ carpool.seats_available }}</td>
+                    <td><a href="{{ url_for('carpool.details', carpool_id=carpool.id) }}">{{ carpool.from_place }}</a></td>
+                    <td>{{ carpool.to_place }}</td>
+                </tr>
+{% else %}
+                <tr>
+                    <td colspan="3">You haven't created any carpools yet!</td>
+                </tr>
+{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
