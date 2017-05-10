@@ -94,6 +94,14 @@ def start_geojson():
     return jsonify(feature_collection)
 
 
+@pool_bp.route('/carpools/mine', methods=['GET', 'POST'])
+@login_required
+def mine():
+    carpools = current_user.get_driving_carpools()
+
+    return render_template('my_carpools.html', carpools=carpools)
+
+
 @pool_bp.route('/carpools/new', methods=['GET', 'POST'])
 @login_required
 def new():
