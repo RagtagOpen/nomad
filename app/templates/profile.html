@@ -18,10 +18,9 @@
         {{ wtf.form_field(form.submit) }}
         </form>
     </div>
-</div>
-<div class='row'>
-    <div class='col-md-6'>
-        <h4>Danger!</h4>
+    <div class='col-md-6 well'>
+        <h4>Delete your account</h4>
+        <p>Deleting your account will remove you from all carpools and you will stop receiving further emails.</p>
         <a class="btn btn-danger" role="button" href="{{ url_for('auth.profile_delete') }}">Delete your account</a>
     </div>
 </div>
