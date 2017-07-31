@@ -1,4 +1,5 @@
 import datetime
+from flask import current_app
 from flask_login import UserMixin, current_user
 from geoalchemy2 import Geometry
 from . import db, login_manager
@@ -57,7 +58,7 @@ class Person(UserMixin, db.Model):
     gender = db.Column(db.String(80))
     preferred_contact_method = db.Column(db.String(80))
 
-    roles = db.relationship('Role', secondary=PersonRole,
+    roles = db.relationship('Role', secondary='people_roles',
                             backref=db.backref('roles',
                                                lazy='dynamic'))
 
@@ -77,6 +78,13 @@ class Person(UserMixin, db.Model):
     def has_roles(self, roles):
         requested_role_set = set(roles)
         our_role_set = set(role.name for role in self.roles)
+
+        current_app.logger.warn(
+            "User %s; requested roles: %s; user roles: %s",
+            current_user.id,
+            ','.join(requested_role_set) or 'empty',
+            ','.join(our_role_set) or 'empty',
+        )
 
         return requested_role_set.issubset(our_role_set)
 
