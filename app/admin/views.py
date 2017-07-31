@@ -9,8 +9,9 @@ from flask import (
 )
 from flask_login import login_required
 from . import admin_bp
+from .. import db
 from ..auth.permissions import roles_required
-from ..models import Person
+from ..models import Person, Role, PersonRole
 
 
 @admin_bp.route('/admin/')
@@ -27,6 +28,28 @@ def admin_index():
 @roles_required('admin')
 def user_show(user_id):
     user = Person.query.get_or_404(user_id)
+    return render_template(
+        'admin/show_user.html',
+        user=user,
+    )
+
+
+@admin_bp.route('/admin/users/<int:user_id>/role/<role_name>/toggle')
+@login_required
+@roles_required('admin')
+def user_toggle_role(user_id, role_name):
+    user = Person.query.get_or_404(user_id)
+    role = Role.query.filter_by(name=role_name).first_or_404()
+
+    pr = PersonRole.query.filter_by(person_id=user.id, role_id=role.id).first()
+    if pr:
+        db.session.delete(pr)
+        flash('Role {} removed from this user'.format(role.name))
+    else:
+        user.roles.append(role)
+        flash('Role {} added to this user'.format(role.name))
+    db.session.commit()
+
     return render_template(
         'admin/show_user.html',
         user=user,

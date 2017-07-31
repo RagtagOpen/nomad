@@ -7,7 +7,7 @@ def roles_required(*roles):
     def wrapper(f):
         @wraps(f)
         def wrapped(*args, **kwargs):
-            if not current_user.has_roles(roles):
+            if not current_user.has_roles(*roles):
                 abort(403)
             return f(*args, **kwargs)
         return wrapped

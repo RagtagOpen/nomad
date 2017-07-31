@@ -75,7 +75,7 @@ class Person(UserMixin, db.Model):
 
         return query
 
-    def has_roles(self, roles):
+    def has_roles(self, *roles):
         requested_role_set = set(roles)
         our_role_set = set(role.name for role in self.roles)
 

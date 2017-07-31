@@ -28,6 +28,15 @@
 
 <h3>Roles</h3>
 
+{% if user.has_roles('admin') %}
+{% if user != current_user %}
+<a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', user_id=user.id, role_name='admin') }}">Remove admin</a>
+{% endif %}
+{% else %}
+<a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', user_id=user.id, role_name='admin') }}">Make admin</a>
+{% endif %}
+
+
 <dl class="dl-horizontal">
 {% for role in user.roles %}
     <dt>{{ role.name }}</dt>
