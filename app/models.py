@@ -17,6 +17,24 @@ class RideRequest(db.Model):
     status = db.Column(db.String(120))
 
 
+class Role(db.Model):
+    __tablename__ = 'roles'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(24))
+    description = db.Column(db.String(120))
+
+
+class PersonRole(db.Model):
+    __tablename__ = 'people_roles'
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime(timezone=True),
+                           default=datetime.datetime.utcnow)
+    person_id = db.Column(db.Integer, db.ForeignKey('people.id'))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+
+
 class Person(UserMixin, db.Model):
     __tablename__ = 'people'
 
@@ -39,6 +57,10 @@ class Person(UserMixin, db.Model):
     gender = db.Column(db.String(80))
     preferred_contact_method = db.Column(db.String(80))
 
+    roles = db.relationship('Role', secondary=PersonRole,
+                            backref=db.backref('roles',
+                                               lazy='dynamic'))
+
     def get_ride_requests_query(self, status=None):
         query = RideRequest.query.filter_by(person_id=self.id)
 
@@ -51,6 +73,12 @@ class Person(UserMixin, db.Model):
         query = Carpool.query.filter_by(driver_id=self.id)
 
         return query
+
+    def has_roles(self, roles):
+        requested_role_set = set(roles)
+        our_role_set = set(role.name for role in self.roles)
+
+        return requested_role_set.issubset(our_role_set)
 
 
 @login_manager.user_loader
