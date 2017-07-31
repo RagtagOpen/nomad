@@ -79,13 +79,6 @@ class Person(UserMixin, db.Model):
         requested_role_set = set(roles)
         our_role_set = set(role.name for role in self.roles)
 
-        current_app.logger.warn(
-            "User %s; requested roles: %s; user roles: %s",
-            current_user.id,
-            ','.join(requested_role_set) or 'empty',
-            ','.join(our_role_set) or 'empty',
-        )
-
         return requested_role_set.issubset(our_role_set)
 
 

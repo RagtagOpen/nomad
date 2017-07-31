@@ -1,0 +1,40 @@
+{%- extends "admin/_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+{{ super() }}
+
+<h3>User</h3>
+
+<dl class="dl-horizontal">
+    <dt>Created At</dt>
+    <dd>{{ user.created_at }}</dd>
+
+    <dt>Name</dt>
+    <dd>{{ user.name }}</dd>
+
+    <dt>Email</dt>
+    <dd>{{ user.email }}</dd>
+
+    <dt>Phone Number</dt>
+    <dd>{{ user.phone_number }}</dd>
+
+    <dt>Contact Method</dt>
+    <dd>{{ user.preferred_contact_method }}</dd>
+
+    <dt>Gender</dt>
+    <dd>{{ user.gender }}</dd>
+</dl>
+
+<h3>Roles</h3>
+
+<dl class="dl-horizontal">
+{% for role in user.roles %}
+    <dt>{{ role.name }}</dt>
+    <dd>{{ role.description }}</dd>
+{% else %}
+    <dd>No roles set yet.</dd>
+{% endfor %}
+</dl>
+
+{% endblock %}
