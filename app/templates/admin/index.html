@@ -1,0 +1,15 @@
+{%- extends "admin/_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+{{ super() }}
+
+<h3>Users</h3>
+
+<a href="{{ url_for('admin.user_list') }}">User List</a>
+
+<h3>Canned Destinations</h3>
+
+<a href="{{ url_for('admin.destinations_list') }}">Destinations List</a>
+
+{% endblock %}

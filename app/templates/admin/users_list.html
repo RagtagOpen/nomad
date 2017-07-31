@@ -1,0 +1,45 @@
+{%- extends "admin/_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+{{ super() }}
+
+<h3>Users</h3>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Admin?</th>
+        </tr>
+    </thead>
+    <tbody id='search-results'>
+{% for user in users.items %}
+        <tr>
+            <td><a href="{{ url_for('admin.user_show', user_id=user.id) }}">{{ user.name }}</a></td>
+            <td>{{ user.gender }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.has_roles(('admin',)) }}</td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+</table>
+
+{% if users.has_prev %}
+<a href="{{ url_for('admin.user_list', page=users.prev_num) }}">&lt;&lt; Newer users</a>
+{% else %}
+&lt;&lt; Newer users
+{% endif %} |
+
+{% if users.has_next %}
+<a href="{{ url_for('admin.user_list', page=users.next_num) }}">Older users &gt;&gt;</a>
+{% else %}
+Older users &gt;&gt;
+{% endif %}
+
+{% endblock %}
