@@ -2,12 +2,12 @@ import os
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'iajgjknrooiajsefkm')
+    SECRET_KEY = os.environ.get('SECRET_KEY', None)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'postgresql://localhost/carpools')
     CACHE_TYPE = os.environ.get('CACHE_TYPE', 'simple')
     CACHE_REDIS_URL = os.environ.get('REDIS_URL')
-    DEBUG = os.environ.get('DEBUG', True)
+    DEBUG = os.environ.get('FLASK_DEBUG', False)
     VERBOSE_SQLALCHEMY = False
     SSLIFY_ENABLE = False
     SENTRY_ENABLE = False
@@ -18,6 +18,7 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'from@example.com')
+    PREFERRED_URL_SCHEME = 'https'
 
     OAUTH_CREDENTIALS = {
         'facebook': {
@@ -25,8 +26,8 @@ class Config:
             'secret': os.environ.get('FACEBOOK_APP_SECRET'),
         },
         'google': {
-            'id': os.environ.get('GOOGLE_APP_ID'),
-            'secret': os.environ.get('GOOGLE_APP_SECRET'),
+            'id': os.environ.get('GOOGLE_CLIENT_ID'),
+            'secret': os.environ.get('GOOGLE_CLIENT_SECRET'),
         },
     }
 
@@ -38,7 +39,9 @@ class Config:
 
 
 class DevelopmentConfig(Config):
-    DEBUG = True
+    SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(24))
+    DEBUG = os.environ.get('FLASK_DEBUG', True)
+    PREFERRED_URL_SCHEME = 'http'
 
     @classmethod
     def init_app(cls, app):
