@@ -34,12 +34,6 @@
     
 1. (Optional) Configure Google Sign-In
     In order to test Google authentication you'll need to create a [Console Project](https://developers.google.com/identity/sign-in/web/devconsole-project).
-    After going through the project creation step you'll have an auto-generated project ID. This needs to go in your `.env` file.
-
-    ```bash
-    echo GOOGLE_APP_ID="YOUR_APP_ID" >> .env
-    ```
-
     After creating credentials you'll get an OAuth Client ID and Client Secret. These need to go into your .env file as well. 
     
     ```bash
