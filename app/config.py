@@ -22,8 +22,8 @@ class Config:
 
     OAUTH_CREDENTIALS = {
         'facebook': {
-            'id': os.environ.get('FACEBOOK_APP_ID'),
-            'secret': os.environ.get('FACEBOOK_APP_SECRET'),
+            'id': os.environ.get('FACEBOOK_CLIENT_ID'),
+            'secret': os.environ.get('FACEBOOK_CLIENT_SECRET'),
         },
         'google': {
             'id': os.environ.get('GOOGLE_CLIENT_ID'),
