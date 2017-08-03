@@ -1,3 +1,8 @@
 *.pyc
 *.sqlite
 
+# Jetbrains IDEs
+.idea/
+
+# Local env vars
+.env

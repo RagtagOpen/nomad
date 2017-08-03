@@ -1,0 +1,43 @@
+version: "2.1"
+services:
+  base:
+    build: .
+    environment:
+      FLASK_APP: wsgi.py
+      FLASK_DEBUG: 1
+      DATABASE_URL: postgresql://nomad:nomad@db/nomad
+    entrypoint: ./wait-for-it.sh db:5432 --
+    volumes:
+    - .:/opt/nomad/
+
+  nomad:
+    extends: base
+    command: flask run -h 0.0.0.0
+    environment:
+      - FLASK_DEBUG=${FLASK_DEBUG}
+      - FLASK_APP=${FLASK_APP}
+      - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
+      - FACEBOOK_CLIENT_ID=${FACEBOOK_CLIENT_ID}
+      - FACEBOOK_CLIENT_SECRET=${FACEBOOK_CLIENT_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - VERBOSE_SQLALCHEMY=${VERBOSE_SQLALCHEMY}
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+      - db_setup
+
+  db_setup:
+    extends: base
+    command: flask db upgrade
+    depends_on:
+      - db
+
+  db:
+    image: mdillon/postgis
+    environment:
+      POSTGRES_PASSWORD: nomad
+      POSTGRES_USER: nomad
+      POSTGRES_DB: nomad
