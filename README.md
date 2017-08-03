@@ -1,6 +1,6 @@
 # Nomad
 
-## Gettng Started
+## Getting Started
 1. Check out the code
 
     ```
