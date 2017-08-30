@@ -137,3 +137,14 @@ class Carpool(db.Model):
     def seats_available(self):
         return self.max_riders - \
                self.get_ride_requests_query('approved').count()
+
+
+class Destination(db.Model):
+    __tablename__ = 'destinations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime(timezone=True),
+                           default=datetime.datetime.utcnow)
+    point = db.Column(Geometry('POINT'))
+    name = db.Column(db.String(80))
+    address = db.Column(db.String(300))
