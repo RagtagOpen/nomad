@@ -41,11 +41,19 @@ class Config:
 class DevelopmentConfig(Config):
     SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(24))
     DEBUG = os.environ.get('FLASK_DEBUG', True)
-    PREFERRED_URL_SCHEME = 'http'
+
+    # Set this environment variable if you're using
+    # Ngrok for local testing
+    ENABLE_PROXYFIX = os.environ.get('ENABLE_PROXYFIX')
 
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)
+
+        if app.config.get('ENABLE_PROXYFIX'):
+            # handle proxy server headers
+            from werkzeug.contrib.fixers import ProxyFix
+            app.wsgi_app = ProxyFix(app.wsgi_app)
 
         if app.config.get('VERBOSE_SQLALCHEMY'):
             import logging
