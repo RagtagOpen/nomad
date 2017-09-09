@@ -3,8 +3,13 @@
 
 {% block site %}
 {{ super() }}
+<div class='page-header'>
+    <h1>Destinations</h1>
+</div>
 
-<h3>Destinations</h3>
+<p>
+    <a class="btn btn-default" href="{{ url_for('admin.destinations_add') }}" role="button">Add a Location</a>
+</p>
 
 <table class="table table-hover">
     <thead>
@@ -16,7 +21,7 @@
     <tbody id='search-results'>
 {% for dest in destinations.items %}
         <tr>
-            <td><a href="{{ url_for('admin.destination_show', destination_id=dest.id) }}">{{ dest.name }}</a></td>
+            <td><a href="{{ url_for('admin.destinations_show', id=dest.id) }}">{{ dest.name }}</a></td>
             <td>{{ dest.address }}</td>
         </tr>
 {% endfor %}

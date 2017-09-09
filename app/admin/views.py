@@ -9,6 +9,7 @@ from flask import (
 )
 from flask_login import login_required
 from . import admin_bp
+from .forms import DestinationForm
 from .. import db
 from ..auth.permissions import roles_required
 from ..models import Destination, Person, Role, PersonRole
@@ -87,6 +88,46 @@ def destinations_list():
         paginate(page, per_page)
 
     return render_template(
-        'admin/destinations_list.html',
+        'admin/destinations/list.html',
         destinations=destinations,
+    )
+
+
+@admin_bp.route('/admin/destinations/new', methods=['GET', 'POST'])
+@login_required
+@roles_required('admin')
+def destinations_add():
+    dest_form = DestinationForm()
+    if dest_form.validate_on_submit():
+        destination = Destination(
+            name=dest_form.name.data,
+            address=dest_form.address.data,
+            point='SRID=4326;POINT({} {})'.format(
+                dest_form.destination_lon.data,
+                dest_form.destination_lat.data),
+        )
+        db.session.add(destination)
+        db.session.commit()
+
+        flash("You added a destination.", 'success')
+
+        return redirect(
+            url_for('admin.destinations_list')
+        )
+
+    return render_template(
+        'admin/destinations/add.html',
+        form=dest_form,
+    )
+
+
+@admin_bp.route('/admin/destinations/<int:id>', methods=['GET', 'POST'])
+@login_required
+@roles_required('admin')
+def destinations_show(id):
+    dest = Destination.query.get_or_404(id)
+
+    return render_template(
+        'admin/destinations/show.html',
+        dest=dest,
     )
