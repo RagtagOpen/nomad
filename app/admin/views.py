@@ -11,7 +11,7 @@ from flask_login import login_required
 from . import admin_bp
 from .. import db
 from ..auth.permissions import roles_required
-from ..models import Person, Role, PersonRole
+from ..models import Destination, Person, Role, PersonRole
 
 
 @admin_bp.route('/admin/')
@@ -78,6 +78,15 @@ def user_list():
 @login_required
 @roles_required('admin')
 def destinations_list():
+    page = request.args.get('page')
+    page = int(page) if page is not None else None
+    per_page = 15
+
+    destinations = Destination.query.\
+        order_by(Destination.created_at.desc()).\
+        paginate(page, per_page)
+
     return render_template(
         'admin/destinations_list.html',
+        destinations=destinations,
     )

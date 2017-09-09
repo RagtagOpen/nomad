@@ -6,4 +6,34 @@
 
 <h3>Destinations</h3>
 
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+        </tr>
+    </thead>
+    <tbody id='search-results'>
+{% for dest in destinations.items %}
+        <tr>
+            <td><a href="{{ url_for('admin.destination_show', destination_id=dest.id) }}">{{ dest.name }}</a></td>
+            <td>{{ dest.address }}</td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+</table>
+
+{% if destinations.has_prev %}
+<a href="{{ url_for('admin.destinations_list', page=destinations.prev_num) }}">&lt;&lt; Newer destinations</a>
+{% else %}
+&lt;&lt; Newer destinations
+{% endif %} |
+
+{% if destinations.has_next %}
+<a href="{{ url_for('admin.destinations_list', page=destinations.next_num) }}">Older destinations &gt;&gt;</a>
+{% else %}
+Older destinations &gt;&gt;
+{% endif %}
+
 {% endblock %}
