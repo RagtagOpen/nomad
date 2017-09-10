@@ -2,6 +2,8 @@ import datetime
 from flask import current_app
 from flask_login import UserMixin, current_user
 from geoalchemy2 import Geometry
+from geoalchemy2.shape import to_shape
+from shapely.geometry import mapping
 from . import db, login_manager
 
 
@@ -137,3 +139,30 @@ class Carpool(db.Model):
     def seats_available(self):
         return self.max_riders - \
                self.get_ride_requests_query('approved').count()
+
+
+class Destination(db.Model):
+    __tablename__ = 'destinations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime(timezone=True),
+                           default=datetime.datetime.utcnow)
+    hidden = db.Column(db.Boolean(), default=False)
+    point = db.Column(Geometry('POINT'))
+    name = db.Column(db.String(80))
+    address = db.Column(db.String(300))
+
+    @classmethod
+    def find_all_visible(clz):
+        return clz.query.filter(clz.hidden != True)
+
+    def as_geojson(self):
+        """ Returns a GeoJSON Feature object for this Destination. """
+        return {
+            "type": "Feature",
+            "properties": {
+                "name": self.name,
+                "address": self.address,
+            },
+            "geometry": mapping(to_shape(self.point))
+        }
