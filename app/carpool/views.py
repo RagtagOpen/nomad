@@ -27,16 +27,12 @@ from .. import db, mail
 
 @pool_bp.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template(
-        'index.html',
-    )
+    return render_template('index.html')
 
 
 @pool_bp.route('/carpools/find')
 def find():
-    return render_template(
-        'find_carpool.html',
-    )
+    return render_template('carpools/find.html')
 
 
 @pool_bp.route('/carpools/starts.geojson')
@@ -99,7 +95,7 @@ def start_geojson():
 def mine():
     carpools = current_user.get_driving_carpools()
 
-    return render_template('my_carpools.html', carpools=carpools)
+    return render_template('carpools/mine.html', carpools=carpools)
 
 
 @pool_bp.route('/carpools/new', methods=['GET', 'POST'])
@@ -133,14 +129,14 @@ def new():
 
         return redirect(url_for('carpool.details', carpool_id=c.id))
 
-    return render_template('add_driver.html', form=driver_form)
+    return render_template('carpools/add_driver.html', form=driver_form)
 
 
 @pool_bp.route('/carpools/<int:carpool_id>', methods=['GET', 'POST'])
 def details(carpool_id):
     carpool = Carpool.query.get_or_404(carpool_id)
 
-    return render_template('carpool_details.html', pool=carpool)
+    return render_template('carpools/show.html', pool=carpool)
 
 
 @pool_bp.route('/carpools/<int:carpool_id>/newrider', methods=['GET', 'POST'])
@@ -182,7 +178,7 @@ def new_rider(carpool_id):
 
         return redirect(url_for('carpool.details', carpool_id=carpool_id))
 
-    return render_template('add_rider.html', form=rider_form)
+    return render_template('carpools/add_rider.html', form=rider_form)
 
 
 @pool_bp.route('/carpools/<int:carpool_id>/request/<int:request_id>/<action>',
@@ -266,7 +262,7 @@ def cancel(carpool_id):
         else:
             return redirect(url_for('carpool.details', carpool_id=carpool_id))
 
-    return render_template('cancel_carpool.html', form=cancel_form)
+    return render_template('carpools/cancel.html', form=cancel_form)
 
 
 def _email_carpool_cancelled(carpool, reason, send=False):

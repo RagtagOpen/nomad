@@ -37,9 +37,7 @@ def login():
     if next_url and is_safe_url(next_url):
         session['next'] = next_url
 
-    return render_template(
-        'login.html',
-    )
+    return render_template('auth/login.html')
 
 
 @auth_bp.route('/logout')
@@ -120,7 +118,7 @@ def profile():
 
         return redirect(next_url)
 
-    return render_template('profile.html', form=profile_form)
+    return render_template('profiles/show.html', form=profile_form)
 
 
 @auth_bp.route('/profile/delete', methods=['GET', 'POST'])
@@ -167,9 +165,9 @@ def profile_delete():
 
         return redirect(url_for('carpool.index'))
 
-    return render_template('profile_delete.html', form=profile_form)
+    return render_template('profiles/delete.html', form=profile_form)
 
 
 @auth_bp.route('/privacy.html')
 def privacy():
-    return render_template('privacy.html')
+    return render_template('auth/privacy.html')
