@@ -9,7 +9,7 @@ from flask import (
 )
 from flask_login import login_required
 from . import admin_bp
-from .forms import DestinationForm
+from .forms import DestinationForm, DeleteDestinationForm
 from .. import db
 from ..auth.permissions import roles_required
 from ..models import Destination, Person, Role, PersonRole
@@ -131,3 +131,55 @@ def destinations_show(id):
         'admin/destinations/show.html',
         dest=dest,
     )
+
+
+@admin_bp.route('/admin/destinations/<int:id>/delete', methods=['GET', 'POST'])
+@login_required
+@roles_required('admin')
+def destinations_delete(id):
+    dest = Destination.query.get_or_404(id)
+
+    delete_form = DeleteDestinationForm()
+    if delete_form.validate_on_submit():
+        if delete_form.submit.data:
+            # TODO Check to make sure no one is using the destination?
+            db.session.delete(dest)
+            db.session.commit()
+
+            flash("Your destination was deleted", 'success')
+            return redirect(url_for('admin.destinations_list'))
+        else:
+            return redirect(url_for('admin.destinations_show', id=id))
+
+    return render_template(
+        'admin/destinations/delete.html',
+        dest=dest,
+    )
+
+
+@admin_bp.route('/admin/destinations/<int:id>/hide')
+@login_required
+@roles_required('admin')
+def destinations_hide(id):
+    dest = Destination.query.get_or_404(id)
+
+    dest.hidden = True
+    db.session.add(dest)
+    db.session.commit()
+
+    flash("Your destination was hidden", 'success')
+    return redirect(url_for('admin.destinations_show', id=id))
+
+
+@admin_bp.route('/admin/destinations/<int:id>/unhide')
+@login_required
+@roles_required('admin')
+def destinations_unhide(id):
+    dest = Destination.query.get_or_404(id)
+
+    dest.hidden = False
+    db.session.add(dest)
+    db.session.commit()
+
+    flash("Your destination was unhidden", 'success')
+    return redirect(url_for('admin.destinations_show', id=id))

@@ -145,6 +145,7 @@ class Destination(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime(timezone=True),
                            default=datetime.datetime.utcnow)
+    hidden = db.Column(db.Boolean(), default=False)
     point = db.Column(Geometry('POINT'))
     name = db.Column(db.String(80))
     address = db.Column(db.String(300))

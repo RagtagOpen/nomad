@@ -25,3 +25,8 @@ class DestinationForm(FlaskForm):
     destination_lat = HiddenField()
     destination_lon = HiddenField()
     submit = SubmitField(u'Add The Destination')
+
+
+class DeleteDestinationForm(FlaskForm):
+    cancel = SubmitField(u"Nevermind, Go Back")
+    submit = SubmitField(u"Delete The Destination")
