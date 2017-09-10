@@ -2,6 +2,8 @@ import datetime
 from flask import current_app
 from flask_login import UserMixin, current_user
 from geoalchemy2 import Geometry
+from geoalchemy2.shape import to_shape
+from shapely.geometry import mapping
 from . import db, login_manager
 
 
@@ -149,3 +151,18 @@ class Destination(db.Model):
     point = db.Column(Geometry('POINT'))
     name = db.Column(db.String(80))
     address = db.Column(db.String(300))
+
+    @classmethod
+    def find_all_visible(clz):
+        return clz.query.filter(clz.hidden != True)
+
+    def as_geojson(self):
+        """ Returns a GeoJSON Feature object for this Destination. """
+        return {
+            "type": "Feature",
+            "properties": {
+                "name": self.name,
+                "address": self.address,
+            },
+            "geometry": mapping(to_shape(self.point))
+        }

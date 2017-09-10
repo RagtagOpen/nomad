@@ -3,6 +3,7 @@ from wtforms import (
     DateTimeField,
     HiddenField,
     IntegerField,
+    SelectField,
     StringField,
     SubmitField,
 )
@@ -36,12 +37,14 @@ class DriverForm(FlaskForm):
         ],
         format='%m/%d/%Y %H:%M',
     )
-    going_to = StringField(
+    going_to_list = SelectField(
         "Going To",
         [
             InputRequired("Where are going to?"),
-        ]
+        ],
+        coerce=int,
     )
+    going_to_text = StringField()
     going_to_lat = HiddenField()
     going_to_lon = HiddenField()
     return_time = DateTimeField(
@@ -66,7 +69,7 @@ class DriverForm(FlaskForm):
             result = False
 
         if not (self.going_to_lon.data and self.going_to_lat.data):
-            self.going_to.errors.append(
+            self.going_to_list.errors.append(
                 "No location was found. Try a nearby "
                 "street intersection or business.")
             result = False
