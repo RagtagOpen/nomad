@@ -32,8 +32,6 @@
 
 {% if current_user_ride_request %}
 
-
-
 <a class="btn btn-default" href="{{ url_for('carpool.modify_ride_request', carpool_id=pool.id, request_id=current_user_ride_request.id, action='cancel') }}" role="button">Cancel your seat request</a>
 
 {% elif pool.current_user_is_driver %}
