@@ -30,7 +30,7 @@ def admin_index():
 def user_show(user_id):
     user = Person.query.get_or_404(user_id)
     return render_template(
-        'admin/show_user.html',
+        'admin/users/show.html',
         user=user,
     )
 
@@ -52,7 +52,7 @@ def user_toggle_role(user_id, role_name):
     db.session.commit()
 
     return render_template(
-        'admin/show_user.html',
+        'admin/users/show.html',
         user=user,
     )
 
@@ -70,7 +70,7 @@ def user_list():
         paginate(page, per_page)
 
     return render_template(
-        'admin/users_list.html',
+        'admin/users/list.html',
         users=users,
     )
 
