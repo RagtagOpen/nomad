@@ -1,0 +1,76 @@
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block styles %}
+{{super()}}
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 38.518, lng: -97.328},
+        zoom: 4
+    });
+
+    var dest_input = document.getElementById('address');
+    var dest_marker = new google.maps.Marker({
+        visible: false,
+        map: map
+    });
+    var dest_ac = new google.maps.places.Autocomplete(dest_input, {
+        componentRestrictions: {country: 'us'}
+    });
+    dest_ac.bindTo('bounds', map);
+    dest_ac.addListener('place_changed', function() {
+        var place = dest_ac.getPlace();
+        console.log(place);
+        dest_marker.setVisible(false);
+
+        if (!place.geometry) {
+            console.log("No details available for from autocomplete: '" + place.name + "'");
+            return;
+        }
+
+        document.getElementById('destination_lat').value = place.geometry.location.lat();
+        document.getElementById('destination_lon').value = place.geometry.location.lng();
+
+        dest_marker.setPosition(place.geometry.location);
+        dest_marker.setVisible(true);
+    });
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
+{% endblock %}
+
+{% block site %}
+<div class='page-header'>
+    <h1>Add a Destination</h1>
+</div>
+
+<form class='form' method='post'>
+{{ form.hidden_tag() }}
+<div class='row'>
+    <div class='col-md-12'>
+        <div id='map'></div>
+    </div>
+</div>
+<div class='row'>
+    <div class='col-md-6'>
+        {{ form.destination_lat }}
+        {{ form.destination_lon }}
+        {{ wtf.form_field(form.name) }}
+        {{ wtf.form_field(form.address) }}
+        {{ wtf.form_field(form.submit) }}
+    </div>
+</div>
+</form>
+
+{% endblock %}

@@ -2,8 +2,13 @@
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
-{{ super() }}
-
+{{super()}}
 <h3>Destinations</h3>
+
+<p>
+    Really delete destination <strong>{{ destination.name }}</strong>?
+</p>
+
+{{ wtf.quick_form(form) }}
 
 {% endblock %}

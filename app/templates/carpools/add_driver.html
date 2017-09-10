@@ -14,6 +14,11 @@
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript">
+var canned_locations = {
+{% for dest in destinations %}
+{{ dest.id }}: {{ dest.as_geojson()|tojson|safe }},
+{% endfor %}
+};
 $(function () {
     $('#depart_time').datetimepicker({
         useCurrent: false, //Important! See issue #1075
@@ -52,7 +57,6 @@ function initMap() {
     from_ac.bindTo('bounds', map);
     from_ac.addListener('place_changed', function() {
         var place = from_ac.getPlace();
-        console.log(place);
         from_marker.setVisible(false);
 
         if (!place.geometry) {
@@ -67,7 +71,7 @@ function initMap() {
         from_marker.setVisible(true);
     });
 
-    var to_input = document.getElementById('going_to');
+    var to_input = document.getElementById('going_to_text');
     var to_marker = new google.maps.Marker({
         visible: false,
         map: map
@@ -78,7 +82,6 @@ function initMap() {
     to_ac.bindTo('bounds', map);
     to_ac.addListener('place_changed', function() {
         var place = to_ac.getPlace();
-        console.log(place);
         to_marker.setVisible(false);
 
         if (!place.geometry) {
@@ -91,6 +94,31 @@ function initMap() {
 
         to_marker.setPosition(place.geometry.location);
         to_marker.setVisible(true);
+    });
+
+    $("#going_to_list").on("change", function(e) {
+        var selected = e.target.value;
+        if (selected == -2) {
+            // They selected 'Other...' and we should toggle to see the geocoder input
+            $("#going_to_text").removeClass('hidden show');
+            $("#going_to_text").addClass('show');
+
+            document.getElementById('going_to_lat').value = null;
+            document.getElementById('going_to_lon').value = null;
+            to_marker.setVisible(false);
+        } else {
+            $("#going_to_text").removeClass('hidden show');
+            $("#going_to_text").addClass('hidden');
+
+            var selected_location = canned_locations[selected];
+            var lat = selected_location.geometry.coordinates[1];
+            var lon = selected_location.geometry.coordinates[0];
+            document.getElementById('going_to_lat').value = lat;
+            document.getElementById('going_to_lon').value = lon;
+            document.getElementById('going_to_text').value = selected_location.properties.address;
+            to_marker.setPosition({lat: lat, lng: lon});
+            to_marker.setVisible(true);
+        }
     });
 }
 </script>
@@ -117,7 +145,8 @@ function initMap() {
         {{ form.leaving_from_lon }}
     </div>
     <div class='col-md-6'>
-        {{ wtf.form_field(form.going_to) }}
+        {{ wtf.form_field(form.going_to_list) }}
+        {{ form.going_to_text(class='form-control hidden') }}
         {{ wtf.form_field(form.return_time) }}
         {{ form.going_to_lat }}
         {{ form.going_to_lon }}
