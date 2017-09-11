@@ -41,6 +41,17 @@
     echo GOOGLE_CLIENT_SECRET="YOUR_CLIENT_SECRET" >> .env
     ```
 
+1. (Optional) Configure Email Send
+    In order for the app to send email, you'll need to add details about what mail server it should use. For testing, you can use a Mailgun or Gmail account. Add those details to the .env file, too!
+
+```bash
+echo MAIL_SERVER=smtp.mailgun.org >> .env
+echo MAIL_PORT=465 >> .env
+echo MAIL_USE_SSL=1 >> .env
+echo MAIL_USERNAME=your_username >> .env
+echo MAIL_PASSWORD=your_password >> .env
+```
+
 ## Running with Docker Compose
 
 You can get up and running with Docker and [Docker Compose](https://docs.docker.com/compose/overview/).

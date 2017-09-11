@@ -136,7 +136,7 @@ class Carpool(db.Model):
         approved_requests = self.get_ride_requests_query('approved').all()
 
         return Person.query.filter(
-            Person.id.in_(p.id for p in approved_requests)).all()
+            Person.id.in_(p.person_id for p in approved_requests)).all()
 
     @property
     def seats_available(self):
