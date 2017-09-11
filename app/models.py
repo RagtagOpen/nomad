@@ -4,6 +4,7 @@ from flask_login import UserMixin, current_user
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
+from sqlalchemy.orm import relationship
 from . import db, login_manager
 
 
@@ -103,6 +104,8 @@ class Carpool(db.Model):
     return_time = db.Column(db.DateTime(timezone=True))
     max_riders = db.Column(db.Integer)
     driver_id = db.Column(db.Integer, db.ForeignKey('people.id'))
+
+    ride_requests = relationship("RideRequest", cascade="all, delete-orphan")
 
     def get_ride_requests_query(self, status=None):
         query = RideRequest.query.filter_by(carpool_id=self.id)

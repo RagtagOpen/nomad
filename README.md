@@ -79,9 +79,21 @@ This will allow you to get up and running quickly while installing a smaller set
     docker-compose run --service-ports nomad bash
     ```
 
-### Note
+### Misc. notes on developing Nomad in Docker
 
-If `requirements.txt` changes a `docker-compose build` will reinstall all Python dependencies
+#### On requirements
+
+If `requirements.txt` changes, a `docker-compose build` will reinstall all Python dependencies
+
+#### Accessing the DB
+
+To connect to the DB in docker, run:
+```
+docker-compose run --service-ports nomad "psql postgresql://nomad:nomad@db/nomad"
+```
+
+#### Setting environment variables
+`.env` does not get directly `source`'d to the application context; rather, it's used to populate [`docker-compose.yml`](https://github.com/RagtagOpen/nomad/blob/master/docker-compose.yml), which can then be used to set environment variables in the applicaiton context. Therefore, if you add an environment variable in `.env` that you want the app to be able to access, you must also add it in the `environment` block of [`docker-compose.yml`](https://github.com/RagtagOpen/nomad/blob/master/docker-compose.yml).
 
 ## Running on Localhost
 
