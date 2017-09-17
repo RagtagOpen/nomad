@@ -256,6 +256,7 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.delete(request)
             db.session.commit()
             flash("You withdrew from the carpool.")
+            # TODO we should probably send an email in this case
 
     else:
         flash("You can't do that to the ride request.", "error")
