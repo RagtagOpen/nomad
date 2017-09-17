@@ -290,8 +290,8 @@ def _email_carpool_cancelled(carpool, reason):
 
     for rider in riders:
         _send_email(
-            'carpools/email/cancel_html.html',
-            'carpools/email/cancel_html.html',
+            'carpools/email/carpool_cancelled.html',
+            'carpools/email/carpool_cancelled.txt',
             rider.email,
             subject,
             driver=driver,
