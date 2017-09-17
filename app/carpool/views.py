@@ -264,10 +264,7 @@ def cancel(carpool_id):
     cancel_form = CancelCarpoolDriverForm()
     if cancel_form.validate_on_submit():
         if cancel_form.submit.data:
-            _email_carpool_cancelled(
-                carpool,
-                cancel_form.reason.data,
-                not current_app.debug)
+            _email_carpool_cancelled(carpool, cancel_form.reason.data)
             db.session.delete(carpool)
             db.session.commit()
 
@@ -280,7 +277,7 @@ def cancel(carpool_id):
     return render_template('carpools/cancel.html', form=cancel_form)
 
 
-def _email_carpool_cancelled(carpool, reason, send=False):
+def _email_carpool_cancelled(carpool, reason):
     driver = carpool.driver
     riders = carpool.riders_and_potential_riders
     if len(riders) == 0:
@@ -292,22 +289,26 @@ def _email_carpool_cancelled(carpool, reason, send=False):
     subject = 'Carpool session on {} cancelled'.format(carpool.leave_time)
 
     for rider in riders:
-        body = render_template(
-            'carpools/email/cancel_text.html',
-            driver=driver,
-            carpool=carpool,
-            extra={'reason': reason})
-        html = render_template(
+        _send_email(
             'carpools/email/cancel_html.html',
+            'carpools/email/cancel_html.html',
+            rider.email,
+            subject,
             driver=driver,
+            rider=rider,
             carpool=carpool,
-            extra={'reason': reason})
-        msg = Message(
-            recipients=[rider.email], body=body, html=html, subject=subject)
-        try:
-            with mail.connect() as conn:
-                conn.send(msg)
-        except Exception as exception:
-            current_app.logger.error(
-                'Failed to send message to {} with subject {} and body {} Exception: {}'.
-                format(rider.email, subject, body, repr(exception)))
+            reason=reason)
+
+
+def _send_email(html_template, text_template, recipient, subject, **kwargs):
+    body = render_template(text_template, **kwargs)
+    html = render_template(html_template, **kwargs)
+    msg = Message(
+        recipients=[recipient], body=body, html=html, subject=subject)
+    try:
+        with mail.connect() as conn:
+            conn.send(msg)
+    except Exception as exception:
+        current_app.logger.error(
+            'Failed to send message to {} with subject {} and body {} Exception: {}'.
+            format(recipient, subject, body, repr(exception)))
