@@ -189,6 +189,7 @@ def new_rider(carpool_id):
         db.session.commit()
 
         flash("You've been added to the list for this carpool!", 'success')
+        # TODO send email to driver
 
         return redirect(url_for('carpool.details', carpool_id=carpool_id))
 
@@ -281,7 +282,7 @@ def cancel(carpool_id):
 
 def _email_carpool_cancelled(carpool, reason, send=False):
     driver = carpool.driver
-    riders = carpool.riders
+    riders = carpool.riders_and_potential_riders
     if len(riders) == 0:
         return
 
@@ -295,21 +296,18 @@ def _email_carpool_cancelled(carpool, reason, send=False):
             'carpools/email/cancel_text.html',
             driver=driver,
             carpool=carpool,
-            extra={'reason': reason}),
+            extra={'reason': reason})
         html = render_template(
             'carpools/email/cancel_html.html',
             driver=driver,
             carpool=carpool,
-            extra={'reason': reason}),
+            extra={'reason': reason})
         msg = Message(
-            recipients=[rider.email],
-            body=body,
-            html=html,
-            subject=subject)
+            recipients=[rider.email], body=body, html=html, subject=subject)
         try:
             with mail.connect() as conn:
                 conn.send(msg)
         except Exception as exception:
-            current_app.logger.info(
-                'Failed to send message to {} with subject {} and body {} Exception: {}'.format(
-                    rider.email, subject, body, repr(exception)))
+            current_app.logger.error(
+                'Failed to send message to {} with subject {} and body {} Exception: {}'.
+                format(rider.email, subject, body, repr(exception)))
