@@ -222,13 +222,13 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.add(request)
             db.session.commit()
             flash("You approved their ride request.")
-            # TODO Send email notification to rider
+            _email_ride_approved(request)
         elif action == 'deny':
             request.status = 'denied'
             db.session.add(request)
             db.session.commit()
             flash("You denied their ride request.")
-            # TODO Send email notification to rider
+            _email_ride_denied(request)
         elif action == 'cancel':
             db.session.delete(request)
             db.session.commit()
@@ -240,7 +240,7 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.add(request)
             db.session.commit()
             flash("You approved their ride request.")
-            # TODO Send email notification to rider
+            _email_ride_approved(request)
 
     elif request.status == 'approved':
         if action == 'deny':
@@ -248,7 +248,7 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.add(request)
             db.session.commit()
             flash("You denied their ride request.")
-            # TODO Send email notification to rider
+            _email_ride_denied(request)
 
     else:
         flash("You can't do that to the ride request.", "error")
@@ -311,6 +311,27 @@ def _email_driver_ride_requested(carpool, current_user):
         subject,
         rider=current_user,
         carpool=carpool)
+
+
+def _email_ride_status(request, subject_beginning, template_name_specifier):
+    subject = '{} for carpool on {}'.format(subject_beginning,
+                                            request.carpool.leave_time)
+
+    _send_email(
+        'carpools/email/ride_{}.html'.format(template_name_specifier),
+        'carpools/email/ride_{}.txt'.format(template_name_specifier),
+        request.person.email,
+        subject,
+        rider=current_user,
+        carpool=request.carpool)
+
+
+def _email_ride_approved(request):
+    _email_ride_status(request, 'Ride approved', 'approved')
+
+
+def _email_ride_denied(request):
+    _email_ride_status(request, 'Ride request declined', 'denied')
 
 
 def _send_email(html_template, text_template, recipient, subject, **kwargs):
