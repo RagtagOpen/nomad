@@ -290,32 +290,26 @@ def _email_carpool_cancelled(carpool, reason, send=False):
 
     subject = 'Carpool session on {} cancelled'.format(carpool.leave_time)
 
-    # TODO: This should be an HTML template stored elsewhere
-    body = '''
-        Hello rider,
-
-        Unfortunately, the carpool session for leaving from {} at {} has been
-        cancelled.
-
-        The reason given for the cancellation was: {}.
-
-        Please reach out to {} in order to see if they're willing
-        to reschedule.
-    '''.format(
-            carpool.from_place,
-            carpool.leave_time,
-            reason,
-            driver.email)
-
-    if send:
-        with mail.connect() as conn:
-            for rider in riders:
-                msg = Message(recipients=[rider.email],
-                              body=body,
-                              subject=subject)
+    for rider in riders:
+        body = render_template(
+            'carpools/email/cancel_text.html',
+            driver=driver,
+            carpool=carpool,
+            extra={'reason': reason}),
+        html = render_template(
+            'carpools/email/cancel_html.html',
+            driver=driver,
+            carpool=carpool,
+            extra={'reason': reason}),
+        msg = Message(
+            recipients=[rider.email],
+            body=body,
+            html=html,
+            subject=subject)
+        try:
+            with mail.connect() as conn:
                 conn.send(msg)
-    else:
-        for rider in riders:
+        except Exception as exception:
             current_app.logger.info(
-                'Sent message to {} with subject {} and body {}'.format(
-                    rider.email, subject, body))
+                'Failed to send message to {} with subject {} and body {} Exception: {}'.format(
+                    rider.email, subject, body, repr(exception)))

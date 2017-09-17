@@ -1,8 +1,12 @@
 *.pyc
 *.sqlite
+.python-version
 
 # Jetbrains IDEs
 .idea/
 
 # Local env vars
 .env
+
+# vim stuff
+*.swp
