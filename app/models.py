@@ -131,7 +131,7 @@ class Carpool(db.Model):
     def driver(self):
         return Person.query.get(self.driver_id)
 
-    def get_riders_query(self, statuses):
+    def get_riders(self, statuses):
         requests = self.get_ride_requests_query(statuses).all()
 
         if not requests:
@@ -142,11 +142,11 @@ class Carpool(db.Model):
 
     @property
     def riders(self):
-        return self.get_riders_query(['approved'])
+        return self.get_riders(['approved'])
 
     @property
     def riders_and_potential_riders(self):
-        return self.get_riders_query(['approved', 'requested'])
+        return self.get_riders(['approved', 'requested'])
 
     @property
     def seats_available(self):
