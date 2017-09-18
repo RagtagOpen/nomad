@@ -264,7 +264,18 @@ def cancel(carpool_id):
     cancel_form = CancelCarpoolDriverForm()
     if cancel_form.validate_on_submit():
         if cancel_form.submit.data:
-            _email_carpool_cancelled(carpool, cancel_form.reason.data)
+
+            try:
+                _email_carpool_cancelled(carpool, cancel_form.reason.data)
+            except Exception as exception:
+                current_app.logger.critical(
+                    'Unable to send email.  Carpool not cancelled.  {}'.format(
+                        repr(exception)))
+                flash(
+                    'Error sending email to riders.  Your carpool was not cancelled.',
+                    'error')
+                return redirect(url_for('carpool.mine'))
+
             db.session.delete(carpool)
             db.session.commit()
 
@@ -288,8 +299,8 @@ def _email_carpool_cancelled(carpool, reason):
 
     subject = 'Carpool session on {} cancelled'.format(carpool.leave_time)
 
-    for rider in riders:
-        _send_email(
+    messages_to_send = [
+        _make_email_message(
             'carpools/email/carpool_cancelled.html',
             'carpools/email/carpool_cancelled.txt',
             rider.email,
@@ -297,18 +308,37 @@ def _email_carpool_cancelled(carpool, reason):
             driver=driver,
             rider=rider,
             carpool=carpool,
-            reason=reason)
+            reason=reason) for rider in riders
+    ]
+
+    _send_email(messages_to_send)
 
 
-def _send_email(html_template, text_template, recipient, subject, **kwargs):
+def _make_email_message(html_template, text_template, recipient, subject,
+                        **kwargs):
     body = render_template(text_template, **kwargs)
     html = render_template(html_template, **kwargs)
-    msg = Message(
+    return Message(
         recipients=[recipient], body=body, html=html, subject=subject)
-    try:
-        with mail.connect() as conn:
-            conn.send(msg)
-    except Exception as exception:
-        current_app.logger.error(
-            'Failed to send message to {} with subject {} and body {} Exception: {}'.
-            format(recipient, subject, body, repr(exception)))
+
+
+def _send_email(messages_to_send):
+    if current_app.config.get('MAIL_LOG_ONLY'):
+        current_app.logger.info(
+            'Configured to log {} messages without sending.  Messages in the following lines:'.
+            format(len(messages_to_send)))
+        for message in messages_to_send:
+            current_app.logger.info(
+                'Message to {} with subject {} and body {}'.format(
+                    message.recipients[0], message.subject, message.body))
+        return
+
+    with mail.connect() as conn:
+        for message in messages_to_send:
+            try:
+                conn.send(message)
+            except Exception as exception:
+                current_app.logger.error(
+                    'Failed to send message to {} with subject {} and body {} Exception: {}'.
+                    format(message.recipients[0], message.subject,
+                           message.body, repr(exception)))
