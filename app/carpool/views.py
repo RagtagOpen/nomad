@@ -311,7 +311,7 @@ def _email_carpool_cancelled(carpool, reason):
             reason=reason) for rider in riders
     ]
 
-    _send_email(messages_to_send)
+    _send_email(messages_to_send, raise_connect_exceptions=True)
 
 
 def _make_email_message(html_template, text_template, recipient, subject,
@@ -322,7 +322,7 @@ def _make_email_message(html_template, text_template, recipient, subject,
         recipients=[recipient], body=body, html=html, subject=subject)
 
 
-def _send_email(messages_to_send):
+def _send_email(messages_to_send, raise_connect_exceptions=False):
     if current_app.config.get('MAIL_LOG_ONLY'):
         current_app.logger.info(
             'Configured to log {} messages without sending.  Messages in the following lines:'.
@@ -333,12 +333,19 @@ def _send_email(messages_to_send):
                     message.recipients[0], message.subject, message.body))
         return
 
-    with mail.connect() as conn:
-        for message in messages_to_send:
-            try:
-                conn.send(message)
-            except Exception as exception:
-                current_app.logger.error(
-                    'Failed to send message to {} with subject {} and body {} Exception: {}'.
-                    format(message.recipients[0], message.subject,
-                           message.body, repr(exception)))
+    try:
+        with mail.connect() as conn:
+            for message in messages_to_send:
+                try:
+                    conn.send(message)
+                except Exception as exception:
+                    current_app.logger.error(
+                        'Failed to send message to {} with subject {} and body {} Exception: {}'.
+                        format(message.recipients[0], message.subject,
+                               message.body, repr(exception)))
+    except Exception as exception:
+        if raise_connect_exceptions:
+            raise
+        else:
+            current_app.logger.critical(
+                'Unable to send email.  {}'.format(repr(exception)))
