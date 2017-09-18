@@ -317,7 +317,7 @@ def _email_driver_ride_requested(carpool, current_user):
     subject = '{} requested a ride in carpool on {}'.format(
         current_user.name, carpool.leave_time)
 
-    _send_email(
+    message_to_send = _make_email_message(
         'carpools/email/ride_requested.html',
         'carpools/email/ride_requested.txt',
         carpool.driver.email,
@@ -325,6 +325,7 @@ def _email_driver_ride_requested(carpool, current_user):
         rider=current_user,
         carpool=carpool)
 
+    _send_email([message_to_send])
 
 def _email_ride_status(request, subject_beginning, template_name_specifier):
     subject = '{} for carpool on {}'.format(subject_beginning,
@@ -347,7 +348,6 @@ def _email_ride_approved(request):
 
 def _email_ride_denied(request):
     _email_ride_status(request, 'Ride request declined', 'denied')
-
 
 def _make_email_message(html_template, text_template, recipient, subject,
                         **kwargs):
