@@ -91,6 +91,13 @@ class HerokuConfig(Config):
         app.logger.addHandler(stream_handler)
 
 
+class StagingConfig(HerokuConfig):
+    DEBUG = True
+    TESTING = True
+    SSLIFY_ENABLE = True
+    SENTRY_ENABLE = False
+
+
 class ProductionConfig(HerokuConfig):
     DEBUG = False
     TESTING = False
@@ -101,6 +108,7 @@ class ProductionConfig(HerokuConfig):
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
+    'staging': StagingConfig,
     'production': ProductionConfig,
 
     'default': DevelopmentConfig
