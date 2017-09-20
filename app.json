@@ -1,7 +1,6 @@
 {
   "name": "nomad",
   "scripts": {
-    "postdeploy": "flask db upgrade"
   },
   "env": {
     "BUILD_WITH_GEO_LIBRARIES": "1",
