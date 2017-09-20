@@ -1,7 +1,5 @@
 {
   "name": "nomad",
-  "scripts": {
-  },
   "env": {
     "BUILD_WITH_GEO_LIBRARIES": "1",
     "CACHE_TYPE": "redis",
@@ -25,8 +23,6 @@
     "SECRET_KEY": {
       "generator": "secret"
     }
-  },
-  "formation": {
   },
   "addons": [
     "heroku-postgresql",
