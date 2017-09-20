@@ -1,6 +1,6 @@
 from rauth import OAuth1Service, OAuth2Service
 from flask import current_app, url_for, request, redirect, session, json
-import urllib2
+from six.moves.urllib.request import urlopen
 
 
 class OAuthSignIn(object):
@@ -74,7 +74,7 @@ class FacebookSignIn(OAuthSignIn):
 class GoogleSignIn(OAuthSignIn):
     def __init__(self):
         super(GoogleSignIn, self).__init__('google')
-        googleinfo = urllib2.urlopen('https://accounts.google.com/.well-known/openid-configuration')
+        googleinfo = urlopen('https://accounts.google.com/.well-known/openid-configuration')
         google_params = json.load(googleinfo)
         self.service = OAuth2Service(
             name='google',
