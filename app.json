@@ -1,0 +1,43 @@
+{
+  "name": "nomad",
+  "scripts": {
+    "postdeploy": "flask db upgrade"
+  },
+  "env": {
+    "BUILD_WITH_GEO_LIBRARIES": "1",
+    "CACHE_TYPE": "redis",
+    "CARPOOL_ENV": "testing",
+    "FACEBOOK_APP_ID": {
+      "required": true
+    },
+    "FACEBOOK_APP_SECRET": {
+      "required": true
+    },
+    "FLASK_APP": {
+      "required": true
+    },
+    "GOOGLE_APP_ID": {
+      "required": true
+    },
+    "GOOGLE_APP_SECRET": {
+      "required": true
+    },
+    "GOOGLE_MAPS_API_KEY": {
+      "required": true
+    },
+    "SECRET_KEY": {
+      "generator": "secret"
+    }
+  },
+  "formation": {
+  },
+  "addons": [
+    "heroku-postgresql",
+    "heroku-redis"
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ]
+}
