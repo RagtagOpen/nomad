@@ -1,19 +1,14 @@
 {
   "name": "nomad",
-  "scripts": {
-    "postdeploy": "flask db upgrade"
-  },
   "env": {
     "BUILD_WITH_GEO_LIBRARIES": "1",
     "CACHE_TYPE": "redis",
-    "CARPOOL_ENV": "testing",
+    "CARPOOL_ENV": "staging",
+    "FLASK_APP": "wsgi.py",
     "FACEBOOK_APP_ID": {
       "required": true
     },
     "FACEBOOK_APP_SECRET": {
-      "required": true
-    },
-    "FLASK_APP": {
       "required": true
     },
     "GOOGLE_APP_ID": {
@@ -28,8 +23,6 @@
     "SECRET_KEY": {
       "generator": "secret"
     }
-  },
-  "formation": {
   },
   "addons": [
     "heroku-postgresql",

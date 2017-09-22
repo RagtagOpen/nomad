@@ -8,7 +8,7 @@ from flask import (
     url_for,
 )
 from flask_login import current_user, login_required, login_user, logout_user
-from urlparse import urlparse, urljoin
+from six.moves.urllib.parse import urlparse, urljoin
 from . import auth_bp
 from .forms import ProfileForm, ProfileDeleteForm
 from .oauth import OAuthSignIn
