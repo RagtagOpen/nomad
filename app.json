@@ -3,7 +3,7 @@
   "env": {
     "BUILD_WITH_GEO_LIBRARIES": "1",
     "CACHE_TYPE": "redis",
-    "CARPOOL_ENV": "testing",
+    "CARPOOL_ENV": "staging",
     "FLASK_APP": "wsgi.py",
     "FACEBOOK_APP_ID": {
       "required": true
