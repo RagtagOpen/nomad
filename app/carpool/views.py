@@ -189,7 +189,7 @@ def new_rider(carpool_id):
         db.session.commit()
 
         flash("You've been added to the list for this carpool!", 'success')
-        # TODO send email to driver
+        _email_driver_ride_requested(carpool, current_user)
 
         return redirect(url_for('carpool.details', carpool_id=carpool_id))
 
@@ -312,6 +312,21 @@ def _email_carpool_cancelled(carpool, reason):
     ]
 
     _send_email(messages_to_send, raise_connect_exceptions=True)
+
+
+def _email_driver_ride_requested(carpool, current_user):
+    subject = '{} requested a ride in carpool on {}'.format(
+        current_user.name, carpool.leave_time)
+
+    message_to_send = _make_email_message(
+        'carpools/email/ride_requested.html',
+        'carpools/email/ride_requested.txt',
+        carpool.driver.email,
+        subject,
+        rider=current_user,
+        carpool=carpool)
+
+    _send_email([message_to_send])
 
 
 def _make_email_message(html_template, text_template, recipient, subject,
