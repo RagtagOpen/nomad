@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import datetime
 from flask import (
     abort,
@@ -291,7 +292,7 @@ def cancel(carpool_id):
 def _email_carpool_cancelled(carpool, reason):
     driver = carpool.driver
     riders = carpool.riders_and_potential_riders
-    if len(riders) == 0:
+    if not riders:
         return
 
     if not reason:
@@ -311,7 +312,7 @@ def _email_carpool_cancelled(carpool, reason):
             reason=reason) for rider in riders
     ]
 
-    _send_email(messages_to_send, raise_connect_exceptions=True)
+    _send_emails(messages_to_send, raise_connect_exceptions=True)
 
 
 def _email_driver_ride_requested(carpool, current_user):
@@ -326,7 +327,8 @@ def _email_driver_ride_requested(carpool, current_user):
         rider=current_user,
         carpool=carpool)
 
-    _send_email([message_to_send])
+    with catch_and_log_email_exceptions():
+        _send_emails([message_to_send])
 
 
 def _make_email_message(html_template, text_template, recipient, subject,
@@ -336,8 +338,15 @@ def _make_email_message(html_template, text_template, recipient, subject,
     return Message(
         recipients=[recipient], body=body, html=html, subject=subject)
 
+@contextmanager
+def catch_and_log_email_exceptions():
+    try:
+        yield
+    except Exception as exception:
+        current_app.logger.critical(
+            'Unable to send email.  {}'.format(repr(exception)))
 
-def _send_email(messages_to_send, raise_connect_exceptions=False):
+def _send_emails(messages_to_send, raise_connect_exceptions=False):
     if current_app.config.get('MAIL_LOG_ONLY'):
         current_app.logger.info(
             'Configured to log {} messages without sending.  Messages in the following lines:'.
@@ -348,19 +357,12 @@ def _send_email(messages_to_send, raise_connect_exceptions=False):
                     message.recipients[0], message.subject, message.body))
         return
 
-    try:
-        with mail.connect() as conn:
-            for message in messages_to_send:
-                try:
-                    conn.send(message)
-                except Exception as exception:
-                    current_app.logger.error(
-                        'Failed to send message to {} with subject {} and body {} Exception: {}'.
-                        format(message.recipients[0], message.subject,
-                               message.body, repr(exception)))
-    except Exception as exception:
-        if raise_connect_exceptions:
-            raise
-        else:
-            current_app.logger.critical(
-                'Unable to send email.  {}'.format(repr(exception)))
+    with mail.connect() as conn:
+        for message in messages_to_send:
+            try:
+                conn.send(message)
+            except Exception as exception:
+                current_app.logger.error(
+                    'Failed to send message to {} with subject {} and body {} Exception: {}'.
+                    format(message.recipients[0], message.subject,
+                           message.body, repr(exception)))
