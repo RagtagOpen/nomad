@@ -223,13 +223,13 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.add(request)
             db.session.commit()
             flash("You approved their ride request.")
-            # TODO Send email notification to rider
+            _email_ride_approved(request)
         elif action == 'deny':
             request.status = 'denied'
             db.session.add(request)
             db.session.commit()
             flash("You denied their ride request.")
-            # TODO Send email notification to rider
+            _email_ride_denied(request)
         elif action == 'cancel':
             db.session.delete(request)
             db.session.commit()
@@ -241,7 +241,7 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.add(request)
             db.session.commit()
             flash("You approved their ride request.")
-            # TODO Send email notification to rider
+            _email_ride_approved(request)
         elif action == 'cancel':
             db.session.delete(request)
             db.session.commit()
@@ -253,7 +253,7 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.add(request)
             db.session.commit()
             flash("You denied their ride request.")
-            # TODO Send email notification to rider
+            _email_ride_denied(request)
         elif action == 'cancel':
             db.session.delete(request)
             db.session.commit()
@@ -323,7 +323,6 @@ def _email_carpool_cancelled(carpool, reason):
 
     _send_emails(messages_to_send, raise_connect_exceptions=True)
 
-
 def _email_driver_ride_requested(carpool, current_user):
     subject = '{} requested a ride in carpool on {}'.format(
         current_user.name, carpool.leave_time)
@@ -339,6 +338,28 @@ def _email_driver_ride_requested(carpool, current_user):
     with catch_and_log_email_exceptions():
         _send_emails([message_to_send])
 
+def _email_ride_status(request, subject_beginning, template_name_specifier):
+    subject = '{} for carpool on {}'.format(subject_beginning,
+                                            request.carpool.leave_time)
+
+    message_to_send = _make_email_message(
+        'carpools/email/ride_{}.html'.format(template_name_specifier),
+        'carpools/email/ride_{}.txt'.format(template_name_specifier),
+        request.person.email,
+        subject,
+        rider=current_user,
+        carpool=request.carpool)
+
+    with catch_and_log_email_exceptions():
+        _send_email([message_to_send])
+
+
+def _email_ride_approved(request):
+    _email_ride_status(request, 'Ride approved', 'approved')
+
+
+def _email_ride_denied(request):
+    _email_ride_status(request, 'Ride request declined', 'denied')
 
 def _make_email_message(html_template, text_template, recipient, subject,
                         **kwargs):
