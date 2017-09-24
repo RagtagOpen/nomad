@@ -1,0 +1,8 @@
+<p>Hi {{carpool.driver.name}},</p>
+
+<p>We wanted to let you know that {{rider.name}} has dropped out of the carpool
+leaving from {{carpool.leave_place}} at {{carpool.leave_time}}.</p>
+
+<p><a href="{{url_for('carpool.details', carpool_id=carpool.id, _external=True)}}">Details about this carpool.</a></p>
+
+<p>Thanks!</p>
