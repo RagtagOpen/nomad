@@ -275,16 +275,7 @@ def cancel(carpool_id):
     if cancel_form.validate_on_submit():
         if cancel_form.submit.data:
 
-            try:
-                _email_carpool_cancelled(carpool, cancel_form.reason.data)
-            except Exception as exception:
-                current_app.logger.critical(
-                    'Unable to send email.  Carpool not cancelled.  {}'.format(
-                        repr(exception)))
-                flash(
-                    'Error sending email to riders.  Your carpool was not cancelled.',
-                    'error')
-                return redirect(url_for('carpool.mine'))
+            _email_carpool_cancelled(carpool, cancel_form.reason.data)
 
             db.session.delete(carpool)
             db.session.commit()
@@ -321,7 +312,8 @@ def _email_carpool_cancelled(carpool, reason):
             reason=reason) for rider in riders
     ]
 
-    _send_emails(messages_to_send, raise_connect_exceptions=True)
+    with catch_and_log_email_exceptions():
+        _send_emails(messages_to_send)
 
 def _email_driver_ride_requested(carpool, current_user):
     subject = '{} requested a ride in carpool on {}'.format(
@@ -376,7 +368,7 @@ def catch_and_log_email_exceptions():
         current_app.logger.critical(
             'Unable to send email.  {}'.format(repr(exception)))
 
-def _send_emails(messages_to_send, raise_connect_exceptions=False):
+def _send_emails(messages_to_send):
     if current_app.config.get('MAIL_LOG_ONLY'):
         current_app.logger.info(
             'Configured to log {} messages without sending.  Messages in the following lines:'.
