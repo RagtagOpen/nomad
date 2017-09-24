@@ -312,7 +312,7 @@ def _email_carpool_cancelled(carpool, reason):
             reason=reason) for rider in riders
     ]
 
-    with catch_and_log_email_exceptions():
+    with catch_and_log_email_exceptions(messages_to_send):
         _send_emails(messages_to_send)
 
 def _email_driver_ride_requested(carpool, current_user):
@@ -327,7 +327,7 @@ def _email_driver_ride_requested(carpool, current_user):
         rider=current_user,
         carpool=carpool)
 
-    with catch_and_log_email_exceptions():
+    with catch_and_log_email_exceptions([message_to_send]):
         _send_emails([message_to_send])
 
 def _email_ride_status(request, subject_beginning, template_name_specifier):
@@ -342,8 +342,8 @@ def _email_ride_status(request, subject_beginning, template_name_specifier):
         rider=current_user,
         carpool=request.carpool)
 
-    with catch_and_log_email_exceptions():
-        _send_email([message_to_send])
+    with catch_and_log_email_exceptions([message_to_send]):
+        _send_emails([message_to_send])
 
 
 def _email_ride_approved(request):
@@ -360,23 +360,28 @@ def _make_email_message(html_template, text_template, recipient, subject,
     return Message(
         recipients=[recipient], body=body, html=html, subject=subject)
 
+
 @contextmanager
-def catch_and_log_email_exceptions():
+def catch_and_log_email_exceptions(messages_to_send):
     try:
         yield
     except Exception as exception:
         current_app.logger.critical(
             'Unable to send email.  {}'.format(repr(exception)))
+        _log_emails(messages_to_send)
+
+def _log_emails(messages_to_send):
+    for message in messages_to_send:
+        current_app.logger.info(
+            'Message to {} with subject {} and body {}'.format(
+                message.recipients[0], message.subject, message.body))
 
 def _send_emails(messages_to_send):
     if current_app.config.get('MAIL_LOG_ONLY'):
         current_app.logger.info(
             'Configured to log {} messages without sending.  Messages in the following lines:'.
             format(len(messages_to_send)))
-        for message in messages_to_send:
-            current_app.logger.info(
-                'Message to {} with subject {} and body {}'.format(
-                    message.recipients[0], message.subject, message.body))
+        _log_emails(messages_to_send)
         return
 
     with mail.connect() as conn:
