@@ -234,6 +234,7 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.delete(request)
             db.session.commit()
             flash("You cancelled your ride request.")
+            _email_rider_cancelled_request()
 
     elif request.status == 'denied':
         if action == 'approve':
@@ -258,7 +259,7 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.delete(request)
             db.session.commit()
             flash("You withdrew from the carpool.")
-            # TODO we should probably send an email in this case
+            _email_rider_withdrew()
 
     else:
         flash("You can't do that to the ride request.", "error")
@@ -360,6 +361,12 @@ def _email_ride_approved(request):
 
 def _email_ride_denied(request):
     _email_ride_status(request, 'Ride request declined', 'denied')
+
+def _email_driver_rider_cancelled_request():
+    pass
+
+def _email_driver_rider_cancelled_approved_request():
+    pass
 
 def _make_email_message(html_template, text_template, recipient, subject,
                         **kwargs):
