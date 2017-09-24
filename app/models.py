@@ -107,11 +107,11 @@ class Carpool(db.Model):
 
     ride_requests = relationship("RideRequest", cascade="all, delete-orphan")
 
-    def get_ride_requests_query(self, status=None):
+    def get_ride_requests_query(self, statuses=None):
         query = RideRequest.query.filter_by(carpool_id=self.id)
 
-        if status:
-            query = query.filter_by(status=status)
+        if statuses:
+            query = query.filter(RideRequest.status.in_(statuses))
 
         return query
 
@@ -131,17 +131,27 @@ class Carpool(db.Model):
     def driver(self):
         return Person.query.get(self.driver_id)
 
-    @property
-    def riders(self):
-        approved_requests = self.get_ride_requests_query('approved').all()
+    def get_riders(self, statuses):
+        requests = self.get_ride_requests_query(statuses).all()
+
+        if not requests:
+            return []
 
         return Person.query.filter(
-            Person.id.in_(p.person_id for p in approved_requests)).all()
+            Person.id.in_(p.person_id for p in requests)).all()
+
+    @property
+    def riders(self):
+        return self.get_riders(['approved'])
+
+    @property
+    def riders_and_potential_riders(self):
+        return self.get_riders(['approved', 'requested'])
 
     @property
     def seats_available(self):
         return self.max_riders - \
-               self.get_ride_requests_query('approved').count()
+               self.get_ride_requests_query(['approved']).count()
 
 
 class Destination(db.Model):
