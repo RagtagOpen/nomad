@@ -350,7 +350,8 @@ def _email_ride_status(request, subject_beginning, template_name_specifier):
         rider=current_user,
         carpool=request.carpool)
 
-    _send_email([message_to_send])
+    with catch_and_log_email_exceptions():
+        _send_email([message_to_send])
 
 
 def _email_ride_approved(request):
