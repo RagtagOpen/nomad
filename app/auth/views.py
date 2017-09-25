@@ -14,6 +14,7 @@ from .forms import ProfileForm, ProfileDeleteForm
 from .oauth import OAuthSignIn
 from .. import db
 from ..models import Person
+from ..carpool.views import email_driver_rider_cancelled_request, cancel_carpool
 
 
 def is_safe_url(target):
@@ -134,17 +135,17 @@ def profile_delete():
         try:
             # Delete the ride requests for this user
             for req in current_user.get_ride_requests_query():
-                # FIXME: Notify drivers
                 current_app.logger.info("Deleting user %s's request %s",
                                         current_user.id, req.id)
+                email_driver_rider_cancelled_request(req, req.carpool,
+                                                     current_user)
                 db.session.delete(req)
 
             # Delete the carpools for this user
             for pool in current_user.get_driving_carpools():
-                # FIXME: Cancel ride requests for this pool
-                #        (should send notifications)
                 current_app.logger.info("Deleting user %s's pool %s",
                                         current_user.id, pool.id)
+                cancel_carpool(pool)
                 db.session.delete(pool)
 
             # Delete the user's account

@@ -1,0 +1,8 @@
+Hi {{carpool.driver.name}},
+
+We wanted to let you know that {{rider.name}} has cancelled their request to ride with you
+in the car leaving from {{carpool.leave_place}} at {{carpool.leave_time}}.
+
+Details about this carpool: {{url_for('carpool.details', carpool_id=carpool.id, _external=True)}}
+
+Thanks!
