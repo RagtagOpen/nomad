@@ -235,8 +235,8 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.commit()
             flash("You cancelled your ride request.")
             carpool = Carpool.query.get(carpool_id)
-            _email_driver_rider_cancelled_request(carpool,
-                                                  current_user)
+            email_driver_rider_cancelled_request(request, carpool,
+                                                 current_user)
 
     elif request.status == 'denied':
         if action == 'approve':
@@ -262,7 +262,7 @@ def modify_ride_request(carpool_id, request_id, action):
             db.session.commit()
             flash("You withdrew from the carpool.")
             carpool = Carpool.query.get(carpool_id)
-            _email_driver_rider_cancelled_approved_request(carpool,
+            email_driver_rider_cancelled_request(request, carpool,
                                                   current_user)
 
     else:
@@ -280,10 +280,7 @@ def cancel(carpool_id):
     if cancel_form.validate_on_submit():
         if cancel_form.submit.data:
 
-            _email_carpool_cancelled(carpool, cancel_form.reason.data)
-
-            db.session.delete(carpool)
-            db.session.commit()
+            cancel_carpool(carpool, cancel_form.reason.data)
 
             flash("Your carpool was cancelled", 'success')
 
@@ -293,6 +290,10 @@ def cancel(carpool_id):
 
     return render_template('carpools/cancel.html', form=cancel_form)
 
+def cancel_carpool(carpool, reason=None):
+    _email_carpool_cancelled(carpool, reason)
+    db.session.delete(carpool)
+    db.session.commit()
 
 def _email_carpool_cancelled(carpool, reason):
     driver = carpool.driver
@@ -360,6 +361,13 @@ def _email_ride_approved(request):
 
 def _email_ride_denied(request):
     _email_ride_status(request, 'Ride request declined', 'denied')
+
+
+def email_driver_rider_cancelled_request(request, carpool, current_user):
+    if request.status == 'approved':
+        _email_driver_rider_cancelled_approved_request(carpool, current_user)
+    else:
+        _email_driver_rider_cancelled_request(carpool, current_user)
 
 
 def _email_driver_rider_cancelled_request(carpool, current_user):
