@@ -28,5 +28,10 @@ class DestinationForm(FlaskForm):
 
 
 class DeleteDestinationForm(FlaskForm):
-    cancel = SubmitField(u"Nevermind, Go Back")
-    submit = SubmitField(u"Delete The Destination")
+    cancel = SubmitField("Nevermind, Go Back")
+    submit = SubmitField("Delete The Destination")
+
+
+class ProfilePurgeForm(FlaskForm):
+    cancel = SubmitField("Nevermind, Go Back")
+    submit = SubmitField("Permanently Delete Their Profile")
