@@ -45,7 +45,7 @@ class ProfileForm(FlaskForm):
         [
             InputRequired("Please select a preferred contact method"),
         ],
-        choices=zip(Person.CONTACT_METHODS, Person.CONTACT_METHODS),
+        choices=list(zip(Person.CONTACT_METHODS, Person.CONTACT_METHODS)),
     )
     gender = StringField(
         "Gender",
