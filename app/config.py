@@ -74,7 +74,8 @@ class TestingConfig(Config):
 
 
 class HerokuConfig(Config):
-    SSL_DISABLE = bool(os.environ.get('SSL_DISABLE'))
+    SSLIFY_ENABLE = True
+    SENTRY_ENABLE = True
 
     @classmethod
     def init_app(cls, app):
@@ -95,15 +96,11 @@ class HerokuConfig(Config):
 class StagingConfig(HerokuConfig):
     DEBUG = True
     TESTING = True
-    SSLIFY_ENABLE = True
-    SENTRY_ENABLE = False
 
 
 class ProductionConfig(HerokuConfig):
     DEBUG = False
     TESTING = False
-    SSLIFY_ENABLE = True
-    SENTRY_ENABLE = True
 
 
 config = {
