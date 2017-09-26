@@ -74,13 +74,14 @@ def oauth_callback(provider):
         db.session.add(user)
         db.session.commit()
 
-    login_user(user, True)
-
-    if not user.name:
         flash("Thanks for logging in! Please update your profile.", 'success')
         next_url = url_for('auth.profile')
-    else:
-        next_url = session.pop('next', None) or url_for('carpool.index')
+
+    login_user(user, True)
+
+    next_url = (next_url or
+                session.pop('next', None) or
+                url_for('carpool.index'))
 
     return redirect(next_url)
 
