@@ -4,14 +4,17 @@ from flask import (
     redirect,
     render_template,
     request,
-    session,
     url_for,
 )
-from flask_login import login_required
+from flask_login import current_user, login_required
 from . import admin_bp
-from .forms import DestinationForm, DeleteDestinationForm
+from .forms import DestinationForm, DeleteDestinationForm, ProfilePurgeForm
 from .. import db
 from ..auth.permissions import roles_required
+from ..carpool.views import (
+    cancel_carpool,
+    email_driver_rider_cancelled_request,
+)
 from ..models import Destination, Person, Role, PersonRole
 
 
@@ -32,6 +35,66 @@ def user_show(user_id):
     return render_template(
         'admin/users/show.html',
         user=user,
+    )
+
+
+@admin_bp.route('/admin/users/<int:user_id>/purge', methods=['GET', 'POST'])
+@login_required
+@roles_required('admin')
+def user_purge(user_id):
+    user = Person.query.get_or_404(user_id)
+
+    form = ProfilePurgeForm()
+    if form.validate_on_submit():
+        if form.submit.data:
+
+            if user.id == current_user.id:
+                flash("You can't purge yourself", 'error')
+                current_app.logger.info("User %s tried to purge themselves",
+                                        current_user.id)
+                return redirect(url_for('admin.user_show', user_id=user.id))
+
+            if user.has_roles('admin'):
+                flash("You can't purge other admins", 'error')
+                current_app.logger.info("User %s tried to purge admin %s",
+                                        current_user.id, user.id)
+                return redirect(url_for('admin.user_show', user_id=user.id))
+
+            try:
+                # Delete the ride requests for this user
+                for req in user.get_ride_requests_query():
+                    current_app.logger.info("Deleting user %s's request %s",
+                                            user.id, req.id)
+                    email_driver_rider_cancelled_request(req, req.carpool,
+                                                         user)
+                    db.session.delete(req)
+
+                # Delete the carpools for this user
+                for pool in user.get_driving_carpools():
+                    current_app.logger.info("Deleting user %s's pool %s",
+                                            user.id, pool.id)
+                    cancel_carpool(pool)
+                    db.session.delete(pool)
+
+                # Delete the user's account
+                current_app.logger.info("Deleting user %s", user.id)
+                db.session.delete(user)
+                db.session.commit()
+            except:
+                db.session.rollback()
+                current_app.logger.exception("Problem deleting user account")
+                flash("There was a problem purging the user", 'error')
+                return redirect(url_for('admin.user_show', user_id=user.id))
+
+            flash("You deleted the user from the database", 'success')
+            return redirect(url_for('admin.user_list'))
+        else:
+            return redirect(url_for('admin.user_show', user_id=user.id))
+
+    return render_template(
+        'admin/users/purge.html',
+        user=user,
+        form=form,
     )
 
 

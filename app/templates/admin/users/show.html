@@ -46,4 +46,8 @@
 {% endfor %}
 </dl>
 
+<h3>Purge</h3>
+
+<a class="btn btn-danger" href="{{ url_for('admin.user_purge', user_id=user.id) }}">Purge user</a>
+
 {% endblock %}

@@ -23,7 +23,7 @@
             <td>{{ user.gender }}</td>
             <td>{{ user.email }}</td>
             <td>{{ user.phone }}</td>
-            <td>{{ user.has_roles(('admin',)) }}</td>
+            <td>{{ user.has_roles('admin') }}</td>
         </tr>
 {% endfor %}
     </tbody>
