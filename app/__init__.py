@@ -59,6 +59,11 @@ def create_app(config_name):
         response.headers['X-Frame-Options'] = 'DENY'
         return response
 
+    @app.after_request
+    def server_header(response):
+        response.headers['Server'] = 'Server'
+        return response
+
     from .carpool import pool_bp
     app.register_blueprint(pool_bp)
 
