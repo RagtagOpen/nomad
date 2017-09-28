@@ -1,0 +1,258 @@
+html, body {
+	height: 100%; 
+	width: 100%; 
+}
+
+
+/* ===== GLOBAL ===== */
+* {  /*bootstrap overrides*/
+  margin: 0;
+  padding: 0;
+  color: #333;
+  font: 400 16px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+}
+h1, h2, h3, h4, p {
+	margin: 0;
+}
+
+h1 {
+	font: 400 28px/140% 'Merriweather', Georgia, serif;
+}
+h4 {
+	font: 700 16px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
+	text-transform: uppercase;
+	letter-spacing: 1px
+}
+
+input[type=submit].primary {
+	background-color: rgba(0,168,225,1);
+	color: white;
+	height: 40px;
+    padding: 5px 25px;
+    border: 0;
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+}
+input[type=submit].secondary {
+	background-color: rgba(227,28,61,0);
+	color: rgba(227,28,61,1);
+	height: 40px;
+    padding: 5px 25px;
+    border: 1px solid rgba(227,28,61,1);
+	border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+}
+
+
+/* ===== HEADER ===== */
+
+.global-header {
+	width: 100%;
+	height: 70px;
+	position: fixed;
+	top: 0; 
+	left: 0;
+	padding: 10px 40px;
+	z-index: 20;
+	background-color: white;
+	/*box-shadow: 0 2px 5px rgba(80,80,80,0.4);*/
+	border-bottom: 1px solid rgba(2,46,91,.2);
+	display: flex;
+	align-items: center;
+}
+
+.global-header .logo {
+	width: 120px;
+	height: 60px;
+	margin-right: 20px;
+	display: inline-block;
+	background: url("http://theinspirationroom.com/daily/interactive/2016/6/underwood-2016-bumper-sticker.jpg") top left / contain no-repeat;
+	flex: 0 1 auto;
+}
+.global-header form {
+	display: inline-block;
+	flex: 0 1 450px;
+}
+.global-header input[type=text] {
+	width: 400px;
+	height: 40px;
+    padding: 5px 10px 5px 37px;
+    outline: none;
+    border: 1px solid rgba(2,46,91,.2);
+    border-radius: 5px; 
+	-moz-border-radius: 5px; 
+	-webkit-border-radius: 5px; 
+	transition: border .5s;
+	background: url("../img/ic_search_24px.svg") 7px center no-repeat;
+	font: 400 18px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
+	color: #333;
+}
+.global-header input[type=text]:placeholder {
+	color: rgba(2,46,91,.2);
+}
+.global-header input[type=text]:focus {
+	border: 1px solid rgba(0,168,225,1);
+}
+.global-header .nav-bar {
+	display: flex;
+	align-items: center;
+	font: 400 18px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
+	flex: 0 1 auto;
+	margin-left: auto;
+	margin-right: 0;
+}
+.nav-bar li {
+	flex: 0 1 auto;
+	display: inline-block;
+	padding-top: 12px;
+	padding-bottom: 5px;
+	margin-right: 40px;
+	border-top: 1px solid rgba(255,255,255,0); /* invisible border for spacing */
+	border-bottom: 1px solid rgba(255,255,255,0); /* invisible border for spacing */
+}
+.nav-bar li:last-child {
+	margin-right: 0;
+}
+.nav-bar li:hover {
+	color: rgba(0,168,225,1);
+	border-bottom: 1px solid rgba(0,168,225,1);
+}
+
+/* ===== CONTENT BODY ===== */
+
+.content {
+	width: 100%;
+	height: 100%;
+	display: flex;
+}
+
+/* FULLSCREEN SPLASH */
+
+.fullscreen-splash {
+	width: 100%;
+	padding: 200px 400px;
+	background-color: #022e5b;
+	color: white;
+	/*text-align: center;*/
+}
+.fullscreen-splash h1, .fullscreen-splash h2, .fullscreen-splash h3, .fullscreen-splash h4, .fullscreen-splash p {
+	color: white;
+}
+
+.fullscreen-splash h1 {
+	font: 400 36px/140% 'Merriweather', Georgia, serif;
+}
+
+/* ===== LEFT ===== */
+
+.left-bar {
+	flex: 0 1 33%;
+	height: 100%;
+	z-index: 10;
+	/*padding-top: 70px;*/
+	border-right: 1px solid rgba(2,46,91,.2);
+	overflow: hidden;
+}
+.left-bar h1 {
+	/*padding: 20px 40px;*/
+	margin-left: 40px;
+	padding: 90px 40px 20px 0px;
+	border-bottom: 1px solid rgba(2,46,91,.2);
+}
+.results-box {
+	padding: 0px 0px 0px 40px;
+	height: 100%;
+	overflow: scroll;
+}
+.result {
+	padding: 20px 40px 20px 0;
+	/*padding-right: 40px;*/
+	border-bottom: 1px solid rgba(2,46,91,.2);
+}
+.result:hover {
+	cursor: pointer;
+}
+.result .status {
+	font-weight: 700;
+}
+
+/* ===== RIGHT ===== */
+
+.right-bar {
+	flex: 0 1 67%;
+	height: 100%;
+	z-index: 0;
+	overflow: hidden;
+}
+
+#background-map {
+	height: 100%; 
+	width: 100%; 
+	z-index: 0;
+	background-color: grey;
+	transition: transform .5s;
+}
+
+.detail-pane {
+	width: 100%;
+	height: 67%;
+	z-index: 5;
+	background-color: #fcfbf9;
+	border-top: 1px solid rgba(2,46,91,.2);
+	padding: 60px 40px 20px 40px;
+	transition: transform .5s;
+}
+
+.active .detail-pane {
+	transform: translate(0px, -100%)
+}
+.active #background-map {
+	transform: translate(0px, -25%)
+}
+.detail-top {
+	width: 100%;
+	padding-bottom: 20px;
+	border-bottom: 1px solid rgba(2,46,91,.2);
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	overflow: hidden;
+}
+.detail-top h4 {
+	margin-bottom: 5px;
+}
+.detail-top .sub-left {
+	flex: 0 1 72%;
+	margin-right: 2%;
+}
+.detail-top .sub-right {
+	flex: 0 1 26%;
+	text-align: center;
+}
+.detail-top input[type=submit] {
+	width: 100%;
+}
+p.caption {
+	margin-bottom: 5px;
+}
+.detail-bottom {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	overflow: scroll;
+	padding-top: 20px;
+}
+.detail-bottom .sub-left {
+	flex: 1 1 26%;
+	margin-right: 3%;
+}
+.detail-bottom .sub-middle, .detail-bottom .sub-right {
+	flex: 1 1 32%;
+	margin-right: 3%;
+}
+.detail-pane h4 {
+	margin-top: 20px;
+}

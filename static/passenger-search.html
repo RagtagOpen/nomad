@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<head>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="css/map-icons.css">
+	<link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:400,600,700" rel="stylesheet">
+	<script type="text/javascript" src="js/map-icons.js"></script>
+	<link rel="stylesheet" href="css/search-styles.css">
+</head>
+
+<body>
+
+<nav class="global-header">
+	<div class="logo"></div>
+	<form>
+		<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State" value="21227" >
+	</form>
+	<ul class="nav-bar">
+		<li class="active">Find a ride</li>
+		<li>Give a ride</li>
+		<li>About</li>
+		<li>My Rides</li>
+	</ul>
+</nav>
+
+<div class="content">
+
+	<div class="left-bar">
+		<h1>Find rides near you</h1>
+		<div class="search-results results-box">
+			<div class="result">
+				<h3 class="result-title">Baltimore to Chantilly</h3>
+				<p>4 seats available</p>
+				<p>Departs: Sat Jun 5 (morning)</p>
+				<p>Returns: Sun Jun 6 (afternoon)</p>
+				<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+			</div>
+			<div class="result">
+				<h3 class="result-title">Baltimore to Chantilly</h3>
+				<p>4 seats available</p>
+				<p>Departs: Sat Jun 5 (morning)</p>
+				<p>Returns: Sun Jun 6 (afternoon)</p>
+				<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+			</div>
+			<div class="result">
+				<h3 class="result-title">Baltimore to Chantilly</h3>
+				<p>4 seats available</p>
+				<p>Departs: Sat Jun 5 (morning)</p>
+				<p>Returns: Sun Jun 6 (afternoon)</p>
+				<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+			</div>
+			<div class="result">
+				<h3 class="result-title">Baltimore to Chantilly</h3>
+				<p>4 seats available</p>
+				<p>Departs: Sat Jun 5 (morning)</p>
+				<p>Returns: Sun Jun 6 (afternoon)</p>
+				<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+			</div>
+			<div class="result">
+				<h3 class="result-title">Baltimore to Chantilly</h3>
+				<p>4 seats available</p>
+				<p>Departs: Sat Jun 5 (morning)</p>
+				<p>Returns: Sun Jun 6 (afternoon)</p>
+				<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div class="right-bar active"> -->
+	<div class="right-bar">
+		<div id="background-map"></div>
+		<div class="detail-pane active">
+			<div class="detail-top">
+				<div class="sub-left">
+					<h4>Ride Details</h4>
+					<h1>Baltimore to Chantilly</h1>
+				</div>
+				<div class="sub-right">
+					<p class="caption">Status: 4 seats available</p>
+					<input class="primary" type="submit" value="Request to join carpool">
+					
+				</div>
+			</div>
+			<div class="detail-bottom">
+				<div class="sub-left">
+					<h4>Departs</h4>
+					<p>Sat, Jun 5 - Morning</p>
+					<h4>Returns</h4>
+					<p>Sun, Jun 5 - Afternoon</p>
+					<h4>Approx drive time</h4>
+					<p>1 h 50 min each way</p>
+				</div>
+				<div class="sub-middle">
+					<h4>Pickup</h4>
+					<p>Johns Hopkins - Homewood Field 
+						<br>111 W University Pkwy 
+						<br>Baltimore, MD 21210
+					</p>
+					<h4>Dropoff</h4>
+					<p>Joe Candidate’s Office 
+						<br>13780 Lowe St 
+						<br>Chantilly, VA 20151
+					</p>
+				</div>
+				<div class="sub-right">
+					<h4>Carpool Details</h4>
+					<p>Driver: Frank U. (Male)</p>
+					<p>Vehicle: Black 2015 Honda Accord</p>
+					<p>Luggage space: 1 medium-sized bag per passenger</p>
+					<h4>Additional notes:</h4>
+					<p>Flexible on departure time. Non-smoking. Not good for people with dog / cat allergies</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+<!-- <div class="jumbotron">
+  <h1>Share Your Ride!</h1>
+  <p>Join your neighbors carpools to save time, money, and help the environment!</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('carpool.find') }}" role="button">Look for a ride</a>
+  <a class="btn btn-link btn-lg" href="{{ url_for('carpool.mine') }}" role="button">Manage your rides</a>
+</div> -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/map-styles.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+ <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtm9OOe24AnTe2kXGdsITXVvj1tovbsws&callback=initMap">
+    </script>
+</body>
+</html>
