@@ -36,7 +36,7 @@ class ProfileForm(FlaskForm):
         "Phone",
         [
             Optional(),
-            Regexp('\d?-?(\d{3})-?(\d{3})-?(\d{4})',
+            Regexp('\d?-?(\d{3})-?(\d{3})-?(\d{4})$',
                    message="Enter a phone number like: 415-867-5309"),
         ]
     )
