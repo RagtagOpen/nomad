@@ -114,10 +114,7 @@ def user_toggle_role(user_id, role_name):
         flash('Role {} added to this user'.format(role.name))
     db.session.commit()
 
-    return render_template(
-        'admin/users/show.html',
-        user=user,
-    )
+    return redirect(url_for('admin.user_show', user_id=user.id))
 
 
 @admin_bp.route('/admin/users')
