@@ -77,7 +77,7 @@ def start_geojson():
             'properties': {
                 'from_place': escape(pool.from_place),
                 'to_place': escape(pool.to_place),
-                'seats_available': pool.seats_available,
+                'seats_available': escape(pool.seats_available),
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
                 'driver_gender': escape(pool.driver.gender),
