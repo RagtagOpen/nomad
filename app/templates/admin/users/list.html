@@ -9,9 +9,9 @@
 <table class="table table-hover">
     <thead>
         <tr>
+            <th>Email</th>
             <th>Name</th>
             <th>Gender</th>
-            <th>Email</th>
             <th>Phone</th>
             <th>Admin?</th>
         </tr>
@@ -19,9 +19,9 @@
     <tbody id='search-results'>
 {% for user in users.items %}
         <tr>
-            <td><a href="{{ url_for('admin.user_show', user_id=user.id) }}">{{ user.name }}</a></td>
+            <td><a href="{{ url_for('admin.user_show', user_id=user.id) }}">{{ user.email }}</a></td>
+            <td>{{ user.name }}</a></td>
             <td>{{ user.gender }}</td>
-            <td>{{ user.email }}</td>
             <td>{{ user.phone }}</td>
             <td>{{ user.has_roles('admin') }}</td>
         </tr>

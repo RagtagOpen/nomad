@@ -105,8 +105,8 @@ def profile():
         profile_form.preferred_contact.choices.insert(0, ('', 'choose one'))
 
     if profile_form.validate_on_submit():
-        current_user.name = profile_form.name.data
-        current_user.gender = profile_form.gender.data
+        current_user.name = profile_form.name.data.strip()
+        current_user.gender = profile_form.gender.data.strip()
         current_user.email = profile_form.email.data
         current_user.phone_number = profile_form.phone_number.data
         current_user.preferred_contact_method = \
