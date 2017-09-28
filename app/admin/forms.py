@@ -26,6 +26,20 @@ class DestinationForm(FlaskForm):
     destination_lon = HiddenField()
     submit = SubmitField(u'Add The Destination')
 
+    def validate(self):
+        if not super(DestinationForm, self).validate():
+            return False
+
+        result = True
+
+        if not (self.destination_lon.data and self.destination_lat.data):
+            self.address.errors.append(
+                "No location was found. Try a nearby "
+                "street intersection or business.")
+            result = False
+
+        return result
+
 
 class DeleteDestinationForm(FlaskForm):
     cancel = SubmitField("Nevermind, Go Back")
