@@ -68,6 +68,8 @@ def oauth_callback(provider):
               "Please contact us!", 'error')
         return redirect(url_for('carpool.index'))
 
+    next_url = None
+
     user = Person.query.filter_by(social_id=social_id).first()
     if not user:
         user = Person(social_id=social_id, name=username, email=email)
