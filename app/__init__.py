@@ -54,6 +54,11 @@ def create_app(config_name):
             public_dsn=sentry.client.get_public_dsn('https') if sentry else None
         )
 
+    @app.after_request
+    def frame_buster(response):
+        response.headers['X-Frame-Options'] = 'DENY'
+        return response
+
     from .carpool import pool_bp
     app.register_blueprint(pool_bp)
 
