@@ -3,6 +3,7 @@ import datetime
 from flask import (
     abort,
     current_app,
+    escape,
     flash,
     jsonify,
     redirect,
@@ -74,12 +75,12 @@ def start_geojson():
             'geometry': mapping(to_shape(pool.from_point)),
             'id': url_for('carpool.details', carpool_id=pool.id),
             'properties': {
-                'from_place': pool.from_place,
-                'to_place': pool.to_place,
+                'from_place': escape(pool.from_place),
+                'to_place': escape(pool.to_place),
                 'seats_available': pool.seats_available,
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
-                'driver_gender': pool.driver.gender,
+                'driver_gender': escape(pool.driver.gender),
             },
         })
 
