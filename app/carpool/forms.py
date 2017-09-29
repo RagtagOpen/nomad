@@ -44,6 +44,7 @@ class DriverForm(FlaskForm):
         ],
         coerce=int,
     )
+    going_to_id = HiddenField()
     going_to_text = StringField()
     going_to_lat = HiddenField()
     going_to_lon = HiddenField()

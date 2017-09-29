@@ -125,6 +125,8 @@ def new():
             from_point='SRID=4326;POINT({} {})'.format(
                 driver_form.leaving_from_lon.data,
                 driver_form.leaving_from_lat.data),
+            destination_id=int(driver_form.going_to_id.data)
+                if driver_form.going_to_id.data else None,
             to_place=driver_form.going_to_text.data,
             to_point='SRID=4326;POINT({} {})'.format(
                 driver_form.going_to_lon.data,
