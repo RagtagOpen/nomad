@@ -105,6 +105,7 @@ function initMap() {
 
             document.getElementById('going_to_lat').value = null;
             document.getElementById('going_to_lon').value = null;
+            document.getElementById('going_to_id').value = null;
             to_marker.setVisible(false);
         } else {
             $("#going_to_text").removeClass('hidden show');
@@ -116,6 +117,7 @@ function initMap() {
             document.getElementById('going_to_lat').value = lat;
             document.getElementById('going_to_lon').value = lon;
             document.getElementById('going_to_text').value = selected_location.properties.address;
+            document.getElementById('going_to_id').value = selected;
             to_marker.setPosition({lat: lat, lng: lon});
             to_marker.setVisible(true);
         }
@@ -147,6 +149,7 @@ function initMap() {
     <div class='col-md-6'>
         {{ wtf.form_field(form.going_to_list) }}
         {{ form.going_to_text(class='form-control hidden') }}
+        {{ form.going_to_id(class='form-control hidden') }}
         {{ wtf.form_field(form.return_time) }}
         {{ form.going_to_lat }}
         {{ form.going_to_lon }}

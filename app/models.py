@@ -104,6 +104,7 @@ class Carpool(db.Model):
     return_time = db.Column(db.DateTime(timezone=True))
     max_riders = db.Column(db.Integer)
     driver_id = db.Column(db.Integer, db.ForeignKey('people.id'))
+    destination_id = db.Column(db.Integer, db.ForeignKey('destinations.id'))
 
     ride_requests = relationship("RideRequest", cascade="all, delete-orphan")
 
