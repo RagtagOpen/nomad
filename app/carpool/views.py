@@ -125,14 +125,16 @@ def new():
                 driver_form.leaving_from_lon.data,
                 driver_form.leaving_from_lat.data),
             destination_id=int(driver_form.going_to_id.data)
-            if driver_form.going_to_id.data else None,
+                if driver_form.going_to_id.data else None,
             to_place=driver_form.going_to_text.data,
             to_point='SRID=4326;POINT({} {})'.format(
-                driver_form.going_to_lon.data, driver_form.going_to_lat.data),
+                driver_form.going_to_lon.data,
+                driver_form.going_to_lat.data),
             leave_time=driver_form.depart_time.data,
             return_time=driver_form.return_time.data,
             max_riders=driver_form.car_size.data,
-            driver_id=current_user.id, )
+            driver_id=current_user.id,
+        )
         db.session.add(c)
         db.session.commit()
 
