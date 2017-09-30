@@ -73,7 +73,7 @@ def start_geojson():
         features.append({
             'type': 'Feature',
             'geometry': mapping(to_shape(pool.from_point)),
-            'id': url_for('carpool.details', carpool_id=pool.id),
+            'id': url_for('carpool.details', uuid=pool.uuid),
             'properties': {
                 'from_place': escape(pool.from_place),
                 'to_place': escape(pool.to_place),
@@ -141,7 +141,7 @@ def new():
 
         flash("Thanks for adding your carpool!", 'success')
 
-        return redirect(url_for('carpool.details', carpool_id=c.id))
+        return redirect(url_for('carpool.details', uuid=c.uuid))
 
     return render_template(
         'carpools/add_driver.html',
@@ -150,25 +150,25 @@ def new():
     )
 
 
-@pool_bp.route('/carpools/<int:carpool_id>', methods=['GET', 'POST'])
-def details(carpool_id):
-    carpool = Carpool.query.get_or_404(carpool_id)
+@pool_bp.route('/carpools/<uuid>', methods=['GET', 'POST'])
+def details(uuid):
+    carpool = Carpool.uuid_or_404(uuid)
 
     return render_template('carpools/show.html', pool=carpool)
 
 
-@pool_bp.route('/carpools/<int:carpool_id>/newrider', methods=['GET', 'POST'])
+@pool_bp.route('/carpools/<carpool_uuid>/newrider', methods=['GET', 'POST'])
 @login_required
-def new_rider(carpool_id):
-    carpool = Carpool.query.get_or_404(carpool_id)
+def new_rider(carpool_uuid):
+    carpool = Carpool.uuid_or_404(carpool_uuid)
 
     if carpool.current_user_is_driver:
         flash("You can't request a ride on a carpool you're driving in")
-        return redirect(url_for('carpool.details', carpool_id=carpool_id))
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
     if not current_user.gender:
         flash("Please specify your gender before creating a carpool request")
-        session['next'] = url_for('carpool.new_rider', carpool_id=carpool_id)
+        session['next'] = url_for('carpool.new_rider', carpool_uuid=carpool.uuid)
         return redirect(url_for('auth.profile'))
 
     rider_form = RiderForm()
@@ -176,13 +176,13 @@ def new_rider(carpool_id):
         if carpool.seats_available < 1:
             flash("There isn't enough space for you on "
                   "this ride. Try another one?", 'error')
-            return redirect(url_for('carpool.details', carpool_id=carpool_id))
+            return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
         if carpool.get_current_user_ride_request():
             flash("You've already requested a seat on "
                   "this ride. Try another one or cancel your "
                   "existing request.", 'error')
-            return redirect(url_for('carpool.details', carpool_id=carpool_id))
+            return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
         rr = RideRequest(
             carpool_id=carpool.id,
@@ -195,30 +195,33 @@ def new_rider(carpool_id):
         flash("You've been added to the list for this carpool!", 'success')
         _email_driver_ride_requested(carpool, current_user)
 
-        return redirect(url_for('carpool.details', carpool_id=carpool_id))
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
     return render_template('carpools/add_rider.html', form=rider_form)
 
 
-@pool_bp.route('/carpools/<int:carpool_id>/request/<int:request_id>/<action>',
+@pool_bp.route('/carpools/<carpool_uuid>/request/<request_uuid>/<action>',
                methods=['GET', 'POST'])
 @login_required
-def modify_ride_request(carpool_id, request_id, action):
-    carpool = Carpool.query.get_or_404(carpool_id)
-    request = RideRequest.query.get_or_404(request_id)
+def modify_ride_request(carpool_uuid, request_uuid, action):
+    carpool = Carpool.uuid_or_404(carpool_uuid)
+    request = RideRequest.uuid_or_404(request_uuid)
 
     user_is_driver = (current_user.id == carpool.driver_id)
     user_is_rider = (current_user.id == request.person_id)
 
-    if not user_is_driver or not user_is_rider:
+    print("User is driver: ", user_is_driver)
+    print("User is rider: ", user_is_rider)
+
+    if not (user_is_driver or user_is_rider):
         flash("You can't do anything with this ride request", 'error')
-        return redirect(url_for('carpool.details', carpool_id=carpool_id))
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
     # Technically the carpool arg isn't required here,
     # but it makes the URL prettier so there.
 
-    if request.carpool_id != carpool_id:
-        return redirect(url_for('carpool.details', carpool_id=carpool_id))
+    if request.carpool_id != carpool.id:
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
     # TODO Check who can modify a ride request. Only:
     #      1) the driver modifying their carpool
@@ -231,7 +234,7 @@ def modify_ride_request(carpool_id, request_id, action):
         if action == 'approve':
             if not user_is_driver:
                 flash("That's not your carpool", 'error')
-                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+                return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
             request.status = 'approved'
             db.session.add(request)
@@ -241,7 +244,7 @@ def modify_ride_request(carpool_id, request_id, action):
         elif action == 'deny':
             if not user_is_driver:
                 flash("That's not your carpool", 'error')
-                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+                return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
             request.status = 'denied'
             db.session.add(request)
@@ -251,7 +254,7 @@ def modify_ride_request(carpool_id, request_id, action):
         elif action == 'cancel':
             if not user_is_rider:
                 flash("That's not your request", 'error')
-                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+                return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
             db.session.delete(request)
             db.session.commit()
@@ -263,7 +266,7 @@ def modify_ride_request(carpool_id, request_id, action):
         if action == 'approve':
             if not user_is_driver:
                 flash("That's not your carpool", 'error')
-                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+                return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
             request.status = 'approved'
             db.session.add(request)
@@ -273,7 +276,7 @@ def modify_ride_request(carpool_id, request_id, action):
         elif action == 'cancel':
             if not user_is_rider:
                 flash("That's not your request", 'error')
-                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+                return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
             db.session.delete(request)
             db.session.commit()
@@ -283,7 +286,7 @@ def modify_ride_request(carpool_id, request_id, action):
         if action == 'deny':
             if not user_is_driver:
                 flash("That's not your carpool", 'error')
-                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+                return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
             request.status = 'denied'
             db.session.add(request)
@@ -293,7 +296,7 @@ def modify_ride_request(carpool_id, request_id, action):
         elif action == 'cancel':
             if not user_is_rider:
                 flash("That's not your request", 'error')
-                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+                return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
             db.session.delete(request)
             db.session.commit()
@@ -304,17 +307,17 @@ def modify_ride_request(carpool_id, request_id, action):
     else:
         flash("You can't do that to the ride request.", "error")
 
-    return redirect(url_for('carpool.details', carpool_id=carpool_id))
+    return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
 
-@pool_bp.route('/carpools/<int:carpool_id>/cancel', methods=['GET', 'POST'])
+@pool_bp.route('/carpools/<uuid>/cancel', methods=['GET', 'POST'])
 @login_required
-def cancel(carpool_id):
-    carpool = Carpool.query.get_or_404(carpool_id)
+def cancel(uuid):
+    carpool = Carpool.uuid_or_404(uuid)
 
     if carpool.driver_id != current_user.id:
         flash("You cannot cancel a carpool you didn't create", 'error')
-        return redirect(url_for('carpool.details', carpool_id=carpool_id))
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
     cancel_form = CancelCarpoolDriverForm()
     if cancel_form.validate_on_submit():
@@ -326,7 +329,7 @@ def cancel(carpool_id):
 
             return redirect(url_for('carpool.index'))
         else:
-            return redirect(url_for('carpool.details', carpool_id=carpool_id))
+            return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
     return render_template('carpools/cancel.html', form=cancel_form)
 

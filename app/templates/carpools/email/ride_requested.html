@@ -3,6 +3,6 @@
 <p>We wanted to let you know that {{rider.name}} has requested a ride with you
 in the car leaving from {{carpool.leave_place}} at {{carpool.leave_time}}.</p>
 
-<p>Please go to {{url_for('carpool.details', carpool_id=carpool.id, _external=True)}} and approve or deny this request.</p>
+<p>Please go to {{url_for('carpool.details', uuid=carpool.uuid, _external=True)}} and approve or deny this request.</p>
 
 <p>Thanks!</p>

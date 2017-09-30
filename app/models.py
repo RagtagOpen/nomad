@@ -1,14 +1,23 @@
 import datetime
-from flask import current_app
 from flask_login import UserMixin, current_user
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from uuid import uuid4
 from . import db, login_manager
 
 
-class RideRequest(db.Model):
+class UuidMixin(object):
+    uuid = db.Column(UUID(as_uuid=True), default=uuid4, index=True)
+
+    @classmethod
+    def uuid_or_404(clz, uuid):
+        return clz.query.filter_by(uuid=uuid).first_or_404()
+
+
+class RideRequest(db.Model, UuidMixin):
     __tablename__ = 'riders'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -39,7 +48,7 @@ class PersonRole(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
 
-class Person(UserMixin, db.Model):
+class Person(UserMixin, db.Model, UuidMixin):
     __tablename__ = 'people'
 
     CONTACT_EMAIL = 'email'
@@ -90,7 +99,7 @@ def load_user(id):
     return Person.query.get(int(id))
 
 
-class Carpool(db.Model):
+class Carpool(db.Model, UuidMixin):
     __tablename__ = 'carpools'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -155,7 +164,7 @@ class Carpool(db.Model):
                self.get_ride_requests_query(['approved']).count()
 
 
-class Destination(db.Model):
+class Destination(db.Model, UuidMixin):
     __tablename__ = 'destinations'
 
     id = db.Column(db.Integer, primary_key=True)

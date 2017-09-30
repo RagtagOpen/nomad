@@ -20,7 +20,7 @@
     <tbody id='search-results'>
 {% for dest in destinations.items %}
         <tr>
-            <td><a href="{{ url_for('admin.destinations_show', id=dest.id) }}">{{ dest.name }}</a></td>
+            <td><a href="{{ url_for('admin.destinations_show', uuid=dest.uuid) }}">{{ dest.name }}</a></td>
             <td>{{ dest.address }}</td>
             <td>{{ dest.hidden }}</td>
         </tr>
