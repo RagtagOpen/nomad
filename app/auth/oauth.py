@@ -102,6 +102,10 @@ class GoogleSignIn(OAuthSignIn):
                 decoder=json.loads
         )
         me = oauth_session.get('').json()
+
+        if 'sub' not in me:
+            raise ValueError("Error with OAuth callback: {}".format(me))
+
         return (
             'google$' + me['sub'],
             me['name'],

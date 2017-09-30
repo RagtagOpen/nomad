@@ -241,7 +241,7 @@ def destinations_delete(id):
 
     return render_template(
         'admin/destinations/delete.html',
-        destination=dest,
+        dest=dest,
         form=delete_form,
     )
 
