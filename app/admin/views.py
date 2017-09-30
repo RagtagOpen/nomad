@@ -230,7 +230,6 @@ def destinations_delete(uuid):
     delete_form = DeleteDestinationForm()
     if delete_form.validate_on_submit():
         if delete_form.submit.data:
-            # TODO Check to make sure no one is using the destination?
             db.session.delete(dest)
             db.session.commit()
 
