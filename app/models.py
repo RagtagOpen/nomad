@@ -13,6 +13,10 @@ class UuidMixin(object):
     uuid = db.Column(UUID(as_uuid=True), default=uuid4, index=True)
 
     @classmethod
+    def first_by_uuid(clz, uuid):
+        return clz.query.filter_by(uuid=uuid).first()
+
+    @classmethod
     def uuid_or_404(clz, uuid):
         return clz.query.filter_by(uuid=uuid).first_or_404()
 
@@ -74,6 +78,10 @@ class Person(UserMixin, db.Model, UuidMixin):
                             backref=db.backref('roles',
                                                lazy='dynamic'))
 
+    def get_id(self):
+        """ Overiding the UserMixin `get_id()` to give back the uuid. """
+        return self.uuid
+
     def get_ride_requests_query(self, status=None):
         query = RideRequest.query.filter_by(person_id=self.id)
 
@@ -96,7 +104,7 @@ class Person(UserMixin, db.Model, UuidMixin):
 
 @login_manager.user_loader
 def load_user(id):
-    return Person.query.get(int(id))
+    return Person.first_by_uuid(id)
 
 
 class Carpool(db.Model, UuidMixin):
