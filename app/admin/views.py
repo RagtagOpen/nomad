@@ -192,16 +192,17 @@ def destinations_show(id):
     dest = Destination.query.get_or_404(id)
 
     point = to_shape(dest.point)
-    edit_form = EditDeleteDestinationForm(name=dest.name, address=dest.address,
-                                         destination_lat = point.y,
-                                          destination_lon = point.x)
-
+    edit_form = EditDeleteDestinationForm(
+        name=dest.name,
+        address=dest.address,
+        destination_lat=point.y,
+        destination_lon=point.x)
 
     if edit_form.validate_on_submit():
         if edit_form.submit.data:
-            dest.name=edit_form.name.data,
-            dest.address=edit_form.address.data,
-            dest.point='SRID=4326;POINT({} {})'.format(
+            dest.name = edit_form.name.data,
+            dest.address = edit_form.address.data,
+            dest.point = 'SRID=4326;POINT({} {})'.format(
                 edit_form.destination_lon.data,
                 edit_form.destination_lat.data),
             db.session.commit()
@@ -217,8 +218,7 @@ def destinations_show(id):
 
     return render_template(
         'admin/destinations/edit.html',
-        form=edit_form,
-    )
+        form=edit_form, )
 
 
 @admin_bp.route('/admin/destinations/<int:id>/delete', methods=['GET', 'POST'])
