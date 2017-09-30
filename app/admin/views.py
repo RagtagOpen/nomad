@@ -8,7 +8,11 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from . import admin_bp
-from .forms import DestinationForm, DeleteDestinationForm, ProfilePurgeForm
+from .forms import DeleteDestinationForm, DestinationForm, EditDeleteDestinationForm, ProfilePurgeForm
+from flask_login import current_user, login_required
+from geoalchemy2.shape import to_shape
+from shapely.geometry import mapping
+from . import admin_bp
 from .. import db
 from ..auth.permissions import roles_required
 from ..carpool.views import (
@@ -187,9 +191,33 @@ def destinations_add():
 def destinations_show(id):
     dest = Destination.query.get_or_404(id)
 
+    point = to_shape(dest.point)
+    edit_form = EditDeleteDestinationForm(name=dest.name, address=dest.address,
+                                         destination_lat = point.y,
+                                          destination_lon = point.x)
+
+
+    if edit_form.validate_on_submit():
+        if edit_form.submit.data:
+            dest.name=edit_form.name.data,
+            dest.address=edit_form.address.data,
+            dest.point='SRID=4326;POINT({} {})'.format(
+                edit_form.destination_lon.data,
+                edit_form.destination_lat.data),
+            db.session.commit()
+            flash("Your destination was updated", 'success')
+        elif edit_form.delete.data:
+            # TODO Check to make sure no one is using the destination?
+            return redirect(url_for('admin.destinations_delete', id=id))
+            db.session.delete(dest)
+            db.session.commit()
+            flash("Your destination was deleted", 'success')
+        return redirect(url_for('admin.destinations_list'))
+        #return redirect(url_for('admin.destinations_show', id=id))
+
     return render_template(
-        'admin/destinations/show.html',
-        dest=dest,
+        'admin/destinations/edit.html',
+        form=edit_form,
     )
 
 
@@ -213,9 +241,9 @@ def destinations_delete(id):
 
     return render_template(
         'admin/destinations/delete.html',
-        dest=dest,
+        destination=dest,
+        form=delete_form,
     )
-
 
 @admin_bp.route('/admin/destinations/<int:id>/hide')
 @login_required

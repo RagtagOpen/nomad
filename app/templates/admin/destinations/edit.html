@@ -1,0 +1,37 @@
+{%- extends "admin/destinations/add.html" %}
+
+{% block load_map %}
+{{ super() }}
+function getFeature() {
+    var feature = new google.maps.Data.Feature();
+    var lat_lng = new google.maps.LatLng({lat:{{form.destination_lat.data}},
+        lng:{{form.destination_lon.data}}});
+
+    feature.setGeometry(lat_lng);
+    return feature;
+}
+
+body=document.getElementsByTagName("BODY")[0];
+body.onload=function() {
+    var feature = getFeature();
+    map.data.add(feature);
+}
+{% endblock %}
+
+
+{% block clear_map %}
+{{ super() }}
+map.data.forEach(function(feature) {
+    map.data.remove(feature);
+})
+{% endblock %}
+
+{% block header %}
+<h1>Edit {{form.name.data}}</h1>
+{% endblock %}
+
+
+{% block delete_button%}
+{{ wtf.form_field(form.delete) }}
+{{ wtf.form_field(form.cancel) }}
+{% endblock %}
