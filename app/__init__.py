@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from raven.contrib.flask import Sentry
 from .config import config
 
 bootstrap = Bootstrap()
@@ -13,6 +14,7 @@ mail = Mail()
 db = SQLAlchemy()
 migrate = Migrate()
 cache = Cache()
+sentry = Sentry()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -43,7 +45,6 @@ def create_app(config_name):
     sentry = None
     if app.config.get('SENTRY_ENABLE'):
         app.logger.info("Using Sentry")
-        from raven.contrib.flask import Sentry
         sentry = Sentry(app)
 
     @app.errorhandler(500)
