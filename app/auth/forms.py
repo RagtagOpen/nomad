@@ -7,6 +7,7 @@ from wtforms import (
 from wtforms.validators import (
     Email,
     InputRequired,
+    Length,
     Optional,
     Regexp,
 )
@@ -23,6 +24,8 @@ class ProfileForm(FlaskForm):
         "Name",
         [
             InputRequired("Please enter your name"),
+            Length(3, 80,
+                   "Please enter a name between 3 and 80 characters long"),
         ]
     )
     email = StringField(
@@ -51,6 +54,8 @@ class ProfileForm(FlaskForm):
         "Gender",
         [
             Optional(),
+            Length(3, 80,
+                   "Please enter a name between 3 and 80 characters long"),
         ]
     )
     submit = SubmitField(u'Update Your Profile')
