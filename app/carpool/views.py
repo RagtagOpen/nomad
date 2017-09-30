@@ -279,6 +279,10 @@ def modify_ride_request(carpool_id, request_id, action):
 def cancel(carpool_id):
     carpool = Carpool.query.get_or_404(carpool_id)
 
+    if carpool.driver_id != current_user.id:
+        flash("You cannot cancel a carpool you didn't create", 'error')
+        return redirect(url_for('carpool.details', carpool_id=carpool_id))
+
     cancel_form = CancelCarpoolDriverForm()
     if cancel_form.validate_on_submit():
         if cancel_form.submit.data:
