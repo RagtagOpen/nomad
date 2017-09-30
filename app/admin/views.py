@@ -204,21 +204,21 @@ def destinations_show(id):
             dest.address = edit_form.address.data,
             dest.point = 'SRID=4326;POINT({} {})'.format(
                 edit_form.destination_lon.data,
-                edit_form.destination_lat.data),
+                edit_form.destination_lat.data
+            ),
             db.session.commit()
             flash("Your destination was updated", 'success')
+            return redirect(url_for('admin.destinations_show', id=id))
         elif edit_form.delete.data:
             # TODO Check to make sure no one is using the destination?
             return redirect(url_for('admin.destinations_delete', id=id))
-            db.session.delete(dest)
-            db.session.commit()
-            flash("Your destination was deleted", 'success')
-        return redirect(url_for('admin.destinations_list'))
-        #return redirect(url_for('admin.destinations_show', id=id))
+        else:
+            return redirect(url_for('admin.destinations_list'))
 
     return render_template(
         'admin/destinations/edit.html',
-        form=edit_form, )
+        form=edit_form,
+    )
 
 
 @admin_bp.route('/admin/destinations/<int:id>/delete', methods=['GET', 'POST'])
