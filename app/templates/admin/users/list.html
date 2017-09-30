@@ -19,7 +19,7 @@
     <tbody id='search-results'>
 {% for user in users.items %}
         <tr>
-            <td><a href="{{ url_for('admin.user_show', user_id=user.id) }}">{{ user.email }}</a></td>
+            <td><a href="{{ url_for('admin.user_show', uuid=user.uuid) }}">{{ user.email }}</a></td>
             <td>{{ user.name }}</a></td>
             <td>{{ user.gender }}</td>
             <td>{{ user.phone }}</td>

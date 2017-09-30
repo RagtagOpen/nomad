@@ -30,10 +30,10 @@
 
 {% if user.has_roles('admin') %}
 {% if user != current_user %}
-<a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', user_id=user.id, role_name='admin') }}">Remove admin</a>
+<a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', uuid=user.uuid, role_name='admin') }}">Remove admin</a>
 {% endif %}
 {% else %}
-<a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', user_id=user.id, role_name='admin') }}">Make admin</a>
+<a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', uuid=user.uuid, role_name='admin') }}">Make admin</a>
 {% endif %}
 
 
@@ -48,6 +48,6 @@
 
 <h3>Purge</h3>
 
-<a class="btn btn-danger" href="{{ url_for('admin.user_purge', user_id=user.id) }}">Purge user</a>
+<a class="btn btn-danger" href="{{ url_for('admin.user_purge', uuid=user.uuid) }}">Purge user</a>
 
 {% endblock %}

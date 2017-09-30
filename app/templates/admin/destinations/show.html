@@ -6,11 +6,11 @@
 <h3>Destinations</h3>
 
 <p>
-    <a class="btn btn-default" href="{{ url_for('admin.destinations_delete', id=dest.id) }}" role="button">Delete</a>
+    <a class="btn btn-default" href="{{ url_for('admin.destinations_delete', uuid=dest.uuid) }}" role="button">Delete</a>
 {% if dest.hidden %}
-    <a class="btn btn-default" href="{{ url_for('admin.destinations_unhide', id=dest.id) }}" role="button">Unhide</a>
+    <a class="btn btn-default" href="{{ url_for('admin.destinations_unhide', uuid=dest.uuid) }}" role="button">Unhide</a>
 {% else %}
-    <a class="btn btn-default" href="{{ url_for('admin.destinations_hide', id=dest.id) }}" role="button">Hide</a>
+    <a class="btn btn-default" href="{{ url_for('admin.destinations_hide', uuid=dest.uuid) }}" role="button">Hide</a>
 {% endif %}
 </p>
 
