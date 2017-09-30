@@ -1,14 +1,27 @@
 import datetime
-from flask import current_app
 from flask_login import UserMixin, current_user
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from uuid import uuid4
 from . import db, login_manager
 
 
-class RideRequest(db.Model):
+class UuidMixin(object):
+    uuid = db.Column(UUID(as_uuid=True), default=uuid4, index=True)
+
+    @classmethod
+    def first_by_uuid(clz, uuid):
+        return clz.query.filter_by(uuid=uuid).first()
+
+    @classmethod
+    def uuid_or_404(clz, uuid):
+        return clz.query.filter_by(uuid=uuid).first_or_404()
+
+
+class RideRequest(db.Model, UuidMixin):
     __tablename__ = 'riders'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -39,7 +52,7 @@ class PersonRole(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
 
-class Person(UserMixin, db.Model):
+class Person(UserMixin, db.Model, UuidMixin):
     __tablename__ = 'people'
 
     CONTACT_EMAIL = 'email'
@@ -65,6 +78,10 @@ class Person(UserMixin, db.Model):
                             backref=db.backref('roles',
                                                lazy='dynamic'))
 
+    def get_id(self):
+        """ Overiding the UserMixin `get_id()` to give back the uuid. """
+        return self.uuid
+
     def get_ride_requests_query(self, status=None):
         query = RideRequest.query.filter_by(person_id=self.id)
 
@@ -87,10 +104,10 @@ class Person(UserMixin, db.Model):
 
 @login_manager.user_loader
 def load_user(id):
-    return Person.query.get(int(id))
+    return Person.first_by_uuid(id)
 
 
-class Carpool(db.Model):
+class Carpool(db.Model, UuidMixin):
     __tablename__ = 'carpools'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -104,6 +121,7 @@ class Carpool(db.Model):
     return_time = db.Column(db.DateTime(timezone=True))
     max_riders = db.Column(db.Integer)
     driver_id = db.Column(db.Integer, db.ForeignKey('people.id'))
+    destination_id = db.Column(db.Integer, db.ForeignKey('destinations.id'))
 
     ride_requests = relationship("RideRequest", cascade="all, delete-orphan")
 
@@ -154,7 +172,7 @@ class Carpool(db.Model):
                self.get_ride_requests_query(['approved']).count()
 
 
-class Destination(db.Model):
+class Destination(db.Model, UuidMixin):
     __tablename__ = 'destinations'
 
     id = db.Column(db.Integer, primary_key=True)

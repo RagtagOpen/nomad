@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from raven.contrib.flask import Sentry
 from .config import config
 
 bootstrap = Bootstrap()
@@ -13,6 +14,7 @@ mail = Mail()
 db = SQLAlchemy()
 migrate = Migrate()
 cache = Cache()
+sentry = Sentry()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -43,7 +45,6 @@ def create_app(config_name):
     sentry = None
     if app.config.get('SENTRY_ENABLE'):
         app.logger.info("Using Sentry")
-        from raven.contrib.flask import Sentry
         sentry = Sentry(app)
 
     @app.errorhandler(500)
@@ -57,6 +58,11 @@ def create_app(config_name):
     @app.after_request
     def frame_buster(response):
         response.headers['X-Frame-Options'] = 'DENY'
+        return response
+
+    @app.after_request
+    def server_header(response):
+        response.headers['Server'] = 'Server'
         return response
 
     from .carpool import pool_bp

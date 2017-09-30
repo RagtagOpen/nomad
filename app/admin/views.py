@@ -8,7 +8,11 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from . import admin_bp
-from .forms import DestinationForm, DeleteDestinationForm, ProfilePurgeForm
+from .forms import DeleteDestinationForm, DestinationForm, EditDeleteDestinationForm, ProfilePurgeForm
+from flask_login import current_user, login_required
+from geoalchemy2.shape import to_shape
+from shapely.geometry import mapping
+from . import admin_bp
 from .. import db
 from ..auth.permissions import roles_required
 from ..carpool.views import (
@@ -27,22 +31,22 @@ def admin_index():
     )
 
 
-@admin_bp.route('/admin/users/<int:user_id>')
+@admin_bp.route('/admin/users/<uuid>')
 @login_required
 @roles_required('admin')
-def user_show(user_id):
-    user = Person.query.get_or_404(user_id)
+def user_show(uuid):
+    user = Person.uuid_or_404(uuid)
     return render_template(
         'admin/users/show.html',
         user=user,
     )
 
 
-@admin_bp.route('/admin/users/<int:user_id>/purge', methods=['GET', 'POST'])
+@admin_bp.route('/admin/users/<uuid>/purge', methods=['GET', 'POST'])
 @login_required
 @roles_required('admin')
-def user_purge(user_id):
-    user = Person.query.get_or_404(user_id)
+def user_purge(uuid):
+    user = Person.uuid_or_404(uuid)
 
     form = ProfilePurgeForm()
     if form.validate_on_submit():
@@ -52,13 +56,13 @@ def user_purge(user_id):
                 flash("You can't purge yourself", 'error')
                 current_app.logger.info("User %s tried to purge themselves",
                                         current_user.id)
-                return redirect(url_for('admin.user_show', user_id=user.id))
+                return redirect(url_for('admin.user_show', uuid=user.uuid))
 
             if user.has_roles('admin'):
                 flash("You can't purge other admins", 'error')
                 current_app.logger.info("User %s tried to purge admin %s",
                                         current_user.id, user.id)
-                return redirect(url_for('admin.user_show', user_id=user.id))
+                return redirect(url_for('admin.user_show', uuid=user.uuid))
 
             try:
                 # Delete the ride requests for this user
@@ -84,12 +88,12 @@ def user_purge(user_id):
                 db.session.rollback()
                 current_app.logger.exception("Problem deleting user account")
                 flash("There was a problem purging the user", 'error')
-                return redirect(url_for('admin.user_show', user_id=user.id))
+                return redirect(url_for('admin.user_show', uuid=user.uuid))
 
             flash("You deleted the user from the database", 'success')
             return redirect(url_for('admin.user_list'))
         else:
-            return redirect(url_for('admin.user_show', user_id=user.id))
+            return redirect(url_for('admin.user_show', uuid=user.uuid))
 
     return render_template(
         'admin/users/purge.html',
@@ -98,11 +102,11 @@ def user_purge(user_id):
     )
 
 
-@admin_bp.route('/admin/users/<int:user_id>/role/<role_name>/toggle')
+@admin_bp.route('/admin/users/<user_uuid>/role/<role_name>/toggle')
 @login_required
 @roles_required('admin')
-def user_toggle_role(user_id, role_name):
-    user = Person.query.get_or_404(user_id)
+def user_toggle_role(user_uuid, role_name):
+    user = Person.uuid_or_404(user_uuid)
     role = Role.query.filter_by(name=role_name).first_or_404()
 
     pr = PersonRole.query.filter_by(person_id=user.id, role_id=role.id).first()
@@ -114,7 +118,7 @@ def user_toggle_role(user_id, role_name):
         flash('Role {} added to this user'.format(role.name))
     db.session.commit()
 
-    return redirect(url_for('admin.user_show', user_id=user.id))
+    return redirect(url_for('admin.user_show', user_uuid=user.uuid))
 
 
 @admin_bp.route('/admin/users')
@@ -181,23 +185,47 @@ def destinations_add():
     )
 
 
-@admin_bp.route('/admin/destinations/<int:id>', methods=['GET', 'POST'])
+@admin_bp.route('/admin/destinations/<uuid>', methods=['GET', 'POST'])
 @login_required
 @roles_required('admin')
-def destinations_show(id):
-    dest = Destination.query.get_or_404(id)
+def destinations_show(uuid):
+    dest = Destination.uuid_or_404(uuid)
+
+    point = to_shape(dest.point)
+    edit_form = EditDeleteDestinationForm(
+        name=dest.name,
+        address=dest.address,
+        destination_lat=point.y,
+        destination_lon=point.x)
+
+    if edit_form.validate_on_submit():
+        if edit_form.submit.data:
+            dest.name = edit_form.name.data,
+            dest.address = edit_form.address.data,
+            dest.point = 'SRID=4326;POINT({} {})'.format(
+                edit_form.destination_lon.data,
+                edit_form.destination_lat.data
+            ),
+            db.session.commit()
+            flash("Your destination was updated", 'success')
+            return redirect(url_for('admin.destinations_show', uuid=uuid))
+        elif edit_form.delete.data:
+            # TODO Check to make sure no one is using the destination?
+            return redirect(url_for('admin.destinations_delete', uuid=uuid))
+        else:
+            return redirect(url_for('admin.destinations_list'))
 
     return render_template(
-        'admin/destinations/show.html',
-        dest=dest,
+        'admin/destinations/edit.html',
+        form=edit_form,
     )
 
 
-@admin_bp.route('/admin/destinations/<int:id>/delete', methods=['GET', 'POST'])
+@admin_bp.route('/admin/destinations/<uuid>/delete', methods=['GET', 'POST'])
 @login_required
 @roles_required('admin')
-def destinations_delete(id):
-    dest = Destination.query.get_or_404(id)
+def destinations_delete(uuid):
+    dest = Destination.uuid_or_404(uuid)
 
     delete_form = DeleteDestinationForm()
     if delete_form.validate_on_submit():
@@ -209,37 +237,38 @@ def destinations_delete(id):
             flash("Your destination was deleted", 'success')
             return redirect(url_for('admin.destinations_list'))
         else:
-            return redirect(url_for('admin.destinations_show', id=id))
+            return redirect(url_for('admin.destinations_show', uuid=uuid))
 
     return render_template(
         'admin/destinations/delete.html',
         dest=dest,
+        form=delete_form,
     )
 
 
-@admin_bp.route('/admin/destinations/<int:id>/hide')
+@admin_bp.route('/admin/destinations/<uuid>/hide')
 @login_required
 @roles_required('admin')
-def destinations_hide(id):
-    dest = Destination.query.get_or_404(id)
+def destinations_hide(uuid):
+    dest = Destination.uuid_or_404(uuid)
 
     dest.hidden = True
     db.session.add(dest)
     db.session.commit()
 
     flash("Your destination was hidden", 'success')
-    return redirect(url_for('admin.destinations_show', id=id))
+    return redirect(url_for('admin.destinations_show', uuid=uuid))
 
 
-@admin_bp.route('/admin/destinations/<int:id>/unhide')
+@admin_bp.route('/admin/destinations/<uuid>/unhide')
 @login_required
 @roles_required('admin')
-def destinations_unhide(id):
-    dest = Destination.query.get_or_404(id)
+def destinations_unhide(uuid):
+    dest = Destination.uuid_or_404(uuid)
 
     dest.hidden = False
     db.session.add(dest)
     db.session.commit()
 
     flash("Your destination was unhidden", 'success')
-    return redirect(url_for('admin.destinations_show', id=id))
+    return redirect(url_for('admin.destinations_show', uuid=uuid))

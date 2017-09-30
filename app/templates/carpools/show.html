@@ -32,11 +32,11 @@
 
 {% if current_user_ride_request %}
 
-<a class="btn btn-default" href="{{ url_for('carpool.modify_ride_request', carpool_id=pool.id, request_id=current_user_ride_request.id, action='cancel') }}" role="button">Cancel your seat request</a>
+<a class="btn btn-default" href="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}" role="button">Cancel your seat request</a>
 
 {% elif pool.current_user_is_driver %}
 
-<a class="btn btn-default" href="{{ url_for('carpool.cancel', carpool_id=pool.id) }}" role="button">Cancel your carpool</a>
+<a class="btn btn-default" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}" role="button">Cancel your carpool</a>
 
 <div>
 <h3>Ride Requests</h3>
@@ -47,24 +47,24 @@
         (Waiting for your response:&nbsp;
         <a href="{{ url_for('carpool.modify_ride_request',
                             action='approve',
-                            carpool_id=pool.id,
-                            request_id=request.id) }}">Approve</a>,&nbsp;
+                            carpool_uuid=pool.uuid,
+                            request_uuid=request.uuid) }}">Approve</a>,&nbsp;
         <a href="{{ url_for('carpool.modify_ride_request',
                             action='deny',
-                            carpool_id=pool.id,
-                            request_id=request.id) }}">Deny</a>)
+                            carpool_uuid=pool.uuid,
+                            request_uuid=request.uuid) }}">Deny</a>)
         {%- elif request.status == 'approved' %}
         (You approved their request:&nbsp;
         <a href="{{ url_for('carpool.modify_ride_request',
                             action='deny',
-                            carpool_id=pool.id,
-                            request_id=request.id) }}">Deny</a>)
+                            carpool_uuid=pool.uuid,
+                            request_uuid=request.uuid) }}">Deny</a>)
         {%- elif request.status == 'denied' %}
         (You denied their request:&nbsp;
         <a href="{{ url_for('carpool.modify_ride_request',
                             action='approve',
-                            carpool_id=pool.id,
-                            request_id=request.id) }}">Approve</a>)
+                            carpool_uuid=pool.uuid,
+                            request_uuid=request.uuid) }}">Approve</a>)
         {%- endif %}
         </small>
     </li>
@@ -73,7 +73,7 @@
 </div>
 
 {% else %}
-<a class="btn btn-default" href="{{ url_for('carpool.new_rider', carpool_id=pool.id) }}" role="button">Request a seat</a>
+<a class="btn btn-default" href="{{ url_for('carpool.new_rider', carpool_uuid=pool.uuid) }}" role="button">Request a seat</a>
 {% endif %}
 
 {% endblock %}

@@ -20,7 +20,7 @@ var map = null;
 $(function () {
     $('#depart_date').datetimepicker({
         format: 'MM/DD/YYYY',
-        minDate: 'now',
+        minDate: moment(),
         useCurrent: false,
     });
     $('#submit').on('click', function() {

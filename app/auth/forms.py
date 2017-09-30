@@ -7,6 +7,7 @@ from wtforms import (
 from wtforms.validators import (
     Email,
     InputRequired,
+    Length,
     Optional,
     Regexp,
 )
@@ -23,6 +24,8 @@ class ProfileForm(FlaskForm):
         "Name",
         [
             InputRequired("Please enter your name"),
+            Length(3, 80,
+                   "Please enter a name between 3 and 80 characters long"),
         ]
     )
     email = StringField(
@@ -36,7 +39,7 @@ class ProfileForm(FlaskForm):
         "Phone",
         [
             Optional(),
-            Regexp('\d?-?(\d{3})-?(\d{3})-?(\d{4})',
+            Regexp('^\d?-?(\d{3})-?(\d{3})-?(\d{4})$',
                    message="Enter a phone number like: 415-867-5309"),
         ]
     )
@@ -51,13 +54,21 @@ class ProfileForm(FlaskForm):
         "Gender",
         [
             Optional(),
+            Length(3, 80,
+                   "Please enter a name between 3 and 80 characters long"),
         ]
     )
     submit = SubmitField(u'Update Your Profile')
 
     def validate(self):
+        result = True
         if not super(ProfileForm, self).validate():
-            return False
+            result = False
+
+        if self.name.data and not self.name.data.strip():
+            self.name.errors.append(
+                "Please enter your name")
+            result = False
 
         if self.preferred_contact.data in (
                 Person.CONTACT_CALL, Person.CONTACT_TEXT) \
@@ -65,13 +76,13 @@ class ProfileForm(FlaskForm):
             self.phone_number.errors.append(
                 "You must enter a phone number if you select call or text "
                 "as your preferred method of contact")
-            return False
+            result = False
 
         elif self.preferred_contact.data == Person.CONTACT_EMAIL \
                 and not self.email.data:
             self.email.errors.append(
                 "You must enter an email if you select email "
                 "as your preferred method of contact")
-            return False
+            result = False
 
-        return True
+        return result

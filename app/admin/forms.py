@@ -41,6 +41,12 @@ class DestinationForm(FlaskForm):
         return result
 
 
+class EditDeleteDestinationForm(DestinationForm):
+    cancel = SubmitField(u"Nevermind, Go Back")
+    submit = SubmitField(u"Save Changes To The Destination")
+    delete = SubmitField(u'Delete The Destination')
+
+
 class DeleteDestinationForm(FlaskForm):
     cancel = SubmitField("Nevermind, Go Back")
     submit = SubmitField("Delete The Destination")
