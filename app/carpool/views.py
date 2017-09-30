@@ -204,8 +204,15 @@ def new_rider(carpool_id):
                methods=['GET', 'POST'])
 @login_required
 def modify_ride_request(carpool_id, request_id, action):
-    # carpool = Carpool.query.get_or_404(carpool_id)
+    carpool = Carpool.query.get_or_404(carpool_id)
     request = RideRequest.query.get_or_404(request_id)
+
+    user_is_driver = (current_user.id == carpool.driver_id)
+    user_is_rider = (current_user.id == request.person_id)
+
+    if not user_is_driver or not user_is_rider:
+        flash("You can't do anything with this ride request", 'error')
+        return redirect(url_for('carpool.details', carpool_id=carpool_id))
 
     # Technically the carpool arg isn't required here,
     # but it makes the URL prettier so there.
@@ -222,49 +229,75 @@ def modify_ride_request(carpool_id, request_id, action):
 
     if request.status == 'requested':
         if action == 'approve':
+            if not user_is_driver:
+                flash("That's not your carpool", 'error')
+                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+
             request.status = 'approved'
             db.session.add(request)
             db.session.commit()
             flash("You approved their ride request.")
             _email_ride_approved(request)
         elif action == 'deny':
+            if not user_is_driver:
+                flash("That's not your carpool", 'error')
+                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+
             request.status = 'denied'
             db.session.add(request)
             db.session.commit()
             flash("You denied their ride request.")
             _email_ride_denied(request)
         elif action == 'cancel':
+            if not user_is_rider:
+                flash("That's not your request", 'error')
+                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+
             db.session.delete(request)
             db.session.commit()
             flash("You cancelled your ride request.")
-            carpool = Carpool.query.get(carpool_id)
             email_driver_rider_cancelled_request(request, carpool,
                                                  current_user)
 
     elif request.status == 'denied':
         if action == 'approve':
+            if not user_is_driver:
+                flash("That's not your carpool", 'error')
+                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+
             request.status = 'approved'
             db.session.add(request)
             db.session.commit()
             flash("You approved their ride request.")
             _email_ride_approved(request)
         elif action == 'cancel':
+            if not user_is_rider:
+                flash("That's not your request", 'error')
+                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+
             db.session.delete(request)
             db.session.commit()
             flash("You cancelled your ride request.")
 
     elif request.status == 'approved':
         if action == 'deny':
+            if not user_is_driver:
+                flash("That's not your carpool", 'error')
+                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+
             request.status = 'denied'
             db.session.add(request)
             db.session.commit()
             flash("You denied their ride request.")
             _email_ride_denied(request)
         elif action == 'cancel':
+            if not user_is_rider:
+                flash("That's not your request", 'error')
+                return redirect(url_for('carpool.details', carpool_id=carpool_id))
+
             db.session.delete(request)
             db.session.commit()
             flash("You withdrew from the carpool.")
-            carpool = Carpool.query.get(carpool_id)
             email_driver_rider_cancelled_request(request, carpool,
                                                  current_user)
 
