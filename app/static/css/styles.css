@@ -104,7 +104,7 @@ input[type=submit].secondary {
 	margin-left: auto;
 	margin-right: 0;
 }
-.nav-bar li {
+.nav-bar li, .nav-bar div {
 	flex: 0 1 auto;
 	display: inline-block;
 	padding-top: 12px;
@@ -116,9 +116,32 @@ input[type=submit].secondary {
 .nav-bar li:last-child {
 	margin-right: 0;
 }
-.nav-bar li:hover {
+
+.nav-bar-secondary {
+    position: fixed;
+    top: 70px;
+    padding: 0 10px 10px 10px;
+    margin-left: -10px;
+    background-color: white;
+    border-left: 1px solid rgba(2,46,91,.2);
+    border-right: 1px solid rgba(2,46,91,.2);
+    border-bottom: 1px solid rgba(2,46,91,.2);
+    z-index: 21;
+    display: none;
+}
+
+.nav-bar a {
+	color: #333;
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.nav-bar a:hover {
 	color: rgba(0,168,225,1);
-	border-bottom: 1px solid rgba(0,168,225,1);
+}
+
+.nav-dropdown:hover .nav-bar-secondary {
+	display: block;
 }
 
 /* ===== CONTENT BODY ===== */

@@ -63,6 +63,12 @@ function highlightedIcon() {
 }
 
 $(document).ready(function() {
+  // $('.nav-dropdown').hover(
+  //   function() {
+  //     $('.nav-bar-secondary').addClass('visible');
+  //   }, function() {
+  //     $('.nav-bar-secondary').removeClass('visible');
+  // });
   $('.results-box .result').hover(
     // mouse in
     function () {
