@@ -183,6 +183,8 @@ class Destination(db.Model, UuidMixin):
     name = db.Column(db.String(80))
     address = db.Column(db.String(300))
 
+    carpools = relationship("Carpool", cascade="all, delete-orphan")
+
     @classmethod
     def find_all_visible(clz):
         return clz.query.filter(clz.hidden != True)

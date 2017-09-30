@@ -230,11 +230,6 @@ def destinations_delete(uuid):
     delete_form = DeleteDestinationForm()
     if delete_form.validate_on_submit():
         if delete_form.submit.data:
-            if dest.carpools:
-                flash("This destination cannot be deleted because "
-                      "some carpools still use it", 'error')
-                return redirect(url_for('admin.destinations_show', uuid=uuid))
-
             db.session.delete(dest)
             db.session.commit()
 
