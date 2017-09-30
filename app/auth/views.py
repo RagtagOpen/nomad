@@ -12,7 +12,7 @@ from six.moves.urllib.parse import urlparse, urljoin
 from . import auth_bp
 from .forms import ProfileForm, ProfileDeleteForm
 from .oauth import OAuthSignIn
-from .. import db
+from .. import db, sentry
 from ..models import Person
 from ..carpool.views import email_driver_rider_cancelled_request, cancel_carpool
 
@@ -60,8 +60,13 @@ def oauth_callback(provider):
     if not current_user.is_anonymous:
         return redirect(url_for('carpool.index'))
 
-    oauth = OAuthSignIn.get_provider(provider)
-    social_id, username, email = oauth.callback()
+    social_id = None
+    try:
+        oauth = OAuthSignIn.get_provider(provider)
+        social_id, username, email = oauth.callback()
+    except:
+        current_app.logger.exception("Couldn't log in a user for some reason")
+        sentry.captureException()
 
     if social_id is None:
         flash("For some reason, we couldn't log you in. "
@@ -77,7 +82,10 @@ def oauth_callback(provider):
         db.session.commit()
 
         flash("Thanks for logging in! Please update your profile.", 'success')
+        # Go to the profile now...
         next_url = url_for('auth.profile')
+        # ...and after they update their profile go to the index
+        session['next'] = url_for('carpool.index')
 
     login_user(user, True)
 
