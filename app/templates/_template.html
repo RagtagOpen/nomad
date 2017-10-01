@@ -28,20 +28,25 @@
 {% block content %}
   <nav class="global-header">
   	<a href="{{ url_for('carpool.index') }}"><div class="logo"></div></a>
+<!-- if this page is a search result page -->
+    <form>
+      <input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State">
+    </form>
+<!-- end if -->
   	<ul class="nav-bar">
-		<li class="active"><a href="#">Find a ride</a></li>
-		<li><a href="#">Give a ride</a></li>
-		<li><a href="#">About</a></li>
-		<li><a href="#">My Rides</a></li>
-		<li class="nav-dropdown">
-			<a href="#">
-			{% if current_user.name %}{{ current_user.name }}{% else %}Welcome{% endif %}
-			&nbsp;<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
-			<ul class="nav-bar-secondary">
-				<li><a href="{{ url_for('auth.profile') }}" >Profile</a></li>
-				<li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-			</ul>
-		</li>
+  		<li class="active"><a href="#">Find a ride</a></li>
+  		<li><a href="#">Give a ride</a></li>
+  		<li><a href="#">About</a></li>
+  		<li><a href="#">My Rides</a></li>
+  		<li class="nav-dropdown">
+  			<a href="#">
+  			{% if current_user.name %}{{ current_user.name }}{% else %}Welcome{% endif %}
+  			&nbsp;<span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span></a>
+  			<ul class="nav-bar-secondary">
+  				<li><a href="{{ url_for('auth.profile') }}" >Profile</a></li>
+  				<li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+  			</ul>
+  		</li>
 <!-- {% if current_user.is_authenticated %} -->
 <!-- {% else %}
 		<li><a href="{{ url_for('auth.login') }}">Login</a></li>

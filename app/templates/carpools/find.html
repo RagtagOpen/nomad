@@ -1,16 +1,6 @@
 {%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
-{% block styles %}
-{{super()}}
-<style>
-    #background-map {
-        height: 300px;
-        width: 100%;
-    }
-</style>
-{% endblock %}
-
 {% block scripts %}
 {{super()}}
 <script>
@@ -78,13 +68,14 @@ function initMap() {
 
     // need to figure out where this makes sense to include custom markers
 
-    for (var i=0; i < baltLocations.length; i++) {
-        markers.push(new google.maps.Marker({
-            position: new google.maps.LatLng(baltLocations[i].lat, baltLocations[i].lng),
-            map: map,
-            icon: normalIcon()
-        }));
-    }
+    // for (var i=0; i < baltLocations.length; i++) {
+    //     markers.push(new google.maps.Marker({
+    //         position: new google.maps.LatLng(baltLocations[i].lat, baltLocations[i].lng),
+    //         map: map,
+    //         icon: normalIcon()
+    //     }));
+    // }
+
 }
 
 function mapDataCallback(features) {
@@ -128,7 +119,7 @@ function highlightedIcon() {
         <h1>Find rides near you</h1>
         <div id="search-results results-box">
 
-            <!-- result template -->
+            <!-- result template-->
             <div class="result">
                 <h3 class="result-title">TEST: Baltimore to Chantilly</h3>
                 <p>4 seats available</p>
@@ -152,8 +143,8 @@ function highlightedIcon() {
                 <div class="sub-right">
                     <p class="caption">Status: 4 seats available</p>
                     <input class="primary" type="submit" value="Request to join carpool">
-                    
                 </div>
+
             </div>
             <div class="detail-bottom">
                 <div class="sub-left">
@@ -190,23 +181,4 @@ function highlightedIcon() {
 
 </div>
 
-<!-- ==================== -->
-
-
-
-<div class='row'>
-    <div class="col-md-2">
-        <div class="form-group">
-            <label class="control-label" for="depart_date">Departure Date</label>
-            <input class="form-control" id="depart_date" name="depart_date" required="" type="text" value="">
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="leaving_from">Leaving From</label>
-            <input class="form-control" id="leaving_from" name="leaving_from" required="" type="text" value="">
-        </div>
-        <div class="form-group">
-            <input class="btn btn-default" id="submit" name="submit" type="submit" value="Search">
-        </div>
-    </div>
-</div>
 {% endblock %}

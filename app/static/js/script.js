@@ -50,6 +50,8 @@ function initMap() {
 //   };
 // }
 
+var activeDetail = false;
+
 $(document).ready(function() {
   $('.results-box .result').hover(
     // mouse in
@@ -66,11 +68,19 @@ $(document).ready(function() {
   );
   $('.results-box .result').click(
     function () {
-      var index = $('.results-box .result').index(this);
-      console.log(markers[index].position);
-      $('.right-bar').addClass("active");
-
-      map.setCenter(markers[index].position);
+      if (activeDetail == false) {
+        // open detail panel
+        activeDetail = true;
+        $('.right-bar').addClass("active");
+        // recenter map on current marker
+        var index = $('.results-box .result').index(this);
+        console.log(markers[index].position);
+        map.setCenter(markers[index].position);
+      } else {
+        // close detail panel
+        activeDetail = false;
+        $('.right-bar').removeClass("active");
+      }
     })
 });
 
