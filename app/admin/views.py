@@ -14,6 +14,7 @@ from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
 from . import admin_bp
 from .. import db
+from ..email import send_emails, catch_and_log_email_exceptions, make_email_message
 from ..auth.permissions import roles_required
 from ..carpool.views import (
     cancel_carpool,
@@ -230,6 +231,7 @@ def destinations_delete(uuid):
     delete_form = DeleteDestinationForm()
     if delete_form.validate_on_submit():
         if delete_form.submit.data:
+            _email_destination_action(dest, 'cancelled', 'deleted')
             db.session.delete(dest)
             db.session.commit()
 
@@ -243,6 +245,35 @@ def destinations_delete(uuid):
         dest=dest,
         form=delete_form,
     )
+
+
+def _make_destination_action_email_messages(destination, verb, template_base):
+    messages_to_send = []
+    for carpool in destination.carpools:
+        subject = 'Carpool on {} {}'.format(carpool.leave_time, verb)
+        people = [
+            ride_request.person for ride_request in carpool.ride_requests
+        ]
+        people.append(carpool.driver)
+        messages_to_send.extend([
+            make_email_message(
+                'admin/destinations/email/{}.html'.format(template_base),
+                'admin/destinations/email/{}.txt'.format(template_base),
+                person.email,
+                subject,
+                destination=destination,
+                carpool=carpool,
+                person=person) for person in people
+        ])
+
+    return messages_to_send
+
+
+def _email_destination_action(dest, verb, template_base):
+    messages_to_send = _make_destination_action_email_messages(
+        dest, verb, template_base)
+    with catch_and_log_email_exceptions(messages_to_send):
+        send_emails(messages_to_send)
 
 
 @admin_bp.route('/admin/destinations/<uuid>/hide')
