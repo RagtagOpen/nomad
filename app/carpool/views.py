@@ -1,4 +1,3 @@
-from contextlib import contextmanager
 import datetime
 from flask import (
     abort,
@@ -13,11 +12,11 @@ from flask import (
     url_for,
 )
 from flask_login import current_user, login_required
-from flask_mail import Message
 from geoalchemy2 import func
 from geoalchemy2.shape import to_shape, from_shape
 from shapely.geometry import mapping, Point
 from . import pool_bp
+from ..email import send_emails, catch_and_log_email_exceptions, make_email_message
 from .forms import (
     CancelCarpoolDriverForm,
     DriverForm,
@@ -352,7 +351,7 @@ def _email_carpool_cancelled(carpool, reason):
     subject = 'Carpool session on {} cancelled'.format(carpool.leave_time)
 
     messages_to_send = [
-        _make_email_message(
+        make_email_message(
             'carpools/email/carpool_cancelled.html',
             'carpools/email/carpool_cancelled.txt',
             rider.email,
@@ -364,11 +363,11 @@ def _email_carpool_cancelled(carpool, reason):
     ]
 
     with catch_and_log_email_exceptions(messages_to_send):
-        _send_emails(messages_to_send)
+        send_emails(messages_to_send)
 
 
 def _email_driver(carpool, current_user, subject, template_name_specifier):
-    message_to_send = _make_email_message(
+    message_to_send = make_email_message(
         'carpools/email/{}.html'.format(template_name_specifier),
         'carpools/email/{}.txt'.format(template_name_specifier),
         carpool.driver.email,
@@ -377,7 +376,7 @@ def _email_driver(carpool, current_user, subject, template_name_specifier):
         carpool=carpool)
 
     with catch_and_log_email_exceptions([message_to_send]):
-        _send_emails([message_to_send])
+        send_emails([message_to_send])
 
 
 def _email_driver_ride_requested(carpool, current_user):
@@ -391,7 +390,7 @@ def _email_ride_status(request, subject_beginning, template_name_specifier):
     subject = '{} for carpool on {}'.format(subject_beginning,
                                             request.carpool.leave_time)
 
-    message_to_send = _make_email_message(
+    message_to_send = make_email_message(
         'carpools/email/ride_{}.html'.format(template_name_specifier),
         'carpools/email/ride_{}.txt'.format(template_name_specifier),
         request.person.email,
@@ -400,7 +399,7 @@ def _email_ride_status(request, subject_beginning, template_name_specifier):
         carpool=request.carpool)
 
     with catch_and_log_email_exceptions([message_to_send]):
-        _send_emails([message_to_send])
+        send_emails([message_to_send])
 
 
 def _email_ride_approved(request):
@@ -431,47 +430,3 @@ def _email_driver_rider_cancelled_approved_request(carpool, current_user):
 
     _email_driver(carpool, current_user, subject,
                   'approved_ride_request_cancelled')
-
-
-def _make_email_message(html_template, text_template, recipient, subject,
-                        **kwargs):
-    body = render_template(text_template, **kwargs)
-    html = render_template(html_template, **kwargs)
-    return Message(
-        recipients=[recipient], body=body, html=html, subject=subject)
-
-
-@contextmanager
-def catch_and_log_email_exceptions(messages_to_send):
-    try:
-        yield
-    except Exception as exception:
-        current_app.logger.critical(
-            'Unable to send email.  {}'.format(repr(exception)))
-        _log_emails(messages_to_send)
-
-
-def _log_emails(messages_to_send):
-    for message in messages_to_send:
-        current_app.logger.info(
-            'Message to {} with subject {} and body {}'.format(
-                message.recipients[0], message.subject, message.body))
-
-
-def _send_emails(messages_to_send):
-    if current_app.config.get('MAIL_LOG_ONLY'):
-        current_app.logger.info(
-            'Configured to log {} messages without sending.  Messages in the following lines:'.
-            format(len(messages_to_send)))
-        _log_emails(messages_to_send)
-        return
-
-    with mail.connect() as conn:
-        for message in messages_to_send:
-            try:
-                conn.send(message)
-            except Exception as exception:
-                current_app.logger.error(
-                    'Failed to send message to {} with subject {} and body {} Exception: {}'.
-                    format(message.recipients[0], message.subject,
-                           message.body, repr(exception)))
