@@ -19,6 +19,11 @@ h1, h2, h3, h4, p {
 h1 {
 	font: 400 28px/140% 'Merriweather', Georgia, serif;
 }
+}
+h3 {
+	font: 700 16px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
+	letter-spacing: 1px
+}
 h4 {
 	font: 700 16px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
 	text-transform: uppercase;

@@ -21,12 +21,11 @@
 
 function initMap() {
 
-// DONE
-  // map = new google.maps.Map(document.getElementById('background-map'), {
-  //   zoom: 12,
-  //   center: baltCenter,
-  //   styles: mapStyleDiscreet
-  // });
+  map = new google.maps.Map(document.getElementById('background-map'), {
+    zoom: 12,
+    center: baltCenter,
+    styles: mapStyleDiscreet
+  });
 
   for (var i=0; i < baltLocations.length; i++) {
     markers.push(
@@ -39,16 +38,16 @@ function initMap() {
   }
 }
 
-// function normalIcon() {
-//   return {
-//     url: 'img/ic_marker_inactive.png'
-//   };
-// }
-// function highlightedIcon() {
-//   return {
-//     url: 'img/ic_marker_active.png'
-//   };
-// }
+function normalIcon() {
+  return {
+    url: 'img/ic_marker_inactive.png'
+  };
+}
+function highlightedIcon() {
+  return {
+    url: 'img/ic_marker_active.png'
+  };
+}
 
 var activeDetail = false;
 
