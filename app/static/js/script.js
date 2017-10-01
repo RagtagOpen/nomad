@@ -40,12 +40,12 @@ function initMap() {
 
 function normalIcon() {
   return {
-    url: 'img/ic_marker_inactive.png'
+    url: 'img/ic_marker_inactive.svg'
   };
 }
 function highlightedIcon() {
   return {
-    url: 'img/ic_marker_active.png'
+    url: 'img/ic_marker_active.svg'
   };
 }
 

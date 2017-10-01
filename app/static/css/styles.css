@@ -204,6 +204,18 @@ input[type=submit].secondary {
 .result .status {
 	font-weight: 700;
 }
+.result.active h3 {
+	color: rgba(0,168,225,1);
+}
+.result:hover h3 {
+	color: rgba(0,168,225,.6);
+}
+.result.active h3::before {
+	content: url(../img/ic_marker_mini.svg);
+	position: absolute;
+    margin-left: -28px;
+    margin-top: 3px;
+}
 
 /* ===== RIGHT ===== */
 
