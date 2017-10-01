@@ -1,5 +1,4 @@
 {%- extends "_template.html" %}
-{%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
 
@@ -12,8 +11,8 @@
 		<form class="jumbo-search" action="{{ url_for('carpool.find') }}"">
 			<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State"> <input class="primary" type="submit" value="Find a ride">
 		</form>
-		<!-- this url isnt correct -->
-		<p>Can you drive? <a href="{{ url_for('carpool.find') }}">Start your own carpool</a>.</p>
+
+		<p>Can you drive? <a href="{{ url_for('carpool.new') }}">Start your own carpool</a>.</p>
 	</div>
 
 </div>
