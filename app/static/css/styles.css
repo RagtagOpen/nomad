@@ -307,7 +307,7 @@ select:focus {
 	background-color: grey;
 	transition: transform .5s;
 }
-.detail-pane {
+#detail-pane {
 	width: 100%;
 	height: 67%;
 	z-index: 5;
@@ -316,7 +316,7 @@ select:focus {
 	padding: 10px 40px 20px 40px;
 	transition: transform .5s;
 }
-.active .detail-pane {
+.active #detail-pane {
 	transform: translate(0px, -100%)
 }
 .active #background-map {

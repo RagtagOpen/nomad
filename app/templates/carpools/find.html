@@ -8,11 +8,6 @@ var place = null;
 var map = null;
 
 $(function () {
-    $('#depart_date').datetimepicker({
-        format: 'MM/DD/YYYY',
-        minDate: moment(),
-        useCurrent: false,
-    });
     $('#submit').on('click', function() {
         doSearch();
     });
@@ -25,11 +20,6 @@ function doSearch() {
     if (place) {
         parts.push('near.lat=' + encodeURIComponent(place.geometry.location.lat()));
         parts.push('near.lon=' + encodeURIComponent(place.geometry.location.lng()));
-    }
-
-    var date_input = document.getElementById('depart_date');
-    if (date_input.value) {
-        parts.push('min_leave_date=' + encodeURIComponent(date_input.value));
     }
 
     url += parts.join('&');
@@ -50,20 +40,22 @@ function initMap() {
     });
     doSearch();
 
-    var from_input = document.getElementById('leaving_from');
+    var from_input = document.getElementById('locationQuery');
     var from_ac = new google.maps.places.Autocomplete(from_input, {
-        componentRestrictions: {country: 'us'}
+        componentRestrictions: {country: 'us'},
+        options: ['(regions)'],
     });
     from_ac.bindTo('bounds', map);
     from_ac.addListener('place_changed', function() {
         var chosen = from_ac.getPlace();
 
         if (!chosen.geometry) {
-            console.log("No details available for from autocomplete: '" + chosen.name + "'");
+            console.log("No details available for form autocomplete: '" + chosen.name + "'");
             return;
         }
 
         place = chosen;
+        doSearch();
     });
 
     // need to figure out where this makes sense to include custom markers
@@ -78,21 +70,33 @@ function initMap() {
 
 }
 
+function showCarpoolDetails(carpoolId) {
+    $.ajax({
+        type: "GET",
+        url: carpoolId + '/embed',
+        success: function(data) {
+            $('#detail-pane').html(data);
+            $('#detail-pane').show();
+        }
+    })
+}
+
+function showCarpoolDetailsDivClickHandler(event) {
+    showCarpoolDetails(event.data);
+}
+
 function mapDataCallback(features) {
     var results = $('#search-results');
     results.empty();
     for (var i = 0; i < features.length; i++) {
         var feature = features[i];
-        results.append(
-        '<div class="result"> <h3 class="result-title">[Departure City] to [Destination City]</h3><p>' +  feature.getProperty('seats_available') + ' seats available</p><p>Departs: ' + feature.getProperty('leave_time') + '</p><p>Returns: ' + feature.getProperty('return_time') + '</p><p>Destination: '+ feature.getProperty('to_place') + '[eventually this should read as something like: Joe Candidates Office (Chantilly, VA)]</p></div>'
-        );
-        // not currently used 
-        // feature.getProperty('driver_gender');
-        // feature.getId();
+        var resultdiv = $('<div class="result"><h3 class="result-title">' + feature.getProperty('from_place') + ' to ' + feature.getProperty('to_place') + '</h3><p>' + feature.getProperty('seats_available') + ' seats available</p><p>Departs: ' + feature.getProperty('leave_time') + '</p><p>Returns: ' + feature.getProperty('return_time') + '</p><p>Destination: '+ feature.getProperty('to_place') + '</p></div>');
+        resultdiv.click(feature.getId(), showCarpoolDetailsDivClickHandler);
+        results.append(resultdiv);
     }
 
     map.data.addListener('click', function(event) {
-        window.location = event.feature.getId();
+        showCarpoolDetails(event.feature.getId());
     });
 }
 
@@ -117,66 +121,14 @@ function highlightedIcon() {
 
     <div class="left-bar">
         <h1>Find rides near you</h1>
-        <div id="search-results results-box">
-
-            <!-- result template-->
-            <div class="result">
-                <h3 class="result-title">TEST: Baltimore to Chantilly</h3>
-                <p>4 seats available</p>
-                <p>Departs: Sat Jun 5 (morning)</p>
-                <p>Returns: Sun Jun 6 (afternoon)</p>
-                <p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
-            </div>
-
+        <div id="search-results">
         </div>
     </div>
 
     <!-- <div class="right-bar active"> -->
     <div class="right-bar">
         <div id="background-map"></div>
-        <div class="detail-pane active">
-            <div class="detail-top">
-                <div class="sub-left">
-                    <h4>Ride Details</h4>
-                    <h1>Baltimore to Chantilly</h1>
-                </div>
-                <div class="sub-right">
-                    <p>Status: 4 seats available</p>
-                    <input class="primary" type="submit" value="Request to join carpool">
-                </div>
-
-            </div>
-            <div class="detail-bottom top-border">
-                <div class="sub-left">
-                    <h4>Departs</h4>
-                    <p>Sat, Jun 5 - Morning</p>
-                    <h4>Returns</h4>
-                    <p>Sun, Jun 5 - Afternoon</p>
-                    <h4>Approx drive time</h4>
-                    <p>1 h 50 min each way</p>
-                </div>
-                <div class="sub-middle">
-                    <h4>Pickup</h4>
-                    <p>Johns Hopkins - Homewood Field 
-                        <br>111 W University Pkwy 
-                        <br>Baltimore, MD 21210
-                    </p>
-                    <h4>Dropoff</h4>
-                    <p>Joe Candidate’s Office 
-                        <br>13780 Lowe St 
-                        <br>Chantilly, VA 20151
-                    </p>
-                </div>
-                <div class="sub-right">
-                    <h4>Carpool Details</h4>
-                    <p>Driver: Frank U. (Male)</p>
-                    <p>Vehicle: Black 2015 Honda Accord</p>
-                    <p>Luggage space: 1 medium-sized bag per passenger</p>
-                    <h4>Additional notes:</h4>
-                    <p>Flexible on departure time. Non-smoking. Not good for people with dog / cat allergies</p>
-                </div>
-            </div>
-        </div>
+        <div id="detail-pane" class="active"></div>
     </div>
 
 </div>

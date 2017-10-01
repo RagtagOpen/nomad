@@ -157,6 +157,13 @@ def details(uuid):
     return render_template('carpools/show.html', pool=carpool)
 
 
+@pool_bp.route('/carpools/<uuid>/embed')
+def details_embed(uuid):
+    carpool = Carpool.uuid_or_404(uuid)
+
+    return render_template('carpools/show_embed.html', pool=carpool)
+
+
 @pool_bp.route('/carpools/<carpool_uuid>/newrider', methods=['GET', 'POST'])
 @login_required
 def new_rider(carpool_uuid):
