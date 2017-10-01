@@ -40,26 +40,30 @@ a.destructive-link {
 	color: red;
 }
 
-input[type=submit].primary {
-	background-color: rgba(0,168,225,1);
-	color: white;
+input[type=submit] {
 	height: 40px;
     padding: 5px 25px;
     border: 0;
 	border-radius: 5px; 
 	-moz-border-radius: 5px; 
 	-webkit-border-radius: 5px; 
+	margin-right: 10px;
+}
+
+input[type=submit].primary {
+	background-color: rgba(0,168,225,1);
+	color: white;
 }
 input[type=submit].secondary {
-	background-color: rgba(227,28,61,0);
-	color: rgba(227,28,61,1);
-	height: 40px;
-    padding: 5px 25px;
-    border: 1px solid rgba(227,28,61,1);
-	border-radius: 5px; 
-	-moz-border-radius: 5px; 
-	-webkit-border-radius: 5px; 
+	background-color: rgba(0,168,225,0);
+	color: rgba(0,168,225,1);
+    border: 1px solid rgba(0,168,225,1);
 }
+input[type=submit].tertiary {
+	background-color: rgba(227,28,61,1);
+	color: white;
+}
+
 input[type=text], input[type=email], input[type=tel] {
 	width: 400px;
 	height: 40px;
@@ -69,6 +73,7 @@ input[type=text], input[type=email], input[type=tel] {
     border: 1px solid rgba(2,46,91,.2);
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px; 
+	margin-right: 10px;
 	transition: border .5s;
 	font: 400 18px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
 	color: #333;
