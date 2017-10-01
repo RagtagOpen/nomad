@@ -118,7 +118,7 @@ def user_toggle_role(user_uuid, role_name):
         flash('Role {} added to this user'.format(role.name))
     db.session.commit()
 
-    return redirect(url_for('admin.user_show', user_uuid=user.uuid))
+    return redirect(url_for('admin.user_show', uuid=user.uuid))
 
 
 @admin_bp.route('/admin/users')
@@ -230,7 +230,6 @@ def destinations_delete(uuid):
     delete_form = DeleteDestinationForm()
     if delete_form.validate_on_submit():
         if delete_form.submit.data:
-            # TODO Check to make sure no one is using the destination?
             db.session.delete(dest)
             db.session.commit()
 
