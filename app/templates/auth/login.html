@@ -2,10 +2,16 @@
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
-<div class='page-header'>
-    <h1>Login</h1>
+
+<div class="content">
+
+	<div class="fullscreen">
+		<h1>Log in to continue</h1>
+		<p>Please verify your identity by logging in through one of the following options. We will not save your information or use it for any purpose other than to verify that you are a human. For more info, check out our <a href="privacy.html">privacy policy</a>.</p>
+		<br><br>
+		<a href="{{ url_for('auth.oauth_authorize', provider='facebook') }}"><input class="primary" type="submit" value="Log in through Facebook"></a>&nbsp;&nbsp; or &nbsp;&nbsp;<a href="{{ url_for('auth.oauth_authorize', provider='google') }}"><input class="primary" type="submit" value="Log in through Google"></a>
+	</div>
+
 </div>
 
-<p><a href="{{ url_for('auth.oauth_authorize', provider='facebook') }}">Login with Facebook</a></p>
-<p><a href="{{ url_for('auth.oauth_authorize', provider='google') }}">Login with Google</a></p>
 {% endblock %}

@@ -48,6 +48,10 @@ input[type=submit].secondary {
 	-moz-border-radius: 5px; 
 	-webkit-border-radius: 5px; 
 }
+input[type=text] {
+	border-radius: 5px; 
+	padding: 0 10px;
+}
 
 
 /* ===== HEADER ===== */
@@ -147,6 +151,19 @@ input[type=submit].secondary {
 	display: block;
 }
 
+.nav-dropdown a.arrow::after {
+	content: url(../img/ic_arrow_down_gray.svg);
+	position: relative;
+    margin-left: 5px;
+    top: -1px;
+}
+.nav-dropdown a.arrow:hover::after {
+	content: url(../img/ic_arrow_down_blue.svg);
+	position: relative;
+    margin-left: 5px;
+    top: -1px;
+}
+
 /* ===== CONTENT BODY ===== */
 
 .content {
@@ -155,21 +172,39 @@ input[type=submit].secondary {
 	display: flex;
 }
 
-/* FULLSCREEN SPLASH */
+/* FULLSCREEN / SPLASH */
 
-.fullscreen-splash {
+.fullscreen {
 	width: 100%;
-	padding: 200px 400px;
+	padding: 200px 470px 200px 330px;
+}
+.fullscreen h1 {
+	font: 400 36px/140% 'Merriweather', Georgia, serif;
+	padding-bottom: 10px;
+}
+.fullscreen p {
+	max-width: 450px;
+}
+.fullscreen.splash {
 	background-color: #022e5b;
 	color: white;
-	/*text-align: center;*/
 }
-.fullscreen-splash h1, .fullscreen-splash h2, .fullscreen-splash h3, .fullscreen-splash h4, .fullscreen-splash p {
+.fullscreen.splash h1, .fullscreen.splash h2, .fullscreen.splash h3, .fullscreen.splash h4, .fullscreen.splash p {
 	color: white;
 }
-
-.fullscreen-splash h1 {
-	font: 400 36px/140% 'Merriweather', Georgia, serif;
+.jumbo-search {
+	margin: 50px 0 20px 0;
+}
+.jumbo-search input[type=text] {
+	height: 50px;
+	min-width: 410px;
+	margin-right: 15px;
+	font: 400 24px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
+}
+.jumbo-search input[type=submit] {
+	height: 50px;
+	width: 200px;
+	font: 400 24px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
 }
 
 /* ===== LEFT ===== */
@@ -212,9 +247,10 @@ input[type=submit].secondary {
 }
 .result.active h3::before {
 	content: url(../img/ic_marker_mini.svg);
-	position: absolute;
+	position: relative;
     margin-left: -28px;
-    margin-top: 3px;
+    margin-right: 10px;
+    top: 3px;
 }
 
 /* ===== RIGHT ===== */
@@ -272,6 +308,9 @@ input[type=submit].secondary {
 }
 .detail-top input[type=submit] {
 	width: 100%;
+}
+.detail-top input[type=submit]:focus {
+	outline: none;
 }
 p.caption {
 	margin-bottom: 5px;

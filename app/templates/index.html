@@ -5,11 +5,11 @@
 
 <div class="content">
 
-	<div class="fullscreen-splash">
+	<div class="fullscreen splash">
 		<h4>Share your ride</h4>
 		<h1>Virginia has 100 districts that need your help this November!</h1>
-		<h2>Join your neighbors' carpools to save time, money, and help the environment</h2>
-		<form action="{{ url_for('carpool.find') }}"">
+		<h2>Join your neighbors' carpools to save time, money, and help the environment.</h2>
+		<form class="jumbo-search" action="{{ url_for('carpool.find') }}"">
 			<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State"> <input class="primary" type="submit" value="Find a ride">
 		</form>
 		<!-- this url isnt correct -->
