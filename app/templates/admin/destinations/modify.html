@@ -1,0 +1,28 @@
+{%- extends "admin/_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+{{super()}}
+<h3>Destinations</h3>
+
+<p>
+    {% set count=dest.carpools|length %}
+    {% if count == 1 %}
+    There is <strong>{{ count }} carpool</strong> using this destination.
+    {% else %}
+    There are <strong>{{ count }} carpools</strong> using this destination.
+    {% endif %}
+    <ul>
+        {% for carpool in dest.carpools %}
+        <li><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">{{ carpool.from_place }} to {{ carpool.to_place }}</a></li>
+        {% endfor %}
+    </ul>
+</p>
+
+<p>
+    Really change destination <strong>{{ dest.name }}</strong>?
+</p>
+
+{{ wtf.quick_form(form) }}
+
+{% endblock %}
