@@ -10,10 +10,17 @@
 <body>
 
 <nav class="global-header">
-	<div class="logo"></div>
-	<form>
-		<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State" value="21227" >
-	</form>
+	<div class="header-left">
+		<div class="logo"></div>
+		<form>
+			<select>
+				<option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
+				<option value="give-ride">Give a ride</option>
+			</select>
+			<span>near</span>
+			<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State" value="21227" >
+		</form>
+	</div>
 	<ul class="nav-bar">
 		<li class="active"><a href="#">Find a ride</a></li>
   		<li><a href="#">Give a ride</a></li>
@@ -82,12 +89,12 @@
 					<h1>Baltimore to Chantilly</h1>
 				</div>
 				<div class="sub-right">
-					<p class="caption">Status: 4 seats available</p>
+					<p>Status: 4 seats available</p>
 					<input class="primary" type="submit" value="Request to join carpool">
 					
 				</div>
 			</div>
-			<div class="detail-bottom">
+			<div class="detail-bottom top-border">
 				<div class="sub-left">
 					<h4>Departs</h4>
 					<p>Sat, Jun 5 - Morning</p>

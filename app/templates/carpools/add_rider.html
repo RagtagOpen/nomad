@@ -4,21 +4,20 @@
 {% block site %}
 <div class="content">
 
-	<div class="fullscreen wide">
-		<form class="profile">
+	<div class="fullscreen">
+		<form class="form-page">
 			<h4>Join this carpool</h4>
 			<h1>Confirm your details</h1>
 			<p>To join this carpool, please verify your profile information and make any changes as needed.</p>
-			<br>
 
-			<div class="two-col-layout first-child">
+			<div class="two-col-layout first-child top-border">
 				<div class="two-col-column">
-					<h4>Preferred Name</h4>
+					<h4>Confirm Display Name</h4>
 					<input type="text" name="user-name" id="user-name" placeholder="Name (or username) of your choice" value="Punky Brewster" >
 					<label>Your drivers/fellow passengers will see this information when you join the carpool. We recommend using a first name and last initial (e.g. "Tyrion L.").</label>
 				</div>
 				<div class="two-col-column">
-					<h4>Gender</h4>
+					<h4>Confirm Gender</h4>
 					<select id="gender-select">
 					  <option value="female">Female</option>
 					  <option value="male">Male</option>
@@ -31,11 +30,11 @@
 				</div>
 			</div>
 
-			<div class="two-col-layout">
+			<div class="two-col-layout top-border">
 				<div class="two-col-column">
-					<h4>Email Address</h4>
+					<h4>Confirm Email Address</h4>
 					<input type="email" name="user-email" id="user-email" placeholder="Email address" value="spunky@gmail.com" >
-					<h4>Phone Number</h4>
+					<h4>Confirm Phone Number</h4>
 					<input type="tel" name="user-phone" id="user-phone" placeholder="Phone number" value="212-555-5555" >
 				</div>
 				<div class="two-col-column">
@@ -47,16 +46,11 @@
 				</div>
 			</div>
 
-			<div class="two-col-layout">
-				<div class="two-col-column">
-					<h4>Questions / Notes to Driver</h4>
-					<textarea name="textarea-notes" class="textarea-notes"></textarea>
-				</div>
-				<div class="two-col-column">
-				</div>
+			<div class="top-border">
+				<h4>Questions / Notes to Driver</h4>
+				<textarea name="textarea-notes" class="textarea-notes"></textarea>
 			</div>
-			
-			<div class="two-col-layout right-align">
+			<div class="two-col-layout top-border right-align">
 				<input class="primary" type="submit" value="Update profile and request to join carpool">
 			</div>
 		</form>
