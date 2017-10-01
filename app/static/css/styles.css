@@ -19,6 +19,9 @@ h1, h2, h3, h4, p {
 h1 {
 	font: 400 28px/140% 'Merriweather', Georgia, serif;
 }
+h2 {
+	font: 300 28px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
+}
 h3 {
 	font: 600 24px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
 }
@@ -26,6 +29,7 @@ h4 {
 	font: 700 16px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
 	text-transform: uppercase;
 	letter-spacing: 1px;
+	margin-top: 30px;
 	margin-bottom: 10px;
 }
 a {
@@ -185,19 +189,25 @@ input[type=text], input[type=email], input[type=tel] {
 
 .content {
 	width: 100%;
-	height: 100%;
 	display: flex;
+}
+.content.constrained {
+	height: 100%;
 }
 
 /* FULLSCREEN / SPLASH */
 
 .fullscreen {
 	width: 100%;
-	padding: 200px 470px 200px 330px;
+	padding: 200px 470px 50px 330px;
 }
+.fullscreen.wide {
+	padding: 200px 330px 50px 330px;
+}
+	
 .fullscreen h1 {
 	font: 400 36px/140% 'Merriweather', Georgia, serif;
-	padding-bottom: 10px;
+	padding-bottom: 20px;
 }
 .fullscreen p {
 	max-width: 450px;
@@ -223,6 +233,7 @@ input[type=text], input[type=email], input[type=tel] {
 	width: 200px;
 	font: 400 24px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
 }
+
 
 /* ===== LEFT ===== */
 
@@ -353,12 +364,58 @@ p.caption {
 
 /* ===== PROFILE ===== */
 
+.profile {
+	padding-bottom: 50px;
+	border-bottom: 1px solid rgba(2,46,91,.2);
+	margin-bottom: 30px;
+}
 .profile label {
 	font: 400 14px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
+	display: block;
+	margin-top: 10px;
+	margin-bottom: 0;
 }
-
-.profile input[type=checkbox] {
+.profile .check-label {
+	margin-right: 20px;
+}
+select {
 	display: inline-block;
 }
-
+.profile input[type=checkbox] {
+	margin-right: 5px;
+}
+.profile input[type=text], input[type=email], input[type=tel] {
+	width: 100%;
+}
+.profile input[type=text].gender-description {
+	display: none;
+}
+.profile input[type=text].gender-description.visible {
+	display: inline;
+	margin-top: 10px;
+}
+.profile select {
+	height: 40px;
+	width: 180px;
+}
+.profile h4 {
+	/*margin-top: 40px;*/
+}
+.profile .two-col-layout.first-child h4 {
+	margin-top: 10px;
+}
+.two-col-layout {
+	width: 100%;
+	display: flex;
+}
+.two-col-column {
+	flex: 1 1 300px;
+}
+.two-col-column:first-child {
+	margin-right: 50px;
+}
+.two-col-layout.right-align {
+	justify-content: flex-end;
+	padding-top: 50px;
+}
 
