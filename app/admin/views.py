@@ -250,6 +250,8 @@ def destinations_modify(uuid):
                 carpool.to_place = dest.address
                 carpool.to_point = dest.point
 
+            _email_destination_action(dest, 'modified', 'modified')
+
             db.session.commit()
             flash("Your destination was updated", 'success')
             return redirect(url_for('admin.destinations_list'))
