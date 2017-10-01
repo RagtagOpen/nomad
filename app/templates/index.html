@@ -2,10 +2,20 @@
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
-<div class="jumbotron">
-  <h1>Share Your Ride!</h1>
-  <p>Join your neighbors carpools to save time, money, and help the environment!</p>
-  <a class="btn btn-primary btn-lg" href="{{ url_for('carpool.find') }}" role="button">Look for a ride</a>
-  <a class="btn btn-link btn-lg" href="{{ url_for('carpool.mine') }}" role="button">Manage your rides</a>
+
+<div class="content">
+
+	<div class="fullscreen-splash">
+		<h4>Share your ride</h4>
+		<h1>Virginia has 100 districts that need your help this November!</h1>
+		<h2>Join your neighbors' carpools to save time, money, and help the environment</h2>
+		<form action="{{ url_for('carpool.find') }}"">
+			<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State"> <input class="primary" type="submit" value="Find a ride">
+		</form>
+		<!-- this url isnt correct -->
+		<p>Can you drive? <a href="{{ url_for('carpool.find') }}">Start your own carpool</a>.</p>
+	</div>
+
 </div>
+
 {% endblock %}

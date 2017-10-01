@@ -4,7 +4,7 @@
 {% block styles %}
 {{super()}}
 <style>
-    #map {
+    #background-map {
         height: 300px;
         width: 100%;
     }
@@ -53,9 +53,10 @@ function doSearch() {
 }
 
 function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('background-map'), {
         center: {lat: 38.518, lng: -97.328},
-        zoom: 4
+        zoom: 12,
+        styles: mapStyleDiscreet
     });
     doSearch();
 
@@ -74,6 +75,16 @@ function initMap() {
 
         place = chosen;
     });
+
+    // need to figure out where this makes sense to include custom markers
+
+    for (var i=0; i < baltLocations.length; i++) {
+        markers.push(new google.maps.Marker({
+            position: new google.maps.LatLng(baltLocations[i].lat, baltLocations[i].lng),
+            map: map,
+            icon: normalIcon()
+        }));
+    }
 }
 
 function mapDataCallback(features) {
@@ -82,24 +93,106 @@ function mapDataCallback(features) {
     for (var i = 0; i < features.length; i++) {
         var feature = features[i];
         results.append(
-            '<tr><td>' + feature.getProperty('seats_available') + '</td>' +
-            '<td>' + feature.getProperty('driver_gender') + '</td>' +
-            '<td><a href="' + feature.getId() + '">' + feature.getProperty('from_place') + ' at ' + feature.getProperty('leave_time') + '</a></td>' +
-            '<td>' + feature.getProperty('to_place') + ' at ' + feature.getProperty('return_time') + '</td></tr>');
+        '<div class="result"> <h3 class="result-title">[Departure City] to [Destination City]</h3><p>' +  feature.getProperty('seats_available') + ' seats available</p><p>Departs: ' + feature.getProperty('leave_time') + '</p><p>Returns: ' + feature.getProperty('return_time') + '</p><p>Destination: '+ feature.getProperty('to_place') + '[eventually this should read as something like: Joe Candidates Office (Chantilly, VA)]</p></div>'
+        );
+        // not currently used 
+        // feature.getProperty('driver_gender');
+        // feature.getId();
     }
 
     map.data.addListener('click', function(event) {
         window.location = event.feature.getId();
     });
 }
+
+function normalIcon() {
+  return {
+    url: 'img/ic_marker_inactive.png'
+    };
+}
+function highlightedIcon() {
+  return {
+    url: 'img/ic_marker_active.png'
+  };
+}
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
 {% endblock %}
 
 {% block site %}
-<div class='page-header'>
-    <h1>Find a Carpool</h1>
+
+
+<div class="content">
+
+    <div class="left-bar">
+        <h1>Find rides near you</h1>
+        <div id="search-results results-box">
+
+            <!-- result template -->
+            <div class="result">
+                <h3 class="result-title">TEST: Baltimore to Chantilly</h3>
+                <p>4 seats available</p>
+                <p>Departs: Sat Jun 5 (morning)</p>
+                <p>Returns: Sun Jun 6 (afternoon)</p>
+                <p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- <div class="right-bar active"> -->
+    <div class="right-bar">
+        <div id="background-map"></div>
+        <div class="detail-pane active">
+            <div class="detail-top">
+                <div class="sub-left">
+                    <h4>Ride Details</h4>
+                    <h1>Baltimore to Chantilly</h1>
+                </div>
+                <div class="sub-right">
+                    <p class="caption">Status: 4 seats available</p>
+                    <input class="primary" type="submit" value="Request to join carpool">
+                    
+                </div>
+            </div>
+            <div class="detail-bottom">
+                <div class="sub-left">
+                    <h4>Departs</h4>
+                    <p>Sat, Jun 5 - Morning</p>
+                    <h4>Returns</h4>
+                    <p>Sun, Jun 5 - Afternoon</p>
+                    <h4>Approx drive time</h4>
+                    <p>1 h 50 min each way</p>
+                </div>
+                <div class="sub-middle">
+                    <h4>Pickup</h4>
+                    <p>Johns Hopkins - Homewood Field 
+                        <br>111 W University Pkwy 
+                        <br>Baltimore, MD 21210
+                    </p>
+                    <h4>Dropoff</h4>
+                    <p>Joe Candidate’s Office 
+                        <br>13780 Lowe St 
+                        <br>Chantilly, VA 20151
+                    </p>
+                </div>
+                <div class="sub-right">
+                    <h4>Carpool Details</h4>
+                    <p>Driver: Frank U. (Male)</p>
+                    <p>Vehicle: Black 2015 Honda Accord</p>
+                    <p>Luggage space: 1 medium-sized bag per passenger</p>
+                    <h4>Additional notes:</h4>
+                    <p>Flexible on departure time. Non-smoking. Not good for people with dog / cat allergies</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+<!-- ==================== -->
+
+
 
 <div class='row'>
     <div class="col-md-2">
@@ -114,21 +207,6 @@ function mapDataCallback(features) {
         <div class="form-group">
             <input class="btn btn-default" id="submit" name="submit" type="submit" value="Search">
         </div>
-    </div>
-    <div class="col-md-10">
-        <div id='map'></div>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Capacity</th>
-                    <th>Gender</th>
-                    <th>Leaving</th>
-                    <th>Going To</th>
-                </tr>
-            </thead>
-            <tbody id='search-results'>
-            </tbody>
-        </table>
     </div>
 </div>
 {% endblock %}

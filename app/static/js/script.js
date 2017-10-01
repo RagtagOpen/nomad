@@ -21,11 +21,12 @@
 
 function initMap() {
 
-  map = new google.maps.Map(document.getElementById('background-map'), {
-    zoom: 12,
-    center: baltCenter,
-    styles: mapStyleDiscreet
-  });
+// DONE
+  // map = new google.maps.Map(document.getElementById('background-map'), {
+  //   zoom: 12,
+  //   center: baltCenter,
+  //   styles: mapStyleDiscreet
+  // });
 
   for (var i=0; i < baltLocations.length; i++) {
     markers.push(
@@ -36,39 +37,20 @@ function initMap() {
       })
     );
   }
-
-  // var marker = new google.maps.Marker({
-  //   position: sweetbriar,
-  //   map: map,
-    // icon: {
-    //   path: MAP_PIN,
-    //   fillColor: '#6331AE',
-    //   fillOpacity: 1,
-    //   strokeColor: '',
-    //   strokeWeight: 0
-    // },
-    // map_icon_label: '<span class="map-icon map-icon-city-hall"></span>'
-  // });
 }
 
-function normalIcon() {
-  return {
-    url: 'img/ic_marker_inactive.png'
-  };
-}
-function highlightedIcon() {
-  return {
-    url: 'img/ic_marker_active.png'
-  };
-}
+// function normalIcon() {
+//   return {
+//     url: 'img/ic_marker_inactive.png'
+//   };
+// }
+// function highlightedIcon() {
+//   return {
+//     url: 'img/ic_marker_active.png'
+//   };
+// }
 
 $(document).ready(function() {
-  // $('.nav-dropdown').hover(
-  //   function() {
-  //     $('.nav-bar-secondary').addClass('visible');
-  //   }, function() {
-  //     $('.nav-bar-secondary').removeClass('visible');
-  // });
   $('.results-box .result').hover(
     // mouse in
     function () {
