@@ -235,7 +235,6 @@ input[type=text], input[type=email], input[type=tel] {
 }
 .jumbo-search input[type=submit] {
 	height: 50px;
-	width: 200px;
 	font: 400 24px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
 }
 
@@ -423,4 +422,7 @@ select {
 	justify-content: flex-end;
 	padding-top: 50px;
 }
-
+.textarea-notes {
+	width: 100%;
+	height: 100px;
+}

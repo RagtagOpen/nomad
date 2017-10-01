@@ -1,0 +1,1933 @@
+
+<!--[if lt IE 9]>
+	<html id="ng-app" ng-app="InVision" ng-controller="AppController" inv-key-combos class="lt-ie9 ng-app:InVision" lang="en">
+<![endif]-->
+<!--[if gt IE 8]><!-->
+<html ng-app="InVision" ng-controller="AppController" inv-key-combos lang="en">
+<!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<title ng-bind="windowTitle">
+		InVision
+	</title>
+
+	<!-- Custom webfonts -->
+	<style>
+	@font-face {
+		font-family: 'Open Sans';
+		font-style: normal;
+		font-weight: 300;
+		src: local('Open Sans Light'), local('OpenSans-Light'), url(assets/fonts/open_sans/OpenSans-light.woff) format('woff');
+	}
+	@font-face {
+		font-family: 'Open Sans';
+		font-style: normal;
+		font-weight: 400;
+		src: local('Open Sans'), local('OpenSans'), url(assets/fonts/open_sans/OpenSans.woff) format('woff');
+	}
+	@font-face {
+		font-family: 'Open Sans';
+		font-style: normal;
+		font-weight: 600;
+		src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(assets/fonts/open_sans/OpenSans-semibold.woff) format('woff');
+	}
+	@font-face {
+		font-family: 'Open Sans';
+		font-style: normal;
+		font-weight: 700;
+		src: local('Open Sans Bold'), local('OpenSans-Bold'), url(assets/fonts/open_sans/OpenSans-bold.woff) format('woff');
+	}
+	</style>
+	<!-- Interface styles -->
+	<link type="text/css" rel="stylesheet" href="assets/jquery-ui-1.9.2.custom/css/no-theme/jquery-ui-1.9.2.custom.min.css">
+	<link type="text/css" rel="stylesheet" href="assets/apps/share/css/uniform.default.css">
+	<link type="text/css" rel="stylesheet" href="assets/apps/share/css/bootstrap.css">
+	<link type="text/css" rel="stylesheet" href="assets/apps/share/css/intlTelInput.css">
+	<link type="text/css" rel="stylesheet" href="assets/apps/share/css/share-offline.css">
+
+	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+		<script src="/assets/html5shim/html5.js"></script>
+	<![endif]-->
+	<!--[if lt IE 8]>
+		<script src="/assets/json2/json2.js"></script>
+	<![endif]-->
+</head>
+<body
+	class="branding-invision"
+	ng-class="bodyClass"
+	ng-style="bodyStyle">
+
+
+	<!--
+		This is the initial loading sequence. We need to be able to display this BEFORE the AngularJS
+		framework loads in order to give the user some sence of activity. But, when the framework kicks
+		in, it will be able to use the bound ng-controller.
+	-->
+	<!-- BEGIN: Loading Sequence. -->
+	<div ng-if="isLoadingOpen" ng-controller="loading.LoadingController" inv-loading-sequence class="m-loading">
+
+		<!-- BEGIN: Loading Indicator. -->
+		
+
+			<div class="loading-backdrop">
+
+				<div class="loading-container">
+
+					<div class="status-container">
+
+						<div class="status"></div>
+						<div class="logo"></div>
+
+					</div> <!-- status-container -->
+
+					<h2>Loading Experience</h2>
+
+					<p>
+						Powered by <a href="http://www.InVisionApp.com/" target="_blank">InVision</a>
+
+						
+							, the best way to share and collaborate on design.
+						
+
+					</p>
+
+				</div> <!-- loading-container -->
+
+				<div class="loading-footer">
+
+					<div class="logo"></div>
+
+					<h3><a href="http://www.InVisionApp.com/" target="_blank">Powered by InVision</a></h3>
+
+					
+						<p><em>Prototyping, Collaboration &amp; Workflow for Designers</em></p>
+					
+
+				</div> <!-- loading-footer -->
+
+			</div> <!-- loading-backdrop -->
+
+		
+		<!-- END: Loading Indicator. -->
+
+	</div>
+	<!-- END: Loading Sequence. -->
+
+	<div ng-include=" '/assets/apps/share/views/partials/preload.htm' "></div>
+	<div ng-include=" '/assets/apps/share/views/layouts/modal.htm' "></div>
+	<div ng-include=" '/assets/apps/share/views/toolbar/toolbar.htm' "></div>
+	<div ng-include=" '/assets/apps/share/views/powered-by/powered-by.htm' "></div>
+
+	<div
+		ng-if="isBrowseOpen"
+		ng-include=" '/assets/apps/share/views/browse/browse.htm' "></div>
+
+	<!-- In order to be able to disable horizontal scrolling for some screens, we need to wrap the view in order to be able to maintain screen alignment -->
+
+	<div class="desktop-wrapper">
+
+		<!-- Tour Points -->
+		<div
+			ng-if=" subview == 'preview' "
+			ng-include=" '/assets/apps/share/views/preview/preview-tour-comments.htm' "></div>
+
+		<div
+			ng-if="subview == 'comments'"
+			ng-include=" '/assets/apps/share/views/comments/comments.htm' "></div>
+
+		<div
+			ng-if="subview == 'preview'"
+			is-share-loaded="{{!isLoadingOpen}}"
+			inv-preview-auto-redirect-listener
+			ng-include=" '/assets/apps/share/views/preview/preview.htm' "></div>
+
+		<!-- Screens for comment mode -->
+		<div
+			ng-show="subview == 'comments'"
+			ng-include=" '/assets/apps/share/views/screens/screens.htm' "c></div>
+
+	</div>
+
+	<div
+		ng-if="browserCompatibility.isNotCompatible"
+		class="m-browser-compatibility ng-cloak"></div>
+
+	
+	
+		<script type="text/javascript" src="assets/scripts.js"></script>
+	
+
+		<script type="text/javascript">
+
+			(function( ng, app ){
+
+				"use strict";
+
+				app.value(
+					"config",
+					{
+						user: {
+							id: 8548205,
+							name: "Michelle",
+							email: "lew.michelle@gmail.com",
+							avatarID: "ED4D597C-A931-82CB-2E5964258B851A1E",
+							isAccountAuthenticated: true,
+							isAnonymous: false,
+							hasSeenCommentToolTip: true
+						},
+						shouldShowPoweredBy: false,
+						share: {"isNavigateAllowed":true,"screenID":0,"hasClosedShareIntro":true,"isLoadAllScreens":true,"showToolbarIntroduction":false},
+						project: {"mobileStatusbarIsOpaque":false,"defaultBackgroundColor":"","mobileStatusbarBackgroundColor":"#000000","homeScreenID":245754769,"sortTypeID":1,"lastAccessedAt":1501127306000,"isInGracePeriod":false,"userID":5522288,"companyID":0,"isProcessed":true,"id":11640178,"defaultBackgroundImageID":"","defaultbackgroundimageposition":"","isSample":false,"isAdvanced":false,"mobileStatusbarIsVisible":true,"defaultbackgroundframe":"0","mobileStatusbarFontColor":"white","updatedAt":1501127306000,"defaultZoomScrollBehavior":1,"name":"Nomad","mobileDeviceWidth":0,"isMobile":false,"isArchived":false,"isOverQuota":false,"createdAt":1501127306000,"mobileDeviceID":0,"defaultAlignment":"center","defaultbackgroundautostretch":"0","isSnap":false},
+						screens: [{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754769.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_0.0 home-alternate.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754769,"imageUrl":"assets/0.0 home-alternate.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"0.0 Home-Alternate","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":1,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"0.0 home-alternate.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754770.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_0.0 Home.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754770,"imageUrl":"assets/0.0 Home.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"0.0 Home","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":2,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"0.0 Home.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754771.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_1.0 Passenger: Home page.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754771,"imageUrl":"assets/1.0 Passenger: Home page.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"1.0 Passenger: Home Page","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":3,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"1.0 Passenger: Home page.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754772.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_1.1 Passenger: Search location.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754772,"imageUrl":"assets/1.1 Passenger: Search location.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"1.1 Passenger: Search Location","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":4,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"1.1 Passenger: Search location.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754773.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_1.3 Passenger: Carpool detail Copy.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754773,"imageUrl":"assets/1.3 Passenger: Carpool detail Copy.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"1.3 Passenger: Carpool Detail Copy","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":5,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"1.3 Passenger: Carpool detail Copy.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754774.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_1.3 Passenger: Carpool detail.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754774,"imageUrl":"assets/1.3 Passenger: Carpool detail.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"1.3 Passenger: Carpool Detail","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":6,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"1.3 Passenger: Carpool detail.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754775.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_1.4 Passenger: Login if not already.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754775,"imageUrl":"assets/1.4 Passenger: Login if not already.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"1.4 Passenger: Login If Not Already","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":7,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"1.4 Passenger: Login if not already.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754777.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_1.5 Passenger: Confirm details and request.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754777,"imageUrl":"assets/1.5 Passenger: Confirm details and request.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"1.5 Passenger: Confirm Details And Request","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":8,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"1.5 Passenger: Confirm details and request.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754778.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_1.5 Passenger: Tooltip.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754778,"imageUrl":"assets/1.5 Passenger: Tooltip.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"1.5 Passenger: Tooltip","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":9,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"1.5 Passenger: Tooltip.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754779.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_1.6 Passenger: Request sent.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754779,"imageUrl":"assets/1.6 Passenger: Request sent.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"1.6 Passenger: Request Sent","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":10,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"1.6 Passenger: Request sent.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"a8a8a8","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754780.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_2.0 Passenger: My Rides Cancel.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754780,"imageUrl":"assets/2.0 Passenger: My Rides Cancel.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"2.0 Passenger: My Rides Cancel","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":11,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"2.0 Passenger: My Rides Cancel.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754781.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_2.0 Passenger: My Rides Detail.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754781,"imageUrl":"assets/2.0 Passenger: My Rides Detail.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"2.0 Passenger: My Rides Detail","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":12,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"2.0 Passenger: My Rides Detail.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754782.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_2.0 Passenger: My Rides.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754782,"imageUrl":"assets/2.0 Passenger: My Rides.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"2.0 Passenger: My Rides","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":13,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"2.0 Passenger: My Rides.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754783.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_3.0 Driver: Home page.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754783,"imageUrl":"assets/3.0 Driver: Home page.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"3.0 Driver: Home Page","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":14,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"3.0 Driver: Home page.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754784.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_3.1 Driver: Pin navigation + detail.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754784,"imageUrl":"assets/3.1 Driver: Pin navigation + detail.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"3.1 Driver: Pin Navigation   Detail","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":15,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"3.1 Driver: Pin navigation + detail.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754785.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_3.2 Driver: Location search.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754785,"imageUrl":"assets/3.2 Driver: Location search.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"3.2 Driver: Location Search","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":16,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"3.2 Driver: Location search.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754786.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_3.3 Driver: Location search + detail.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754786,"imageUrl":"assets/3.3 Driver: Location search + detail.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"3.3 Driver: Location Search   Detail","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":17,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"3.3 Driver: Location search + detail.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754788.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_3.4.1 Driver: Log in to create.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754788,"imageUrl":"assets/3.4.1 Driver: Log in to create.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"3.4.1 Driver: Log In To Create","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":18,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"3.4.1 Driver: Log in to create.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754789.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_3.4 Driver: Login if not already.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754789,"imageUrl":"assets/3.4 Driver: Login if not already.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"3.4 Driver: Login If Not Already","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":19,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"3.4 Driver: Login if not already.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754790.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_3.5 Driver: Create carpool quick.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754790,"imageUrl":"assets/3.5 Driver: Create carpool quick.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"3.5 Driver: Create Carpool Quick","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":20,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"3.5 Driver: Create carpool quick.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754792.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_3.6 Driver: Create carpool.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754792,"imageUrl":"assets/3.6 Driver: Create carpool.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"3.6 Driver: Create Carpool","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":21,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"3.6 Driver: Create carpool.png"},{"backgroundImageClientFilename":"","backgroundAutostretch":false,"backgroundImageUrl":"","zoomScrollBehavior":1,"backgroundColor":"f0f0f0","width":1440.0,"screenUploadState":3,"backgroundImageWidth":"","serverFileName":"245754793.png","commentCount":0,"screenGroupId":0,"unreadCommentCount":0,"backgroundImageHeight":"","projectID":11640178,"isPlaceholder":false,"userID":5522288,"thumbnailUrl":"assets/thumb_3.7 Driver: Carpool created.png","backgroundImagePosition":"tile-horizontally","imageVersion":1,"fixedFooterHeight":0,"isProcessed":true,"id":245754793,"imageUrl":"assets/3.7 Driver: Carpool created.png","backgroundimageserverfilename":"","backgroundFrame":false,"screenTypeID":1,"extended":{},"updatedAt":1501127412000,"height":800.0,"name":"3.7 Driver: Carpool Created","backgroundImageID":0,"backgroundimageversion":"1","alignment":"center","updatedByUserName":"Dave Luetger","isArchived":false,"sort":22,"createdAt":1501127412000,"fixedHeaderHeight":0,"clientFilename":"3.7 Driver: Carpool created.png"}],
+						dividers: [{"position":0,"projectID":11640178,"sort":0,"expanded":true,"label":"","type":"divider","dividerID":0}],
+						metaScreens: {"splash":{"sameOriginImageUrl":"","relation":"apple-touch-startup-image","backgroundColor":"","imageUrl":""},"icon":{"sameOriginImageUrl":"","relation":"apple-touch-icon-precomposed","imageUrl":""}},
+						hotspots: [{"eventTypeID":1,"targetScreenID":245754771,"width":165.0,"height":41.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":719.0,"y":469.0,"screenID":245754769,"id":716206183,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754772,"width":315.0,"height":34.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":15.0,"y":194.0,"screenID":245754769,"id":716206420,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":160.0,"height":40.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":946.0,"y":468.0,"screenID":245754769,"id":716206276,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754789,"width":138.0,"height":29.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":1280.0,"y":86.0,"screenID":245754769,"id":716206473,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":174.0,"height":44.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":521.0,"y":529.0,"screenID":245754770,"id":738726397,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":171.0,"height":46.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":751.0,"y":529.0,"screenID":245754770,"id":738726764,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754772,"width":315.0,"height":36.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":19.0,"y":194.0,"screenID":245754771,"id":716206821,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":138.0,"height":33.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":1278.0,"y":85.0,"screenID":245754771,"id":716206807,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754773,"width":58.0,"height":62.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":829.0,"y":363.0,"screenID":245754772,"id":716206977,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":141.0,"height":31.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":1280.0,"y":84.0,"screenID":245754772,"id":716207061,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754774,"width":315.0,"height":90.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":836.0,"y":456.0,"screenID":245754773,"id":716208674,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754777,"width":136.0,"height":33.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":839.0,"y":286.0,"screenID":245754774,"id":716208882,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":139.0,"height":33.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":1279.0,"y":84.0,"screenID":245754774,"id":716208890,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754777,"width":316.0,"height":94.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":563.0,"y":273.0,"screenID":245754775,"id":716208909,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":8,"targetScreenID":245754778,"width":24.0,"height":20.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":1064.0,"y":273.0,"screenID":245754777,"id":716209349,"isScrollTo":false,"metaData":{"scrollOffset":0,"stayOnScreen":false},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754779,"width":319.0,"height":35.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":923.0,"y":595.0,"screenID":245754777,"id":716209332,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":312.0,"height":29.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":925.0,"y":466.0,"screenID":245754779,"id":716209576,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":312.0,"height":34.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":925.0,"y":412.0,"screenID":245754779,"id":716209535,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":152.0,"height":35.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":565.0,"y":339.0,"screenID":245754780,"id":716209784,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754780,"width":91.0,"height":19.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":372.0,"y":211.0,"screenID":245754781,"id":716209663,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754780,"width":90.0,"height":16.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":375.0,"y":213.0,"screenID":245754782,"id":716209693,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754781,"width":194.0,"height":30.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":193.0,"y":235.0,"screenID":245754782,"id":716209610,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":140.0,"height":30.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":1278.0,"y":87.0,"screenID":245754783,"id":716210103,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754784,"width":63.0,"height":58.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":671.0,"y":390.0,"screenID":245754783,"id":716210293,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754785,"width":316.0,"height":34.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":17.0,"y":220.0,"screenID":245754783,"id":716210130,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":137.0,"height":33.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":1282.0,"y":85.0,"screenID":245754784,"id":716210424,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754785,"width":316.0,"height":41.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":17.0,"y":218.0,"screenID":245754784,"id":716210341,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754788,"width":142.0,"height":34.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":777.0,"y":336.0,"screenID":245754784,"id":716210365,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":131.0,"height":31.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":1282.0,"y":86.0,"screenID":245754785,"id":716210924,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754786,"width":47.0,"height":57.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":681.0,"y":386.0,"screenID":245754785,"id":716210838,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":133.0,"height":33.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":1281.0,"y":83.0,"screenID":245754786,"id":716211009,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754788,"width":144.0,"height":31.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":773.0,"y":337.0,"screenID":245754786,"id":716210883,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754792,"width":314.0,"height":94.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":564.0,"y":273.0,"screenID":245754789,"id":716211232,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754790,"width":310.0,"height":90.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":774.0,"y":382.0,"screenID":245754788,"id":716211200,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754793,"width":281.0,"height":35.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":780.0,"y":574.0,"screenID":245754790,"id":716211282,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754793,"width":315.0,"height":34.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":926.0,"y":596.0,"screenID":245754792,"id":716211296,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":315.0,"height":33.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":925.0,"y":410.0,"screenID":245754793,"id":716211379,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":313.0,"height":36.0,"isBottomAligned":false,"templateID":"","transitionTypeID":1,"x":925.0,"y":463.0,"screenID":245754793,"id":716211404,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754769,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754769,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754769,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754769,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754771,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754771,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754771,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754771,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754772,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754772,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754772,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754772,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":203.0,"height":16.0,"isBottomAligned":false,"templateID":22113399,"transitionTypeID":1,"x":41.0,"y":283.0,"screenID":245754772,"id":716207158,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":138.0,"height":32.0,"isBottomAligned":false,"templateID":22113399,"transitionTypeID":1,"x":44.0,"y":386.0,"screenID":245754772,"id":716207185,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754773,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754773,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754773,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754773,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":203.0,"height":16.0,"isBottomAligned":false,"templateID":22113399,"transitionTypeID":1,"x":41.0,"y":283.0,"screenID":245754773,"id":716207158,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":138.0,"height":32.0,"isBottomAligned":false,"templateID":22113399,"transitionTypeID":1,"x":44.0,"y":386.0,"screenID":245754773,"id":716207185,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754774,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754774,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754774,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754774,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":203.0,"height":16.0,"isBottomAligned":false,"templateID":22113399,"transitionTypeID":1,"x":41.0,"y":283.0,"screenID":245754774,"id":716207158,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":138.0,"height":32.0,"isBottomAligned":false,"templateID":22113399,"transitionTypeID":1,"x":44.0,"y":386.0,"screenID":245754774,"id":716207185,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754775,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754775,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754775,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754775,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":103.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":175.0,"y":1.0,"screenID":245754777,"id":716209140,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":105.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754777,"id":716209188,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":147.0,"height":46.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":18.0,"y":4.0,"screenID":245754777,"id":716209205,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":101.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":1147.0,"y":1.0,"screenID":245754777,"id":716209239,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":103.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":175.0,"y":1.0,"screenID":245754778,"id":716209140,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":105.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754778,"id":716209188,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":147.0,"height":46.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":18.0,"y":4.0,"screenID":245754778,"id":716209205,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":101.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":1147.0,"y":1.0,"screenID":245754778,"id":716209239,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":103.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":175.0,"y":1.0,"screenID":245754779,"id":716209140,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":105.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754779,"id":716209188,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":147.0,"height":46.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":18.0,"y":4.0,"screenID":245754779,"id":716209205,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":101.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":1147.0,"y":1.0,"screenID":245754779,"id":716209239,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":103.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":175.0,"y":1.0,"screenID":245754781,"id":716209140,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":105.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754781,"id":716209188,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":147.0,"height":46.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":18.0,"y":4.0,"screenID":245754781,"id":716209205,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":101.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":1147.0,"y":1.0,"screenID":245754781,"id":716209239,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":103.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":175.0,"y":1.0,"screenID":245754782,"id":716209140,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":105.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754782,"id":716209188,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":147.0,"height":46.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":18.0,"y":4.0,"screenID":245754782,"id":716209205,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":101.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":1147.0,"y":1.0,"screenID":245754782,"id":716209239,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754783,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754783,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754783,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754783,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754784,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754784,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754784,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754784,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754785,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754785,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754785,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754785,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754789,"width":193.0,"height":19.0,"isBottomAligned":false,"templateID":22113415,"transitionTypeID":1,"x":44.0,"y":564.0,"screenID":245754785,"id":716210607,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754789,"width":137.0,"height":33.0,"isBottomAligned":false,"templateID":22113415,"transitionTypeID":1,"x":44.0,"y":635.0,"screenID":245754785,"id":716210817,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754786,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754786,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754786,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754786,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754789,"width":193.0,"height":19.0,"isBottomAligned":false,"templateID":22113415,"transitionTypeID":1,"x":44.0,"y":564.0,"screenID":245754786,"id":716210607,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754789,"width":137.0,"height":33.0,"isBottomAligned":false,"templateID":22113415,"transitionTypeID":1,"x":44.0,"y":635.0,"screenID":245754786,"id":716210817,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754789,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754789,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754789,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754789,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":102.0,"height":49.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":178.0,"y":0.0,"screenID":245754788,"id":716206297,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":110.0,"height":50.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754788,"id":716206345,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754775,"width":68.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":1363.0,"y":1.0,"screenID":245754788,"id":716206546,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":164.0,"height":44.0,"isBottomAligned":false,"templateID":22113362,"transitionTypeID":1,"x":10.0,"y":2.0,"screenID":245754788,"id":716206644,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754789,"width":193.0,"height":19.0,"isBottomAligned":false,"templateID":22113415,"transitionTypeID":1,"x":44.0,"y":564.0,"screenID":245754788,"id":716210607,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754789,"width":137.0,"height":33.0,"isBottomAligned":false,"templateID":22113415,"transitionTypeID":1,"x":44.0,"y":635.0,"screenID":245754788,"id":716210817,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":103.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":175.0,"y":1.0,"screenID":245754790,"id":716209140,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":105.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754790,"id":716209188,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":147.0,"height":46.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":18.0,"y":4.0,"screenID":245754790,"id":716209205,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":101.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":1147.0,"y":1.0,"screenID":245754790,"id":716209239,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754789,"width":193.0,"height":19.0,"isBottomAligned":false,"templateID":22113415,"transitionTypeID":1,"x":44.0,"y":564.0,"screenID":245754790,"id":716210607,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754789,"width":137.0,"height":33.0,"isBottomAligned":false,"templateID":22113415,"transitionTypeID":1,"x":44.0,"y":635.0,"screenID":245754790,"id":716210817,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":103.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":175.0,"y":1.0,"screenID":245754792,"id":716209140,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":105.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754792,"id":716209188,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":147.0,"height":46.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":18.0,"y":4.0,"screenID":245754792,"id":716209205,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":101.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":1147.0,"y":1.0,"screenID":245754792,"id":716209239,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754771,"width":103.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":175.0,"y":1.0,"screenID":245754793,"id":716209140,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754783,"width":105.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":283.0,"y":0.0,"screenID":245754793,"id":716209188,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754769,"width":147.0,"height":46.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":18.0,"y":4.0,"screenID":245754793,"id":716209205,"isScrollTo":false,"metaData":{},"targetTypeID":1},{"eventTypeID":1,"targetScreenID":245754782,"width":101.0,"height":47.0,"isBottomAligned":false,"templateID":22113403,"transitionTypeID":1,"x":1147.0,"y":1.0,"screenID":245754793,"id":716209239,"isScrollTo":false,"metaData":{},"targetTypeID":1}],
+						branding: {
+							stub: "invision",
+							url: "http://www.InVisionApp.com/"
+						},
+						mobileDevices: [{"viewportWidth":"0","loadScreenResolution":"","mobileSkinColor":"","className":"desktop","viewportHeight":"0","iconResolution":"","platform":"any","mobileSkin":"any","description":"desktop","isDefaultDeviceType":true,"deviceHeight":0,"orientation":"any","deviceType":"desktop","mobileDeviceID":0,"mobileSkinFilename":"","deviceWidth":0},{"viewportWidth":"320","loadScreenResolution":"640 x 1096","mobileSkinColor":"black","className":"iphone-portrait","viewportHeight":"568","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 5 (Black)","isDefaultDeviceType":false,"deviceHeight":778,"orientation":"portrait","deviceType":"phone","mobileDeviceID":1,"mobileSkinFilename":"iphone-portrait.png","deviceWidth":374},{"viewportWidth":"568","loadScreenResolution":"640 x 1096","mobileSkinColor":"black","className":"iphone-landscape","viewportHeight":"320","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 5 (Black)","isDefaultDeviceType":false,"deviceHeight":374,"orientation":"landscape","deviceType":"phone","mobileDeviceID":2,"mobileSkinFilename":"iphone-landscape.png","deviceWidth":778},{"viewportWidth":"576","loadScreenResolution":"1536 x 2048","mobileSkinColor":"black","className":"ipad-portrait","viewportHeight":"768","iconResolution":"152 x 152","platform":"iOS","mobileSkin":"iPad","description":"iPad - Black","isDefaultDeviceType":true,"deviceHeight":950,"orientation":"portrait","deviceType":"tablet","mobileDeviceID":3,"mobileSkinFilename":"ipad-portrait.png","deviceWidth":640},{"viewportWidth":"768","loadScreenResolution":"2048 x 1496","mobileSkinColor":"black","className":"ipad-landscape","viewportHeight":"576","iconResolution":"152 x 152","platform":"iOS","mobileSkin":"iPad","description":"iPad - Black","isDefaultDeviceType":true,"deviceHeight":640,"orientation":"landscape","deviceType":"tablet","mobileDeviceID":4,"mobileSkinFilename":"ipad-landscape.png","deviceWidth":950},{"viewportWidth":"320","loadScreenResolution":"640 x 920","mobileSkinColor":"black","className":"iphone4-portrait","viewportHeight":"480","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 4 (Black)","isDefaultDeviceType":false,"deviceHeight":690,"orientation":"portrait","deviceType":"phone","mobileDeviceID":5,"mobileSkinFilename":"iphone4-portrait.png","deviceWidth":374},{"viewportWidth":"480","loadScreenResolution":"640 x 920","mobileSkinColor":"black","className":"iphone4-landscape","viewportHeight":"320","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 4 (Black)","isDefaultDeviceType":false,"deviceHeight":374,"orientation":"landscape","deviceType":"phone","mobileDeviceID":6,"mobileSkinFilename":"iphone4-landscape.png","deviceWidth":690},{"viewportWidth":"360","loadScreenResolution":"1080 x 1920","mobileSkinColor":"black","className":"htcOne-portrait","viewportHeight":"640","iconResolution":"192 x 192","platform":"Android","mobileSkin":"HTC One","description":"HTC One - Black","isDefaultDeviceType":true,"deviceHeight":836,"orientation":"portrait","deviceType":"phone","mobileDeviceID":7,"mobileSkinFilename":"htcOne-portrait.png","deviceWidth":402},{"viewportWidth":"640","loadScreenResolution":"1920 x 1080","mobileSkinColor":"black","className":"htcOne-landscape","viewportHeight":"360","iconResolution":"192 x 192","platform":"Android","mobileSkin":"HTC One","description":"HTC One - Black","isDefaultDeviceType":true,"deviceHeight":402,"orientation":"landscape","deviceType":"phone","mobileDeviceID":8,"mobileSkinFilename":"htcOne-landscape.png","deviceWidth":836},{"viewportWidth":"360","loadScreenResolution":"1080 x 1920","mobileSkinColor":"black","className":"samsungS4-portrait","viewportHeight":"640","iconResolution":"192 x 192","platform":"Android","mobileSkin":"Samsung Galaxy S4","description":"Samsung Galaxy S4 - Black","isDefaultDeviceType":false,"deviceHeight":786,"orientation":"portrait","deviceType":"phone","mobileDeviceID":9,"mobileSkinFilename":"samsungS4-portrait.png","deviceWidth":406},{"viewportWidth":"640","loadScreenResolution":"1920 x 1080","mobileSkinColor":"black","className":"samsungS4-landscape","viewportHeight":"360","iconResolution":"192 x 192","platform":"Android","mobileSkin":"Samsung Galaxy S4","description":"Samsung Galaxy S4 - Black","isDefaultDeviceType":false,"deviceHeight":406,"orientation":"landscape","deviceType":"phone","mobileDeviceID":10,"mobileSkinFilename":"samsungS4-landscape.png","deviceWidth":786},{"viewportWidth":"320","loadScreenResolution":"640 x 1096","mobileSkinColor":"white","className":"iphone-portrait","viewportHeight":"568","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 5 (White)","isDefaultDeviceType":false,"deviceHeight":778,"orientation":"portrait","deviceType":"phone","mobileDeviceID":11,"mobileSkinFilename":"iphone-portrait-white.png","deviceWidth":374},{"viewportWidth":"568","loadScreenResolution":"640 x 1096","mobileSkinColor":"white","className":"iphone-landscape","viewportHeight":"320","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 5 (White)","isDefaultDeviceType":false,"deviceHeight":374,"orientation":"landscape","deviceType":"phone","mobileDeviceID":12,"mobileSkinFilename":"iphone-landscape-white.png","deviceWidth":778},{"viewportWidth":"576","loadScreenResolution":"1536 x 2048","mobileSkinColor":"white","className":"ipad-portrait","viewportHeight":"768","iconResolution":"152 x 152","platform":"iOS","mobileSkin":"iPad","description":"iPad - White","isDefaultDeviceType":false,"deviceHeight":950,"orientation":"portrait","deviceType":"tablet","mobileDeviceID":13,"mobileSkinFilename":"ipad-portrait-white.png","deviceWidth":640},{"viewportWidth":"768","loadScreenResolution":"2048 x 1496","mobileSkinColor":"white","className":"ipad-landscape","viewportHeight":"576","iconResolution":"152 x 152","platform":"iOS","mobileSkin":"iPad","description":"iPad - White","isDefaultDeviceType":false,"deviceHeight":640,"orientation":"landscape","deviceType":"tablet","mobileDeviceID":14,"mobileSkinFilename":"ipad-landscape-white.png","deviceWidth":950},{"viewportWidth":"320","loadScreenResolution":"640 x 920","mobileSkinColor":"white","className":"iphone4-portrait","viewportHeight":"480","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 4 (White)","isDefaultDeviceType":false,"deviceHeight":690,"orientation":"portrait","deviceType":"phone","mobileDeviceID":15,"mobileSkinFilename":"iphone4-portrait-white.png","deviceWidth":374},{"viewportWidth":"480","loadScreenResolution":"640 x 920","mobileSkinColor":"white","className":"iphone4-landscape","viewportHeight":"320","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 4 (White)","isDefaultDeviceType":false,"deviceHeight":374,"orientation":"landscape","deviceType":"phone","mobileDeviceID":16,"mobileSkinFilename":"iphone4-landscape-white.png","deviceWidth":690},{"viewportWidth":"360","loadScreenResolution":"1080 x 1920","mobileSkinColor":"white","className":"htcOne-portrait","viewportHeight":"640","iconResolution":"192 x 192","platform":"Android","mobileSkin":"HTC One","description":"HTC One - White","isDefaultDeviceType":false,"deviceHeight":836,"orientation":"portrait","deviceType":"phone","mobileDeviceID":17,"mobileSkinFilename":"htcOne-portrait-white.png","deviceWidth":402},{"viewportWidth":"640","loadScreenResolution":"1920 x 1080","mobileSkinColor":"white","className":"htcOne-landscape","viewportHeight":"360","iconResolution":"192 x 192","platform":"Android","mobileSkin":"HTC One","description":"HTC One - White","isDefaultDeviceType":false,"deviceHeight":402,"orientation":"landscape","deviceType":"phone","mobileDeviceID":18,"mobileSkinFilename":"htcOne-landscape-white.png","deviceWidth":836},{"viewportWidth":"360","loadScreenResolution":"1080 x 1920","mobileSkinColor":"white","className":"samsungS4-portrait","viewportHeight":"640","iconResolution":"192 x 192","platform":"Android","mobileSkin":"Samsung Galaxy S4","description":"Samsung Galaxy S4 - White","isDefaultDeviceType":false,"deviceHeight":786,"orientation":"portrait","deviceType":"phone","mobileDeviceID":19,"mobileSkinFilename":"samsungS4-portrait-white.png","deviceWidth":406},{"viewportWidth":"640","loadScreenResolution":"1920 x 1080","mobileSkinColor":"white","className":"samsungS4-landscape","viewportHeight":"360","iconResolution":"192 x 192","platform":"Android","mobileSkin":"Samsung Galaxy S4","description":"Samsung Galaxy S4 - White","isDefaultDeviceType":false,"deviceHeight":406,"orientation":"landscape","deviceType":"phone","mobileDeviceID":20,"mobileSkinFilename":"samsungS4-landscape-white.png","deviceWidth":786},{"viewportWidth":"450","loadScreenResolution":"1080 x 1920","mobileSkinColor":"black","className":"nexus7-portrait","viewportHeight":"685","iconResolution":"192 x 192","platform":"Android","mobileSkin":"Nexus 7","description":"Nexus 7","isDefaultDeviceType":true,"deviceHeight":870,"orientation":"portrait","deviceType":"tablet","mobileDeviceID":21,"mobileSkinFilename":"nexus7-portrait.png","deviceWidth":532},{"viewportWidth":"720","loadScreenResolution":"1920 x 1080","mobileSkinColor":"black","className":"nexus7-landscape","viewportHeight":"415","iconResolution":"192 x 192","platform":"Android","mobileSkin":"Nexus 7","description":"Nexus 7","isDefaultDeviceType":true,"deviceHeight":532,"orientation":"landscape","deviceType":"tablet","mobileDeviceID":22,"mobileSkinFilename":"nexus7-landscape.png","deviceWidth":870},{"viewportWidth":"600","loadScreenResolution":"1080 x 1920","mobileSkinColor":"black","className":"nexus10-portrait","viewportHeight":"925","iconResolution":"192 x 192","platform":"Android","mobileSkin":"Nexus 10","description":"Nexus 10","isDefaultDeviceType":false,"deviceHeight":1112,"orientation":"portrait","deviceType":"tablet","mobileDeviceID":23,"mobileSkinFilename":"nexus10-portrait.png","deviceWidth":776},{"viewportWidth":"960","loadScreenResolution":"1920 x 1080","mobileSkinColor":"black","className":"nexus10-landscape","viewportHeight":"565","iconResolution":"192 x 192","platform":"Android","mobileSkin":"Nexus 10","description":"Nexus 10","isDefaultDeviceType":false,"deviceHeight":776,"orientation":"landscape","deviceType":"tablet","mobileDeviceID":24,"mobileSkinFilename":"nexus10-landscape.png","deviceWidth":1112},{"viewportWidth":"375","loadScreenResolution":"750 x 1294","mobileSkinColor":"black","className":"iphone6-portrait","viewportHeight":"667","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 6-8 (Black)","isDefaultDeviceType":true,"deviceHeight":850,"orientation":"portrait","deviceType":"phone","mobileDeviceID":25,"mobileSkinFilename":"iphone6-portrait.png","deviceWidth":416},{"viewportWidth":"667","loadScreenResolution":"750 x 1294","mobileSkinColor":"black","className":"iphone6-landscape","viewportHeight":"375","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 6-8 (Black)","isDefaultDeviceType":true,"deviceHeight":416,"orientation":"landscape","deviceType":"phone","mobileDeviceID":26,"mobileSkinFilename":"iphone6-landscape.png","deviceWidth":850},{"viewportWidth":"375","loadScreenResolution":"750 x 1294","mobileSkinColor":"white","className":"iphone6-portrait","viewportHeight":"667","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 6-8 (White)","isDefaultDeviceType":false,"deviceHeight":850,"orientation":"portrait","deviceType":"phone","mobileDeviceID":27,"mobileSkinFilename":"iphone6-portrait-white.png","deviceWidth":416},{"viewportWidth":"667","loadScreenResolution":"750 x 1294","mobileSkinColor":"white","className":"iphone6-landscape","viewportHeight":"375","iconResolution":"120 x 120","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 6-8 (White)","isDefaultDeviceType":false,"deviceHeight":416,"orientation":"landscape","deviceType":"phone","mobileDeviceID":28,"mobileSkinFilename":"iphone6-landscape-white.png","deviceWidth":850},{"viewportWidth":"412","loadScreenResolution":"1242 x 2148","mobileSkinColor":"black","className":"iphone6plus-portrait","viewportHeight":"734","iconResolution":"180 x 180","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 6-8 Plus (Black)","isDefaultDeviceType":false,"deviceHeight":920,"orientation":"portrait","deviceType":"phone","mobileDeviceID":29,"mobileSkinFilename":"iphone6plus-portrait.png","deviceWidth":454},{"viewportWidth":"734","loadScreenResolution":"1242 x 2148","mobileSkinColor":"black","className":"iphone6plus-landscape","viewportHeight":"412","iconResolution":"180 x 180","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 6-8 Plus (Black)","isDefaultDeviceType":false,"deviceHeight":454,"orientation":"landscape","deviceType":"phone","mobileDeviceID":30,"mobileSkinFilename":"iphone6plus-landscape.png","deviceWidth":920},{"viewportWidth":"412","loadScreenResolution":"1242 x 2148","mobileSkinColor":"white","className":"iphone6plus-portrait","viewportHeight":"734","iconResolution":"180 x 180","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 6-8 Plus (White)","isDefaultDeviceType":false,"deviceHeight":920,"orientation":"portrait","deviceType":"phone","mobileDeviceID":31,"mobileSkinFilename":"iphone6plus-portrait-white.png","deviceWidth":454},{"viewportWidth":"734","loadScreenResolution":"1242 x 2148","mobileSkinColor":"white","className":"iphone6plus-landscape","viewportHeight":"412","iconResolution":"180 x 180","platform":"iOS","mobileSkin":"iPhone","description":"iPhone 6-8 Plus (White)","isDefaultDeviceType":false,"deviceHeight":454,"orientation":"landscape","deviceType":"phone","mobileDeviceID":32,"mobileSkinFilename":"iphone6plus-portrait-white.png","deviceWidth":920},{"viewportWidth":"136","loadScreenResolution":"272px x 340px","mobileSkinColor":"roseGold","className":"apple-watch-38mm-roseGold","viewportHeight":"170","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"38mm - Rose Gold","isDefaultDeviceType":false,"deviceHeight":378,"orientation":"portrait","deviceType":"watch","mobileDeviceID":33,"mobileSkinFilename":"apple-watch-38mm-roseGold.png","deviceWidth":209},{"viewportWidth":"136","loadScreenResolution":"272px x 340px","mobileSkinColor":"silverAluminum","className":"apple-watch-38mm-silverAluminum","viewportHeight":"170","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"38mm - Silver Aluminum","isDefaultDeviceType":false,"deviceHeight":378,"orientation":"portrait","deviceType":"watch","mobileDeviceID":34,"mobileSkinFilename":"apple-watch-38mm-silverAluminum.png","deviceWidth":209},{"viewportWidth":"136","loadScreenResolution":"272px x 340px","mobileSkinColor":"spaceBlackStainlessSteel","className":"apple-watch-38mm-spaceBlackStainlessSteel","viewportHeight":"170","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"38mm - Space Black Stainless Steel","isDefaultDeviceType":false,"deviceHeight":378,"orientation":"portrait","deviceType":"watch","mobileDeviceID":35,"mobileSkinFilename":"apple-watch-38mm-spaceBlackStainlessSteel.png","deviceWidth":209},{"viewportWidth":"136","loadScreenResolution":"272px x 340px","mobileSkinColor":"spaceGrayAluminum","className":"apple-watch-38mm-spaceGrayAluminum","viewportHeight":"170","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"38mm - Space Gray Aluminum","isDefaultDeviceType":false,"deviceHeight":378,"orientation":"portrait","deviceType":"watch","mobileDeviceID":36,"mobileSkinFilename":"apple-watch-38mm-spaceGrayAluminum.png","deviceWidth":209},{"viewportWidth":"136","loadScreenResolution":"272px x 340px","mobileSkinColor":"stainlessSteel","className":"apple-watch-38mm-stainlessSteel","viewportHeight":"170","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"38mm - Stainless Steel","isDefaultDeviceType":false,"deviceHeight":378,"orientation":"portrait","deviceType":"watch","mobileDeviceID":37,"mobileSkinFilename":"apple-watch-38mm-stainlessSteel.png","deviceWidth":209},{"viewportWidth":"136","loadScreenResolution":"272px x 340px","mobileSkinColor":"yellowGold","className":"apple-watch-38mm-yellowGold","viewportHeight":"170","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"38mm - Yellow Gold","isDefaultDeviceType":false,"deviceHeight":378,"orientation":"portrait","deviceType":"watch","mobileDeviceID":38,"mobileSkinFilename":"apple-watch-38mm-yellowGold.png","deviceWidth":209},{"viewportWidth":"156","loadScreenResolution":"312px x 390px","mobileSkinColor":"roseGold","className":"apple-watch-42mm-roseGold","viewportHeight":"195","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"42mm - Rose Gold","isDefaultDeviceType":false,"deviceHeight":438,"orientation":"portrait","deviceType":"watch","mobileDeviceID":39,"mobileSkinFilename":"apple-watch-42mm-roseGold.png","deviceWidth":240},{"viewportWidth":"156","loadScreenResolution":"312px x 390px","mobileSkinColor":"silverAluminum","className":"apple-watch-42mm-silverAluminum","viewportHeight":"195","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"42mm - Silver Aluminum","isDefaultDeviceType":false,"deviceHeight":438,"orientation":"portrait","deviceType":"watch","mobileDeviceID":40,"mobileSkinFilename":"apple-watch-42mm-silverAluminum.png","deviceWidth":240},{"viewportWidth":"156","loadScreenResolution":"312px x 390px","mobileSkinColor":"spaceBlackStainlessSteel","className":"apple-watch-42mm-spaceBlackStainlessSteel","viewportHeight":"195","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"42mm - Space Black Stainless Steel","isDefaultDeviceType":false,"deviceHeight":438,"orientation":"portrait","deviceType":"watch","mobileDeviceID":41,"mobileSkinFilename":"apple-watch-42mm-spaceBlackStainlessSteel.png","deviceWidth":240},{"viewportWidth":"156","loadScreenResolution":"312px x 390px","mobileSkinColor":"spaceGrayAluminum","className":"apple-watch-42mm-spaceGrayAluminum","viewportHeight":"195","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"42mm - Space Gray Aluminum","isDefaultDeviceType":true,"deviceHeight":438,"orientation":"portrait","deviceType":"watch","mobileDeviceID":42,"mobileSkinFilename":"apple-watch-42mm-spaceGrayAluminum.png","deviceWidth":240},{"viewportWidth":"156","loadScreenResolution":"312px x 390px","mobileSkinColor":"stainlessSteel","className":"apple-watch-42mm-stainlessSteel","viewportHeight":"195","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"42mm - Stainless Steel","isDefaultDeviceType":false,"deviceHeight":438,"orientation":"portrait","deviceType":"watch","mobileDeviceID":43,"mobileSkinFilename":"apple-watch-42mm-stainlessSteel.png","deviceWidth":240},{"viewportWidth":"156","loadScreenResolution":"312px x 390px","mobileSkinColor":"yellowGold","className":"apple-watch-42mm-yellowGold","viewportHeight":"195","iconResolution":"144 x 144","platform":"iOS","mobileSkin":"apple-watch","description":"42mm - Yellow Gold","isDefaultDeviceType":false,"deviceHeight":438,"orientation":"portrait","deviceType":"watch","mobileDeviceID":44,"mobileSkinFilename":"apple-watch-42mm-yellowGold.png","deviceWidth":240},{"viewportWidth":"160","loadScreenResolution":"320px x 320px","mobileSkinColor":"round-dark","className":"android-round-dark","viewportHeight":"160","iconResolution":"144 x 144","platform":"android","mobileSkin":"android-watch","description":"Round - Dark","isDefaultDeviceType":false,"deviceHeight":310,"orientation":"portrait","deviceType":"watch","mobileDeviceID":45,"mobileSkinFilename":"android-round-dark.png","deviceWidth":185},{"viewportWidth":"160","loadScreenResolution":"320px x 320px","mobileSkinColor":"round-light","className":"android-round-light","viewportHeight":"160","iconResolution":"144 x 144","platform":"android","mobileSkin":"android-watch","description":"Round - Light","isDefaultDeviceType":false,"deviceHeight":310,"orientation":"portrait","deviceType":"watch","mobileDeviceID":46,"mobileSkinFilename":"android-round-light.png","deviceWidth":185},{"viewportWidth":"160","loadScreenResolution":"320px x 320px","mobileSkinColor":"square-dark","className":"android-square-dark","viewportHeight":"160","iconResolution":"144 x 144","platform":"android","mobileSkin":"android-watch","description":"Square - Dark","isDefaultDeviceType":true,"deviceHeight":377,"orientation":"portrait","deviceType":"watch","mobileDeviceID":47,"mobileSkinFilename":"android-square-dark.png","deviceWidth":223},{"viewportWidth":"160","loadScreenResolution":"320px x 320px","mobileSkinColor":"square-light","className":"android-square-light","viewportHeight":"160","iconResolution":"144 x 144","platform":"android","mobileSkin":"android-watch","description":"Square - Light","isDefaultDeviceType":false,"deviceHeight":377,"orientation":"portrait","deviceType":"watch","mobileDeviceID":48,"mobileSkinFilename":"android-square-light.png","deviceWidth":223}]
+					}
+				);
+
+			})( angular, InVision );
+
+		</script>
+
+	<script type="text/ng-template" id="/assets/apps/share/views/modal/share-tour.htm"><div ng-controller="modal.ShareTour" inv-modal class="modal animate" id="shareTour">
+<div class="modal-body">
+<div class="video-container"
+inv-video-overlay
+id="video_share_tour"
+player-id="video_share_tour"
+video-id="n7kgs97nk4"
+video-width="701"
+video-height="394">
+<div class="play-overlay">
+<a href=""></a>
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<h2>Get Started in 30 Seconds</h2>
+</div>
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/modal/error.htm"><div ng-controller="modal.ErrorController" inv-modal class="modal errorModal">
+<div class="modal-header">
+<a ng-click="closeModalWindow()" class="close" aria-hidden="true">&times;</a>
+<h3>
+Oops!
+</h3>
+</div>
+<div class="modal-body">
+{{ errorMessage }}
+</div>
+<div class="modal-footer">
+<a ng-click="closeModalWindow()" class="btn btn-primary">Close</a>
+</div>
+</div></script><script type="text/ng-template" id="/assets/apps/share/views/powered-by/powered-by.htm"><!-- Hide this object for all Shopify Enterprise project shares. ( companyID 71 ).  Everyone else should see it. -->
+<div ng-hide="project.companyID == 71">
+<a
+ng-if=" !project.isMobile || share.isEmbed "
+class="powered-by"
+href="http://www.invisionapp.com/?utm_medium=virality&utm_source=Share%20CTA"
+target="_blank">
+<img src="assets/apps/share/img/logo-icon.png" />
+</a>
+<a
+ng-if="project.isMobile && !share.isEmbed"
+class="mobile-powered-by"
+href="http://www.invisionapp.com/?utm_medium=virality&utm_source=Share%20CTA"
+target="_blank">
+made with InVision
+</a>
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/share-lite/comment-bar.htm"><div id="comments_bar" ng-controller="toolbar.ToolbarController">
+<h2>Click anywhere on the image to leave a comment</h2>
+<p class="close"><a ng-click="isShowingComments = !isShowingComments">Close</a></p>
+</div> <!-- share_bar --></script><script type="text/ng-template" id="/assets/apps/share/views/share-lite/share-bar.htm"><div id="share_bar" ng-controller="toolbar.ToolbarController">
+<a class="icon" href="{{HomeURI}}">InVision App</a>
+<h2>{{ displayFilename }}</h2>
+<div class="copied">Link copied to clipboard</div>
+<ul>
+<li><a ng-click="toggleShareModal()">Share</a></li>
+<li><a ng-href="/api/snaps/download/{{share.key}}">Download</a></li>
+<li class="feedback"><a ng-click="isShowingComments = !isShowingComments">Comment <span>{{ commentCount }}</span></a></li>
+</ul>
+<div class="share-modal" ng-show="isShowingShareModal">
+<h2>Share link to <strong>{{ displayFilename }}</strong></h2>
+<form inv-copy-to-clipboard>
+<input type="text" name="copy" id="share_link" value="{{share.shareUrl}}{{share.key}}" />
+<div class="button-container">
+<button name="copy" data-clipboard-text="{{share.shareUrl}}{{share.key}}">Copy Link</button>
+</div> <!-- button-container -->
+</form>
+<a ng-click="toggleShareModal()" class="close">Close</a>
+</div> <!-- share-modal -->
+</div> <!-- share_bar --></script><script type="text/ng-template" id="/assets/apps/share/views/toolbar/toolbar.htm">
+<div
+ng-controller="toolbar.ToolbarController"
+ng-show="( includeBrowseTool || includeCommentsTool )"
+ng-mouseenter="updateIsUserOverToolbar( true )"
+ng-mouseleave="updateIsUserOverToolbar( false )"
+ng-hide="!isLiveShare && project.isSnap || share.isEmbed"
+ng-class="{ 'tour-is-running': isShareTourRunning }"
+class="m-toolbar">
+<!-- iPhone projects (on share, not liveshare) only -->
+<div
+id="shareSMS"
+inv-fade-show="isShowingSmsForm"
+ng-if=" deviceTemplate.deviceType == 'phone' && ! isLiveShare && !! shareUrl "
+ng-class="{
+'no-comments': ! includeCommentsTool,
+'no-browse': ! includeBrowseTool
+}">
+<div class="smsForm" inv-fade-show="isShowingSmsForm" duration="slow" >
+<a ng-click="toggleSmsShareForm()" class="closeButton"><img src="assets/apps/share/img/close4.png" alt="Close" /></a>
+<h2>Install "{{ project.name }}" on your phone</h2>
+<p>Visit <a ng-href="{{ shareUrl }}">{{shareUrl}}</a> on your phone or SMS the link to your number:</p>
+<input 	inv-i8n-telephone
+type="text"
+class="phoneNumber"
+country-code="share.countryCode"
+ng-class="{ messageSent: sms.messageSent }"
+ui-keypress="{13:'sendShareSms()'}"
+name="phoneNumber"
+placeholder="Enter mobile number"
+ng-model="sms.phoneNumber">
+<button ng-click="sendShareSms()">
+Send
+</button>
+<div class="message">
+{{sms.message}}
+</div>
+</div>
+</div>
+<!-- BEGIN: Toolbar. -->
+<div
+inv-toolbar
+class="toolbar"
+ng-class="{
+active: isActive,
+'highlight-tour': !hasSeenTour
+}">
+<!-- helper -->
+<div
+class="begin-share-tour"
+ng-show=" shouldShowHelpQuestionMark() "
+>
+<!-- bouncy tooltip -->
+<div 
+class="comment-tip-wrapper"
+ng-show="shouldShowBounceToolTip()">
+<span
+inv-bouncy-tooltip
+msg="Learn how to explore this design"
+callback="hasSeenCommentTooltip()"></span>
+</div> <!-- comment-tip-wrapper -->
+<div class="helper" ng-class="{'hasSeenCommentsTooltip': hasSeenCommentsTooltip}" ng-click="showShareTour()">?</div>
+</div> <!-- begin-share-tour -->
+<div class="tools">
+<div ng-if=" ! isLiveShare && deviceTemplate.deviceType == 'phone' && !! shareUrl " class="tool share-sms-tool">
+<a ng-click="toggleSmsShareForm()"></a>
+</div>
+<div
+ng-show="includeBrowseTool"
+ng-class="{ active: tourSubView == 'thumbnails' }"
+class="tool browse-toggle-tool">
+<a ng-click="toggleBrowse()" ng-class="{ on: isBrowseOpen }">Browse</a>
+</div>
+<div
+ng-show="includeCommentsTool"
+ng-class="{
+active: tourSubView == 'comments',
+'no-browse': !includeBrowseTool && ( deviceTemplate.deviceType != 'phone' || !! isLiveshare )
+}"
+class="tool comments-toggle-tool">
+<div class="clickable"></div>
+<span class="comments" ng-class="{ new: unreadCommentCount, old: ( commentCount && ! unreadCommentCount ) }">
+<span class="unread">{{ unreadCommentCount }}</span>
+<span class="total">{{ commentCount }}</span>
+</span>
+<span class="description">
+Comments
+</span>
+<div ng-model="isShowingComments" inv-toggle></div>
+</div>
+</div>
+</div>
+<!-- END: Toolbar. -->
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/partials/preload.htm">	<!--
+BEGIN: HACKY CSS PRELOAD. 
+Until we have better sprite technology, let's at least pre-load the images this way so that 
+the parallel loading of Screen images is less likely to conflict. 
+-->
+<div style="height: 1px ; left: -100px ; overflow: hidden ; position: absolute ; top: -100px ; width: 1px ;">
+<img src="assets/apps/share/img/app-switch.png" />
+<img src="assets/apps/share/img/browse-background.png" />
+<img src="assets/apps/share/img/browse-pillnav-icons.png" />
+<img src="assets/apps/share/img/browse-pillnav.png" />
+<img src="assets/apps/share/img/close3.png" />
+<img src="assets/apps/share/img/comments-context-tab.png" />
+<img src="assets/apps/share/img/comments-vrule.png" />
+<img src="assets/apps/share/img/grey-screen-divider.png" />
+<img src="assets/apps/share/img/loader-sprite.png?v=06112014" />
+<img src="assets/apps/share/img/marker.png?v=2" />
+<img src="assets/apps/share/img/screens-search.png" />
+<img src="assets/apps/share/img/scrollbar-mid.png" />
+<img src="assets/apps/share/img/sketch-viewer-close.png" />
+<img src="assets/apps/share/img/sketch_tools.png" />
+<img src="assets/apps/share/img/share-lite-sprites.png" />
+<img src="assets/apps/share/img/share-lite-sprites@2x.png" />
+<img src="assets/apps/share/img/share-loading-sprites.png" />
+<img src="assets/apps/share/img/share-loading-sprites@2x.png" />
+</div>
+<!-- END: Hacky CSS Preload. </script><script type="text/ng-template" id="/assets/apps/share/views/screens/screens.htm"><div ng-if="!isLiveShare && project.isSnap">
+<div 
+ng-if="subview == 'comments'" 
+ng-include=" '/assets/apps/share/views/share-lite/comment-bar.htm' "></div>
+<div ng-include=" '/assets/apps/share/views/share-lite/share-bar.htm' "></div>
+</div>
+<!-- desktop projects -->
+<div
+ng-if=" !project.isMobile || subview == 'comments' "
+ng-controller="screens.ScreensController"
+inv-screens
+inv-add-padding-on-scroll
+class="m-screens desktop"
+ng-class="{ isScaledCommentMode: project.isMobile }">
+<div
+ng-repeat="screen in screens track by screen.id"
+data-distance="{{ screen.distanceFromStartScreen }}"
+class="screen {{ screen.alignment }}"
+ng-class="{ visible: (screen.id == selectedScreen.id) }"
+ng-style="{ 
+width: ( Math.round(screen.width * screen.displayScale) + 'px' ), 
+height: ( Math.round(screen.height * screen.displayScale) + 'px' ) 
+}"
+data-displayScale="{{screen.displayScale}}">
+<img
+inv-screen
+ng-src="{{ screen.imageUrl }}"
+ng-style="{ 
+width: ( Math.round(screen.width * screen.displayScale) + 'px' ), 
+height: ( Math.round(screen.height * screen.displayScale) + 'px' ) 
+}" />
+</div>
+</div>
+<!-- mobile projects-->
+<div
+ng-if=" project.isMobile && subview == 'preview' "
+ng-controller="screens.ScreensController"
+inv-screens
+data-distance="{{ screen.distanceFromStartScreen }}"
+class="m-screens" >
+<div
+ng-repeat="screen in screens track by screen.id"
+class="screen mobile {{ screen.alignment }}"
+ng-class="{ visible: (screen.id == selectedScreen.id) }">
+<img inv-screen ng-src="{{ screen.imageUrl }}" />
+</div>
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/directives/toggle.htm">
+<div class="m-toggle off">	
+<!-- BEGIN: Labels Track. -->
+<div class="toggle-labels-track">
+<div class="toggle-labels">
+<div class="toggle-label on">
+<span class="text">On</span>
+</div>
+<div class="toggle-label off">
+<span class="text">Off</span>
+</div>
+</div>
+</div>
+<!-- END: Labels Track. -->
+<!-- BEGIN: Thumb Track. -->
+<div class="toggle-thumb-track">
+<a href="" class="toggle-thumb">
+<span class="toggle-end">
+<br />
+</span>
+</a>
+</div>
+<!-- END: Thumb Track. -->
+</div></script><script type="text/ng-template" id="/assets/apps/share/views/directives/share-sketch-viewer.htm"><div id="shareSketchViewer"  ng-show=" isShowingSketchViewer ">
+<div class="modalOverlay">
+<div  class="sketchViewer">
+<div class="closeViewer" ng-click=" closeSketchViewer() "></div>
+<div ng-show=" sketchImageIsProcessing " class="isProcessing">
+<p>
+<img src="assets/apps/share/img/draw.png"/><br/>
+This sketch is currently being processed.<br/>
+<span class="sub">It'll be available shortly!</span>
+</p>
+</div>
+<!-- Non-Temporaray sketches here -->
+<div ng-if=" !sketchViewerSketchIsTemp " class="imageContainer">
+<img ng-src="/api/comments/{{sketchViewerSketch.commentID}}/sketch/{{sketchViewerSketch.id}}"
+inv-console-sketch-viewer-image
+ng-style="{	width: screen.width * screen.displayScale + 'px',
+height: screen.height * screen.displayScale + 'px'
+}"/>
+</div>
+<!-- Temporary sketches here -->
+<div ng-if=" sketchViewerSketchIsTemp " class="imageContainer">
+<img 	ng-src="{{ screen.imageUrl }}"
+ng-style="{	width: screen.width * screen.displayScale + 'px',
+height: screen.height * screen.displayScale + 'px'
+}" />
+<div class="whiteOverlay" ng-style="{ opacity : sketchViewerSketch.opacity }"></div>
+<div class="tempSketchOverlay" ng-bind-html=" sketchViewerSketch.svg ">
+</div>
+</div>
+</div>
+</div>
+</div></script><script type="text/ng-template" id="/assets/apps/share/views/directives/share-sketch-builder.htm"><div id="shareSketchBuilder">
+<div id="builderWindow">
+<div id="sketchToolbar">
+<div class="whiteboard_tools">
+<a ng-click="setWhiteboardOpacity(0, 'none')" id="whiteboard_none" class="whiteboard_tool none overlay" ng-class="{ active: whiteboardSelected == 'none'}"><span>Transparent</span></a>
+<a ng-click="setWhiteboardOpacity(.7, 'half')" id="whiteboard_half" class="whiteboard_tool half overlay" ng-class="{ active: whiteboardSelected == 'half'}"><span>50%</span></a>
+<a ng-click="setWhiteboardOpacity(1, 'full')" id="whiteboard_full" class="whiteboard_tool full overlay" ng-class="{ active: whiteboardSelected == 'full'}"><span>100%</span></a>
+</div> <!-- whiteboard_tools -->
+<div class="tools">
+<a id="pencil" class="sketch_tool pencil">
+<i class="tool_icon tool_pencil"></i>
+</a>
+<a id="rect" class="sketch_tool square">
+<i class="tool_icon tool_square"></i>
+</a>
+<a id="circle" class="sketch_tool circle">
+<i class="tool_icon tool_circle"></i>
+</a>
+<a id="line" class="sketch_tool line">
+<i class="tool_icon tool_line"></i>
+</a>
+<!--
+<a id="arrow" class="sketch_tool arrow">
+<i class="tool_icon tool_arrow"></i>
+</a>
+-->
+<a id="text" class="sketch_tool text">
+<i class="tool_icon tool_text"></i>
+</a>
+<a id="move" class="sketch_tool move">
+<i class="tool_icon tool_move"></i>
+</a>
+<div class="actions_toolbar">
+<a id="undo" rel="tooltip" data-placement="bottom" title="Undo action" class="sketch_action undo inactive">
+<i class="tool_icon tool_undo"></i>
+</a>
+<a id="redo" rel="tooltip" data-placement="bottom" title="Redo action" class="sketch_action redo inactive">
+<i class="tool_icon tool_redo"></i>
+</a>
+<a id="delete" rel="tooltip"  data-placement="bottom" title="Remove element" class="sketch_action delete inactive">
+<i class="tool_icon tool_delete"></i>
+</a>
+</div>
+</div>
+<div class="sketch_btns">
+<a ng-click=" hideSketchBuilder() " class="btn cancel">Cancel</a>
+<a ng-click=" saveSketch() " class="btn save">I'm Done</a>
+</div>
+</div>
+<div class="scroll-wrap">
+<div class="sketchImage_wrapper">
+<img  
+ng-src="{{ screen.imageUrl }}"
+ng-style="{ width: screen.width * screen.displayScale + 'px',
+height: screen.height * screen.displayScale + 'px'}"
+class="sketch_image"
+/>
+</div>
+<div id="whiteboard_overlay" ng-class="whiteboardSelected"></div>
+</div> <!-- scroll-wrap -->
+</div> <!-- end builderWindow -->
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/presentations/slides.htm"><div ng-switch on="subview">
+<div ng-switch-when="comments">
+<div 
+id="comments_bar" 
+ng-controller="toolbar.ToolbarController"
+ng-hide="isShowingSketchBuilder">
+<h2>Click anywhere on the image to leave a comment</h2>
+<p class="close"><a ng-click="switchToPreview()">Close</a></p>
+</div> <!-- share_bar -->
+</div>
+</div>
+<!-- desktop projects -->
+<div 	
+ng-if=" !project.isMobile || subview == 'comments' "
+inv-screens
+ng-controller="screens.ScreensController"
+class="m-screens desktop"
+ng-style="bodyStyle"
+ng-class="{ 
+isScaledCommentMode: project.isMobile,
+'comment-mode': subview == 'comments'
+}">
+<div 
+class="screen visible {{ screen.alignment }}"
+ng-style="{ 
+width: ( (screen.width * screen.displayScale) + 'px' ), 
+height: ( (screen.height * screen.displayScale) + 'px' ) 
+}">
+<img 
+ng-src="{{ getScreenUrl() }}"
+ng-style="{ 
+width: ( (screen.width * screen.displayScale) + 'px' ), 
+height: ( (screen.height * screen.displayScale) + 'px' ) 
+}" />
+</div>
+</div>
+<!-- mobile projects-->
+<div 	
+ng-if=" project.isMobile && subview == 'preview' "
+class="m-screens" >
+<div class="screen mobile visible {{ screen.alignment }}">
+<img ng-src="{{ getScreenUrl() }}" />
+</div> <!-- screen mobile visible -->
+</div> <!-- m-screens -->
+</script><script type="text/ng-template" id="/assets/apps/share/views/preview/preview.htm"><div
+ng-controller="preview.PreviewController"
+inv-preview-helper
+class="m-preview {{ screen.alignment }}"
+ng-class="{ mobile: project.isMobile, 'is-watch': project.isWatch }"
+ng-hide="!isLiveShare && project.isSnap">
+<div
+ng-if="project.isMobile"
+inv-mobile-transition-layer
+id="mobile_transition_layer"
+class="{{ deviceTemplate.className }} {{ chromeClass }}"></div>
+<inv-share-screen-viewer></inv-share-screen-viewer>
+<div class="slideshow-nav">
+<div class="slideshow-status" ng-show=" ! project.isMobile " >{{ currentScreenIndex }} of {{ screenCount }}</div>
+</div>
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/preview/browser-compatibility.htm"><a ng-click="closeBrowserCompatibilityAlert()" class="browser-overlay">
+<br />
+</a>
+<div class="browser-alert">
+<a ng-click="closeBrowserCompatibilityAlert()" class="close-alert">x</a>
+<h1>
+We're sorry, your browser isn't fully supported to display this content properly.
+</h1>
+<div ng-switch="browserCompatibility.reason">
+<p ng-switch-when="version">
+We encourage you to <a href="http://browsehappy.com" target="updateBrowser">upgrade to a modern web browser</a>.
+</p>
+<p ng-switch-when="mode">
+Looks like you're running in &quot;compatibility mode&quot;, simply follow these
+<a href="https://www.youtube.com/results?search_query=ie+turn+off+compatibility+mode" target="updateBrowser">instructions to switch back to &quot;normal view&quot;</a>.
+</p>
+</div>
+<a ng-click="closeBrowserCompatibilityAlert()" class="no-thanks">
+No thanks, continue...
+</a>
+</div></script><script type="text/ng-template" id="/assets/apps/share/views/preview/preview-tour-comments.htm"><div ng-if=" ! isLiveShare " ng-controller="preview.TourCommentsController">
+<div ng-if=" tourPoints.length > 0 " ng-controller="comments.CommentsController">
+<div
+inv-comments-markers
+ng-controller="comments.MarkersController">
+<div
+ng-if=" tooltipTourPoint "
+class="tour-point-tooltip left"
+ng-class=" tooltipClass() "
+ng-mouseenter=" clearTooltipTimeout() "
+ng-mouseleave=" clearTooltipTourPoint() "
+ng-click=" selectTourPoint(tooltipTourPoint) "
+inv-tour-point-tooltip>
+<div class="m-avatar" ng-class="{ 'system-avatar': tooltipTourPoint.comment.userHasSystemAvatar }">
+<span class="rendering">{{ tooltipTourPoint.comment.userInitials }}</span>
+<img
+ng-if=" ! tooltipTourPoint.comment.userHasSystemAvatar "
+ng-src="/avatars/{{ tooltipTourPoint.comment.userAvatarID }}"
+class="rendering" />
+</div>
+<div class="excerpt" ng-bind-html="tooltipExcerpt()"></div>
+</div>
+<!-- Only include the form if a tour point has been selected.-->
+<div
+class="comments-mentions"
+ng-if="selectedConversation"
+ng-include=" '/assets/apps/share/views/preview/tour-point-form.htm' ">
+</div>
+<!--  View controlled by switch to overlay everything -->
+<div inv-share-sketch-builder
+ng-if=" isShowingSketchBuilder " >
+</div>
+<!-- Sketch viewer modal-->
+<div inv-share-sketch-viewer
+ng-if=" isShowingSketchViewer ">
+</div>
+</div>
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/preview/tour-point-form.htm"><form
+ng-controller="comments.FormController"
+ng-submit="submitForm()"
+inv-comments-tour-form-key-combos
+inv-tour-comments-form
+class="conversation comment-thread-container tour-point-form">
+<div class="comment-thread tour-point">
+<header>
+<button
+class="close"
+type="button"
+ng-click="clearTourPointForm()">
+&times;
+</button>
+</header>
+<section class="primary-comment">
+<div class="m-avatar" ng-class="{ 'system-avatar': comments[0].userHasSystemAvatar }">
+<span class="rendering">{{ comments[0].userInitials }}</span>
+<img
+ng-if=" ! comments[0].userHasSystemAvatar "
+ng-src="/avatars/{{ comments[0].userAvatarID }}"
+class="rendering" />
+</div>
+<div class="post-content">
+<div
+class="post-comment"
+ng-bind-html="comments[0].html">
+</div>
+</div>
+<footer ng-if=" ! commentsExpanded ">
+<div
+ng-click="toggleCommentsExpanded()"
+ng-class="{ 'no-comments': comments.length == 1 }"
+class="reply-section">
+Reply <span ng-if="comments.length > 1" class="comment-count">{{ comments.length - 1 }}</span>
+</div>
+<nav class="tour-point-nav">
+<a
+ng-click="previousTourPoint()"
+ng-show="hasPreviousTourPoint()"
+class="prev">Prev
+</a>
+<a
+ng-click="nextTourPoint()"
+ng-show="hasNextTourPoint()"
+class="next">Next
+</a>
+</nav>
+</footer>
+</section>
+<section
+class="comments-expanded"
+ng-class="{
+visible: !! commentsExpanded}"
+>
+<div class="comments-expanded-inner">
+<!-- BEGIN: Comments. -->
+<div
+ng-repeat="comment in comments"
+ng-init=" showDeleteCommentConfirmation = false ; "
+class="comment-item comment"
+ng-class="{
+first: $first,
+unread: comment.isUnread,
+collapsed: comment.isCollapsed,
+'first-collapsed': comment.isFirstCollapsed,
+last: $last
+}"
+inv-fade-show="!comment.isCollapsed || ( comment.isCollapsed && comment.isFirstCollapsed )">
+<span ng-if=" ! $first ">
+<!-- Special section for collapsed area -->
+<div ng-if=" comment.isCollapsed " class="collapsed-comments">
+<span ng-click="expandComments( )">View All {{ comments.length }} Comments</span>
+</div>
+<div class="m-avatar" ng-class="{ 'system-avatar': comment.userHasSystemAvatar }">
+<span class="rendering">{{ comment.userInitials }}</span>
+<img
+ng-if=" ! comment.userHasSystemAvatar "
+ng-src="/avatars/{{ comment.userAvatarID }}"
+class="rendering" />
+<!-- Status -->
+<span
+class="online-status"
+ng-class="{ online: ( comment.userOnlineStatus == 'Online' ), away: ( comment.userOnlineStatus == 'Away' ) }">
+{{ comment.userOnlineStatus }}
+</span>
+</div>
+<div class="post-content post-emojis">
+<h2 ng-hide="$first && conversation.isTourPoint">
+<span>{{ comment.userName }}</span>
+<span class="created-at">{{ comment.dateLabel }}</span>
+</h2>
+<div
+class="post-options"
+ng-show=" !comment.isEditing "
+ng-class="{'is-collapsed': comment.isCollapsed}">
+<ul class="tools">
+<li
+class="view-history hidden"
+ng-show="( ! comment.isEditing && ( comment.screenImageVersion != screen.imageVersion ) && comment.imageUrl )">
+<a>View History</a>
+</li>
+<li
+class="edit-comment hidden"
+ng-show=" comment.isOwnedByUser || project.isOwnedByUser ">
+<a
+ng-click="editComment( comment )"
+inv-tooltip="Edit comment">
+Edit
+</a>
+</li>
+<li
+class="delete-comment hidden"
+ng-show=" comment.isOwnedByUser || project.isOwnedByUser ">
+<a
+ng-click="showDeleteConfirmation( comment, $first )"
+inv-tooltip="Delete comment">
+Delete
+</a>
+</li>
+</ul>
+<div inv-history-overlay class="history-overlay" ng-if="( ( comment.screenImageVersion != screen.imageVersion ) && comment.imageUrl )">
+<div class="history-overlay-image-container">
+<img 	inv-screen-version-image-scaler
+ng-src="{{ comment.imageUrl }}"
+ng-style="{
+top: - ( ( conversation.y * screen.displayScale ) - 130 ) + 'px',
+left: - ( ( conversation.x * screen.displayScale ) - 270 )+ 'px'
+}" />
+</div>
+<div class="hover-buffer"></div>
+</div> <!-- history-overlay -->
+</div> <!-- post-options -->
+<a class="thumbs-up"
+ng-show=" canLike "
+ng-hide=" $first && conversation.isTourPoint "
+ng-class="{ 'liked': comment.numberOfLikes, 'by-user': comment.hasUserLiked  }"
+ng-click="toggleLike( comment )"
+inv-tooltip="{{ comment.likedByList }}">
+<i class="icon thumbs up"></i>
+{{comment.numberOfLikes}}
+</a>
+<div
+ng-show="! comment.isEditing"
+ng-bind-html="comment.html"
+class="post-comment">
+</div>
+<div ng-if="comment.isEditing" class="editing-mode">
+<div 
+inv-comment
+comment="comment.comment"
+name="post-comment"
+screen-id="screen.id"
+class-string="{{ getClassesString('existing') }}"
+tab-index="101"
+has-emojis="true"
+has-who-is-notified="false">
+</div>
+</div>
+<div
+class="sketchList"
+ng-show="comment.sketches.length > 0 && ( ! $first || ! conversation.isTourPoint )">
+<div
+ng-repeat="sketch in comment.sketches"
+class="sketch">
+<a
+class="text"
+ng-click=" startSketchViewer( sketch , false, conversation ) "
+ng-class="{
+editing: comment.isEditing
+}">
+<strong>{{ comment.userFirstName }}&rsquo;s attached a sketch.</strong> View?
+<span inv-tooltip="delete" class="delete" ng-show="comment.isEditing" ng-click=" deleteSketch( sketch.id )">x</span>
+</a>
+</div> <!-- sketch -->
+</div> <!-- sketchList -->
+<div class="post-buttons" ng-show="( comment.isEditing )">
+<button
+type="button"
+class="save"
+ng-show="comment.isEditing"
+tabindex="102"
+ng-click="saveComment( comment, false )">
+Save
+</button>
+<button
+type="button"
+class="cancel"
+ng-show="comment.isEditing"
+tabindex="103"
+ng-click="stopEditingComments( comment )">
+Cancel
+</button>
+</div>
+</div> <!-- post-content -->
+<!-- Delete confirmation for single comment. -->
+<div inv-fade-show="comment.isDeleting" class="delete-confirmation">
+<p>Delete this comment?</p>
+<div class="action">
+<a ng-click="deleteComment( comment )" class="confirm">Yes, Delete</a>
+<a ng-click="hideDeleteConfirmation( comment )" class="cancel">Cancel</a>
+</div>
+</div>
+</span>
+</div>
+<!-- END: Comments. -->
+<div class="comment-item post-new-comment">
+<div class="post post-emojis">
+<div 
+class="post-comment"
+ng-class="{ 'has-sketch': tempSketches.length > 0 }">
+<div 
+inv-comment
+comment="newComment"
+name="post-comment"
+screen-id="screen.id"
+class-string="{{ getClassesString('existing') }}"
+placeholder="Leave a comment..."
+tab-index="201"
+on-focus-callback="showCommentInput()"
+has-emojis="true"
+has-who-is-notified="true">
+</div>
+<div class="error-message" ng-show="hasUnauthorizedEmail">
+<p>The administrator of the {{ enterpriseConfig.name }} InVision account has disabled sharing to users outside of the account.</p>
+</div>
+<div class="comment-item footer submit actions">
+<button
+class="button"
+tabindex="202"
+ng-click="submitForm({ comment: newComment, sketches: tempSketches })"
+type="button"
+inv-success-button
+after-success="onReplyFinished()"
+delay="0">Reply</button>
+<button class="close" type="button" ng-click="toggleCommentsExpanded()">cancel</button>
+</div> <!-- footer -->
+<div class="sketchList" ng-show="tempSketches.length > 0">
+<div ng-repeat="sketch in tempSketches" class="sketch new-sketch">
+<a ng-click=" startSketchViewer( sketch , true, conversation ) ">
+<strong>Your sketch is attached.</strong> View?
+<span class="delete" inv-tooltip="delete" ng-click=" deleteTempSketch(sketch.tempID) ">
+&times;
+</span>
+</a>
+</div> <!-- sketch -->
+</div> <!-- sketchList -->
+<div
+class="add-sketch"
+ng-show="tempSketches.length == 0 && isCommentInputVisible && ( ! conversation.isTourPoint || ! comments.length == 0 )">
+<a ng-click=" startSketchBuilder() " inv-tooltip="Attach a sketch"></a>
+</div>
+</div> <!-- post-comment -->
+</div> <!-- post -->
+</div> 
+<!-- Delete confirmation for entire conversation. -->
+<div inv-fade-show="isDeleting" class="delete-confirmation delete-conversation">
+<p>Delete this <strong>entire</strong> conversation?</p>
+<div class="action">
+<a ng-click="deleteConversation( conversation )" class="btn btn-small flat dkgray">Yes, Delete</a>
+<a ng-click="hideDeleteConfirmation()" class="cancel">Cancel</a>
+</div>
+</div>
+<!-- Identification Form -->
+<div inv-fade-show="isIdentifying" class="overlay identification">
+<div class="form">
+<h2>Let us know who you are</h2>
+<h3>In order to leave a comment, we need to know who you are.</h3>
+<div ng-show="errorMessage" class="alert alert-error">
+{{ errorMessage }}
+</div>
+<div class="field" ng-class="{ 'defined': identity.name.length }">
+<input
+type="text"
+id="identity.name"
+ng-model="identity.name"
+inv-autofocus
+tabindex="301"
+/>
+<label for="identity.name">
+Your name
+</label>
+</div>
+<div class="field" ng-class="{ 'defined': identity.email.length }">
+<input 
+type="text"
+id="identity.email"
+ng-model="identity.email"
+tabindex="302"
+/>
+<label for="identity.email">Email address</label>
+</div>
+<div class="actions">
+<button
+class="close"
+type="button"
+ng-click="selectTourPoint(null)"
+>
+Cancel
+</button>
+<button
+class="button"
+type="button"
+ng-click="submitForm({ comment: newComment, sketches: tempSketches })"
+tabindex="303"
+>
+Submit
+</button>
+</div>
+</div> <!-- /form -->
+</div> <!-- /identification -->
+<div inv-fade-show="isAuthenticating" class="overlay authentication">
+<div class="form">
+<h2>We've recognized that account, what's the password?</h2>
+<h3>Enter your password to leave a comment</h3>
+<div class="field" ng-class="{ 'defined': identity.name.length }">
+<input
+type="password"
+id="identity.password"
+ng-model="identity.password"
+inv-autofocus
+tabindex="301"
+/>
+<label for="identity.name">
+Password
+</label>
+</div>
+<div 
+ng-show="errorMessage"
+class="alert alert-error"
+ng-bind-html="errorMessage"
+>
+</div>
+<div class="actions">
+<button
+class="close"
+type="button"
+ng-click="selectTourPoint(null)"
+>
+Cancel
+</button>
+<button
+class="button"
+type="button"
+ng-click="submitFormPassword()"
+tabindex="302"
+>
+Post Comment
+</button>
+</div>
+</div> <!-- form -->
+</div> <!-- authentication -->
+</div>
+</section>
+</div> <!-- comment-thread-container -->
+</form>
+</script><script type="text/ng-template" id="/assets/apps/share/views/layouts/modal.htm"><div ng-controller="layouts.ModalController" class="l-modal">
+<div ng-if="subview == 'error'" ng-include=" '/assets/apps/share/views/modal/error.htm' "></div>
+<div ng-if="subview == 'shareTour'" ng-include=" '/assets/apps/share/views/modal/share-tour.htm' "></div>
+</div></script><script type="text/ng-template" id="/assets/apps/share/views/comments/form.htm"><form
+ng-controller="comments.FormController"
+inv-comments-form
+class="conversation comment-thread-container mentions emoji-root"
+ng-class="{ teaser: ( isShowingTeaser && !tempSketches.length ) }"
+ng-style="{
+left: ( conversation.x * screen.displayScale + 'px' ),
+top: ( ( conversation.y * screen.displayScale ) + 9 + 'px' )
+}"
+>
+<div class="emoji-placeholder"></div>
+<div
+class="comment-thread"
+ng-class="{
+comment: ! conversation.isForDevelopment && ! conversation.isTourPoint && ! conversation.isPrivate,
+'dev-note': conversation.isForDevelopment,
+'tour-point': conversation.isTourPoint,
+'private-comment': conversation.isPrivate,
+'signup-required': (isIdentifying || isAuthenticating) && signupRequiredForComment,
+'is-identifying': (isIdentifying || isAuthenticating) && !signupRequiredForComment
+}"
+>
+<header>
+<span ng-hide=" conversation.id == 0 ">
+<input
+id="conversationIsComplete"
+type="checkbox"
+ng-model="conversation.isComplete"
+ng-change="updateConversationStatus( conversation )"
+ng-disabled="( conversation.id == 0 )"
+inv-uniform
+/>
+<label
+ng-show="! marker.isComplete"
+for="commentIsComplete"
+class="mark-label"
+ng-class="{ disabled: marker.isSaved == false }"
+>
+Mark as resolved
+</label>
+<label
+ng-show="marker.isComplete"
+for="commentIsComplete"
+class="complete mark-label"
+ng-class="{ disabled: marker.isSaved == false }"
+>
+Marked resolved
+</label>
+</span>
+<!-- conversationIsComplete -->
+<div
+class="dropdown type-dropdown"
+ng-class="{ saved: !! conversation.id }"
+ng-show="showInternalOptions && !project.isSnap">
+<a data-toggle="dropdown" class="dropdown-toggle" ng-hide="!! conversation.id">
+<span class="text comment" ng-show="!conversation.isForDevelopment && !conversation.isPrivate && !conversation.isTourPoint">
+<span class="dot"></span>
+<span>Leave a Comment</span>
+</span>
+<span class="text private-comment" ng-show="!conversation.isForDevelopment && conversation.isPrivate">
+<span class="dot"></span>
+<span>Private Comment</span>
+</span>
+<span class="text dev-note" ng-show="conversation.isForDevelopment">
+<span class="dot"></span>
+<span>Note</span>
+</span>
+<span class="text tour-point" ng-show="conversation.isTourPoint">
+<span class="dot"></span>
+<span>Tour Point</span>
+</span>
+<span class="drop" ng-hide=" !! conversation.id "></span>
+</a>
+<a data-toggle="dropdown" class="dropdown-toggle dots" ng-hide="! conversation.id">
+<span class="small-dot"></span>
+<span class="small-dot"></span>
+<span class="small-dot"></span>
+</a>
+<ul class="dropdown-menu">
+<li>
+<a ng-click="setTypeAsComment()" class="comment">
+<span class="dot"></span> Comment
+</a>
+</li>
+<li ng-hide="!user.canViewPrivateComments">
+<a ng-click="setTypeAsPrivateComment()" class="private-comment">
+<span class="dot"></span> Private Comment
+</a>
+</li>
+<li ng-hide="!user.canViewPrivateComments">
+<a ng-click="setTypeAsDevNote()" class="dev-note">
+<span class="dot"></span> Note
+</a>
+</li>
+<li>
+<a ng-click="setTypeAsTourPoint()" class="tour-point">
+<span class="dot"></span> Tour Point
+</a>
+</li>
+</ul>
+</div>
+<span
+class="non-collaborator-label"
+ng-show=" !showInternalOptions && !project.isSnap"
+ng-class="{ saved: !! conversation.id }"
+>
+<span class="dot"></span> Leave a Comment
+</span>
+<button
+class="close"
+type="button"
+ng-click="closeConversation()"
+ng-hide="!! conversation.id ">
+&times;
+</button>
+</header>
+<section class="comment-content">
+<!-- BEGIN: Comments. -->
+<div
+ng-repeat="comment in comments"
+ng-init=" showDeleteCommentConfirmation = false ; "
+class="comment-item comment"
+ng-class="{
+first: $first,
+unread: comment.isUnread,
+collapsed: comment.isCollapsed,
+'first-collapsed': comment.isFirstCollapsed,
+last: $last
+}"
+inv-fade-show="!comment.isCollapsed || ( comment.isCollapsed && comment.isFirstCollapsed )">
+<!-- Special section for collapsed area -->
+<div ng-if=" comment.isCollapsed " class="collapsed-comments">
+<span ng-click="expandComments( )">View Previous Replies</span>
+</div>
+<!-- show new comment indicator -->
+<div
+ng-if=" $first && conversation.isTourPoint && comments.length > 1 "
+class="new-hrule">
+<span
+ng-pluralize
+count=" comments.length - 1 "
+when="{
+'0': '0 Replies',
+'one': '1 Reply',
+'other': '{} Replies'
+}">
+</span>
+</div>
+<div class="m-avatar" ng-class="{ 'system-avatar': comment.userHasSystemAvatar }">
+<span class="rendering">{{ comment.userInitials }}</span>
+<img ng-src="/avatars/{{ comment.userAvatarID }}" class="rendering" />
+</div>
+<div class="post-content post-emojis">
+<h2 ng-hide="$first && conversation.isTourPoint">
+<span class="name">{{ comment.userName }}</span>
+<span class="created-at">{{ comment.dateLabel }}</span>
+</h2>
+<h2 ng-show="$first && conversation.isTourPoint && comment.isEditing">
+<!-- we need to keep the spacing consistent for editing mode -->
+</h2>
+<div class="comment-item-options"
+ng-show=" !comment.isEditing "
+ng-if=" !comment.isPlaceholder "
+ng-class="{'is-collapsed': comment.isCollapsed}">
+<ul class="comment-item-options__tools">
+<li class="view-history hidden">
+<a
+inv-history-overlay
+overlay-image="{{comment.imageUrl}}"
+overlay-marker-pos="{{getMarkerPos(conversation, screen.displayScale)}}"
+overlay-screen-data="{{getScreenDisplayData(screen)}}"
+ng-if="( ! comment.isEditing && ( comment.screenImageVersion != screen.imageVersion ) && comment.imageUrl )">
+View History
+</a>
+</li>
+<li
+class="edit-comment hidden"
+ng-show="canEdit && ( comment.isOwnedByUser || project.isOwnedByUser )"
+>
+<a ng-click="editComment( comment )">
+Edit
+</a>
+</li>
+<li
+class="delete-comment hidden"
+ng-show="canEdit && ( comment.isOwnedByUser || project.isOwnedByUser )"
+>
+<a ng-click="showDeleteConfirmation( comment, $first )">
+Delete
+</a>
+</li>
+</ul>
+<a class="comment-item-options__thumbs-up"
+ng-if=" !comment.isPlaceholder "
+ng-show=" canLike "
+ng-hide=" $first && conversation.isTourPoint "
+ng-class="{ 'liked': comment.numberOfLikes, 'by-user': comment.hasUserLiked  }"
+ng-click="toggleLike( comment )"
+inv-tooltip="{{ comment.likedByList }}">
+<i class="icon thumbs up"></i>
+{{comment.numberOfLikes}}
+</a>
+</div> <!-- post-options -->
+<div class="post-comment"
+ng-show="! comment.isEditing"
+ng-class="{'is-owner': comment.isOwnedByUser || project.isOwnedByUser}"
+ng-bind-html="comment.html"
+>
+</div>
+<div ng-if="comment.isEditing" class="editing-mode">
+<div
+inv-comment
+inv-cmd-enter="saveComment(comment)"
+comment="comment.comment"
+name="post-comment"
+screen-id="screen.id"
+class-string="{{ getClassesString('existing') }}"
+tab-index="101"
+has-emojis="true"
+has-mentions="hasInitialMentions"
+has-mention-shortcut="true"
+has-who-is-notified="false"
+></div>
+</div>
+<div
+class="sketchList"
+ng-show="comment.sketches.length > 0 && ( ! $first || ! conversation.isTourPoint )">
+<div
+ng-repeat="sketch in comment.sketches"
+class="sketch">
+<a
+class="text"
+ng-click=" startSketchViewer( sketch , false, conversation ) "
+ng-class="{
+editing: comment.isEditing
+}">
+<strong>{{ comment.userFirstName }}&rsquo;s attached a sketch.</strong> View?
+<span inv-tooltip="delete" class="delete" ng-show="comment.isEditing" ng-click=" deleteSketch( sketch.id )">x</span>
+</a>
+</div> <!-- sketch -->
+</div> <!-- sketchList -->
+<div class="post-buttons" ng-show="( comment.isEditing )">
+<button
+type="button"
+class="save"
+ng-show="comment.isEditing"
+tabindex="102"
+ng-click="saveComment(comment)">
+Save
+</button>
+<button
+type="button"
+class="cancel"
+ng-show="comment.isEditing"
+tabindex="103"
+ng-click="stopEditingComments( comment )">
+Cancel
+</button>
+</div>
+</div> <!-- post-content -->
+<!-- Delete confirmation for single comment. -->
+<div inv-fade-show="comment.isDeleting" class="delete-confirmation">
+<p>Delete this comment?</p>
+<div class="action">
+<a ng-click="deleteComment( comment )" class="confirm">Yes, Delete</a>
+<a ng-click="hideDeleteConfirmation( comment )" class="cancel">Cancel</a>
+</div>
+</div>
+</div>
+<!-- END: Comments. -->
+</section>
+<div class="comment-item post-new-comment">
+<div
+inv-comment-teaser
+ng-show="isShowingTeaser"
+is-shown="isShowingTeaser"
+has-initial-mentions="hasInitialMentions"
+ng-click="showNewCommentForm()"
+screen-id="screen.id"
+conversation="comments"
+>
+</div>
+<div
+ng-if="! isShowingTeaser"
+class="post post-emojis"
+>
+<div
+class="post-comment"
+ng-class="{
+'has-sketch': tempSketches.length > 0
+}"
+>
+<div
+inv-comment
+inv-cmd-enter="submitForm({ comment: newComment, sketches: tempSketches })"
+ng-hide="hideCommentInput"
+comment="newComment"
+name="post-comment"
+screen-id="screen.id"
+class-string="{{ getClassesString('existing') }}"
+placeholder="Leave a comment..."
+tab-index="201"
+on-focus-callback="showCommentInput()"
+has-emojis="true"
+has-who-is-notified="true"
+has-mentions="hasInitialMentions"
+has-mention-shortcut="true"
+></div>
+<div class="error-message" ng-show="hasUnauthorizedEmail">
+<p>The administrator of the {{ enterpriseConfig.name }} InVision account has disabled sharing to users outside of the account.</p>
+</div>
+<span
+class="footer actions"
+ng-class="{
+'new-tour-point': !conversation.id && conversation.isTourPoint,
+'no-teaser': !hasInitialMentions
+}"
+>
+<button
+class="button"
+type="button"
+tabindex="202"
+delay="1400"
+ng-if="signupRequiredForComment"
+ng-click="submitForm({ comment: newComment, sketches: tempSketches })"
+inv-success-button
+after-success="closeCommentFormOnSave(conversation.id)"
+>
+Post
+</button>
+<button
+class="button"
+type="button"
+tabindex="202"
+delay="1400"
+ng-if="!signupRequiredForComment"
+ng-click="submitForm({ comment: newComment, sketches: tempSketches })"
+inv-success-button
+after-success="closeCommentFormOnSave(conversation.id)"
+>
+Send
+</button>
+</span> <!-- footer -->
+<div class="sketchList" ng-show="tempSketches.length > 0">
+<div ng-repeat="sketch in tempSketches" class="sketch new-sketch">
+<a ng-click=" startSketchViewer( sketch , true, conversation ) ">
+<strong>Your sketch is attached.</strong> View?
+<span class="delete" inv-tooltip="delete" ng-click=" deleteTempSketch(sketch.tempID) ">
+&times;
+</span>
+</a>
+</div> <!-- sketch -->
+</div> <!-- sketchList -->
+<div
+ng-hide="hideCommentInput"
+class="add-sketch"
+ng-show="tempSketches.length == 0 && ( ! conversation.isTourPoint || ! comments.length == 0 )">
+<a ng-click=" startSketchBuilder() "></a>
+</div>
+</div> <!-- post-comment -->
+</div> <!-- post -->
+</div>
+<!-- Delete confirmation for entire conversation. -->
+<div inv-fade-show="isDeleting" class="delete-confirmation delete-conversation">
+<p>Delete this <strong>entire</strong> conversation?</p>
+<div class="action">
+<a ng-click="deleteConversation( conversation )" class="btn btn-small flat dkgray">Yes, Delete</a>
+<a ng-click="hideDeleteConfirmation()" class="cancel">Cancel</a>
+</div>
+</div>
+<!-- Identification Form -->
+<div inv-fade-show="isIdentifying" class="overlay identification">
+<div class="form">
+<div ng-if="!signupRequiredForComment">
+<h2>Let us know who you are</h2>
+<h3>In order to leave a comment, we need to know who you are.</h3>
+</div>
+<div ng-if="signupRequiredForComment">
+<h2>Sign Up and Post Your Comment</h2>
+<h3>To send your comment, create a free InVision account.</h3>
+</div>
+<div class="field" ng-class="{ 'defined': identity.name.length }">
+<input
+type="text"
+id="identity.name"
+ng-model="identity.name"
+inv-autofocus
+tabindex="301"
+/>
+<label for="identity.name">
+Your name
+</label>
+</div>
+<div class="field" ng-class="{ 'defined': identity.email.length }">
+<input
+type="text"
+id="identity.email"
+ng-model="identity.email"
+tabindex="302"
+/>
+<label for="identity.email">Email address</label>
+</div>
+<div
+class="field"
+ng-if="signupRequiredForComment"
+ng-class="{ 'defined': identity.password.length }"
+>
+<input
+type="password"
+id="identity.password"
+ng-model="identity.password"
+tabindex="303"
+/>
+<label for="identity.password">Password</label>
+</div>
+<div ng-show="errorMessage" class="alert alert-error">
+{{ errorMessage }}
+</div>
+<div class="actions">
+<button
+class="close"
+type="button"
+ng-click="closeIdentifyForm()"
+>
+Cancel
+</button>
+<!-- only one of the two buttons below will be shown; they have the same tab index -->
+<button
+class="button"
+type="button"
+ng-if="!signupRequiredForComment"
+ng-click="submitForm({ comment: newComment, sketches: tempSketches })"
+tabindex="304"
+>
+Submit
+</button>
+<button
+class="button"
+type="button"
+ng-if="signupRequiredForComment"
+ng-click="submitForm({ comment: newComment, sketches: tempSketches })"
+tabindex="304"
+>
+Sign Up
+</button>
+</div>
+</div> <!-- form -->
+</div> <!-- identification -->
+<!-- Signup Form -->
+<div inv-fade-show="isSignup" class="overlay signup cta">
+<div class="form">
+<h2>Get a free InVision account</h2>
+<h4>Collaborate, extract assets, and create clickable prototypes and boards - all in one place</h4>
+<div class="actions">
+<a class="button" href="/d/signup" target="_blank" ng-click="closeCTA()" >
+Sign up free
+</a>
+<a class="cancel" ng-click="closeCTA()">No thanks, continue as guest</a>
+</div>
+</div>
+</div>
+<div inv-fade-show="isAuthenticating" class="overlay authentication">
+<div class="form">
+<div class="m-avatar" ng-class="{ 'system-avatar': user.hasSystemAvatar }">
+<span class="rendering">{{ user.tempInitials }}</span>
+<img class="rendering" ng-src="/avatars/{{ user.tempAvatar }}" />
+</div>
+<h2>We've recognized that account, what's the password?</h2>
+<h3>Enter your password to leave a comment</h3>
+<div class="field" ng-class="{ 'defined': identity.name.length }">
+<input
+type="password"
+id="identity.password"
+ng-model="identity.password"
+inv-autofocus
+tabindex="301"
+/>
+<label for="identity.name">
+Password
+</label>
+</div>
+<div
+ng-show="errorMessage"
+class="alert alert-error"
+ng-bind-html="errorMessage"
+>
+</div>
+<div class="actions">
+<button
+class="close"
+type="button"
+ng-click="closeIdentifyForm()"
+>
+Cancel
+</button>
+<button
+class="button"
+type="button"
+ng-click="submitFormPassword()"
+tabindex="302"
+>
+Post Comment
+</button>
+</div>
+</div> <!-- form -->
+</div> <!-- authentication -->
+<div class="comment-thread__footer">
+<!-- placeholder to avoid that the bottom toolbar overlaps the comment-content -->
+</div>
+</div> <!-- comment-thread -->
+</form>
+</script><script type="text/ng-template" id="/assets/apps/share/views/comments/comments.htm"><div
+ng-controller="comments.CommentsController" 
+inv-comments-key-combos 
+class="m-comments" 
+ng-class="{ mobile: project.isMobile }">
+<!-- Context. -->
+<div ng-if=" (isLiveShare || !project.isSnap)" ng-include=" '/assets/apps/share/views/comments/context.htm' "></div>
+<!-- Catchup Toolbar. -->
+<div ng-if=" (isLiveShare || !project.isSnap)" ng-include=" '/assets/apps/share/views/comments/catchup-toolbar.htm' "></div>
+<!-- Markers. -->
+<div ng-include=" '/assets/apps/share/views/comments/markers.htm' "></div>
+<!--  View controlled by switch to overlay everything -->
+<div inv-share-sketch-builder
+ng-if=" isShowingSketchBuilder " >
+</div>
+<!-- Sketch viewer modal-->
+<div inv-share-sketch-viewer
+ng-if=" isShowingSketchViewer ">
+</div>
+<div id="cursor-tooltip"
+inv-comments-cursor-tooltip
+ng-show="isHoveringViewport && !( isHoveringHotspot || isShowingConversationMenu)"
+>
+Click to leave a comment
+</div>
+</div></script><script type="text/ng-template" id="/assets/apps/share/views/comments/context.htm"><!-- BEGIN: Context. -->
+<div class="context">
+<a ng-href="#/screens/{{ screenID }}">
+<span ng-show=" !isLiveShare ">Comment Mode</span>
+<span ng-show=" isLiveShare ">Your LiveShare experience is paused while in Comment Mode</span>
+</a>
+<!-- Borders. -->
+<div class="border n"></div>
+<div class="border e"></div>
+<div class="border s"></div>
+<div class="border w"></div>
+</div>
+<!-- END: Context. --></script><script type="text/ng-template" id="/assets/apps/share/views/comments/markers.htm"><div
+ng-controller="comments.MarkersController"
+inv-comments-markers
+class="markers" >
+<div
+ng-class="{ mobile: project.isMobile }"
+class="viewport {{ viewport.alignment }}"
+ng-style="{
+width: ( viewport.width + 'px' ),
+height: ( viewport.height + 'px' )
+}"
+ng-mouseenter=" setIsHoveringViewport(true) "
+ng-mouseleave=" setIsHoveringViewport(false) ">
+<!-- Output the conversation markers. -->
+<a
+ng-repeat="conversation in conversations track by conversation.id"
+ng-href="#/screens/{{ screenID }}/comments/{{ conversation.id }}"
+class="marker"
+ng-class="{
+complete: conversation.isComplete,
+active: ( conversation == selectedConversation ),
+comment: ! conversation.isForDevelopment && ! conversation.isTourPoint && ! conversation.isPrivate,
+'dev-note': conversation.isForDevelopment,
+'tour-point': conversation.isTourPoint,
+'private-comment': conversation.isPrivate && ! conversation.isForDevelopment,
+read: ! conversation.isUnread && userAuthenticated,
+'move-disabled': !isUserACollaborator,
+'no-label': conversation.label == ''
+}"
+ng-style="{
+left: ( conversation.x * screen.displayScale + 'px' ),
+top: ( conversation.y * screen.displayScale + 'px' )
+}"
+unselectable="on"
+ng-mouseenter=" setIsHoveringHotspot(true) "
+ng-mouseleave=" setIsHoveringHotspot(false) "
+ng-show=" ( conversation.isShown || project.isSnap ) || (conversation.id == selectedConversation.id )">
+{{ conversation.label }}
+<span ng-if=" conversation.isComplete " class="complete-icon"></span>
+</a>
+<!-- Show the new conversation marker, if necessary. -->
+<a
+ng-show="newConversation"
+ng-href="#/screens/{{ screenID }}/comments"
+class="marker new-marker active"
+ng-class="{
+comment: ! newConversation.isForDevelopment && ! newConversation.isTourPoint && ! newConversation.isPrivate,
+'dev-note': newConversation.isForDevelopment,
+'tour-point': newConversation.isTourPoint,
+'private-comment': newConversation.isPrivate && ! newConversation.isForDevelopment,
+'no-label': newConversation.label == ''
+}"
+ng-style="{
+left: ( newConversation.x * screen.displayScale + 'px' ),
+top: ( newConversation.y * screen.displayScale + 'px' )
+}"
+unselectable="on"
+ng-mouseenter=" setIsHoveringHotspot(true) "
+ng-mouseleave=" setIsHoveringHotspot(false) ">
+{{ newConversation.label }}
+</a>
+<!-- Only include the form if a conversation has been selected. -->
+<div
+class="comments-mentions"
+ng-if="selectedConversation || newConversation || isSignup"
+ng-include=" '/assets/apps/share/views/comments/form.htm' "></div>
+</div>
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/comments/catchup-toolbar.htm"><div ng-controller="comments.CatchupToolbarController" inv-comments-catchup-toolbar-helper class="comments-catchup-toolbar">
+<div class="markers-container" class="{ unread-comments: unreadConversations.length, no-unread-comments: !unreadConversations.length }">
+<p ng-show="unreadConversations.length">
+{{ unreadConversations.length }} unread
+<span ng-pluralize count="unreadConversations.length" when="{ one: 'conversation', other: 'conversations' }"></span>:
+</p>
+<p ng-hide="unreadConversations.length">No unread comments on this page...</p>
+<!-- unread markers -->
+<div class="markers" ng-show="unreadConversations.length">
+<a
+ng-repeat="conversation in visibleUnreadConversations"
+href="#/screens/{{ screenID }}/comments/{{ conversation.id }}"
+class="marker"
+ng-click="markCommentsAsRead( conversation )"
+ng-class="{
+complete: conversation.isComplete,
+comment: ! conversation.isForDevelopment && ! conversation.isTourPoint && ! conversation.isPrivate,
+'dev-note': conversation.isForDevelopment,
+'tour-point': conversation.isTourPoint,
+'private-comment': conversation.isPrivate && ! conversation.isForDevelopment,
+read: ! conversation.isUnread
+}">
+<span ng-if="conversation.label != '' && conversation.label > 0">{{ conversation.label }}</span>
+</a>
+</div>
+<div ng-show="hiddenUnreadConversations.length" class="overflow-count">
++ {{ hiddenUnreadConversations.length }} more
+</div>
+</div> <!-- markers-container -->
+<!-- BEGIN: Filters. -->
+<div class="filters">
+<p>View:</p>
+<div class="type-filter">
+<div class="dropdown">
+<a href="#" data-toggle="dropdown" class="dropdown-toggle">
+<span class="text">{{ filters.type.label }} ({{ filters.type.count }})</span>
+<span class="drop"></span>
+</a>
+<ul class="dropdown-menu">
+<li ng-repeat="option in typeFilterOptions" ng-hide="option.isPrivate && !user.canViewPrivateComments">
+<a ng-click="changeTypeFilter( option )">{{ option.label }} ({{ option.count }})</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="status-filter">
+<label for="filterShowCompleted">
+<input type="checkbox" id="filterShowCompleted" ng-model="filters.showCompleted.value" ng-change="changeShowCompletedFilter()" inv-uniform />
+Show Resolved ({{ filters.showCompleted.count }})
+</label>
+</div>
+</div>
+<!-- END: Filters. -->
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/browse/browse.htm">
+<div
+ng-controller="browse.BrowseController"
+inv-browse-key-combos
+class="m-browse"
+ng-class="{
+mobile: project.isMobile,
+phone: deviceTemplate.deviceType == 'phone',
+tablet: isTabletPortrait
+} ">
+<!-- BEGIN: Header. -->
+<div class="header">
+<span ng-if=" project.isMobile ">
+<img ng-if=" !! appIcon.imageUrl " class="appIcon" ng-src="{{ appIcon.imageUrl }}" alt="{{ project.name }}">
+<img ng-if=" ! appIcon.imageUrl " class="appIcon" ng-src="assets/apps/share/img/icon.png">
+</span>
+<h2>
+{{ project.name }}
+</h2>
+<a class="btnClose" href="javascript:;" ng-click=" toggleBrowse() ">x</a>
+</div>
+<!-- END: Header. -->
+<!-- BEGIN: Screens. -->
+<div class="screens">
+<div ng-include=" '/assets/apps/share/views/browse/thumbnails.htm' "></div>
+</div>
+<!-- END: Screens. -->
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/browse/list.htm">
+<div class="name-list" ng-class="{ 'without-comments': excludeComments }">
+<!-- BEGIN: Header Row. -->
+<div class="header-row">
+<span class="col name-col">
+<a ng-click class="name">
+Name
+</a>
+</span>
+<span class="col comments-col">
+<a ng-click class="comments">
+Comments
+</a>
+</span>
+<span class="col version-col">
+<a ng-click class="version">
+Version
+</a>
+</span>
+<span class="col updated-at-col">
+<a ng-click class="updated-at">
+Last Updated
+</a>
+</span>
+<span class="col updated-by-col">
+<a ng-click class="updated-by">
+Updated By
+</a>
+</span>
+</div>
+<!-- END: Header Row. -->
+<!-- BEGIN: Data Rows. -->
+<div ng-repeat="displayItem in displayObjects | filter:search" class="data-row">
+<div ng-if=" displayItem.type == 'divider' " class="divider">
+<div class="line">
+<span class="dividerLabel">{{displayItem.label}}</span>
+</div>
+</div>
+<a ng-if="displayItem.type == 'screenObj' "
+ng-click="applyScreenNavigation( displayItem )"
+class="item"
+ng-class="{ selected: ( displayItem == selectedScreen ) }">
+<span class="col name-col">
+<span class="name">
+{{ displayItem.name }}
+</span>
+</span>
+<span class="col comments-col">
+<span class="comments" ng-class="{ new: displayItem.unreadCommentCount, old: ( displayItem.commentCount && ! displayItem.unreadCommentCount ) }">
+<span class="unread">{{ displayItem.unreadCommentCount }}</span>
+<span class="total">{{ displayItem.commentCount }}</span>
+</span>
+</span>
+<span class="col version-col">
+<span class="version">
+{{ displayItem.imageVersion }}
+</span>
+</span>
+<span class="col updated-at-col">
+<span class="updated-at">
+{{ displayItem.updatedAtDateLabel }}
+</span>
+</span>
+<span class="col updated-by-col">
+<span class="updated-by">
+{{ displayItem.updatedByUserName }}
+</span>
+</span>
+</a>
+</div>
+<!-- END: Data Rows. -->
+</div>
+</script><script type="text/ng-template" id="/assets/apps/share/views/browse/thumbnails.htm">
+<div class="thumbnail-list" ng-class="{ 'without-comments': excludeComments }">
+<div ng-repeat="displayItem in displayObjects" 
+class="{{displayItem.type}}" 
+ng-class="{ 'invisible-group': displayItem.type == 'divider' && displayItem.sort == 0}" >
+<div ng-if=" shouldDividerDisplay(displayItem) " class="divider">
+<p class="dividerLabel">
+<span class="title">{{ displayItem.label }}</span>
+<span class="count">{{ displayItem.screenCount }}</span>
+</p>
+</div>
+<a  ng-if="displayItem.type == 'screenObj' "
+ng-click="applyScreenNavigation( displayItem )"
+class="item"
+ng-class="{ selected: ( displayItem == selectedScreen ) }">
+<span class="thumbnail-viewport " style="background: #{{displayItem.backgroundColor}}">
+<img ng-src="{{ displayItem.thumbnailUrl }}" />
+</span>
+<span class="name">
+{{ displayItem.name }}
+</span>
+<span class="hasComments" ng-if=" displayItem.unreadCommentCount ">&bull;</span>
+</a>
+</div>
+</div>
+</script><script type="text/ng-template" id="/assets/apps/common/views/directives/mobile-transition-layer.htm"><div class="inner">
+<div class="inner2">
+<div
+id="current-screen"
+class="current-screen"
+ng-if="currentScreen"
+ng-style="{
+'background-color': getBackgroundColor(currentScreen)
+}">
+<img
+ng-src="{{ getImageUrl( currentScreen.imageUrl ) }}"
+height="{{ Math.round(currentScreen.height * (currentScreen.displayScale || screen.displayScale)) }}"
+width="{{ Math.round(currentScreen.width * (currentScreen.displayScale || screen.displayScale)) }}" />
+<div
+class="fixed-header"
+ng-style="{
+height: (currentScreen.fixedHeaderHeight * (currentScreen.displayScale || screen.displayScale)),
+marginTop: pushDownFixedHeader
+}">
+<img
+ng-src="{{ getImageUrl( currentScreen.imageUrl ) }}"
+height="{{ Math.round(currentScreen.height * (currentScreen.displayScale || screen.displayScale)) }}"
+width="{{ Math.round(currentScreen.width * (currentScreen.displayScale || screen.displayScale)) }}" />
+</div>
+<div
+class="fixed-footer"
+ng-style="{
+height: (currentScreen.fixedFooterHeight * (currentScreen.displayScale || screen.displayScale))
+}">
+<img
+ng-src="{{ getImageUrl( currentScreen.imageUrl ) }}"
+height="{{ Math.round(currentScreen.height * (currentScreen.displayScale || screen.displayScale)) }}"
+width="{{ Math.round(currentScreen.width * (currentScreen.displayScale || screen.displayScale)) }}" />
+</div>
+</div>
+<div
+id="next-screen"
+ng-if="targetScreen"
+class="target-screen"
+ng-style="{
+'background-color': getBackgroundColor(targetScreen)
+}">
+<img
+ng-src="{{ getImageUrl( targetScreen.imageUrl ) }}"
+height="{{ Math.round(targetScreen.height * (targetScreen.displayScale || screen.displayScale)) }}"
+width="{{ Math.round(targetScreen.width * (targetScreen.displayScale || screen.displayScale)) }}" />
+<div
+class="fixed-header"
+ng-style="{
+height: (targetScreen.fixedHeaderHeight * (targetScreen.displayScale || screen.displayScale)),
+marginTop: pushDownFixedHeader
+}">
+<img
+ng-src="{{ getImageUrl( targetScreen.imageUrl ) }}"
+height="{{ Math.round(targetScreen.height * (targetScreen.displayScale || screen.displayScale)) }}"
+width="{{ Math.round(targetScreen.width * (targetScreen.displayScale || screen.displayScale)) }}" />
+</div>
+<div
+class="fixed-footer"
+ng-style="{
+height: (targetScreen.fixedFooterHeight * (targetScreen.displayScale || screen.displayScale))
+}">
+<img
+ng-src="{{ getImageUrl( targetScreen.imageUrl ) }}"
+height="{{ Math.round(targetScreen.height * (targetScreen.displayScale || screen.displayScale)) }}"
+width="{{ Math.round(targetScreen.width * (targetScreen.displayScale || screen.displayScale)) }}" />
+</div>
+</div>
+<div
+id="transition-picture-{{picture.id}}"
+ng-repeat="picture in transitionScreens track by picture.id"
+ng-style="{
+'background-color': getBackgroundColor(picture)
+}"
+ng-class="{
+'current-screen': picture.id == transitionScreen.id,
+'target-screen': picture.id == transitionData.targetScreen.id
+}"
+class="transition-picture">
+<img
+ng-src="{{ getImageUrl( picture.imageUrl ) }}"
+height="{{ Math.round(picture.height * (picture.displayScale || screen.displayScale)) }}"
+width="{{ Math.round(picture.width * (picture.displayScale || screen.displayScale)) }}" />
+<div
+class="fixed-header"
+ng-style="{
+height: (picture.fixedHeaderHeight * (picture.displayScale || screen.displayScale)),
+marginTop: pushDownFixedHeader
+}">
+<img
+ng-src="{{ getImageUrl( picture.imageUrl ) }}"
+height="{{ Math.round(picture.height * (picture.displayScale || screen.displayScale)) }}"
+width="{{ Math.round(picture.width * (picture.displayScale || screen.displayScale)) }}" />
+</div> <!-- fixed-header -->
+<div
+class="fixed-footer"
+ng-style="{
+height: (picture.fixedFooterHeight * (picture.displayScale || screen.displayScale))
+}">
+<img
+ng-src="{{ getImageUrl( picture.imageUrl ) }}"
+height="{{ Math.round(picture.height * (picture.displayScale || screen.displayScale)) }}"
+width="{{ Math.round(picture.width * (picture.displayScale || screen.displayScale)) }}" />
+</div> <!-- fixed-footer -->
+</div> <!-- current-picture -->
+</div><!-- inner2 -->
+</div> <!-- inner -->
+</script> 
+
+
+</body>
+</html>
