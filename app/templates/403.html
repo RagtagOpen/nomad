@@ -1,24 +1,16 @@
 {%- extends "_template.html" %}
-
-{% block scripts %}
-{{super()}}
-<script src="https://cdn.ravenjs.com/2.3.0/raven.min.js"></script>
-{% endblock %}
+{%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
-<div class='page-header'>
-    <h1>Woops! <small>Error 500</small></h1>
+
+<div class="content">
+
+	<div class="fullscreen">
+		<h4>403: Access forbidden</h4>
+		<h1>Hey! How'd you get in here?</h1>
+		<p>We'll have to think of something funnier to write here, eventually. In the meantime, try going back <a href="index.html">home</a>.</p>
+	</div>
+
 </div>
-
-<p class="bg-danger">You seem to have found an unexpected error.</p>
-
-{% if event_id %}
-<script>
-Raven.showReportDialog({
-    eventId: '{{ event_id }}',
-    dsn: '{{ public_dsn }}'
-});
-</script>
-{% endif %}
 
 {% endblock %}
