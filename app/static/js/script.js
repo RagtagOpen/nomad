@@ -17,11 +17,11 @@
   ];
   var baltCenter = {lat: 39.314246, lng: -76.601955};
   var markers = [];
-  var map;
+  var mapFindRide, mapGiveRide, mapMyRides, mapMini;
 
-function initMap() {
+function initFindRideMap() {
 
-  map = new google.maps.Map(document.getElementById('background-map'), {
+  mapFindRide = new google.maps.Map(document.getElementById('background-map'), {
     zoom: 12,
     center: baltCenter,
     styles: mapStyleDiscreet
@@ -31,11 +31,45 @@ function initMap() {
     markers.push(
       new google.maps.Marker({
         position: new google.maps.LatLng(baltLocations[i].lat, baltLocations[i].lng),
-        map: map,
+        map: mapFindRide,
         icon: normalIcon()
       })
     );
   }
+}
+
+function initMyRidesMap() {
+
+  mapMyRides = new google.maps.Map(document.getElementById('my-rides-map'), {
+    zoom: 12,
+    center: baltCenter,
+    styles: mapStyleDiscreet
+  });
+
+  for (var i=0; i < baltLocations.length; i++) {
+    markers.push(
+      new google.maps.Marker({
+        position: new google.maps.LatLng(baltLocations[i].lat, baltLocations[i].lng),
+        map: mapMyRides,
+        icon: normalIcon()
+      })
+    );
+  }
+}
+
+function initMiniMap() {
+
+  mapMini = new google.maps.Map(document.getElementById('mini-map'), {
+    zoom: 12,
+    center: baltCenter,
+    styles: mapStyleDiscreet
+  });
+
+  new google.maps.Marker({
+    position: new google.maps.LatLng(baltCenter.lat, baltCenter.lng),
+    map: mapMini,
+    icon: normalIcon()
+  });
 }
 
 function normalIcon() {
@@ -74,7 +108,13 @@ $(document).ready(function() {
         // recenter map on current marker
         var index = $('.results-box .result').index(this);
         console.log(markers[index].position);
-        map.setCenter(markers[index].position);
+        if ($(this).parent().hasClass('find-ride')) {
+          mapFindRide.setCenter(markers[index].position);
+        } else if ($(this).parent().hasClass('give-ride')) {
+          mapGiveRide.setCenter(markers[index].position);
+        } else if ($(this).parent().hasClass('my-rides')) {
+          mapMyRides.setCenter(markers[index].position);
+        }
       } else {
         // close detail panel
         activeDetail = false;

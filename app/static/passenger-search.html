@@ -3,7 +3,7 @@
 <head>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
-	<link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:400,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:300,400,600,700" rel="stylesheet">
 	<link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -40,7 +40,7 @@
 
 	<div class="left-bar">
 		<h1>Find rides near you</h1>
-		<div class="search-results results-box">
+		<div class="search-results results-box find-ride">
 			<div class="result active">
 				<h3 class="result-title">Baltimore to Chantilly</h3>
 				<p>4 seats available</p>
@@ -82,7 +82,7 @@
 	<!-- <div class="right-bar active"> -->
 	<div class="right-bar">
 		<div id="background-map"></div>
-		<div class="detail-pane active">
+		<div id="detail-pane" class="active">
 			<div class="detail-top">
 				<div class="sub-left">
 					<h4>Ride Details</h4>
@@ -132,8 +132,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="js/map-styles.js"></script>
 <script type="text/javascript" src="js/script.js"></script>
- <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtm9OOe24AnTe2kXGdsITXVvj1tovbsws&callback=initMap">
-    </script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtm9OOe24AnTe2kXGdsITXVvj1tovbsws&callback=initFindRideMap">
+</script>
 </body>
 </html>
