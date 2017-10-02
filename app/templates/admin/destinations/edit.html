@@ -35,3 +35,21 @@ map.data.forEach(function(feature) {
 {{ wtf.form_field(form.delete) }}
 {{ wtf.form_field(form.cancel) }}
 {% endblock %}
+
+{% block additional_information %}
+<div class='row' style="padding-top: 30px">
+    <p>
+        {% set count=dest.carpools|length %}
+        {% if count == 1 %}
+        There is <strong>{{ count }} carpool</strong> using this destination.  <strong>This carpool will be affected if you modify or delete this destination</strong>.
+        {% else %}
+        There are <strong>{{ count }} carpools</strong> using this destination.  <strong>These carpools will be affected if you modify or delete this destination</strong>.
+        {% endif %}
+        <ul>
+            {% for carpool in dest.carpools %}
+            <li><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">{{ carpool.from_place }} to {{ carpool.to_place }}</a></li>
+            {% endfor %}
+        </ul>
+    </p>
+</div>
+{% endblock %}

@@ -202,48 +202,10 @@ def destinations_show(uuid):
 
     if edit_form.validate_on_submit():
         if edit_form.submit.data:
-            return redirect(
-                url_for(
-                    'admin.destinations_modify',
-                    uuid=uuid,
-                    name=edit_form.name.data,
-                    address=edit_form.address.data,
-                    destination_lon=edit_form.destination_lon.data,
-                    destination_lat=edit_form.destination_lat.data))
-        elif edit_form.delete.data:
-            return redirect(url_for('admin.destinations_delete', uuid=uuid))
-        else:
-            return redirect(url_for('admin.destinations_list'))
-
-    return render_template(
-        'admin/destinations/edit.html',
-        form=edit_form,
-    )
-
-
-@admin_bp.route('/admin/destinations/<uuid>/modify', methods=['GET', 'POST'])
-@login_required
-@roles_required('admin')
-def destinations_modify(uuid):
-    dest = Destination.uuid_or_404(uuid)
-
-    try:
-        modify_form = ModifyDestinationForm(
-            name=request.args.get('name'),
-            address=request.args.get('address'),
-            destination_lon=request.args.get('destination_lon'),
-            destination_lat=request.args.get('destination_lat'))
-    except:
-        return redirect(url_for('admin.destinations_list'))
-
-    if modify_form.validate_on_submit():
-        if modify_form.submit.data:
-            dest.name = modify_form.name.data,
-            dest.address = modify_form.address.data,
+            dest.name = edit_form.name.data,
+            dest.address = edit_form.address.data,
             dest.point = 'SRID=4326;POINT({} {})'.format(
-                modify_form.destination_lon.data,
-                modify_form.destination_lat.data
-            )
+                edit_form.destination_lon.data, edit_form.destination_lat.data)
 
             for carpool in dest.carpools:
                 carpool.to_place = dest.address
@@ -252,13 +214,15 @@ def destinations_modify(uuid):
             db.session.commit()
             flash("Your destination was updated", 'success')
             return redirect(url_for('admin.destinations_list'))
+        elif edit_form.delete.data:
+            return redirect(url_for('admin.destinations_delete', uuid=uuid))
         else:
-            return redirect(url_for('admin.destinations_show', uuid=uuid))
+            return redirect(url_for('admin.destinations_list'))
 
     return render_template(
-        'admin/destinations/modify.html',
+        'admin/destinations/edit.html',
+        form=edit_form,
         dest=dest,
-        form=modify_form,
     )
 
 
