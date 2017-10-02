@@ -47,15 +47,6 @@ class EditDeleteDestinationForm(DestinationForm):
     delete = SubmitField(u'Delete The Destination')
 
 
-class ModifyDestinationForm(FlaskForm):
-    name = HiddenField()
-    address = HiddenField()
-    destination_lat = HiddenField()
-    destination_lon = HiddenField()
-    cancel = SubmitField("Nevermind, Go Back")
-    submit = SubmitField("Modify The Destination")
-
-
 class DeleteDestinationForm(FlaskForm):
     cancel = SubmitField("Nevermind, Go Back")
     submit = SubmitField("Delete The Destination")

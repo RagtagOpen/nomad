@@ -9,8 +9,7 @@ from flask import (
 from flask_login import current_user, login_required
 from . import admin_bp
 from .forms import (DeleteDestinationForm, DestinationForm,
-                    EditDeleteDestinationForm, ModifyDestinationForm,
-                    ProfilePurgeForm)
+                    EditDeleteDestinationForm, ProfilePurgeForm)
 from flask_login import current_user, login_required
 from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
