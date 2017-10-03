@@ -1,57 +1,101 @@
-{%- extends "admin/destinations/add.html" %}
+{%- extends "admin/_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
 
-{% block load_map %}
+{% block styles %}
+{{super()}}
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
 {{ super() }}
-function getFeature() {
-    var feature = new google.maps.Data.Feature();
-    var lat_lng = new google.maps.LatLng({lat:{{form.destination_lat.data}},
-        lng:{{form.destination_lon.data}}});
+<script type="text/javascript">
+function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 38.518, lng: -97.328},
+        zoom: 4
+    });
 
-    feature.setGeometry(lat_lng);
-    return feature;
+    var dest_input = document.getElementById('address');
+    var dest_marker = new google.maps.Marker({
+        visible: false,
+        map: map
+    });
+
+    if (document.getElementById('destination_lat').value) {
+        var lat = +document.getElementById('destination_lat').value;
+        var lon = +document.getElementById('destination_lon').value;
+        dest_marker.setPosition({lat: lat, lng: lon});
+        dest_marker.setVisible(true);
+    }
+
+    var dest_ac = new google.maps.places.Autocomplete(dest_input, {
+        componentRestrictions: {country: 'us'}
+    });
+    dest_ac.bindTo('bounds', map);
+    dest_ac.addListener('place_changed', function() {
+        var place = dest_ac.getPlace();
+        dest_marker.setVisible(false);
+
+        if (!place.geometry) {
+            console.log("No details available for from autocomplete: '" + place.name + "'");
+            return;
+        }
+
+        document.getElementById('destination_lat').value = place.geometry.location.lat();
+        document.getElementById('destination_lon').value = place.geometry.location.lng();
+
+        dest_marker.setPosition(place.geometry.location);
+        dest_marker.setVisible(true);
+    });
 }
-
-body=document.getElementsByTagName("BODY")[0];
-body.onload=function() {
-    var feature = getFeature();
-    map.data.add(feature);
-}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
 {% endblock %}
 
-
-{% block clear_map %}
-{{ super() }}
-map.data.forEach(function(feature) {
-    map.data.remove(feature);
-})
-{% endblock %}
-
-{% block header %}
-<h1>Edit {{form.name.data}}</h1>
-{% endblock %}
-
-
-{% block delete_button%}
-{{ wtf.form_field(form.cancel) }}
-<a style="padding-left: 10px" href="{{ url_for('admin.destinations_delete', uuid=dest.uuid) }}">Delete {{ dest.name }}</a>
-{% endblock %}
-
-
-{% block site  %}
-{{ super() }}
-<div class='row' style="padding-top: 30px">
-    <p>
-        {% set count=dest.carpools|length %}
-        {% if count == 1 %}
-        There is <strong>{{ count }} carpool</strong> using this destination.  <strong>This carpool will be affected if you modify or delete this destination</strong>.
-        {% else %}
-        There are <strong>{{ count }} carpools</strong> using this destination.  <strong>These carpools will be affected if you modify or delete this destination</strong>.
-        {% endif %}
-        <ul>
-            {% for carpool in dest.carpools %}
-            <li><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">{{ carpool.from_place }} to {{ carpool.to_place }}</a></li>
-            {% endfor %}
-        </ul>
-    </p>
+{% block site %}
+<div class='page-header'>
+    <h1>Edit {{ dest.name }}</h1>
 </div>
+
+<p>
+    <a class="btn btn-default" href="{{ url_for('admin.destinations_delete', uuid=dest.uuid) }}">Delete This Destination</a>
+</p>
+
+<form class='form' method='post'>
+    {{ form.hidden_tag() }}
+    <div class='row'>
+        <div class='col-md-12'>
+            <div id='map'></div>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-8'>
+            {{ form.destination_lat }}
+            {{ form.destination_lon }}
+            {{ wtf.form_field(form.name) }}
+            {{ wtf.form_field(form.address) }}
+            <p>
+                {% set count=dest.carpools|length %}
+                {% if count == 0 %}
+                There are <strong>no carpools</strong> using this destination.
+                {% elif count == 1 %}
+                There is <strong>{{ count }} carpool</strong> using this destination. <strong>This carpool will be affected if you modify or delete this destination</strong>.
+                {% else %}
+                There are <strong>{{ count }} carpools</strong> using this destination. <strong>These carpools will be affected if you modify or delete this destination</strong>.
+                {% endif %}
+                <ul>
+                    {% for carpool in dest.carpools %}
+                    <li><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">{{ carpool.from_place }} to {{ carpool.to_place }}</a></li>
+                    {% endfor %}
+                </ul>
+            </p>
+            {{ wtf.form_field(form.submit) }}
+        </div>
+    </div>
+</form>
 {% endblock %}

@@ -8,12 +8,12 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from . import admin_bp
-from .forms import (DeleteDestinationForm, DestinationForm,
-                    EditDeleteDestinationForm, ProfilePurgeForm)
-from flask_login import current_user, login_required
+from .forms import (
+    DeleteDestinationForm,
+    DestinationForm,
+    ProfilePurgeForm,
+)
 from geoalchemy2.shape import to_shape
-from shapely.geometry import mapping
-from . import admin_bp
 from .. import db
 from ..email import send_emails, catch_and_log_email_exceptions, make_email_message
 from ..auth.permissions import roles_required
@@ -194,24 +194,27 @@ def destinations_show(uuid):
     dest = Destination.uuid_or_404(uuid)
 
     point = to_shape(dest.point)
-    edit_form = EditDeleteDestinationForm(
+    edit_form = DestinationForm(
         name=dest.name,
         address=dest.address,
         destination_lat=point.y,
-        destination_lon=point.x)
+        destination_lon=point.x,
+    )
 
     if edit_form.validate_on_submit():
-        if edit_form.submit.data:
+        if edit_form.submit.data
             dest.name = edit_form.name.data
             dest.address = edit_form.address.data
             dest.point = 'SRID=4326;POINT({} {})'.format(
-                edit_form.destination_lon.data, edit_form.destination_lat.data)
+                edit_form.destination_lon.data,
+                edit_form.destination_lat.data
+            )
 
             for carpool in dest.carpools:
                 carpool.to_place = dest.address
                 carpool.to_point = dest.point
 
-            _email_destination_action(dest, 'modified', 'modified')
+                _email_destination_action(dest, 'modified', 'modified')
 
             db.session.commit()
             flash("Your destination was updated", 'success')
