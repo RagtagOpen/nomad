@@ -32,11 +32,13 @@ map.data.forEach(function(feature) {
 
 
 {% block delete_button%}
-{{ wtf.form_field(form.delete) }}
 {{ wtf.form_field(form.cancel) }}
+<a style="padding-left: 10px" href="{{ url_for('admin.destinations_delete', uuid=dest.uuid) }}">Delete {{ dest.name }}</a>
 {% endblock %}
 
-{% block additional_information %}
+
+{% block site  %}
+{{ super() }}
 <div class='row' style="padding-top: 30px">
     <p>
         {% set count=dest.carpools|length %}
