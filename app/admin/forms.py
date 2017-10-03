@@ -24,7 +24,7 @@ class DestinationForm(FlaskForm):
     )
     destination_lat = HiddenField()
     destination_lon = HiddenField()
-    submit = SubmitField(u'Add The Destination')
+    submit = SubmitField()
 
     def validate(self):
         if not super(DestinationForm, self).validate():
@@ -39,12 +39,6 @@ class DestinationForm(FlaskForm):
             result = False
 
         return result
-
-
-class EditDeleteDestinationForm(DestinationForm):
-    cancel = SubmitField(u"Nevermind, Go Back")
-    submit = SubmitField(u"Save Changes To The Destination")
-    delete = SubmitField(u'Delete The Destination')
 
 
 class DeleteDestinationForm(FlaskForm):

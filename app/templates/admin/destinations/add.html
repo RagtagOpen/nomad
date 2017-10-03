@@ -20,9 +20,6 @@ function initMap() {
         zoom: 4
     });
 
-    {% block load_map%}
-    {% endblock %}
-
     var dest_input = document.getElementById('address');
     var dest_marker = new google.maps.Marker({
         visible: false,
@@ -33,9 +30,6 @@ function initMap() {
     });
     dest_ac.bindTo('bounds', map);
     dest_ac.addListener('place_changed', function() {
-        {% block clear_map%}
-        {% endblock %}
-
         var place = dest_ac.getPlace();
         console.log(place);
         dest_marker.setVisible(false);
@@ -58,9 +52,7 @@ function initMap() {
 
 {% block site %}
 <div class='page-header'>
-    {% block header %}
     <h1>Add a Destination</h1>
-    {% endblock %}
 </div>
 
 <form class='form' method='post'>
@@ -77,10 +69,7 @@ function initMap() {
         {{ wtf.form_field(form.name) }}
         {{ wtf.form_field(form.address) }}
         {{ wtf.form_field(form.submit) }}
-        {% block delete_button%}
-        {% endblock %}
     </div>
 </div>
 </form>
-
 {% endblock %}
