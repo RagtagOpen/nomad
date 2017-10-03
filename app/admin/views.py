@@ -202,7 +202,7 @@ def destinations_show(uuid):
     )
 
     if edit_form.validate_on_submit():
-        if edit_form.submit.data
+        if edit_form.submit.data:
             dest.name = edit_form.name.data
             dest.address = edit_form.address.data
             dest.point = 'SRID=4326;POINT({} {})'.format(
