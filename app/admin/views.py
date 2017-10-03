@@ -214,7 +214,7 @@ def destinations_show(uuid):
                 carpool.to_place = dest.address
                 carpool.to_point = dest.point
 
-                _email_destination_action(dest, 'modified', 'modified')
+            _email_destination_action(dest, 'modified', 'modified')
 
             db.session.commit()
             flash("Your destination was updated", 'success')
