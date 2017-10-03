@@ -219,8 +219,6 @@ def destinations_show(uuid):
             db.session.commit()
             flash("Your destination was updated", 'success')
             return redirect(url_for('admin.destinations_show', uuid=uuid))
-        elif edit_form.delete.data:
-            return redirect(url_for('admin.destinations_delete', uuid=uuid))
         else:
             return redirect(url_for('admin.destinations_list'))
 
