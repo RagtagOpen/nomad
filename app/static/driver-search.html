@@ -12,15 +12,29 @@
 <body>
 
 <nav class="global-header">
-	<div class="logo"></div>
-	<form>
-		<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State" value="21227">
-	</form>
+	<div class="header-left">
+		<div class="logo"></div>
+		<form>
+			<select>
+				<option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
+				<option value="give-ride" selected>Give a ride</option>
+			</select>
+			<span>near</span>
+			<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State" value="21227" >
+		</form>
+	</div>
 	<ul class="nav-bar">
-		<li class="active">Find a ride</li>
-		<li>Give a ride</li>
-		<li>About</li>
-		<li>My Rides</li>
+		<li><a href="#">Find a ride</a></li>
+  		<li class="active"><a href="#">Give a ride</a></li>
+  		<li><a href="#">About</a></li>
+  		<li><a href="#">My Rides</a></li>
+  		<li class="nav-dropdown">
+  			<a class="arrow" href="#">Roberta</a>
+  			<ul class="nav-bar-secondary">
+  				<li><a href="#">Profile</a></li>
+  				<li><a href="#">Logout</a></li>
+  			</ul>
+  		</li>
 	</ul>
 </nav>
 
@@ -28,8 +42,8 @@
 
 	<div class="left-bar">
 		<h1>Give volunteers a ride to a canvassing location</h1>
-		<div class="search-results results-box">
-			<div class="result">
+		<div class="search-results results-box give-ride">
+			<div class="result active">
 				<h3 class="result-title">Joe Candidate’s Office </h3>
 				<p>Chantilly, VA</p>
 				<p>Approx Drive Time: 1 h 50 min</p>
@@ -49,19 +63,39 @@
 
 	<!-- <div class="right-bar active"> -->
 	<div class="right-bar">
-		<div id="background-map"></div>
-		<div class="detail-pane active">
+		<div id="give-ride-map"></div>
+		<div id="detail-pane" class="active">
 			<div class="detail-top">
 				<div class="sub-left">
 					<h4>Create a new carpool</h4>
 					<h1>Joe Candidate's Office</h1>
 				</div>
 				<div class="sub-right">
-					<p>13780 Lowe St </p>
-					<p>Chantilly, VA 20151</p>
+					<input class="primary" type="submit" value="Create carpool to this location">
 				</div>
 			</div>
-			<div class="detail-bottom">
+
+			<div class="detail-bottom top-border">
+				<div class="sub-left">
+					<h4>Location</h4>
+					<p>Joe Candidate’s Office 
+						<br>13780 Lowe St 
+						<br>Chantilly, VA 20151</p>
+					<h4>Approx drive time</h4>
+					<p>1h 50min</p>
+				</div>
+				<div class="sub-middle">
+					<h4>Notes</h4>
+					<p>http://joeforchantilly.com</p>
+				</div>
+				<div class="sub-right">
+					
+				</div>
+			</div>
+
+			<!--- ALTERNATE
+
+			<div class="detail-bottom top-border">
 				<div class="sub-left">
 					<h4>Starting location</h4>
 					<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State" value="10013">
@@ -109,9 +143,10 @@
 					<input class="primary" type="submit" value="Create this carpool">
 				</div>
 			</div>
-		</div>
-	</div>
 
+			-->
+
+	</div>
 </div>
 
 
@@ -126,7 +161,7 @@
 <script type="text/javascript" src="js/map-styles.js"></script>
 <script type="text/javascript" src="js/script.js"></script>
  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtm9OOe24AnTe2kXGdsITXVvj1tovbsws&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtm9OOe24AnTe2kXGdsITXVvj1tovbsws&callback=initGiveRideMap">
     </script>
 </body>
 </html>

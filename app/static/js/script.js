@@ -38,6 +38,25 @@ function initFindRideMap() {
   }
 }
 
+function initGiveRideMap() {
+
+  mapGiveRide = new google.maps.Map(document.getElementById('give-ride-map'), {
+    zoom: 12,
+    center: baltCenter,
+    styles: mapStyleDiscreet
+  });
+
+  for (var i=0; i < baltLocations.length; i++) {
+    markers.push(
+      new google.maps.Marker({
+        position: new google.maps.LatLng(baltLocations[i].lat, baltLocations[i].lng),
+        map: mapGiveRide,
+        icon: normalIcon()
+      })
+    );
+  }
+}
+
 function initMyRidesMap() {
 
   mapMyRides = new google.maps.Map(document.getElementById('my-rides-map'), {

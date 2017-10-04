@@ -306,7 +306,7 @@ select:focus {
 	z-index: 0;
 	overflow: hidden;
 }
-#background-map, #driver-search-map, #my-rides-map {
+#background-map, #give-ride-map, #my-rides-map {
 	height: 100%; 
 	width: 100%; 
 	z-index: 0;
@@ -325,7 +325,8 @@ select:focus {
 .active #detail-pane {
 	transform: translate(0px, -100%)
 }
-.active #background-map {
+/*.active #background-map  {*/
+.active #background-map, .active #give-ride-map, .active #my-rides-map  {
 	transform: translate(0px, -25%)
 }
 .detail-top {
