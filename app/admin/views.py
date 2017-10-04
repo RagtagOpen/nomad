@@ -202,25 +202,22 @@ def destinations_show(uuid):
     )
 
     if edit_form.validate_on_submit():
-        if edit_form.submit.data:
-            dest.name = edit_form.name.data
-            dest.address = edit_form.address.data
-            dest.point = 'SRID=4326;POINT({} {})'.format(
-                edit_form.destination_lon.data,
-                edit_form.destination_lat.data
-            )
+        dest.name = edit_form.name.data
+        dest.address = edit_form.address.data
+        dest.point = 'SRID=4326;POINT({} {})'.format(
+            edit_form.destination_lon.data,
+            edit_form.destination_lat.data
+        )
 
-            for carpool in dest.carpools:
-                carpool.to_place = dest.address
-                carpool.to_point = dest.point
+        for carpool in dest.carpools:
+            carpool.to_place = dest.address
+            carpool.to_point = dest.point
 
-            _email_destination_action(dest, 'modified', 'modified')
+        _email_destination_action(dest, 'modified', 'modified')
 
-            db.session.commit()
-            flash("Your destination was updated", 'success')
-            return redirect(url_for('admin.destinations_show', uuid=uuid))
-        else:
-            return redirect(url_for('admin.destinations_list'))
+        db.session.commit()
+        flash("Your destination was updated", 'success')
+        return redirect(url_for('admin.destinations_show', uuid=uuid))
 
     return render_template(
         'admin/destinations/edit.html',
@@ -262,16 +259,16 @@ def _make_destination_action_email_messages(destination, verb, template_base):
             ride_request.person for ride_request in carpool.ride_requests
         ]
         people.append(carpool.driver)
-        messages_to_send.extend([
-            make_email_message(
-                'admin/destinations/email/{}.html'.format(template_base),
-                'admin/destinations/email/{}.txt'.format(template_base),
-                person.email,
-                subject,
-                destination=destination,
-                carpool=carpool,
-                person=person) for person in people
-        ])
+        for person in people:
+            messages_to_send.append(
+                make_email_message(
+                    'admin/destinations/email/{}.html'.format(template_base),
+                    'admin/destinations/email/{}.txt'.format(template_base),
+                    person.email,
+                    subject,
+                    destination=destination,
+                    carpool=carpool,
+                    person=person))
 
     return messages_to_send
 
