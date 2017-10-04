@@ -171,19 +171,21 @@ select:focus {
 .nav-bar li.active a {
 	font-weight: 600;
 }
-.nav-bar li, .nav-bar div {
+.nav-bar li {
 	flex: 0 1 auto;
 	display: inline-block;
-	margin-right: 40px;
+	padding-right: 40px;
+	height: 70px;
+    padding-top: 21px;
 }
-.nav-bar li:last-child {
-	margin-right: 0;
+.nav-bar li:last-child, .nav-bar-secondary li {
+	padding-right: 0;
 }
 /* ============ THIS NEEDS TO GET FIXED ============ */
 .nav-bar-secondary {
     position: fixed;
     top: 70px;
-    padding: 0 10px 10px 10px;
+    padding: 0 10px;
     margin-left: -10px;
     background-color: white;
     border-left: 1px solid rgb(205,212,222);
@@ -193,8 +195,18 @@ select:focus {
     display: none;
 }
 .nav-dropdown:hover .nav-bar-secondary {
+/*.nav-dropdown:hover .nav-bar-secondary, .nav-bar-secondary li:hover {*/
 	display: block;
 }
+.nav-bar-secondary li {
+	height: 50px;
+    padding-top: 12px;
+    padding-right: 60px;
+}
+.nav-bar-secondary li:last-child {
+	border-top: 1px solid rgb(205,212,222);
+}
+
 .nav-dropdown a.arrow::after {
 	content: url(../img/ic_arrow_down_gray.svg);
 	position: relative;
