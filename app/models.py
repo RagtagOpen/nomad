@@ -124,15 +124,16 @@ class Carpool(db.Model, UuidMixin):
                            default=datetime.datetime.utcnow)
     from_place = db.Column(db.String(120))
     from_point = db.Column(Geometry('POINT'))
-    to_place = db.Column(db.String(120))
-    to_point = db.Column(Geometry('POINT'))
     leave_time = db.Column(db.DateTime(timezone=True))
     return_time = db.Column(db.DateTime(timezone=True))
     max_riders = db.Column(db.Integer)
+    notes = db.Column(db.Text)
+    vehicle_description = db.Column(db.Text)
     driver_id = db.Column(db.Integer, db.ForeignKey('people.id'))
     destination_id = db.Column(db.Integer, db.ForeignKey('destinations.id'))
 
     ride_requests = relationship("RideRequest", cascade="all, delete-orphan")
+    destination = relationship("Destination")
 
     def get_ride_requests_query(self, statuses=None):
         query = RideRequest.query.filter_by(carpool_id=self.id)

@@ -1,11 +1,13 @@
 from flask_wtf import FlaskForm
 from wtforms import (
+    DateField,
     DateTimeField,
     HiddenField,
     IntegerField,
     SelectField,
     StringField,
     SubmitField,
+    TextAreaField,
 )
 from wtforms.validators import (
     InputRequired,
@@ -13,49 +15,43 @@ from wtforms.validators import (
 )
 
 
+def time_select_tuples():
+    result = []
+
+    for h in range(1, 12):
+        result.append((str(h), "{} AM".format(h)))
+
+    result.append(('12', "12 PM"))
+
+    for h in range(1, 12):
+        result.append((str(h + 12), "{} PM".format(h)))
+
+    result.append(('0', "12 AM"))
+
+    return result
+
+
 class DriverForm(FlaskForm):
-    car_size = IntegerField(
-        "Number of Seats",
-        [
-            InputRequired("Please provide the number of seats in your car"),
-            NumberRange(1, 10),
-        ],
-        description="Seats available (besides the driver)",
-    )
-    leaving_from = StringField(
-        "Leaving From",
-        [
-            InputRequired("Where are you leaving from?"),
+    destination = SelectField(
+        validators=[
+            InputRequired("Please select a destination.")
         ]
     )
-    leaving_from_lat = HiddenField()
-    leaving_from_lon = HiddenField()
-    depart_time = DateTimeField(
-        "Depart Time",
-        [
-            InputRequired("When are you leaving?"),
-        ],
-        format='%m/%d/%Y %H:%M',
-    )
-    going_to_list = SelectField(
-        "Going To",
-        [
-            InputRequired("Where are going to?"),
-        ],
-        coerce=int,
-    )
-    going_to_id = HiddenField()
-    going_to_text = StringField()
-    going_to_lat = HiddenField()
-    going_to_lon = HiddenField()
-    return_time = DateTimeField(
-        "Return Time",
-        [
-            InputRequired("When do you plan to return?"),
-        ],
-        format='%m/%d/%Y %H:%M',
-    )
-    submit = SubmitField(u'Add Your Ride')
+
+    departure_name = StringField()
+    departure_lat = HiddenField()
+    departure_lon = HiddenField()
+
+    departure_date = DateField()
+    departure_hour = SelectField(choices=time_select_tuples(), default='9')
+
+    return_date = DateField()
+    return_hour = SelectField(choices=time_select_tuples(), default='9')
+
+    vehicle_description = StringField()
+    vehicle_capacity = SelectField(choices=[(str(x), x) for x in range(1, 9)])
+
+    notes = TextAreaField()
 
     def validate(self):
         if not super(DriverForm, self).validate():
@@ -63,21 +59,15 @@ class DriverForm(FlaskForm):
 
         result = True
 
-        if not (self.leaving_from_lon.data and self.leaving_from_lat.data):
-            self.leaving_from.errors.append(
+        if not (self.departure_lon.data and self.departure_lat.data):
+            self.departure_name.errors.append(
                 "No location was found. Try a nearby "
                 "street intersection or business.")
             result = False
 
-        if not (self.going_to_lon.data and self.going_to_lat.data):
-            self.going_to_list.errors.append(
-                "No location was found. Try a nearby "
-                "street intersection or business.")
-            result = False
-
-        if self.depart_time.data >= self.return_time.data:
-            self.depart_time.errors.append(
-                "Departure time must be before return time")
+        if not (self.destination.data):
+            self.destination.errors.append(
+                "Please select a destination.")
             result = False
 
         return result
