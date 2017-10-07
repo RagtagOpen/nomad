@@ -25,7 +25,7 @@
                 <tr>
                     <td>{{ carpool.seats_available }}</td>
                     <td><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">{{ carpool.from_place }}</a></td>
-                    <td>{{ carpool.to_place }}</td>
+                    <td>{{ carpool.destination.name }}</td>
                 </tr>
 {% else %}
                 <tr>
