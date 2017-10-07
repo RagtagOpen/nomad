@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<head>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+	<link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+	<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<nav class="global-header">
+	<div class="header-left">
+		<div class="logo"></div>
+		<form>
+			<select>
+				<option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
+				<option value="give-ride">Give a ride</option>
+			</select>
+			<span>near</span>
+			<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State" value="21227" >
+		</form>
+	</div>
+	<ul class="nav-bar">
+		<li class="active"><a href="#">Find a ride</a></li>
+  		<li><a href="#">Give a ride</a></li>
+  		<li><a href="#">About</a></li>
+  		<li><a href="#">My Rides</a></li>
+  		<li class="nav-dropdown">
+  			<a class="arrow" href="#">Roberta</a>
+  			<ul class="nav-bar-secondary">
+  				<li><a href="#">Profile</a></li>
+  				<li><a href="#">Logout</a></li>
+  			</ul>
+  		</li>
+	</ul>
+</nav>
+
+<div class="content constrained">
+
+	<div class="left-bar">
+		<h1>My upcoming rides</h1>
+		<div class="search-results results-box my-rides">
+			<div class="result active">
+				<h3 class="result-title">Baltimore to Chantilly</h3>
+				<p>Status: 	Request pending (Waiting for driver to confirm)</p>
+				<p>Departs: Sat Jun 5 (morning)</p>
+				<p>Returns: Sun Jun 6 (afternoon)</p>
+				<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+			</div>
+			<div class="result">
+				<h3 class="result-title">Baltimore to Chantilly</h3>
+				<p>Status: You're confirmed for this ride!</p>
+				<p>Departs: Sat Jun 5 (morning)</p>
+				<p>Returns: Sun Jun 6 (afternoon)</p>
+				<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+			</div>
+			<div class="result">
+				<h3 class="result-title">Baltimore to Chantilly</h3>
+				<p>Status: Driver cancelled this ride</p>
+				<p>Departs: Sat Jun 5 (morning)</p>
+				<p>Returns: Sun Jun 6 (afternoon)</p>
+				<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+			</div>
+			<div class="result">
+				<h3 class="result-title">Baltimore to Chantilly</h3>
+				<p>Status: You're driving! (2 passengers confirmed)</p>
+				<p>Departs: Sat Jun 5 (morning)</p>
+				<p>Returns: Sun Jun 6 (afternoon)</p>
+				<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+			</div>
+		</div>
+	</div>
+
+	<!-- <div class="right-bar active"> -->
+	<div class="right-bar">
+		<div id="my-rides-map"></div>
+		<div id="detail-pane" class="active">
+			<div class="detail-top">
+				<div class="sub-left">
+					<h4>Ride Details</h4>
+					<h1>Baltimore to Chantilly</h1>
+				</div>
+				<div class="sub-right">
+					<p>Status: Request pending (Waiting for driver to confirm)</p>
+					<input class="destructive" type="submit" value="Cancel this carpool">
+					
+				</div>
+			</div>
+			<div class="detail-bottom top-border">
+				<div class="sub-left">
+					<h4>Departs</h4>
+					<p>Sat, Jun 5 - Morning</p>
+					<h4>Returns</h4>
+					<p>Sun, Jun 5 - Afternoon</p>
+					<h4>Approx drive time</h4>
+					<p>1 h 50 min each way</p>
+				</div>
+				<div class="sub-middle">
+					<h4>Pickup</h4>
+					<p>Johns Hopkins - Homewood Field 
+						<br>111 W University Pkwy 
+						<br>Baltimore, MD 21210
+					</p>
+					<h4>Dropoff</h4>
+					<p>Joe Candidate’s Office 
+						<br>13780 Lowe St 
+						<br>Chantilly, VA 20151
+					</p>
+				</div>
+				<div class="sub-right">
+					<h4>Carpool Details</h4>
+					<p>Driver: Frank U. (Male)</p>
+					<p>Vehicle: Black 2015 Honda Accord</p>
+					<p>Luggage space: 1 medium-sized bag per passenger</p>
+					<h4>Additional notes:</h4>
+					<p>Flexible on departure time. Non-smoking. Not good for people with dog / cat allergies</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+
+<!-- <div class="jumbotron">
+  <h1>Share Your Ride!</h1>
+  <p>Join your neighbors carpools to save time, money, and help the environment!</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('carpool.find') }}" role="button">Look for a ride</a>
+  <a class="btn btn-link btn-lg" href="{{ url_for('carpool.mine') }}" role="button">Manage your rides</a>
+</div> -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/map-styles.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+ <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtm9OOe24AnTe2kXGdsITXVvj1tovbsws&callback=initMyRidesMap">
+    </script>
+</body>
+</html>

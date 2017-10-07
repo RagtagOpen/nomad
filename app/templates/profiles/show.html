@@ -2,26 +2,62 @@
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
-<div class='page-header'>
-    <h1>Your Profile</h1>
-</div>
+<div class="content">
 
-<div class='row'>
-    <div class='col-md-6'>
-        <form class='form' method='post'>
-        {{ form.hidden_tag() }}
-        {{ wtf.form_field(form.name) }}
-        {{ wtf.form_field(form.gender) }}
-        {{ wtf.form_field(form.email) }}
-        {{ wtf.form_field(form.phone_number, type='tel') }}
-        {{ wtf.form_field(form.preferred_contact) }}
-        {{ wtf.form_field(form.submit) }}
+    <div class="fullscreen">
+        <form class="form-page">
+            <h1>Edit your profile</h1>
+            <p>Make changes to your personal information or delete your account.</p>
+            <div class="two-col-layout first-child top-border">
+                <div class="two-col-column">
+                    <h4>Display Name</h4>
+                    <input type="text" name="user-name" id="user-name" placeholder="Name (or username) of your choice" value="Punky Brewster" >
+                    <label>Your drivers/fellow passengers will see this information when you create or request a ride. We recommend using a first name and last initial (e.g. "Tyrion L.").</label>
+                </div>
+                <div class="two-col-column">
+                    <h4>Gender</h4>
+                    <select id="gender-select">
+                      <option value="female">Female</option>
+                      <option value="male">Male</option>
+                      <option value="non-binary">Non-binary gender</option>
+                      <option value="other">Self-described</option>
+                      <option value="non-answer">Prefer not to say</option>
+                    </select>
+                    <input type="text" name="user-name" id="user-name" class="gender-description">
+                    <label>We ask for this information to ensure that everyone can choose a carpool that they feel comfortable with.</label>
+                </div>
+            </div>
+
+            <div class="two-col-layout top-border">
+                <div class="two-col-column">
+                    <h4>Email Address</h4>
+                    <input type="email" name="user-email" id="user-email" placeholder="Email address" value="spunky@gmail.com" >
+                    <h4>Phone Number</h4>
+                    <input type="tel" name="user-phone" id="user-phone" placeholder="Phone number" value="212-555-5555" >
+                </div>
+                <div class="two-col-column">
+                    <h4>Preferred Driver Contact Method(s)</h4>
+                    <input type="checkbox" name="checkbox-email" value="email" checked><span class="check-label"> Email</span>
+                    <input type="checkbox" name="checkbox-phone" value="phone"><span class="check-label"> Phone Call</span>
+                    <input type="checkbox" name="checkbox-text" value="text"><span class="check-label"> SMS/Text</span><br>
+                    <label>This is how drivers will contact passengers once a carpool has been arranged. (System notifications from Nomad will always be sent by email.)</label>
+                </div>
+            </div>
+
+            <div class="two-col-layout top-border right-align">
+                <input class="primary" type="submit" value="Save changes">
+            </div>
+
+            <div class="top-border">
+                <h4>Delete your account</h4>
+                <p>Deleting your account will remove you from all carpools and you will stop receiving further emails.</p>
+                <br>
+                <p><a class="destructive" href="{{ url_for('auth.profile_delete') }}">Delete account</a></p>
+            </div>
+
         </form>
     </div>
-    <div class='col-md-6 well'>
-        <h4>Delete your account</h4>
-        <p>Deleting your account will remove you from all carpools and you will stop receiving further emails.</p>
-        <a class="btn btn-danger" role="button" href="{{ url_for('auth.profile_delete') }}">Delete your account</a>
-    </div>
+
 </div>
+
 {% endblock %}

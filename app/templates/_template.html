@@ -7,11 +7,52 @@
 {{super()}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js" integrity="sha256-1hjUhpc44NwiNg8OwMu2QzJXhD8kcj+sJA3aCQZoUjg=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js" integrity="sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/map-styles.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script type="text/javascript">
+function updateHeaderSearchTarget() {
+  var rideSelect = $("#ride-select").val();
+  if (rideSelect == "find-ride") {
+    $("#ride-select-form").attr("action", "{{ url_for('carpool.find') }}");
+  } else if (rideSelect == "give-ride") {
+    $("#ride-select-form").attr("action", "{{ url_for('carpool.new') }}");
+  }
+}
+
+$(function() {
+  $("#ride-select").change(function() {
+    updateHeaderSearchTarget();
+  });
+});
+
+function initMap() {
+  var from_input = document.getElementById('locationQuery');
+  var from_options = {
+    types: ['(regions)'],
+    componentRestrictions: {country: 'us'}
+  };
+  var from_ac = new google.maps.places.Autocomplete(from_input, from_options);
+  from_ac.addListener('place_changed', function() {
+    var chosen = from_ac.getPlace();
+    $("#ride-select-lat").val(chosen.geometry.location.lat());
+    $("#ride-select-lon").val(chosen.geometry.location.lng());
+    $("#ride-select-form").submit();
+  });
+
+  if (localInitMap) {
+    localInitMap();
+  }
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
 {% endblock %}
 
 {% block styles %}
 {{super()}}
+<link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:300,400,600,700" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" integrity="sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=" crossorigin="anonymous" />
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
 {% endblock %}
 
 {% import "bootstrap/fixes.html" as fixes %}
@@ -21,17 +62,40 @@
 {%- endblock %}
 
 {% block content %}
-  <nav class="navbar navbar-default">
-    <div class="container">
-      <a class="navbar-brand" href="{{ url_for('carpool.index') }}">Carpools</a>
-{% if current_user.is_authenticated %}
-      <p class="navbar-text navbar-right">Signed in{% if current_user.name %} as {{ current_user.name }}{% endif %}&nbsp;<a href="{{ url_for('auth.profile') }}" class="navbar-link"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> Profile</a>&nbsp;<a href="{{ url_for('auth.logout') }}" class="navbar-link"><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> Logout</a></p>
-{% else %}
-      <p class="navbar-text navbar-right"><a href="{{ url_for('auth.login') }}" class="navbar-link"><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Login</a></p>
-{% endif %}
-    </div>
-  </nav>
-  <div class="container">
+<nav class="global-header">
+  <div class="header-left">
+    <a href="{{ url_for('carpool.index') }}"><div class="logo"></div></a>
+<!-- if this page is related to a find / give page -->
+    <form id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}">
+      <input type="hidden" id="ride-select-lat" name="lat"></input>
+      <input type="hidden" id="ride-select-lon" name="lon"></input>
+      <select id="ride-select">
+        <option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
+        <option value="give-ride">Give a ride</option>
+      </select>
+      <span>near</span>
+      <input type="text" name="q" id="locationQuery" placeholder="Zip code or City, State"/>
+    </form>
+<!-- end if -->
+  </div>
+  <ul class="nav-bar">
+    <li class="active"><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
+    <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
+    <li class="nav-dropdown">
+      <a class="arrow" href="#">
+        {% if current_user.is_authenticated %}{{ current_user.name }}{% else %}<a href="{{ url_for('auth.login') }}">Login</a>{% endif %}
+      </a>
+      <ul class="nav-bar-secondary">
+        <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
+        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+<!-- <div class="container"> -->
   {%- with messages = get_flashed_messages(with_categories=True) %}
   {%- if messages %}
     <div class="row">
@@ -42,5 +106,5 @@
   {%- endif %}
   {%- endwith %}
   {% block site %}{% endblock %}
-  </div>
+  <!-- </div> -->
 {%- endblock %}

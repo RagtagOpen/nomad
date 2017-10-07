@@ -33,7 +33,24 @@ def index():
 
 @pool_bp.route('/carpools/find')
 def find():
-    return render_template('carpools/find.html')
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+    name = request.args.get('q')
+
+    try:
+        lat = float(lat)
+        lon = float(lon)
+    except TypeError:
+        lat = None
+        lon = None
+        name = None
+
+    return render_template(
+        'carpools/find.html',
+        loc_name=name,
+        loc_lat=lat,
+        loc_lon=lon,
+    )
 
 
 @pool_bp.route('/carpools/starts.geojson')
@@ -43,25 +60,33 @@ def start_geojson():
     if request.args.get('ignore_prior') != 'false':
         pools = pools.filter(Carpool.leave_time >= datetime.datetime.utcnow())
 
-    min_leave_date = request.args.get('min_leave_date')
-    if min_leave_date:
-        try:
-            min_leave_date = datetime.datetime.strptime(
-                min_leave_date, '%m/%d/%Y')
-            pools = pools.filter(
-                func.date(Carpool.leave_time) == min_leave_date)
-        except ValueError:
-            abort(400, "Invalid date format for min_leave_date")
-
     near_lat = request.args.get('near.lat')
     near_lon = request.args.get('near.lon')
+    near_radius = request.args.get('near.radius') or None
+
     if near_lat and near_lon:
         try:
             near_lat = float(near_lat)
             near_lon = float(near_lon)
         except ValueError:
             abort(400, "Invalid lat/lon format")
+
+        try:
+            near_radius = int(near_radius)
+        except ValueError:
+            abort(400, "Invalid radius format")
+
         center = from_shape(Point(near_lon, near_lat), srid=4326)
+
+        if near_radius:
+            # We're going to say that radius is in meters.
+            # The conversion factor here is based on a 40deg latitude
+            # (roughly around Virginia)
+            radius_degrees = near_radius / 111034.61
+            pools.filter(
+                func.ST_Distance(Carpool.from_point, center) <= radius_degrees
+            )
+
         pools = pools.order_by(func.ST_Distance(Carpool.from_point, center))
 
     features = []
@@ -72,11 +97,11 @@ def start_geojson():
         features.append({
             'type': 'Feature',
             'geometry': mapping(to_shape(pool.from_point)),
-            'id': url_for('carpool.details', uuid=pool.uuid),
+            'id': url_for('carpool.details', uuid=pool.uuid, _external=True),
             'properties': {
                 'from_place': escape(pool.from_place),
-                'to_place': escape(pool.to_place),
-                'seats_available': escape(pool.seats_available),
+                'to_place': escape(pool.destination.name),
+                'seats_available': pool.seats_available,
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
                 'driver_gender': escape(pool.driver.gender),
@@ -102,6 +127,11 @@ def mine():
 @pool_bp.route('/carpools/new', methods=['GET', 'POST'])
 @login_required
 def new():
+    if not current_user.name:
+        flash("Please specify your name before creating a carpool")
+        session['next'] = url_for('carpool.new')
+        return redirect(url_for('auth.profile'))
+
     if not current_user.gender:
         flash("Please specify your gender before creating a carpool")
         session['next'] = url_for('carpool.new')
@@ -111,28 +141,39 @@ def new():
 
     visible_destinations = Destination.find_all_visible().all()
 
-    driver_form.going_to_list.choices = []
-    driver_form.going_to_list.choices.append((-1, "Select a Destination"))
-    driver_form.going_to_list.choices.extend([
-        (r.id, r.name) for r in visible_destinations
-    ])
-    driver_form.going_to_list.choices.append((-2, "Other..."))
+    driver_form.destination.choices = [
+        (str(r.uuid), r.name) for r in visible_destinations
+    ]
+    driver_form.destination.choices.insert(0, ('', "Select one..."))
 
     if driver_form.validate_on_submit():
+        dest = Destination.first_by_uuid(driver_form.destination.data)
+
+        departure_datetime = datetime.datetime(
+            driver_form.departure_date.data.year,
+            driver_form.departure_date.data.month,
+            driver_form.departure_date.data.day,
+            int(driver_form.departure_hour.data)
+        )
+
+        return_datetime = datetime.datetime(
+            driver_form.return_date.data.year,
+            driver_form.return_date.data.month,
+            driver_form.return_date.data.day,
+            int(driver_form.return_hour.data)
+        )
+
         c = Carpool(
-            from_place=driver_form.leaving_from.data,
+            from_place=driver_form.departure_name.data,
             from_point='SRID=4326;POINT({} {})'.format(
-                driver_form.leaving_from_lon.data,
-                driver_form.leaving_from_lat.data),
-            destination_id=int(driver_form.going_to_id.data)
-                if driver_form.going_to_id.data else None,
-            to_place=driver_form.going_to_text.data,
-            to_point='SRID=4326;POINT({} {})'.format(
-                driver_form.going_to_lon.data,
-                driver_form.going_to_lat.data),
-            leave_time=driver_form.depart_time.data,
-            return_time=driver_form.return_time.data,
-            max_riders=driver_form.car_size.data,
+                driver_form.departure_lon.data,
+                driver_form.departure_lat.data),
+            destination_id=dest.id,
+            leave_time=departure_datetime,
+            return_time=return_datetime,
+            max_riders=driver_form.vehicle_capacity.data,
+            vehicle_description=driver_form.vehicle_description.data,
+            notes=driver_form.notes.data,
             driver_id=current_user.id,
         )
         db.session.add(c)
@@ -154,6 +195,13 @@ def details(uuid):
     carpool = Carpool.uuid_or_404(uuid)
 
     return render_template('carpools/show.html', pool=carpool)
+
+
+@pool_bp.route('/carpools/<uuid>/embed')
+def details_embed(uuid):
+    carpool = Carpool.uuid_or_404(uuid)
+
+    return render_template('carpools/show_embed.html', pool=carpool)
 
 
 @pool_bp.route('/carpools/<carpool_uuid>/newrider', methods=['GET', 'POST'])

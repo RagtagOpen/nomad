@@ -1,28 +1,10 @@
 {%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
-{% block styles %}
-{{super()}}
-<style>
-    #map {
-        height: 300px;
-        width: 100%;
-    }
-</style>
-{% endblock %}
-
 {% block scripts %}
 {{super()}}
 <script>
-var place = null;
-var map = null;
-
 $(function () {
-    $('#depart_date').datetimepicker({
-        format: 'MM/DD/YYYY',
-        minDate: moment(),
-        useCurrent: false,
-    });
     $('#submit').on('click', function() {
         doSearch();
     });
@@ -32,15 +14,11 @@ function doSearch() {
     var url = '{{ url_for('carpool.start_geojson') }}?';
     var parts = [];
 
-    if (place) {
-        parts.push('near.lat=' + encodeURIComponent(place.geometry.location.lat()));
-        parts.push('near.lon=' + encodeURIComponent(place.geometry.location.lng()));
-    }
-
-    var date_input = document.getElementById('depart_date');
-    if (date_input.value) {
-        parts.push('min_leave_date=' + encodeURIComponent(date_input.value));
-    }
+    {% if loc_lat and loc_lon %}
+    parts.push('near.lat=' + encodeURIComponent({{ loc_lat }}));
+    parts.push('near.lon=' + encodeURIComponent({{ loc_lon }}));
+    parts.push('near.radius=10000');
+    {% endif %}
 
     url += parts.join('&');
 
@@ -52,83 +30,78 @@ function doSearch() {
     map.data.loadGeoJson(url, null, mapDataCallback);
 }
 
-function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
+function localInitMap() {
+    map = new google.maps.Map(document.getElementById('background-map'), {
         center: {lat: 38.518, lng: -97.328},
-        zoom: 4
+        zoom: 3,
+        styles: mapStyleDiscreet
     });
     doSearch();
+}
 
-    var from_input = document.getElementById('leaving_from');
-    var from_ac = new google.maps.places.Autocomplete(from_input, {
-        componentRestrictions: {country: 'us'}
-    });
-    from_ac.bindTo('bounds', map);
-    from_ac.addListener('place_changed', function() {
-        var chosen = from_ac.getPlace();
-
-        if (!chosen.geometry) {
-            console.log("No details available for from autocomplete: '" + chosen.name + "'");
-            return;
+function showCarpoolDetails(carpoolId) {
+    $.ajax({
+        type: "GET",
+        url: carpoolId + '/embed',
+        success: function(data) {
+            $('#detail-pane').html(data);
+            $('#detail-pane').show();
         }
+    })
+}
 
-        place = chosen;
-    });
+function showCarpoolDetailsDivClickHandler(event) {
+    showCarpoolDetails(event.data);
 }
 
 function mapDataCallback(features) {
     var results = $('#search-results');
     results.empty();
-    for (var i = 0; i < features.length; i++) {
-        var feature = features[i];
-        results.append(
-            '<tr><td>' + feature.getProperty('seats_available') + '</td>' +
-            '<td>' + feature.getProperty('driver_gender') + '</td>' +
-            '<td><a href="' + feature.getId() + '">' + feature.getProperty('from_place') + ' at ' + feature.getProperty('leave_time') + '</a></td>' +
-            '<td>' + feature.getProperty('to_place') + ' at ' + feature.getProperty('return_time') + '</td></tr>');
+
+    if (features.length > 0) {
+        for (var i = 0; i < features.length; i++) {
+            var feature = features[i];
+            var resultdiv = $('<div class="result"><h3 class="result-title">' + feature.getProperty('from_place') + ' to ' + feature.getProperty('to_place') + '</h3><p>' + feature.getProperty('seats_available') + ' seats available</p><p>Departs: ' + feature.getProperty('leave_time') + '</p><p>Returns: ' + feature.getProperty('return_time') + '</p><p>Destination: '+ feature.getProperty('to_place') + '</p></div>');
+            resultdiv.click(feature.getId(), showCarpoolDetailsDivClickHandler);
+            results.append(resultdiv);
+        }
+    } else {
+        {% if loc_lat and loc_lon %}
+        var resultdiv = $('<div class="result"><h3>No carpools nearby</h3><p>Will you consider <a href="{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}">starting one</a>?</p></div>');
+        {% else %}
+        var resultdiv = $('<div class="result"><h3>No carpools nearby</h3><p>Will you consider <a href="{{ url_for('carpool.new') }}">starting one</a>?</p></div>');
+        {% endif %}
+        results.append(resultdiv);
     }
 
     map.data.addListener('click', function(event) {
-        window.location = event.feature.getId();
+        showCarpoolDetails(event.feature.getId());
     });
 }
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
 {% endblock %}
 
 {% block site %}
-<div class='page-header'>
-    <h1>Find a Carpool</h1>
+
+
+<div class="content constrained">
+
+    <div class="left-bar">
+        {% if loc_name %}
+        <h1>Find rides near {{ loc_name }}</h1>
+        {% else %}
+        <h1>Find rides near you</h1>
+        {% endif %}
+        <div id="search-results">
+        </div>
+    </div>
+
+    <!-- <div class="right-bar active"> -->
+    <div class="right-bar">
+        <div id="background-map"></div>
+        <div id="detail-pane" class="active"></div>
+    </div>
+
 </div>
 
-<div class='row'>
-    <div class="col-md-2">
-        <div class="form-group">
-            <label class="control-label" for="depart_date">Departure Date</label>
-            <input class="form-control" id="depart_date" name="depart_date" required="" type="text" value="">
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="leaving_from">Leaving From</label>
-            <input class="form-control" id="leaving_from" name="leaving_from" required="" type="text" value="">
-        </div>
-        <div class="form-group">
-            <input class="btn btn-default" id="submit" name="submit" type="submit" value="Search">
-        </div>
-    </div>
-    <div class="col-md-10">
-        <div id='map'></div>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Capacity</th>
-                    <th>Gender</th>
-                    <th>Leaving</th>
-                    <th>Going To</th>
-                </tr>
-            </thead>
-            <tbody id='search-results'>
-            </tbody>
-        </table>
-    </div>
-</div>
 {% endblock %}
