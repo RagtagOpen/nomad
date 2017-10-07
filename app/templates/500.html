@@ -6,11 +6,17 @@
 {% endblock %}
 
 {% block site %}
-<div class='page-header'>
-    <h1>Woops! <small>Error 500</small></h1>
-</div>
 
-<p class="bg-danger">You seem to have found an unexpected error.</p>
+
+<div class="content">
+
+	<div class="fullscreen">
+		<h4>500: Internal server error</h4>
+		<h1>Well, this is awkward.</h1>
+		<p>We'll have to think of something funnier to write here, eventually. In the meantime, try going back <a href="{{ url_for('carpools.index') }}">home</a>.</p>
+	</div>
+
+</div>
 
 {% if event_id %}
 <script>

@@ -1,16 +1,6 @@
 {%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
-{% block styles %}
-{{super()}}
-<style>
-    #map {
-        height: 300px;
-        width: 100%;
-    }
-</style>
-{% endblock %}
-
 {% block scripts %}
 {{super()}}
 <script>
@@ -18,11 +8,6 @@ var place = null;
 var map = null;
 
 $(function () {
-    $('#depart_date').datetimepicker({
-        format: 'MM/DD/YYYY',
-        minDate: moment(),
-        useCurrent: false,
-    });
     $('#submit').on('click', function() {
         doSearch();
     });
@@ -37,11 +22,6 @@ function doSearch() {
         parts.push('near.lon=' + encodeURIComponent(place.geometry.location.lng()));
     }
 
-    var date_input = document.getElementById('depart_date');
-    if (date_input.value) {
-        parts.push('min_leave_date=' + encodeURIComponent(date_input.value));
-    }
-
     url += parts.join('&');
 
     var results = $('#search-results');
@@ -53,27 +33,56 @@ function doSearch() {
 }
 
 function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
+    map = new google.maps.Map(document.getElementById('background-map'), {
         center: {lat: 38.518, lng: -97.328},
-        zoom: 4
+        zoom: 12,
+        styles: mapStyleDiscreet
     });
     doSearch();
 
-    var from_input = document.getElementById('leaving_from');
+    var from_input = document.getElementById('locationQuery');
     var from_ac = new google.maps.places.Autocomplete(from_input, {
-        componentRestrictions: {country: 'us'}
+        componentRestrictions: {country: 'us'},
+        options: ['(regions)'],
     });
     from_ac.bindTo('bounds', map);
     from_ac.addListener('place_changed', function() {
         var chosen = from_ac.getPlace();
 
         if (!chosen.geometry) {
-            console.log("No details available for from autocomplete: '" + chosen.name + "'");
+            console.log("No details available for form autocomplete: '" + chosen.name + "'");
             return;
         }
 
         place = chosen;
+        doSearch();
     });
+
+    // need to figure out where this makes sense to include custom markers
+
+    // for (var i=0; i < baltLocations.length; i++) {
+    //     markers.push(new google.maps.Marker({
+    //         position: new google.maps.LatLng(baltLocations[i].lat, baltLocations[i].lng),
+    //         map: map,
+    //         icon: normalIcon()
+    //     }));
+    // }
+
+}
+
+function showCarpoolDetails(carpoolId) {
+    $.ajax({
+        type: "GET",
+        url: carpoolId + '/embed',
+        success: function(data) {
+            $('#detail-pane').html(data);
+            $('#detail-pane').show();
+        }
+    })
+}
+
+function showCarpoolDetailsDivClickHandler(event) {
+    showCarpoolDetails(event.data);
 }
 
 function mapDataCallback(features) {
@@ -81,54 +90,47 @@ function mapDataCallback(features) {
     results.empty();
     for (var i = 0; i < features.length; i++) {
         var feature = features[i];
-        results.append(
-            '<tr><td>' + feature.getProperty('seats_available') + '</td>' +
-            '<td>' + feature.getProperty('driver_gender') + '</td>' +
-            '<td><a href="' + feature.getId() + '">' + feature.getProperty('from_place') + ' at ' + feature.getProperty('leave_time') + '</a></td>' +
-            '<td>' + feature.getProperty('to_place') + ' at ' + feature.getProperty('return_time') + '</td></tr>');
+        var resultdiv = $('<div class="result"><h3 class="result-title">' + feature.getProperty('from_place') + ' to ' + feature.getProperty('to_place') + '</h3><p>' + feature.getProperty('seats_available') + ' seats available</p><p>Departs: ' + feature.getProperty('leave_time') + '</p><p>Returns: ' + feature.getProperty('return_time') + '</p><p>Destination: '+ feature.getProperty('to_place') + '</p></div>');
+        resultdiv.click(feature.getId(), showCarpoolDetailsDivClickHandler);
+        results.append(resultdiv);
     }
 
     map.data.addListener('click', function(event) {
-        window.location = event.feature.getId();
+        showCarpoolDetails(event.feature.getId());
     });
+}
+
+function normalIcon() {
+  return {
+    url: 'img/ic_marker_inactive.png'
+    };
+}
+function highlightedIcon() {
+  return {
+    url: 'img/ic_marker_active.png'
+  };
 }
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
 {% endblock %}
 
 {% block site %}
-<div class='page-header'>
-    <h1>Find a Carpool</h1>
+
+
+<div class="content constrained">
+
+    <div class="left-bar">
+        <h1>Find rides near you</h1>
+        <div id="search-results">
+        </div>
+    </div>
+
+    <!-- <div class="right-bar active"> -->
+    <div class="right-bar">
+        <div id="background-map"></div>
+        <div id="detail-pane" class="active"></div>
+    </div>
+
 </div>
 
-<div class='row'>
-    <div class="col-md-2">
-        <div class="form-group">
-            <label class="control-label" for="depart_date">Departure Date</label>
-            <input class="form-control" id="depart_date" name="depart_date" required="" type="text" value="">
-        </div>
-        <div class="form-group">
-            <label class="control-label" for="leaving_from">Leaving From</label>
-            <input class="form-control" id="leaving_from" name="leaving_from" required="" type="text" value="">
-        </div>
-        <div class="form-group">
-            <input class="btn btn-default" id="submit" name="submit" type="submit" value="Search">
-        </div>
-    </div>
-    <div class="col-md-10">
-        <div id='map'></div>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Capacity</th>
-                    <th>Gender</th>
-                    <th>Leaving</th>
-                    <th>Going To</th>
-                </tr>
-            </thead>
-            <tbody id='search-results'>
-            </tbody>
-        </table>
-    </div>
-</div>
 {% endblock %}
