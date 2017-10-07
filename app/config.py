@@ -25,6 +25,7 @@ class Config:
 
     REMEMBER_COOKIE_SECURE = True
     REMEMBER_COOKIE_HTTPONLY = True
+    SESSION_PROTECTION = 'strong'
 
     OAUTH_CREDENTIALS = {
         'facebook': {
