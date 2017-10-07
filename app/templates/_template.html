@@ -7,9 +7,46 @@
 {{super()}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js" integrity="sha256-1hjUhpc44NwiNg8OwMu2QzJXhD8kcj+sJA3aCQZoUjg=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js" integrity="sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=" crossorigin="anonymous"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/map-styles.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script type="text/javascript">
+function updateHeaderSearchTarget() {
+  var rideSelect = $("#ride-select").val();
+  if (rideSelect == "find-ride") {
+    $("#ride-select-form").attr("action", "{{ url_for('carpool.find') }}");
+  } else if (rideSelect == "give-ride") {
+    $("#ride-select-form").attr("action", "{{ url_for('carpool.new') }}");
+  }
+}
+
+$(function() {
+  $("#ride-select").change(function() {
+    updateHeaderSearchTarget();
+  });
+});
+
+function initMap() {
+  var from_input = document.getElementById('locationQuery');
+  var from_options = {
+    types: ['(regions)'],
+    componentRestrictions: {country: 'us'}
+  };
+  var from_ac = new google.maps.places.Autocomplete(from_input, from_options);
+  from_ac.addListener('place_changed', function() {
+    var chosen = from_ac.getPlace();
+    console.log(chosen);
+    $("#ride-select-lat").val(chosen.geometry.location.lat());
+    $("#ride-select-lon").val(chosen.geometry.location.lng());
+    $("#ride-select-form").submit();
+  });
+
+  if (localInitMap) {
+    localInitMap();
+  }
+}
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
 {% endblock %}
 
 {% block styles %}
@@ -30,13 +67,15 @@
   <div class="header-left">
     <a href="{{ url_for('carpool.index') }}"><div class="logo"></div></a>
 <!-- if this page is related to a find / give page -->
-    <form>
-      <select>
+    <form id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}">
+      <input type="hidden" id="ride-select-lat" name="lat"></input>
+      <input type="hidden" id="ride-select-lon" name="lon"></input>
+      <select id="ride-select">
         <option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
         <option value="give-ride">Give a ride</option>
       </select>
       <span>near</span>
-      <input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State" value="21227" >
+      <input type="text" name="q" id="locationQuery" placeholder="Zip code or City, State"/>
     </form>
 <!-- end if -->
   </div>

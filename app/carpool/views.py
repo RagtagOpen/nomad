@@ -34,7 +34,24 @@ def index():
 
 @pool_bp.route('/carpools/find')
 def find():
-    return render_template('carpools/find.html')
+    lat = request.args.get('lat')
+    lon = request.args.get('lon')
+    name = request.args.get('q')
+
+    try:
+        lat = float(lat)
+        lon = float(lon)
+    except ValueError:
+        lat = None
+        lon = None
+        name = None
+
+    return render_template(
+        'carpools/find.html',
+        loc_name=escape(name),
+        loc_lat=lat,
+        loc_lon=lon,
+    )
 
 
 @pool_bp.route('/carpools/starts.geojson')
@@ -44,25 +61,33 @@ def start_geojson():
     if request.args.get('ignore_prior') != 'false':
         pools = pools.filter(Carpool.leave_time >= datetime.datetime.utcnow())
 
-    min_leave_date = request.args.get('min_leave_date')
-    if min_leave_date:
-        try:
-            min_leave_date = datetime.datetime.strptime(
-                min_leave_date, '%m/%d/%Y')
-            pools = pools.filter(
-                func.date(Carpool.leave_time) == min_leave_date)
-        except ValueError:
-            abort(400, "Invalid date format for min_leave_date")
-
     near_lat = request.args.get('near.lat')
     near_lon = request.args.get('near.lon')
+    near_radius = request.args.get('near.radius') or None
+
     if near_lat and near_lon:
         try:
             near_lat = float(near_lat)
             near_lon = float(near_lon)
         except ValueError:
             abort(400, "Invalid lat/lon format")
+
+        try:
+            near_radius = int(near_radius)
+        except ValueError:
+            abort(400, "Invalid radius format")
+
         center = from_shape(Point(near_lon, near_lat), srid=4326)
+
+        if near_radius:
+            # We're going to say that radius is in meters.
+            # The conversion factor here is based on a 40deg latitude
+            # (roughly around Virginia)
+            radius_degrees = near_radius / 111034.61
+            pools.filter(
+                func.ST_Distance(Carpool.from_point, center) <= radius_degrees
+            )
+
         pools = pools.order_by(func.ST_Distance(Carpool.from_point, center))
 
     features = []
@@ -73,11 +98,11 @@ def start_geojson():
         features.append({
             'type': 'Feature',
             'geometry': mapping(to_shape(pool.from_point)),
-            'id': url_for('carpool.details', uuid=pool.uuid),
+            'id': url_for('carpool.details', uuid=pool.uuid, _external=True),
             'properties': {
                 'from_place': escape(pool.from_place),
                 'to_place': escape(pool.to_place),
-                'seats_available': escape(pool.seats_available),
+                'seats_available': pool.seats_available,
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
                 'driver_gender': escape(pool.driver.gender),
