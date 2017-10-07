@@ -23,6 +23,9 @@ class Config:
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'from@example.com')
     PREFERRED_URL_SCHEME = 'https'
 
+    REMEMBER_COOKIE_SECURE = True
+    REMEMBER_COOKIE_HTTPONLY = True
+
     OAUTH_CREDENTIALS = {
         'facebook': {
             'id': os.environ.get('FACEBOOK_CLIENT_ID'),
