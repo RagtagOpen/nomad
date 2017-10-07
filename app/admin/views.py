@@ -213,10 +213,6 @@ def destinations_show(uuid):
             edit_form.destination_lat.data
         )
 
-        for carpool in dest.carpools:
-            carpool.to_place = dest.address
-            carpool.to_point = dest.point
-
         _email_destination_action(dest, 'modified', 'modified')
 
         db.session.commit()
