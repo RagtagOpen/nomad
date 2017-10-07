@@ -44,7 +44,7 @@ def find():
     try:
         lat = float(lat)
         lon = float(lon)
-    except TypeError:
+    except (ValueError, TypeError):
         lat = None
         lon = None
         name = None
