@@ -1,162 +1,150 @@
 {%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
-{% block styles %}
-{{super()}}
-<style>
-    #map {
-        height: 400px;
-        width: 100%;
-    }
-</style>
-{% endblock %}
-
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript">
-var canned_locations = {
-{% for dest in destinations %}
-{{ dest.id }}: {{ dest.as_geojson()|tojson|safe }},
-{% endfor %}
-};
-$(function () {
-    $('#depart_time').datetimepicker({
-        useCurrent: false, //Important! See issue #1075
-        format: 'MM/DD/YYYY HH:mm',
-        minDate: 'now',
-        stepping: 10,
-    });
-    $('#return_time').datetimepicker({
-        useCurrent: false,
-        format: 'MM/DD/YYYY HH:mm',
-        minDate: 'now',
-        stepping: 10,
-    });
-    $("#depart_time").on("dp.change", function (e) {
-        var otherDate = $("#return_time").data("DateTimePicker").date()
-        if (!otherDate) {
-            $("#return_time").data("DateTimePicker").date(e.date.add(1, 'days'));
-        }
-    });
+$("#location-seed").on('keydown', function(e) {
+    if (e.keyCode == 13) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
 });
 
-function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
+function localInitMap() {
+    var geocoder = new google.maps.Geocoder;
+    var map = new google.maps.Map(document.getElementById('mini-map'), {
         center: {lat: 38.518, lng: -97.328},
-        zoom: 4
+        zoom: 3,
+        styles: mapStyleDiscreet
     });
-
-    var from_input = document.getElementById('leaving_from');
-    var from_marker = new google.maps.Marker({
-        visible: false,
-        map: map
+    var marker = new google.maps.Marker({
+        position: {lat: 0, lng: 0},
+        draggable: true,
     });
-    var from_ac = new google.maps.places.Autocomplete(from_input, {
+    var from_input = document.getElementById('location-seed');
+    var from_options = {
         componentRestrictions: {country: 'us'}
-    });
-    from_ac.bindTo('bounds', map);
+    };
+    var from_ac = new google.maps.places.Autocomplete(from_input, from_options);
     from_ac.addListener('place_changed', function() {
         var place = from_ac.getPlace();
-        from_marker.setVisible(false);
 
         if (!place.geometry) {
-            console.log("No details available for from autocomplete: '" + place.name + "'");
-            return;
+            window.alert("Nothing found there");
+            return false;
         }
 
-        document.getElementById('leaving_from_lat').value = place.geometry.location.lat();
-        document.getElementById('leaving_from_lon').value = place.geometry.location.lng();
+        marker.setPosition(place.geometry.location);
+        updateMarkerLocationDescription();
+        marker.setMap(map);
 
-        from_marker.setPosition(place.geometry.location);
-        from_marker.setVisible(true);
-    });
-
-    var to_input = document.getElementById('going_to_text');
-    var to_marker = new google.maps.Marker({
-        visible: false,
-        map: map
-    });
-    var to_ac = new google.maps.places.Autocomplete(to_input, {
-        componentRestrictions: {country: 'us'}
-    });
-    to_ac.bindTo('bounds', map);
-    to_ac.addListener('place_changed', function() {
-        var place = to_ac.getPlace();
-        to_marker.setVisible(false);
-
-        if (!place.geometry) {
-            console.log("No details available for from autocomplete: '" + place.name + "'");
-            return;
-        }
-
-        document.getElementById('going_to_lat').value = place.geometry.location.lat();
-        document.getElementById('going_to_lon').value = place.geometry.location.lng();
-
-        to_marker.setPosition(place.geometry.location);
-        to_marker.setVisible(true);
-    });
-
-    $("#going_to_list").on("change", function(e) {
-        var selected = e.target.value;
-        if (selected == -2) {
-            // They selected 'Other...' and we should toggle to see the geocoder input
-            $("#going_to_text").removeClass('hidden show');
-            $("#going_to_text").addClass('show');
-
-            document.getElementById('going_to_lat').value = null;
-            document.getElementById('going_to_lon').value = null;
-            document.getElementById('going_to_id').value = null;
-            to_marker.setVisible(false);
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
         } else {
-            $("#going_to_text").removeClass('hidden show');
-            $("#going_to_text").addClass('hidden');
-
-            var selected_location = canned_locations[selected];
-            var lat = selected_location.geometry.coordinates[1];
-            var lon = selected_location.geometry.coordinates[0];
-            document.getElementById('going_to_lat').value = lat;
-            document.getElementById('going_to_lon').value = lon;
-            document.getElementById('going_to_text').value = selected_location.properties.address;
-            document.getElementById('going_to_id').value = selected;
-            to_marker.setPosition({lat: lat, lng: lon});
-            to_marker.setVisible(true);
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);  // Why 17? Because it looks good.
         }
     });
+    marker.addListener('dragend', function() {
+        updateMarkerLocationDescription();
+    });
+
+    function updateMarkerLocationDescription() {
+        $("#departure_lat").val(marker.getPosition().lat());
+        $("#departure_lon").val(marker.getPosition().lng());
+
+        geocoder.geocode({location: marker.getPosition()}, function(results, status) {
+            if (status === 'OK') {
+                if (results[0]) {
+                    $("#location-description").html(results[0].formatted_address);
+                } else {
+                    console.log("No reverse geocoder results found");
+                }
+            } else {
+                console.log("Reverse geocode failed because: " + status);
+            }
+        });
+    }
 }
+
 </script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
 {% endblock %}
 
 {% block site %}
-<div class='page-header'>
-    <h1>Add a Carpool</h1>
-</div>
+<div class="fullscreen">
+    <form method="post" class="form-page">
+        {{ form.hidden_tag() }}
+        <h4>Start a new carpool</h4>
+        <h1>Provide carpool details</h1>
+        <p>Thanks for driving! Please provide some details so that other volunteers can sign up to join your carpool.</p>
 
-<form class='form' method='post'>
-{{ form.hidden_tag() }}
-<div class='row'>
-    <div class='col-md-12'>
-        <div id='map'></div>
-    </div>
+        {% if form.errors %}
+        <p class="destructive">
+        {{ form.errors }}
+        </p>
+        {% endif %}
+
+        <div class="two-col-layout first-child top-border">
+            <div class="two-col-column">
+                <h4>Destination</h4>
+                {{ form.destination() }}
+            </div>
+        </div>
+
+        <div class="two-col-layout top-border">
+            <div class="two-col-column">
+                <h4>Pickup / Dropoff Location</h4>
+                <label>Find a location on the map:</label>
+                {{ form.departure_name(id='location-seed') }}
+                <label>Then drag the pin to your desired carpool pickup location:</label>
+                <div id="mini-map"></div>
+                {{ form.departure_lat() }}
+                {{ form.departure_lon() }}
+            </div>
+            <div class="two-col-column location-explainer">
+                <p>Your carpool pickup/dropoff location will be shown to passengers as:</p>
+                <p id="location-description" class="bold"></p>
+                <br>
+                <p class="destructive">We strongly recommend choosing a landmark or other public place as your pickup / dropoff location. Please use your best judgment to ensure everyone’s safety!</p>
+            </div>
+        </div>
+
+        <div class="two-col-layout top-border">
+            <div class="two-col-column">
+                <h4>Departure time</h4>
+                {{ form.departure_date(id='departure-date', type='date') }}
+                {{ form.departure_hour(id='departure-time') }}
+            </div>
+            <div class="two-col-column">
+                <h4>Return Time</h4>
+                {{ form.return_date(id='return-date', type='date') }}
+                {{ form.return_hour(id='return-time') }}
+            </div>
+        </div>
+
+        <div class="two-col-layout top-border">
+            <div class="two-col-column">
+                <h4>Vehicle Description</h4>
+                {{ form.vehicle_description(id='vehicle-desc', placeholder='e.g. Black Honda Accord') }}
+                <label>This will only be shown to passengers once you accept them into your carpool.</label>
+            </div>
+            <div class="two-col-column">
+                <h4>Number of Passengers</h4>
+                {{ form.vehicle_capacity(id='vehicle-capacity') }}
+                <label>Not including yourself.</label>
+            </div>
+        </div>
+
+        <div class="top-border">
+            <h4>Additional Notes to Passengers</h4>
+            {{ form.notes(class='textarea-notes', placeholder='e.g. Are you flexible on departure time? For passengers who may have with allergies, do you ever smoke or have animals in the car?') }}
+        </div>
+
+        <div class="two-col-layout top-border right-align">
+            <input class="primary" type="submit" value="Create new carpool">
+        </div>
+    </form>
 </div>
-<div class='row'>
-    <div class='col-md-6'>
-        {{ wtf.form_field(form.leaving_from) }}
-        {{ wtf.form_field(form.depart_time) }}
-        {{ form.leaving_from_lat }}
-        {{ form.leaving_from_lon }}
-    </div>
-    <div class='col-md-6'>
-        {{ wtf.form_field(form.going_to_list) }}
-        {{ form.going_to_text(class='form-control hidden') }}
-        {{ form.going_to_id(class='form-control hidden') }}
-        {{ wtf.form_field(form.return_time) }}
-        {{ form.going_to_lat }}
-        {{ form.going_to_lon }}
-        {{ wtf.form_field(form.car_size) }}
-        {{ wtf.form_field(form.submit) }}
-    </div>
-</div>
-</form>
 
 {% endblock %}

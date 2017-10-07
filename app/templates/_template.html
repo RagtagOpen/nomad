@@ -35,7 +35,6 @@ function initMap() {
   var from_ac = new google.maps.places.Autocomplete(from_input, from_options);
   from_ac.addListener('place_changed', function() {
     var chosen = from_ac.getPlace();
-    console.log(chosen);
     $("#ride-select-lat").val(chosen.geometry.location.lat());
     $("#ride-select-lon").val(chosen.geometry.location.lng());
     $("#ride-select-form").submit();

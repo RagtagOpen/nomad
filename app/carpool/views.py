@@ -41,14 +41,14 @@ def find():
     try:
         lat = float(lat)
         lon = float(lon)
-    except ValueError:
+    except TypeError:
         lat = None
         lon = None
         name = None
 
     return render_template(
         'carpools/find.html',
-        loc_name=escape(name),
+        loc_name=name,
         loc_lat=lat,
         loc_lon=lon,
     )
@@ -101,7 +101,7 @@ def start_geojson():
             'id': url_for('carpool.details', uuid=pool.uuid, _external=True),
             'properties': {
                 'from_place': escape(pool.from_place),
-                'to_place': escape(pool.to_place),
+                'to_place': escape(pool.destination.name),
                 'seats_available': pool.seats_available,
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
@@ -128,6 +128,11 @@ def mine():
 @pool_bp.route('/carpools/new', methods=['GET', 'POST'])
 @login_required
 def new():
+    if not current_user.name:
+        flash("Please specify your name before creating a carpool")
+        session['next'] = url_for('carpool.new')
+        return redirect(url_for('auth.profile'))
+
     if not current_user.gender:
         flash("Please specify your gender before creating a carpool")
         session['next'] = url_for('carpool.new')
@@ -137,28 +142,39 @@ def new():
 
     visible_destinations = Destination.find_all_visible().all()
 
-    driver_form.going_to_list.choices = []
-    driver_form.going_to_list.choices.append((-1, "Select a Destination"))
-    driver_form.going_to_list.choices.extend([
-        (r.id, r.name) for r in visible_destinations
-    ])
-    driver_form.going_to_list.choices.append((-2, "Other..."))
+    driver_form.destination.choices = [
+        (str(r.uuid), r.name) for r in visible_destinations
+    ]
+    driver_form.destination.choices.insert(0, ('', "Select one..."))
 
     if driver_form.validate_on_submit():
+        dest = Destination.first_by_uuid(driver_form.destination.data)
+
+        departure_datetime = datetime.datetime(
+            driver_form.departure_date.data.year,
+            driver_form.departure_date.data.month,
+            driver_form.departure_date.data.day,
+            int(driver_form.departure_hour.data)
+        )
+
+        return_datetime = datetime.datetime(
+            driver_form.return_date.data.year,
+            driver_form.return_date.data.month,
+            driver_form.return_date.data.day,
+            int(driver_form.return_hour.data)
+        )
+
         c = Carpool(
-            from_place=driver_form.leaving_from.data,
+            from_place=driver_form.departure_name.data,
             from_point='SRID=4326;POINT({} {})'.format(
-                driver_form.leaving_from_lon.data,
-                driver_form.leaving_from_lat.data),
-            destination_id=int(driver_form.going_to_id.data)
-                if driver_form.going_to_id.data else None,
-            to_place=driver_form.going_to_text.data,
-            to_point='SRID=4326;POINT({} {})'.format(
-                driver_form.going_to_lon.data,
-                driver_form.going_to_lat.data),
-            leave_time=driver_form.depart_time.data,
-            return_time=driver_form.return_time.data,
-            max_riders=driver_form.car_size.data,
+                driver_form.departure_lon.data,
+                driver_form.departure_lat.data),
+            destination_id=dest.id,
+            leave_time=departure_datetime,
+            return_time=return_datetime,
+            max_riders=driver_form.vehicle_capacity.data,
+            vehicle_description=driver_form.vehicle_description.data,
+            notes=driver_form.notes.data,
             driver_id=current_user.id,
         )
         db.session.add(c)
