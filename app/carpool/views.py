@@ -16,14 +16,18 @@ from geoalchemy2 import func
 from geoalchemy2.shape import to_shape, from_shape
 from shapely.geometry import mapping, Point
 from . import pool_bp
-from ..email import send_emails, catch_and_log_email_exceptions, make_email_message
+from ..email import (
+    send_emails,
+    catch_and_log_email_exceptions,
+    make_email_message,
+)
 from .forms import (
     CancelCarpoolDriverForm,
     DriverForm,
     RiderForm,
 )
 from ..models import Carpool, Destination, RideRequest
-from .. import db, mail
+from .. import db
 
 
 @pool_bp.route('/', methods=['GET', 'POST'])
