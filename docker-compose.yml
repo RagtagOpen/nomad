@@ -30,6 +30,7 @@ services:
       - MAIL_USE_SSL=${MAIL_USE_SSL}
       - MAIL_USERNAME=${MAIL_USERNAME}
       - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - PYTHONUNBUFFERED=0
     ports:
       - 5000:5000
     depends_on:

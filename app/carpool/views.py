@@ -398,7 +398,7 @@ def _email_carpool_cancelled(carpool, reason):
         return
 
     if not reason:
-        reason = 'Reason not given!'
+        reason = '<reason not given>'
 
     subject = 'Carpool session on {} cancelled'.format(carpool.leave_time)
 
