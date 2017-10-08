@@ -242,12 +242,14 @@ select:focus {
 }
 .fullscreen {
 	width: 100%;
-	padding: 100px 500px 50px 210px;
+	padding: 100px 210px 50px 210px;
 }
 .fullscreen .sparse {
 	width: 100%;
 	padding: 200px 600px 50px 210px;
 }
+
+
 
 /* SPLASH PAGES */
 
@@ -384,7 +386,7 @@ select:focus {
 /* ===== form-page ===== */
 
 .form-page {
-	padding-bottom: 50px;
+	max-width: 730px;
 }
 .form-page .check-label {
 	margin-right: 20px;
@@ -408,9 +410,10 @@ select:focus {
 .two-col-layout {
 	width: 100%;
 	display: flex;
+	flex-wrap: wrap;
 }
 .two-col-column {
-	flex: 1 1 300px;
+	flex: 1 0 330px;
 }
 .two-col-column:first-child {
 	margin-right: 50px;
@@ -488,8 +491,19 @@ select:focus {
 	.mobile-nav-bar li:last-child {
 		border-top: 1px solid rgb(205,212,222);
 	}
+	.fullscreen {
+		width: 100%;
+		padding: 100px 114px 50px 114px;
+	}
+}
+@media screen and (max-width:980px) {
+	.fullscreen {
+		width: 100%;
+		padding: 100px 20px 50px 20px;
+	}
+}
 @media screen and (max-width:768px) {
-	
+
 }
 @media screen and (max-width:640px) {
 	.header-left {
