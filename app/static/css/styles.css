@@ -10,14 +10,14 @@
 */
 
 html, body {
-	height: 100%; 
-	width: 100%; 
+	height: 100%;
+	width: 100%;
 }
 
 /* ===== GLOBAL ===== */
 /* including a crapton of bootstrap overrides */
 
-* {  
+* {
   margin: 0;
   padding: 0;
   color: #333;
@@ -66,9 +66,9 @@ input[type=submit] {
 	height: 40px;
     padding: 5px 25px;
     border: 0;
-	border-radius: 5px; 
-	-moz-border-radius: 5px; 
-	-webkit-border-radius: 5px; 
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
 	margin-right: 10px;
 }
 input[type=submit]:focus, textarea:focus {
@@ -97,7 +97,7 @@ input[type=text], input[type=email], input[type=tel], input[type=date] {
 	outline: none;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px; 
+	-webkit-border-radius: 5px;
 	margin-right: 10px;
 	font: 400 18px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
 	color: #333;
@@ -144,7 +144,7 @@ select:focus {
 	width: 100%;
 	height: 70px;
 	position: fixed;
-	top: 0; 
+	top: 0;
 	left: 0;
 	padding: 10px 40px;
 	z-index: 20;
@@ -450,8 +450,8 @@ select:focus {
 	overflow: hidden;
 }
 #background-map, #give-ride-map, #my-rides-map {
-	height: 100%; 
-	width: 100%; 
+	height: 100%;
+	width: 100%;
 	z-index: 0;
 	background-color: grey;
 	-webkit-transition: -webkit-transform .5s;
@@ -485,9 +485,9 @@ select:focus {
 	        transform: translate(0px, -25%)
 }
 .detail-top {
-	width: 100%;	
-	display: -webkit-box;	
-	display: -ms-flexbox;	
+	width: 100%;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
 	-webkit-box-pack: justify;
 	    -ms-flex-pack: justify;
@@ -579,8 +579,8 @@ select:focus {
 }
 
 #mini-map {
-	height: 300px; 
-	width: 100%; 
+	height: 300px;
+	width: 100%;
 	z-index: 0;
 	background-color: grey;
 	-webkit-transition: -webkit-transform .5s;
@@ -610,22 +610,22 @@ select:focus {
 .message:last-child{
 	margin-bottom: 40px;
 }
-.message.positive {
+.message.success {
 	border-color: rgb(0,168,225);
     background-color: rgba(0,168,225,.2);
 }
-.message.negative {
+.message.error {
     border-color: rgb(204,68,75);
     background-color: rgba(204,68,75,.2);
 }
-.message.positive::before {
+.message.success::before {
 	content: url(../img/ic_error_check.png);
 	position: relative;
     margin-left: 0px;
     margin-right: 5px;
     top: 3px;
 }
-.message.negative::before {
+.message.error::before {
 	content: url(../img/ic_error_x.png);
 	position: relative;
     margin-left: 2px;
@@ -807,8 +807,8 @@ select:focus {
 		transition: transform .5s, -webkit-transform .5s;
 	}
 	#detail-pane {
-	     top: 0%; 
-		 left: 0%; 
+	     top: 0%;
+		 left: 0%;
 		 z-index: 20;
 	     padding: 80px 20px 20px 20px;
 		 -webkit-transition: none;
@@ -828,10 +828,10 @@ select:focus {
 		        transform: translate(-100%, 0)
 	}
 	#background-map, #give-ride-map, #my-rides-map {
-		height: 0%; 
-		width: 0%; 
-		-webkit-transition: none; 
-		-o-transition: none; 
+		height: 0%;
+		width: 0%;
+		-webkit-transition: none;
+		-o-transition: none;
 		transition: none;
 	}
 	.active #background-map, .active #give-ride-map, .active #my-rides-map {
