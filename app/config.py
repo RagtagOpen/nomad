@@ -28,6 +28,9 @@ class Config:
     REMEMBER_COOKIE_HTTPONLY = True
     SESSION_PROTECTION = 'strong'
 
+    TRIP_MAX_LENGTH_DAYS = 21
+    TRIP_MAX_DAYS_IN_FUTURE = 90
+
     OAUTH_CREDENTIALS = {
         'facebook': {
             'id': os.environ.get('FACEBOOK_CLIENT_ID'),
