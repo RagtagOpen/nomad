@@ -103,8 +103,20 @@ function highlightedIcon() {
 }
 
 var activeDetail = false;
+var navMenuOpen = false;
 
 $(document).ready(function() {
+  $('.logo').click( function() {
+    if ($(window).width() <= 1200) {
+      if (navMenuOpen == false) {
+        navMenuOpen = true;
+        $('.mobile-nav-bar').addClass('visible');
+      } else {
+        navMenuOpen = false;
+        $('.mobile-nav-bar').removeClass('visible');
+      }
+    };
+  });
   $('.results-box .result').hover(
     // mouse in
     function () {
@@ -118,28 +130,27 @@ $(document).ready(function() {
       markers[index].setIcon(normalIcon());
     }
   );
-  $('.results-box .result').click(
-    function () {
-      if (activeDetail == false) {
-        // open detail panel
-        activeDetail = true;
-        $('.right-bar').addClass("active");
-        // recenter map on current marker
-        var index = $('.results-box .result').index(this);
-        console.log(markers[index].position);
-        if ($(this).parent().hasClass('find-ride')) {
-          mapFindRide.setCenter(markers[index].position);
-        } else if ($(this).parent().hasClass('give-ride')) {
-          mapGiveRide.setCenter(markers[index].position);
-        } else if ($(this).parent().hasClass('my-rides')) {
-          mapMyRides.setCenter(markers[index].position);
-        }
-      } else {
-        // close detail panel
-        activeDetail = false;
-        $('.right-bar').removeClass("active");
+  $('.results-box .result').click( function () {
+    if (activeDetail == false) {
+      // open detail panel
+      activeDetail = true;
+      $('.right-bar').addClass("active");
+      // recenter map on current marker
+      var index = $('.results-box .result').index(this);
+      console.log(markers[index].position);
+      if ($(this).parent().hasClass('find-ride')) {
+        mapFindRide.setCenter(markers[index].position);
+      } else if ($(this).parent().hasClass('give-ride')) {
+        mapGiveRide.setCenter(markers[index].position);
+      } else if ($(this).parent().hasClass('my-rides')) {
+        mapMyRides.setCenter(markers[index].position);
       }
-    });
+    } else {
+      // close detail panel
+      activeDetail = false;
+      $('.right-bar').removeClass("active");
+    }
+  });
   $("#gender-select").change(function () {
     if ($("#gender-select").val() == "other") {
       $('.gender-description').addClass('visible');

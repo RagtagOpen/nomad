@@ -62,11 +62,26 @@ function initMap() {
 {%- endblock %}
 
 {% block content %}
+
 <nav class="global-header">
   <div class="header-left">
-    <a href="{{ url_for('carpool.index') }}"><div class="logo"></div></a>
+    <div class="logo-container">
+      <a href="{{ url_for('carpool.index') }}"><div class="logo"></div></a>
+      <ul class="mobile-nav-bar">
+        <li><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
+        <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
+        <li><a href="{{ url_for('auth.privacy') }}">Privacy Policy</a></li>
+{% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
+        <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
+        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+{% else %}
+        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+{% endif %}
+        </ul>
+    </div>
 <!-- if this page is related to a find / give page -->
-    <form id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}">
+    <form id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}" class="header-search-bar">
       <input type="hidden" id="ride-select-lat" name="lat"></input>
       <input type="hidden" id="ride-select-lon" name="lon"></input>
       <select id="ride-select">
@@ -80,18 +95,22 @@ function initMap() {
   </div>
   <ul class="nav-bar">
     <li class="active"><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
-    <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
-    <li><a href="#">About</a></li>
-    <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
-    <li class="nav-dropdown">
-      <a class="arrow" href="#">
-        {% if current_user.is_authenticated %}{{ current_user.name }}{% else %}<a href="{{ url_for('auth.login') }}">Login</a>{% endif %}
-      </a>
-      <ul class="nav-bar-secondary">
-        <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
-        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-      </ul>
-    </li>
+      <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
+      <li><a href="{{ url_for('auth.privacy') }}">Privacy Policy</a></li>
+{% if current_user.is_authenticated %}
+      <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
+{% endif %}
+      <li class="nav-dropdown">
+        <a class="arrow" href="#">
+          {% if current_user.is_authenticated %}{{ current_user.name }}{% else %}<a href="{{ url_for('auth.login') }}">Login</a>{% endif %}
+        </a>
+{% if current_user.is_authenticated %}
+        <ul class="nav-bar-secondary">
+          <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+        </ul>
+{% endif %}
+      </li>
   </ul>
 </nav>
 
