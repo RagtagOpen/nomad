@@ -229,6 +229,20 @@ select:focus {
     margin-left: 5px;
     top: -1px;
 }
+.mobile-back-link {
+	position: fixed;
+	width: 70px;
+	height: 70px;
+	top: 0;
+	left: 0;
+	display: none;
+}
+.back-button {
+	width: 19px;
+	height: 69px;
+	margin-left: 20px;
+	background: url("../img/ic_back-button.png") top left / contain no-repeat;
+}
 
 /* ===== CONTENT BODY ===== */
 
@@ -354,8 +368,7 @@ select:focus {
 	height: 67%;
 	z-index: 5;
 	background-color: #fcfbf9;
-	border-top: 1px solid rgb(205,212,222);
-	border-right: 1px solid rgb(205,212,222);
+	border: 1px solid rgb(205,212,222);
 	padding: 10px 40px 20px 40px;
 	transition: transform .5s;
 	overflow: scroll;
@@ -551,6 +564,9 @@ select:focus {
 	}
 }
 @media screen and (max-width:720px) {
+	.fullscreen h1 {
+		font: 400 28px/140% 'Merriweather', Georgia, serif;
+	}
 	.header-left {
 		justify-content: center;
 	}
@@ -558,7 +574,7 @@ select:focus {
 		display: none;
 	}
 	.header-left .logo-container {
-		width: 170px;
+		width: 125px;
 	}
 	.header-left .logo {
 		background: url("../img/logo-dark.png") top left / contain no-repeat;
@@ -574,31 +590,47 @@ select:focus {
 	}
 	.left-bar {
 		flex: none;
+		position: relative;
 		width: 100%;
 		background-color: white;
 		z-index: 10;
+		/*left: -50%;*/
 		/*display: none;*/
 	}
 	.right-bar {
 		flex: none;
+		position: relative;
 		width: 100%;
 		height: 100%;
 		background-color: #fcfbf9;
 		z-index: 15;
-		left: -100%;
+		left: 0%;
+		transition: transform .5s;
 	}
 	#detail-pane {
 	     top: 0%; 
-		 left: 70%; 
+		 left: 0%; 
 		 z-index: 20;
+	     padding: 80px 20px 20px 20px;
+		 transition: none;
+
 	}
-	.active #detail-pane{
-		top: 0%; 
-		left: 0%;
+	.active #detail-pane {
+		transform: none;
+	}
+	.right-bar.active {
+		/*left: -100%;*/
+		transform: translate(-100%, 0)
 	}
 	#background-map, #give-ride-map, #my-rides-map {
 		height: 0%; 
 		width: 0%; 
+		transition: none;
+	}
+	.active #background-map, .active #give-ride-map, .active #my-rides-map {
+		transform: none;
+	}
+	.mobile-back-link.active{
+		display: block;
 	}
 }
-

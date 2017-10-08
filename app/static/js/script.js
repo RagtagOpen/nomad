@@ -136,6 +136,7 @@ $(document).ready(function() {
       // open detail panel
       activeDetail = true;
       $('.right-bar').addClass("active");
+      $('.mobile-back-link').addClass("active");
       // recenter map on current marker
       var index = $('.results-box .result').index(this);
       console.log(markers[index].position);
@@ -150,6 +151,15 @@ $(document).ready(function() {
       // close detail panel
       activeDetail = false;
       $('.right-bar').removeClass("active");
+      $('.mobile-back-link').removeClass("active");
+    }
+  });
+  $('.mobile-back-link').click( function () {
+    if (activeDetail == true) {
+      // close detail panel
+      activeDetail = false;
+      $('.right-bar').removeClass("active");
+      $('.mobile-back-link').removeClass("active");
     }
   });
 });
