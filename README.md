@@ -33,7 +33,11 @@
     ```
 
 1. (Optional) Configure Google Sign-In
-    In order to test Google authentication you'll need to create a [Console Project](https://developers.google.com/identity/sign-in/web/devconsole-project).
+
+    In order to test Google authentication you'll need to create a [Console Project](https://developers.google.com/identity/sign-in/web/devconsole-project):
+    - Click Create credentials, choose OAuth Client ID
+    - Choose Web application, enter a name, then enter `http://localhost:5000/callback/google` in the Authorized redirect URIs box, and click Save
+
     After creating credentials you'll get an OAuth Client ID and Client Secret. These need to go into your .env file as well.
 
     ```bash
@@ -80,7 +84,7 @@ This will allow you to get up and running quickly while installing a smaller set
     docker-compose up nomad
     ```
 
-1. Browse to http://127.0.0.1:5000/ in your browser to check it out.
+1. Browse to http://localhost:5000/ in your browser to check it out.
 
 1. (Optional) Taking more direct control
 
@@ -157,7 +161,7 @@ docker-compose run --service-ports nomad "psql postgresql://nomad:nomad@db/nomad
    flask run
    ```
 
-1. Browse to http://127.0.0.1:5000/ in your browser to check it out.
+1. Browse to http://localhost:5000/ in your browser to check it out.
 
 ## Adding the first admin user
 
@@ -195,4 +199,4 @@ Once you have the app running with Docker or locally, you need to add your first
    db.session.commit()
    ```
 
-1. Visit `http://127.0.0.1:5000/admin` to verify your account now has the appropriate role.
+1. Visit `http://localhost:5000/admin` to verify your account now has the appropriate role.
