@@ -140,13 +140,6 @@ $(document).ready(function() {
         $('.right-bar').removeClass("active");
       }
     });
-  $("#gender-select").change(function () {
-    if ($("#gender-select").val() == "other") {
-      $('.gender-description').addClass('visible');
-    } else {
-      $('.gender-description').removeClass('visible');
-    }
-  });
 });
 
 
