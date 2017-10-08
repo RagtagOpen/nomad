@@ -409,10 +409,10 @@ select:focus {
 .form-page select#gender-select {
 	width: 180px;
 }
-.form-page input[type=text].gender-description {
+.form-page input[type=text]#gender-description {
 	display: none;
 }
-.form-page input[type=text].gender-description.visible {
+.form-page input[type=text]#gender-description.visible {
 	display: inline;
 	margin-top: 10px;
 }
