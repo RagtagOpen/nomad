@@ -35,8 +35,6 @@
         {%- endif %}
         {%- endwith %}
 
-        {{ form.errors }}
-
         <form method="post" class="form-page">
             {{ form.hidden_tag() }}
             <h1>Edit your profile</h1>
@@ -46,12 +44,26 @@
                     <h4>Display Name</h4>
                     {{ form.name(id='user-name', placeholder='Name (or username) of your choice') }}
                     <label>Your drivers/fellow passengers will see this information when you create or request a ride. We recommend using a first name and last initial (e.g. "Tyrion L.").</label>
+                    {% if form.name.errors %}
+                    <div>
+                    {% for err in form.name.errors %}
+                    <p class="destructive">{{ err }}</p>
+                    {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="two-col-column">
                     <h4>Gender</h4>
                     {{ form.gender(id='gender-select') }}
                     {{ form.gender_self_describe(id='gender-description') }}
                     <label>We ask for this information to ensure that everyone can choose a carpool that they feel comfortable with.</label>
+                    {% if form.gender.errors %}
+                    <div>
+                    {% for err in form.gender.errors %}
+                    <p class="destructive">{{ err }}</p>
+                    {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
 
@@ -59,13 +71,35 @@
                 <div class="two-col-column">
                     <h4>Email Address</h4>
                     {{ form.email(id='user-email', placeholder='Email address') }}
+                    {% if form.email.errors %}
+                    <div>
+                    {% for err in form.email.errors %}
+                    <p class="destructive">{{ err }}</p>
+                    {% endfor %}
+                    </div>
+                    {% endif %}
+
                     <h4>Phone Number</h4>
                     {{ form.phone_number(id='user-phone', placeholder='Phone number') }}
+                    {% if form.phone_number.errors %}
+                    <div>
+                    {% for err in form.phone_number.errors %}
+                    <p class="destructive">{{ err }}</p>
+                    {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="two-col-column">
                     <h4>Preferred Driver Contact Method</h4>
                     {{ form.preferred_contact() }}
                     <label>This is how drivers will contact passengers once a carpool has been arranged. (System notifications from Nomad will always be sent by email.)</label>
+                    {% if form.preferred_contact.errors %}
+                    <div>
+                    {% for err in form.preferred_contact.errors %}
+                    <p class="destructive">{{ err }}</p>
+                    {% endfor %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
 
