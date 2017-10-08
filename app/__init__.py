@@ -26,11 +26,6 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
-    logger = app.logger
-    logger.setLevel(logging.INFO)
-    stream_handler = logging.StreamHandler()
-    logger.addHandler(stream_handler)
-
     bootstrap.init_app(app)
     mail.init_app(app)
     db.init_app(app)
