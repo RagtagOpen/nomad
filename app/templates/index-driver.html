@@ -1,0 +1,22 @@
+{%- extends "_template.html" %}
+
+{% block site %}
+
+<div class="content constrained">
+
+	<div class="fullscreen jumbo driver-splash">
+		<div class="interstitial-page">
+			<h4>Share your ride</h4>
+			<h1>Drivers: Virginia has 100 districts that need your help this November!</h1>
+			<h2>Start a carpool to a location that needs volunteers:</h2>
+			<form method="GET" action="{{ url_for('carpool.find') }}"">
+				<input type="text" name="q" id="locationQuery" placeholder="Zip code or City, State"> <input class="primary" type="submit" value="Find a location">
+			</form>
+
+			<p>Can't drive? <a href="{{ url_for('carpool.index') }}">Join someone else's carpool</a> instead.</p>
+		</div>
+	</div>
+
+</div>
+
+{% endblock %}

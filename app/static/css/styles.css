@@ -110,6 +110,9 @@ input[type=text]:focus {
 }
 select {
 	height: 40px;
+	 /*hack for safari*/
+	-webkit-appearance: menulist-button !important;
+	line-height: 40px !important;
 	display: inline-block;
 }
 select:focus {
@@ -301,6 +304,17 @@ select:focus {
 	color: white;
 	/*padding: 100px 600px 50px 210px;*/
 }
+.fullscreen.jumbo.driver-splash {
+	background-color: rgb(0,168,225);
+}
+.fullscreen.jumbo.driver-splash input[type=submit] {
+	background-color: rgb(2,46,91);
+	color: white;
+}
+.fullscreen.jumbo.driver-splash a {
+	color:rgb(2,46,91);
+}
+
 .fullscreen.jumbo h1, .fullscreen.jumbo h2, .fullscreen.jumbo h3, .fullscreen.jumbo h4, .fullscreen.jumbo p {
 	color: white;
 }
