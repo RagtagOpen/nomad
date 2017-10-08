@@ -4,57 +4,29 @@
 {% block site %}
 <div class="content">
 
-	<div class="fullscreen">
-		<form class="form-page">
-			<h4>Join this carpool</h4>
-			<h1>Confirm your details</h1>
-			<p>To join this carpool, please verify your profile information and make any changes as needed.</p>
+    {%- with messages = get_flashed_messages(with_categories=True) %}
+    {%- if messages %}
+    <div class="row">
+        {{ utils.flashed_messages(messages) }}
+    </div>
+    {%- endif %}
+    {%- endwith %}
 
-			<div class="two-col-layout first-child top-border">
-				<div class="two-col-column">
-					<h4>Confirm Display Name</h4>
-					<input type="text" name="user-name" id="user-name" placeholder="Name (or username) of your choice" value="Punky Brewster" >
-					<label>Your drivers/fellow passengers will see this information when you join the carpool. We recommend using a first name and last initial (e.g. "Tyrion L.").</label>
-				</div>
-				<div class="two-col-column">
-					<h4>Confirm Gender</h4>
-					<select id="gender-select">
-					  <option value="female">Female</option>
-					  <option value="male">Male</option>
-					  <option value="non-binary">Non-binary gender</option>
-					  <option value="other">Self-described</option>
-					  <option value="non-answer">Prefer not to say</option>
-					</select>
-					<input type="text" name="gender-desc" id="gender-desc" class="gender-description">
-					<label>We ask for this information to ensure that everyone can choose a carpool that they feel comfortable with.</label>
-				</div>
-			</div>
+    <div class="fullscreen">
+        <form class="form-page">
+            <h4>Join this carpool</h4>
+            <h1>Confirm your details</h1>
+            <p>To join this carpool, please verify your profile information and make any changes as needed.</p>
 
-			<div class="two-col-layout top-border">
-				<div class="two-col-column">
-					<h4>Confirm Email Address</h4>
-					<input type="email" name="user-email" id="user-email" placeholder="Email address" value="spunky@gmail.com" >
-					<h4>Confirm Phone Number</h4>
-					<input type="tel" name="user-phone" id="user-phone" placeholder="Phone number" value="212-555-5555" >
-				</div>
-				<div class="two-col-column">
-					<h4>Preferred Driver Contact Method(s)</h4>
-					<input type="checkbox" name="checkbox-email" value="email" checked><span class="check-label"> Email</span>
-					<input type="checkbox" name="checkbox-phone" value="phone"><span class="check-label"> Phone Call</span>
-					<input type="checkbox" name="checkbox-text" value="text"><span class="check-label"> SMS/Text</span><br>
-					<label>This is how your driver will contact you to coordinate your ride. (System notifications from Nomad will always be sent by email.) </label>
-				</div>
-			</div>
-
-			<div class="top-border">
-				<h4>Questions / Notes to Driver</h4>
-				<textarea name="textarea-notes" class="textarea-notes"></textarea>
-			</div>
-			<div class="two-col-layout top-border right-align">
-				<input class="primary" type="submit" value="Update profile and request to join carpool">
-			</div>
-		</form>
-	</div>
+            <div class="top-border">
+                <h4>Questions / Notes to Driver</h4>
+                <textarea name="textarea-notes" class="textarea-notes"></textarea>
+            </div>
+            <div class="two-col-layout top-border right-align">
+                <input class="primary" type="submit" value="Request to join carpool">
+            </div>
+        </form>
+    </div>
 
 </div>
 
