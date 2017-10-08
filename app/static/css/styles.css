@@ -122,6 +122,21 @@ select:focus {
 	margin-top: 30px;
 	border-top: 1px solid rgb(205,212,222);
 }
+.inline-image {
+	display: inline-block;
+	height: 50px;
+	margin-right: 20px;
+}
+.inline-image.vadems {
+	width: 200px;
+	background: url("../img/logo_vadems.svg") top left / contain no-repeat;
+}
+.inline-image.ragtag {
+	width: 230px;
+	position:relative;
+	background: url("../img/logo_ragtag.png") top left / contain no-repeat;
+}
+
 
 /* ===== HEADER ===== */
 
@@ -286,9 +301,15 @@ select:focus {
 	/* this allows for overflow/scroll on single screen pages */
 	height: 100%;
 }
+.content.splash-only {
+	flex-direction: column;
+}
 .fullscreen {
 	width: 100%;
-	padding: 100px 210px 50px 210px;
+	padding: 100px 210px 100px 210px;
+}
+.fullscreen.jumbo-second {
+	padding-top: 60px;
 }
 .form-page {
 	max-width: 730px;
@@ -302,7 +323,6 @@ select:focus {
 .fullscreen.jumbo {
 	background-color: rgb(2,46,91);
 	color: white;
-	/*padding: 100px 600px 50px 210px;*/
 }
 .fullscreen.jumbo.driver-splash {
 	background-color: rgb(0,168,225);
@@ -314,7 +334,18 @@ select:focus {
 .fullscreen.jumbo.driver-splash a {
 	color:rgb(2,46,91);
 }
-
+.fullscreen.jumbo .bg-image {
+    position: absolute;
+    margin-top: 40px;
+    margin-left: 640px;
+    width: 800px;
+    height: 300px;
+    background: url(../img/background-image-car.svg) 80% 50% / contain no-repeat;
+    opacity: .2;
+}
+.fullscreen.jumbo.driver-splash .bg-image {
+	opacity: .4;
+}
 .fullscreen.jumbo h1, .fullscreen.jumbo h2, .fullscreen.jumbo h3, .fullscreen.jumbo h4, .fullscreen.jumbo p {
 	color: white;
 }
@@ -331,9 +362,17 @@ select:focus {
 .jumbo h2 {
 	margin-bottom: 20px;
 }
+.jumbo-second h3 {
+	margin-top: 40px;
+	padding-top:40px;
+	margin-bottom: 20px;
+}
+.jumbo-second h3:first-child {
+	margin-top: 0;
+}
 .jumbo form {
 	width: 100%;
-	margin-bottom: 40px;
+	margin-bottom: 20px;
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;

@@ -34,6 +34,9 @@ from .. import db
 def index():
     return render_template('index.html')
 
+def driver-index():
+    return render_template('index-driver.html')
+
 
 @pool_bp.route('/carpools/find')
 def find():
