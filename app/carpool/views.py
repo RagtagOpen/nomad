@@ -1,7 +1,6 @@
 import datetime
 from flask import (
     abort,
-    current_app,
     escape,
     flash,
     jsonify,

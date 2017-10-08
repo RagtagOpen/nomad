@@ -1,7 +1,7 @@
 {%- extends "bootstrap/base.html" %}
 {% import "bootstrap/utils.html" as utils %}
 
-{% block title %}Share Your Ride{% endblock %}
+{% block title %}Nomad x VA: Share your ride!{% endblock %}
 
 {% block scripts %}
 {{super()}}
@@ -61,6 +61,15 @@ function initMap() {
 <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:300,400,600,700" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" integrity="sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=" crossorigin="anonymous" />
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ url_for('static', filename='img/favicon/apple-touch-icon-144x144.png') }}" />
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ url_for('static', filename='img/favicon/apple-touch-icon-152x152.png') }}" />
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon/favicon-32x32.png') }}" sizes="32x32" />
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon/favicon-16x16.png') }}" sizes="16x16" />
+<meta name="application-name" content="Nomad x VA"/>
+<meta name="msapplication-TileColor" content="#FFFFFF" />
+<meta name="msapplication-TileImage" content="{{ url_for('static', filename='img/favicon/mstile-144x144.png') }}" />
+
 {% endblock %}
 
 {% import "bootstrap/fixes.html" as fixes %}
@@ -70,11 +79,29 @@ function initMap() {
 {%- endblock %}
 
 {% block content %}
+
 <nav class="global-header">
   <div class="header-left">
-    <a href="{{ url_for('carpool.index') }}"><div class="logo"></div></a>
+    <div class="mobile-back-link">
+      <a href="#"><div class="back-button"></div></a>
+    </div>
+    <div class="logo-container">
+      <a href="{{ url_for('carpool.index') }}"><div class="logo"></div></a>
+      <ul class="mobile-nav-bar">
+        <li><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
+        <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
+        <li><a href="{{ url_for('auth.privacy') }}">Privacy Policy</a></li>
+{% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
+        <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
+        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+{% else %}
+        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+{% endif %}
+        </ul>
+    </div>
 <!-- if this page is related to a find / give page -->
-    <form id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}">
+    <form id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}" class="header-search-bar">
       <input type="hidden" id="ride-select-lat" name="lat"></input>
       <input type="hidden" id="ride-select-lon" name="lon"></input>
       <select id="ride-select">
@@ -88,18 +115,24 @@ function initMap() {
   </div>
   <ul class="nav-bar">
     <li class="active"><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
-    <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
-    <li><a href="#">About</a></li>
-    <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
-    <li class="nav-dropdown">
-      <a class="arrow" href="#">
-        {% if current_user.is_authenticated %}{{ current_user.name }}{% else %}<a href="{{ url_for('auth.login') }}">Login</a>{% endif %}
-      </a>
-      <ul class="nav-bar-secondary">
-        <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
-        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
-      </ul>
-    </li>
+      <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
+      <li><a href="{{ url_for('auth.privacy') }}">Privacy Policy</a></li>
+{% if current_user.is_authenticated %}
+      <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
+{% endif %}
+      <li class="nav-dropdown">
+{% if current_user.is_authenticated %}
+        <a class="arrow" href="#">{{ current_user.name }}</a>
+{% else %}
+        <a href="{{ url_for('auth.login') }}">Login</a>
+{% endif %}
+{% if current_user.is_authenticated %}
+        <ul class="nav-bar-secondary">
+          <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
+          <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+        </ul>
+{% endif %}
+      </li>
   </ul>
 </nav>
 

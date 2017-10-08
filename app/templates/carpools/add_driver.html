@@ -73,22 +73,33 @@ function localInitMap() {
 
 {% block site %}
 <div class="fullscreen">
+    {%- with messages = get_flashed_messages(with_categories=True) %}
+    {%- if messages %}
+    <div class="error-messages">
+        {% for cat, msg in messages %}
+        <div class="message {{ cat }}">{{ msg }}</div>
+        {% endfor %}
+    </div>
+    {%- endif %}
+    {%- endwith %}
+
     <form method="post" class="form-page">
         {{ form.hidden_tag() }}
         <h4>Start a new carpool</h4>
         <h1>Provide carpool details</h1>
         <p>Thanks for driving! Please provide some details so that other volunteers can sign up to join your carpool.</p>
 
-        {% if form.errors %}
-        <p class="destructive">
-        {{ form.errors }}
-        </p>
-        {% endif %}
-
         <div class="two-col-layout first-child top-border">
             <div class="two-col-column">
                 <h4>Destination</h4>
                 {{ form.destination() }}
+                {% if form.destination.errors %}
+                <div>
+                {% for err in form.destination.errors %}
+                <p class="destructive">{{ err }}</p>
+                {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </div>
 
@@ -97,6 +108,15 @@ function localInitMap() {
                 <h4>Pickup / Dropoff Location</h4>
                 <label>Find a location on the map:</label>
                 {{ form.departure_name(id='location-seed') }}
+
+                {% if form.departure_name.errors %}
+                <div>
+                {% for err in form.departure_name.errors %}
+                <p class="destructive">{{ err }}</p>
+                {% endfor %}
+                </div>
+                {% endif %}
+
                 <label>Then drag the pin to your desired carpool pickup location:</label>
                 <div id="mini-map"></div>
                 {{ form.departure_lat() }}
@@ -115,11 +135,25 @@ function localInitMap() {
                 <h4>Departure time</h4>
                 {{ form.departure_date(id='departure-date', type='date') }}
                 {{ form.departure_hour(id='departure-time') }}
+                {% if form.departure_date.errors %}
+                <div>
+                {% for err in form.departure_date.errors %}
+                <p class="destructive">{{ err }}</p>
+                {% endfor %}
+                </div>
+                {% endif %}
             </div>
             <div class="two-col-column">
                 <h4>Return Time</h4>
                 {{ form.return_date(id='return-date', type='date') }}
                 {{ form.return_hour(id='return-time') }}
+                {% if form.return_date.errors %}
+                <div>
+                {% for err in form.return_date.errors %}
+                <p class="destructive">{{ err }}</p>
+                {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </div>
 
@@ -128,17 +162,38 @@ function localInitMap() {
                 <h4>Vehicle Description</h4>
                 {{ form.vehicle_description(id='vehicle-desc', placeholder='e.g. Black Honda Accord') }}
                 <label>This will only be shown to passengers once you accept them into your carpool.</label>
+                {% if form.vehicle_description.errors %}
+                <div>
+                {% for err in form.vehicle_description.errors %}
+                <p class="destructive">{{ err }}</p>
+                {% endfor %}
+                </div>
+                {% endif %}
             </div>
             <div class="two-col-column">
                 <h4>Number of Passengers</h4>
                 {{ form.vehicle_capacity(id='vehicle-capacity') }}
                 <label>Not including yourself.</label>
+                {% if form.vehicle_capacity.errors %}
+                <div>
+                {% for err in form.vehicle_capacity.errors %}
+                <p class="destructive">{{ err }}</p>
+                {% endfor %}
+                </div>
+                {% endif %}
             </div>
         </div>
 
         <div class="top-border">
             <h4>Additional Notes to Passengers</h4>
             {{ form.notes(class='textarea-notes', placeholder='e.g. Are you flexible on departure time? For passengers who may have with allergies, do you ever smoke or have animals in the car?') }}
+            {% if form.notes.errors %}
+            <div>
+            {% for err in form.notes.errors %}
+            <p class="destructive">{{ err }}</p>
+            {% endfor %}
+            </div>
+            {% endif %}
         </div>
 
         <div class="two-col-layout top-border right-align">
