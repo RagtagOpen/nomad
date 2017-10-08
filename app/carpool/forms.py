@@ -83,7 +83,7 @@ class CancelCarpoolDriverForm(FlaskForm):
         description="Describe why you're canceling your carpool. "
                     "This will be visible to your riders."
     )
-    cancel = SubmitField(u"Nevermind, Go Back")
+    cancel = SubmitField(u"Never Mind, Go Back")
     submit = SubmitField(u"Cancel Your Ride")
 
 
