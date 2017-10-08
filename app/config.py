@@ -98,8 +98,8 @@ class HerokuConfig(Config):
 
 
 class StagingConfig(HerokuConfig):
-    DEBUG = True
-    TESTING = True
+    DEBUG = False
+    TESTING = False
 
 
 class ProductionConfig(HerokuConfig):
