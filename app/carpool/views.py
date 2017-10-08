@@ -153,28 +153,14 @@ def new():
     if driver_form.validate_on_submit():
         dest = Destination.first_by_uuid(driver_form.destination.data)
 
-        departure_datetime = datetime.datetime(
-            driver_form.departure_date.data.year,
-            driver_form.departure_date.data.month,
-            driver_form.departure_date.data.day,
-            int(driver_form.departure_hour.data)
-        )
-
-        return_datetime = datetime.datetime(
-            driver_form.return_date.data.year,
-            driver_form.return_date.data.month,
-            driver_form.return_date.data.day,
-            int(driver_form.return_hour.data)
-        )
-
         c = Carpool(
             from_place=driver_form.departure_name.data,
             from_point='SRID=4326;POINT({} {})'.format(
                 driver_form.departure_lon.data,
                 driver_form.departure_lat.data),
             destination_id=dest.id,
-            leave_time=departure_datetime,
-            return_time=return_datetime,
+            leave_time=driver_form.departure_datetime,
+            return_time=driver_form.return_datetime,
             max_riders=driver_form.vehicle_capacity.data,
             vehicle_description=driver_form.vehicle_description.data,
             notes=driver_form.notes.data,

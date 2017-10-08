@@ -1,3 +1,5 @@
+import datetime
+from flask import current_app
 from flask_wtf import FlaskForm
 from wtforms import (
     DateField,
@@ -68,6 +70,44 @@ class DriverForm(FlaskForm):
         if not (self.destination.data):
             self.destination.errors.append(
                 "Please select a destination.")
+            result = False
+
+        self.departure_datetime = datetime.datetime(
+            self.departure_date.data.year,
+            self.departure_date.data.month,
+            self.departure_date.data.day,
+            int(self.departure_hour.data)
+        )
+
+        self.return_datetime = datetime.datetime(
+            self.return_date.data.year,
+            self.return_date.data.month,
+            self.return_date.data.day,
+            int(self.return_hour.data)
+        )
+
+        if self.departure_datetime >= self.return_datetime:
+            self.departure_date.errors.append(
+                "Your return date should be after your departure date.")
+            result = False
+
+        if self.return_datetime < datetime.datetime.today():
+            self.return_datetime.errors.append(
+                "Your carpool cannot happen in the past.")
+            result = False
+
+        delta = self.return_datetime - self.departure_datetime
+        max_trip_length = current_app.config.get('TRIP_MAX_LENGTH_DAYS')
+        if delta.days > max_trip_length:
+            self.return_date.errors.append(
+                "Please return within {} days.".format(max_trip_length))
+            result = False
+
+        today = datetime.datetime.today()
+        max_days_in_future = current_app.config.get('TRIP_MAX_DAYS_IN_FUTURE')
+        if (self.departure_datetime - today).days > max_days_in_future:
+            self.departure_date.errors.append(
+                "You're leaving too far into the future.")
             result = False
 
         return result
