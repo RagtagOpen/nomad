@@ -101,9 +101,11 @@ function initMap() {
       <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
 {% endif %}
       <li class="nav-dropdown">
-        <a class="arrow" href="#">
-          {% if current_user.is_authenticated %}{{ current_user.name }}{% else %}<a href="{{ url_for('auth.login') }}">Login</a>{% endif %}
-        </a>
+        {% if current_user.is_authenticated %}
+        <a class="arrow" href="#">{{ current_user.name }}</a>
+        {% else %}
+        <a href="{{ url_for('auth.login') }}">Login</a>
+        {% endif %}
 {% if current_user.is_authenticated %}
         <ul class="nav-bar-secondary">
           <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
