@@ -462,6 +462,43 @@ select:focus {
 	margin-top: 200px;
 }
 
+/* ===== ERROR MESSAGES ===== */
+
+.error-messages {
+	width: 100%;
+}
+.message {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-left: solid 4px white;
+}
+.message:last-child{
+	margin-bottom: 40px;
+}
+.message.positive {
+	border-color: rgb(0,168,225);
+    background-color: rgba(0,168,225,.2);
+}
+.message.negative {
+    border-color: rgb(204,68,75);
+    background-color: rgba(204,68,75,.2);
+}
+.message.positive::before {
+	content: url(../img/ic_error_check.png);
+	position: relative;
+    margin-left: 0px;
+    margin-right: 5px;
+    top: 3px;
+}
+.message.negative::before {
+	content: url(../img/ic_error_x.png);
+	position: relative;
+    margin-left: 2px;
+    margin-right: 7px;
+    top: 3px;
+}
+
 /* MEDIA QUERIES */
 
 @media screen and (max-width:1200px) {

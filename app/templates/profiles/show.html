@@ -27,8 +27,13 @@
     <div class="fullscreen">
         {%- with messages = get_flashed_messages(with_categories=True) %}
         {%- if messages %}
-        <div class="row">
-            {{ utils.flashed_messages(messages) }}
+        <div class="error-messages">
+            <div class="message positive">
+                {{ utils.flashed_messages(messages) }}
+            </div>
+            <div class="message negative">
+                {{ utils.flashed_messages(messages) }}
+            </div>
         </div>
         {%- endif %}
         {%- endwith %}
