@@ -4,26 +4,28 @@
 {% block site %}
 <div class="content">
 
-    {%- with messages = get_flashed_messages(with_categories=True) %}
-    {%- if messages %}
-    <div class="row">
-        {{ utils.flashed_messages(messages) }}
-    </div>
-    {%- endif %}
-    {%- endwith %}
-
     <div class="fullscreen">
-        <form class="form-page">
+
+        {%- with messages = get_flashed_messages(with_categories=True) %}
+        {%- if messages %}
+        <div class="row">
+            {{ utils.flashed_messages(messages) }}
+        </div>
+        {%- endif %}
+        {%- endwith %}
+        {{ form.errors }}
+        <form method='post' class="form-page">
+            {{ form.hidden_tag() }}
             <h4>Join this carpool</h4>
             <h1>Confirm your details</h1>
             <p>To join this carpool, please verify your profile information and make any changes as needed.</p>
 
             <div class="top-border">
                 <h4>Questions / Notes to Driver</h4>
-                <textarea name="textarea-notes" class="textarea-notes"></textarea>
+                {{ form.notes(class_='textarea-notes') }}
             </div>
             <div class="two-col-layout top-border right-align">
-                <input class="primary" type="submit" value="Request to join carpool">
+                {{ form.submit(class_='primary') }}
             </div>
         </form>
     </div>

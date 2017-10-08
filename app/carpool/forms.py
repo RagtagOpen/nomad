@@ -114,6 +114,7 @@ class DriverForm(FlaskForm):
 
 
 class RiderForm(FlaskForm):
+    notes = TextAreaField("Questions / Notes to Driver")
     submit = SubmitField('Request A Seat')
 
 

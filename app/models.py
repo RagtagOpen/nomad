@@ -41,6 +41,7 @@ class RideRequest(db.Model, UuidMixin):
     created_at = db.Column(db.DateTime(timezone=True),
                            default=datetime.datetime.utcnow)
     status = db.Column(db.String(120))
+    notes = db.Column(db.Text)
 
 
 class Role(db.Model):

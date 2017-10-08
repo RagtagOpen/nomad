@@ -224,6 +224,7 @@ def new_rider(carpool_uuid):
         rr = RideRequest(
             carpool_id=carpool.id,
             person_id=current_user.id,
+            notes=rider_form.notes.data,
             status='requested',
         )
         db.session.add(rr)
@@ -246,9 +247,6 @@ def modify_ride_request(carpool_uuid, request_uuid, action):
 
     user_is_driver = (current_user.id == carpool.driver_id)
     user_is_rider = (current_user.id == request.person_id)
-
-    print("User is driver: ", user_is_driver)
-    print("User is rider: ", user_is_rider)
 
     if not (user_is_driver or user_is_rider):
         flash("You can't do anything with this ride request", 'error')
