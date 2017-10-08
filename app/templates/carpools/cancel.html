@@ -2,14 +2,16 @@
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
-<<div class="content">
+<div class="content">
 
 	<div class="fullscreen">
-		<h1>Are you sure you want to cancel this carpool?</h1>
-		<p>Your passengers will be notified.</p>
-		<br><br>
-		<input class="secondary" type="submit" value="No, go back">
-		<input class="destructive" type="submit" value="Cancel carpool">
+		<div class="interstitial-page">
+			<h1>Are you sure you want to cancel this carpool?</h1>
+			<p>Your passengers will be notified.</p>
+			<br><br>
+			<input class="secondary" type="submit" value="No, go back">
+			<input class="destructive" type="submit" value="Cancel carpool">
+		</div>
 	</div>
 
 </div>
