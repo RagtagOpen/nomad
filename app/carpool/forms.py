@@ -114,7 +114,8 @@ class DriverForm(FlaskForm):
 
 
 class RiderForm(FlaskForm):
-    submit = SubmitField(u'Request A Seat')
+    notes = TextAreaField("Questions / Notes to Driver")
+    submit = SubmitField('Request A Seat')
 
 
 class CancelCarpoolDriverForm(FlaskForm):
@@ -123,8 +124,8 @@ class CancelCarpoolDriverForm(FlaskForm):
         description="Describe why you're canceling your carpool. "
                     "This will be visible to your riders."
     )
-    cancel = SubmitField(u"Never Mind, Go Back")
-    submit = SubmitField(u"Cancel Your Ride")
+    cancel = SubmitField("Never Mind, Go Back")
+    submit = SubmitField("Cancel Your Ride")
 
 
 class CancelCarpoolRiderForm(FlaskForm):
@@ -133,11 +134,11 @@ class CancelCarpoolRiderForm(FlaskForm):
         description="Describe why you're canceling your ride request. "
                     "This will be visible to your driver."
     )
-    cancel = SubmitField(u"Nevermind, Go Back")
-    submit = SubmitField(u"Cancel Your Ride")
+    cancel = SubmitField("Nevermind, Go Back")
+    submit = SubmitField("Cancel Your Ride")
 
 
 class DateSearchForm(FlaskForm):
     depart_time = DateTimeField("Depart Time")
     return_time = DateTimeField("Return Time")
-    submit = SubmitField(u'Search')
+    submit = SubmitField('Search')
