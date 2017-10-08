@@ -55,6 +55,18 @@ def create_app(config_name):
             public_dsn=sentry.client.get_public_dsn('https') if sentry else None
         )
 
+    @app.errorhandler(403)
+    def error_403(error):
+        return render_template(
+            '403.html'
+        )
+
+    @app.errorhandler(404)
+    def error_404(error):
+        return render_template(
+            '404.html'
+        )
+
     @app.after_request
     def frame_buster(response):
         response.headers['X-Frame-Options'] = 'DENY'
