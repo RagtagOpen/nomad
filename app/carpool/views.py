@@ -1,7 +1,6 @@
 import datetime
 from flask import (
     abort,
-    current_app,
     escape,
     flash,
     jsonify,
@@ -33,9 +32,6 @@ from .. import db
 @pool_bp.route('/', methods=['GET', 'POST'])
 def index():
     return render_template('index.html')
-
-def driver-index():
-    return render_template('index-driver.html')
 
 
 @pool_bp.route('/carpools/find')
