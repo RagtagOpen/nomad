@@ -20,6 +20,9 @@
     "GOOGLE_MAPS_API_KEY": {
       "required": true
     },
+    "INTERCOM_KEY": {
+      "required": false
+    },
     "SECRET_KEY": {
       "generator": "secret"
     }
