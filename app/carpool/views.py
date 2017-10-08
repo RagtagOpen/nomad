@@ -29,7 +29,7 @@ from .forms import (
     RiderForm,
 )
 from ..models import Carpool, Destination, RideRequest
-from .. import db
+from .. import csrf, db
 
 
 @pool_bp.route('/robots.txt')
@@ -39,7 +39,7 @@ def robotstxt():
     return resp
 
 
-@pool_bp.route('/', methods=['GET', 'POST'])
+@pool_bp.route('/')
 def index():
     return render_template('index.html')
 
