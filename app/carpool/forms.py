@@ -71,26 +71,26 @@ class DriverForm(FlaskForm):
                 "Please select a destination.")
             result = False
 
-        departure_datetime = datetime.datetime(
+        self.departure_datetime = datetime.datetime(
             self.departure_date.data.year,
             self.departure_date.data.month,
             self.departure_date.data.day,
             int(self.departure_hour.data)
         )
 
-        return_datetime = datetime.datetime(
+        self.return_datetime = datetime.datetime(
             self.return_date.data.year,
             self.return_date.data.month,
             self.return_date.data.day,
             int(self.return_hour.data)
         )
 
-        if departure_datetime >= return_datetime:
+        if self.departure_datetime >= self.return_datetime:
             self.departure_date.errors.append(
                 "Your departure date is after your return date.")
             result = False
 
-        if departure_datetime < datetime.datetime.today():
+        if self.departure_datetime < datetime.datetime.today():
             self.departure_date.errors.append(
                 "You cannot leave before today.")
             result = False
