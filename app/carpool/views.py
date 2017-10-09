@@ -4,6 +4,7 @@ from flask import (
     escape,
     flash,
     jsonify,
+    make_response,
     redirect,
     render_template,
     request,
@@ -27,6 +28,13 @@ from .forms import (
 )
 from ..models import Carpool, Destination, RideRequest
 from .. import db
+
+
+@pool_bp.route('/robots.txt')
+def robotstxt():
+    resp = make_response(render_template('robots.txt'))
+    resp.headers["Content-type"] = "text/plain"
+    return resp
 
 
 @pool_bp.route('/', methods=['GET', 'POST'])
