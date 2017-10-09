@@ -13,6 +13,7 @@ class Config:
     SENTRY_ENABLE = False
     GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY')
     INTERCOM_KEY = os.environ.get('INTERCOM_KEY')
+    GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID')
 
     MAIL_LOG_ONLY = os.environ.get('MAIL_LOG_ONLY')
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'localhost')
