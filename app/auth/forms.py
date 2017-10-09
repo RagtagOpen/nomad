@@ -92,10 +92,10 @@ class ProfileForm(FlaskForm):
                 "Please enter your name")
             result = False
 
-        if self.preferred_contact.data in ('call', 'text') \
+        if self.preferred_contact.data in ('phone', 'text') \
                 and not self.phone_number.data:
             self.phone_number.errors.append(
-                "You must enter a phone number if you select call or text "
+                "You must enter a phone number if you select phone or text "
                 "as your preferred method of contact")
             result = False
 
