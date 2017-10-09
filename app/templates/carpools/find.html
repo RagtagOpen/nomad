@@ -4,15 +4,34 @@
 {% block scripts %}
 {{super()}}
 <script>
+
+var lat = {% if loc_lat %}{{loc_lat}}{% else %}38.518{% endif %};
+var lng = {% if loc_lon %}{{loc_lon}}{% else %}-97.328{% endif %};
+var urlCoords = {% if loc_lat and loc_lon %}true{% else %}false{% endif %};
+
 $(function () {
     $('#submit').on('click', function() {
         doSearch();
     });
+    if (!urlCoords && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(geoSuccess);
+    }
 });
+
+var geoSuccess = function(position) {
+    // zoom to user position if/when they allow location access
+    zoomTo(position.coords.latitude, position.coords.longitude);
+};
+
+function zoomTo(lat, lng) {
+    map.setCenter(new google.maps.LatLng(lat, lng));
+    map.setZoom(11);
+}
 
 function doSearch() {
     var url = '{{ url_for('carpool.start_geojson') }}?';
     var parts = [];
+    var position = {};
 
     {% if loc_lat and loc_lon %}
     parts.push('near.lat=' + encodeURIComponent({{ loc_lat }}));
@@ -32,8 +51,8 @@ function doSearch() {
 
 function localInitMap() {
     map = new google.maps.Map(document.getElementById('background-map'), {
-        center: {lat: 38.518, lng: -97.328},
-        zoom: 3,
+        center: {lat: lat, lng: lng},
+        zoom: urlCoords ? 11 : 3,
         styles: mapStyleDiscreet
     });
     doSearch();
