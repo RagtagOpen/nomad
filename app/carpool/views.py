@@ -361,7 +361,7 @@ def cancel(uuid):
 
             flash("Your carpool was cancelled", 'success')
 
-            return redirect(url_for('carpool.index'))
+            return redirect(url_for('carpool.mine'))
         else:
             return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
