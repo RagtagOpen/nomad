@@ -1,5 +1,6 @@
 from rauth import OAuth1Service, OAuth2Service
 from flask import current_app, url_for, request, redirect, session, json
+from flanker.addresslib import address
 from six.moves.urllib.request import urlopen
 
 
@@ -62,11 +63,18 @@ class FacebookSignIn(OAuthSignIn):
             decoder=json.loads,
         )
         me = oauth_session.get('me?fields=id,email').json()
+
+        # Facebook does not provide username, so the email's user is used instead
+        email_address = me.get('email')
+        addr = address.parse(email_address, addr_spec_only=True)
+        if addr:
+            username = addr.mailbox
+        else:
+            username = ""
+
         return (
             'facebook$' + me['id'],
-            me.get('email').split('@')[0],  # Facebook does not provide
-                                            # username, so the email's user
-                                            # is used instead
+            username,
             me.get('email')
         )
 

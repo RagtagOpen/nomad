@@ -1,5 +1,5 @@
 import datetime
-import re
+import uuid
 from flask import abort
 from flask_login import UserMixin, current_user
 from geoalchemy2 import Geometry
@@ -15,8 +15,12 @@ class UuidMixin(object):
     uuid = db.Column(UUID(as_uuid=True), default=uuid4, index=True)
 
     @classmethod
-    def validate_uuid_format(clz, uuid):
-        return re.match(r'^[a-f0-9\-]*$', uuid)
+    def validate_uuid_format(clz, value):
+        try:
+            uuid.UUID(hex=value, version=4)
+        except ValueError:
+            return False
+        return True
 
     @classmethod
     def first_by_uuid(clz, uuid):
