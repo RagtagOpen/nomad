@@ -4,6 +4,13 @@
 {% block scripts %}
 {{ super() }}
 <script type="text/javascript">
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+        map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+        map.setZoom(11);
+    });
+}
+
 $("#location-seed").on('keydown', function(e) {
     if (e.keyCode == 13) {
         e.preventDefault();
@@ -11,9 +18,10 @@ $("#location-seed").on('keydown', function(e) {
     }
 });
 
+var map = null;
 function localInitMap() {
     var geocoder = new google.maps.Geocoder;
-    var map = new google.maps.Map(document.getElementById('mini-map'), {
+    map = new google.maps.Map(document.getElementById('mini-map'), {
         center: {lat: 38.518, lng: -97.328},
         zoom: 3,
         styles: mapStyleDiscreet
