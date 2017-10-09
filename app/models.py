@@ -198,7 +198,7 @@ class Destination(db.Model, UuidMixin):
 
     @classmethod
     def find_all_visible(clz):
-        return clz.query.filter(clz.hidden != True)
+        return clz.query.filter(clz.hidden != True).order_by(clz.name)
 
     def as_geojson(self):
         """ Returns a GeoJSON Feature object for this Destination. """
