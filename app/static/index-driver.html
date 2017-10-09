@@ -3,8 +3,7 @@
 <head>
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
-	<link rel="stylesheet" type="text/css" href="css/map-icons.css">
-	<link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:400,600,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:300,400,600,700" rel="stylesheet">
 	<link rel="stylesheet" href="css/styles.css">
 </head>
 
@@ -47,19 +46,36 @@
 	</ul>
 </nav>
 
-<div class="content">
+<div class="content splash-only">
 
-	<div class="fullscreen">
+	<div class="fullscreen jumbo driver-splash">
 		<div class="interstitial-page">
-			<h1>Are you sure you want to permanently delete your account?</h1>
-			<p>This action cannot be undone. You will be removed from all carpools and you will stop receiving further emails.</p>
+			<div class="bg-image"></div>
+			<h4>Share your ride</h4>
+			<h1>Drivers: Virginia has 100 districts that need your help this November!</h1>
+			<h2>Start a carpool to a location that needs volunteers:</h2>
+			<form>
+				<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State"> <input class="primary" type="submit" value="Find a location">
+			</form>
+			<p>Can't drive? <a href="index.html">Join someone else's carpool</a> instead.</p>
+		</div>
+	</div>
+
+	<div class="fullscreen jumbo-second">
+		<div class="interstitial-page">
+			<h3>These candidates are currently looking for volunteers:</h3>
+			<p><a href="https://www.kellyforva.com/" target="_blank">Kelly DeLucia</a> - VA House of Delegates District 96</p>
+			<h3 class="top-border">About Nomad</h3>
+			<p>Nomad is a joint effort between the <a href="https://vademocrats.org" target="_blank">Democratic Party of Virginia</a> and <a href="https://ragtag.org/" target="_blank">Ragtag</a>, a team of tech volunteers that helps activists, organizers, non-profits, and candidates break down tech barriers to achieving their organizing goals.</p>
 			<br>
-			<p>If you are sure you want to delete your account, type your name exactly as found on your profile and confirm below.</p>
+			<p>Learn more:</p>
 			<br>
-			<input type="text" name="delete-name" id="delete-name">
-			<br><br>
-			<input class="secondary" type="submit" value="Cancel and go back">
-			<input class="destructive" type="submit" value="Delete my account">
+			<div>
+				<a href="https://vademocrats.org" target="_blank"><div class="inline-image vadems"></div></a>
+				<a href="https://ragtag.org/" target="_blank"><div class="inline-image ragtag"></div></a>
+			</div>
+			<h3 class="top-border">Questions?</h3>
+			<p>Contact us somehow.</p>
 		</div>
 	</div>
 

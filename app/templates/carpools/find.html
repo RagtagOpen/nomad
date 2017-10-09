@@ -59,14 +59,16 @@ function localInitMap() {
 }
 
 function showCarpoolDetails(carpoolId) {
-    $.ajax({
-        type: "GET",
-        url: carpoolId + '/embed',
-        success: function(data) {
-            $('#detail-pane').html(data);
-            $('#detail-pane').show();
-        }
-    })
+    window.location = carpoolId;
+    return;
+    // $.ajax({
+    //     type: "GET",
+    //     url: carpoolId + '/embed',
+    //     success: function(data) {
+    //         $('#detail-pane').html(data);
+    //         $('#detail-pane').show();
+    //     }
+    // })
 }
 
 function showCarpoolDetailsDivClickHandler(event) {

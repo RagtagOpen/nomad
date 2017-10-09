@@ -12,8 +12,18 @@
 
 <nav class="global-header">
 	<div class="header-left">
-		<div class="logo"></div>
-		<form>
+		<div class="logo-container">
+			<a href="index.html"><div class="logo"></div></a>
+			<ul class="mobile-nav-bar">
+				<li><a href="#">Find a ride</a></li>
+				<li><a href="#">Give a ride</a></li>
+				<li><a href="#">About</a></li>
+				<li><a href="#">My Rides</a></li>
+  				<li><a href="#">Profile</a></li>
+  				<li><a href="#">Logout</a></li>
+  			</ul>
+		</div>
+		<form id="ride-select-form" class="header-search-bar">
 			<select>
 				<option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
 				<option value="give-ride">Give a ride</option>

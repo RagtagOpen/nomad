@@ -1,5 +1,5 @@
 import datetime
-import re
+import uuid
 from flask import abort
 from flask_login import UserMixin, current_user
 from geoalchemy2 import Geometry
@@ -15,8 +15,12 @@ class UuidMixin(object):
     uuid = db.Column(UUID(as_uuid=True), default=uuid4, index=True)
 
     @classmethod
-    def validate_uuid_format(clz, uuid):
-        return re.match(r'^[a-f0-9\-]*$', uuid)
+    def validate_uuid_format(clz, value):
+        try:
+            uuid.UUID(hex=value, version=4)
+        except ValueError:
+            return False
+        return True
 
     @classmethod
     def first_by_uuid(clz, uuid):
@@ -41,6 +45,7 @@ class RideRequest(db.Model, UuidMixin):
     created_at = db.Column(db.DateTime(timezone=True),
                            default=datetime.datetime.utcnow)
     status = db.Column(db.String(120))
+    notes = db.Column(db.Text)
 
 
 class Role(db.Model):
@@ -67,11 +72,6 @@ class Person(UserMixin, db.Model, UuidMixin):
     CONTACT_EMAIL = 'email'
     CONTACT_CALL = 'call'
     CONTACT_TEXT = 'text'
-    CONTACT_METHODS = (
-        CONTACT_EMAIL,
-        CONTACT_CALL,
-        CONTACT_TEXT,
-    )
 
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime(timezone=True),
@@ -81,6 +81,7 @@ class Person(UserMixin, db.Model, UuidMixin):
     phone_number = db.Column(db.String(14))
     name = db.Column(db.String(80))
     gender = db.Column(db.String(80))
+    gender_self_describe = db.Column(db.String(80))
     preferred_contact_method = db.Column(db.String(80))
 
     roles = db.relationship('Role', secondary='people_roles',

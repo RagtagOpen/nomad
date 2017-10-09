@@ -26,11 +26,6 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
-    logger = app.logger
-    logger.setLevel(logging.INFO)
-    stream_handler = logging.StreamHandler()
-    logger.addHandler(stream_handler)
-
     bootstrap.init_app(app)
     mail.init_app(app)
     db.init_app(app)
@@ -53,6 +48,18 @@ def create_app(config_name):
             '500.html',
             event_id=g.sentry_event_id,
             public_dsn=sentry.client.get_public_dsn('https') if sentry else None
+        )
+
+    @app.errorhandler(403)
+    def error_403(error):
+        return render_template(
+            '403.html'
+        )
+
+    @app.errorhandler(404)
+    def error_404(error):
+        return render_template(
+            '404.html'
         )
 
     @app.after_request

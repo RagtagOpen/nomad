@@ -2,15 +2,27 @@
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
-<<div class="content">
+<div class="content">
 
-	<div class="fullscreen">
-		<h1>Are you sure you want to cancel this carpool?</h1>
-		<p>Your passengers will be notified.</p>
-		<br><br>
-		<input class="secondary" type="submit" value="No, go back">
-		<input class="destructive" type="submit" value="Cancel carpool">
-	</div>
+    <div class="fullscreen">
+      <div class="interstitial-page">
+        <h1>Are you sure you want to cancel this carpool?</h1>
+        <p>Your passengers will be notified.</p>
+
+        <form method="post" class="form-page">
+            {{ form.hidden_tag() }}
+
+            <h4>Why are you canceling?</h4>
+            <h5>(This reason will be shared with your passengers.)</h5>
+            <p>{{ form.reason() }}</p>
+
+            <p>
+                {{ form.cancel(class_='secondary') }}
+                {{ form.submit(class_='destructive') }}
+            </p>
+        </form>
+      </div>
+    </div>
 
 </div>
 {% endblock %}

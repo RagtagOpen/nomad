@@ -7,7 +7,7 @@
 </div>
 
 <p>
-    {% if pool.current_user_is_driver %}You want{% else %}Someone wants{% endif %} to drive from <strong>{{ pool.from_place }}</strong> to <strong>{{ pool.to_place }}</strong> on <strong>{{ pool.leave_time.date() }}</strong> at <strong>{{ pool.leave_time.time() }}</strong>. They're planning on returning at <strong>{{ pool.return_time.time() }}</strong> on <strong>{{ pool.return_time.date() }}</strong>.
+    {% if pool.current_user_is_driver %}You want{% else %}Someone wants{% endif %} to drive from <strong>{{ pool.from_place }}</strong> to <strong>{{ pool.to_place }}</strong> on <strong>{{ pool.leave_time.date() }}</strong> at <strong>{{ pool.leave_time.time() }}</strong>. {% if pool.current_user_is_driver %}You're{% else %}They're{% endif %} planning on returning at <strong>{{ pool.return_time.time() }}</strong> on <strong>{{ pool.return_time.date() }}</strong>.
 </p>
 
 {% set current_user_ride_request = pool.get_current_user_ride_request() %}
@@ -42,7 +42,7 @@
 <h3>Ride Requests</h3>
 <ul>
 {% for request in pool.get_ride_requests_query() %}
-    <li>{{ request.person.name }}, {{ request.person.gender }}&nbsp;<small>
+    <li>{{ request.person.name }}, Gender: {{ request.person.gender }}, Notes: {{ request.notes }}&nbsp;<small>
         {%- if request.status == 'requested' %}
         (Waiting for your response:&nbsp;
         <a href="{{ url_for('carpool.modify_ride_request',

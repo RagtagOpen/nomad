@@ -1,5 +1,5 @@
-from rauth import OAuth1Service, OAuth2Service
-from flask import current_app, url_for, request, redirect, session, json
+from rauth import OAuth2Service
+from flask import current_app, url_for, request, redirect, json
 from six.moves.urllib.request import urlopen
 
 
@@ -61,13 +61,11 @@ class FacebookSignIn(OAuthSignIn):
                   'redirect_uri': self.get_callback_url()},
             decoder=json.loads,
         )
-        me = oauth_session.get('me?fields=id,email').json()
+        me = oauth_session.get('me?fields=id,email,name').json()
         return (
             'facebook$' + me['id'],
-            me.get('email').split('@')[0],  # Facebook does not provide
-                                            # username, so the email's user
-                                            # is used instead
-            me.get('email')
+            me.get('name'),
+            me.get('email'),
         )
 
 
