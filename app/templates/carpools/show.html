@@ -54,30 +54,6 @@
                 </div>
             </div>
 
-        {% else %}
-            <div class="two-col-layout">
-                <div class="two-col-column">
-                    <p>
-                    {%- if pool.seats_available > 1 %}
-                        There are {{ pool.seats_available }} seats available in this carpool.
-                    {%- elif pool.seats_available == 1 %}
-                        There is 1 seat available in this carpool.
-                    {%- else %}
-                        There are no more seats available in this carpool.
-                    {%- endif %}
-                    </p>
-                </div>
-                <div class="two-col-column">
-                    {%- if pool.seats_available >= 1 %}
-                        <a href="{{ url_for('carpool.new_rider', carpool_uuid=pool.uuid) }}"><input class="primary" type="submit" value="Request a seat in carpool"></a>
-                    {%- else %}
-                        <input class="inactive" type="submit" value="No seats available"></a>
-                    {%- endif %}
-                </div>
-            </div>
-
-        {%- endif %}
-
             <div class="two-col-layout top-border">
                 <h4>Driver's Corner: Passenger Requests</h4>
 
@@ -119,6 +95,30 @@
 
                 </ul>
             </div>
+
+        {% else %}
+            <div class="two-col-layout">
+                <div class="two-col-column">
+                    <p>
+                    {%- if pool.seats_available > 1 %}
+                        There are {{ pool.seats_available }} seats available in this carpool.
+                    {%- elif pool.seats_available == 1 %}
+                        There is 1 seat available in this carpool.
+                    {%- else %}
+                        There are no more seats available in this carpool.
+                    {%- endif %}
+                    </p>
+                </div>
+                <div class="two-col-column">
+                    {%- if pool.seats_available > 0 %}
+                        <a class="btn btn-primary" href="{{ url_for('carpool.new_rider', carpool_uuid=pool.uuid) }}">Request a seat in carpool</a>
+                    {%- else %}
+                        <a class="btn disabled">No seats available</a>
+                    {%- endif %}
+                </div>
+            </div>
+
+        {%- endif %}
 
             <div class="two-col-layout first-child top-border">
                 <div class="two-col-column">
