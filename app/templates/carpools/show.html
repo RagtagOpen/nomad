@@ -5,6 +5,16 @@
 <div class="content">
 
     <div class="fullscreen">
+        {%- with messages = get_flashed_messages(with_categories=True) %}
+        {%- if messages %}
+        <div class="error-messages">
+            {% for cat, msg in messages %}
+            <div class="message {{ cat }}">{{ msg }}</div>
+            {% endfor %}
+        </div>
+        {%- endif %}
+        {%- endwith %}
+
         <form class="form-page">
 
             {% set current_user_ride_request = pool.get_current_user_ride_request() %}
