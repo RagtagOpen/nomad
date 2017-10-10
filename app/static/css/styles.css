@@ -36,11 +36,11 @@ h4 {
 	margin-top: 30px;
 	margin-bottom: 10px;
 }
-.interstitial-page h2 {
+.interstitial-page h3 {
 	padding-top: 30px;
 	margin-bottom: 20px;
 }
-.interstitial-page h3 {
+.interstitial-page h4 {
 	margin-top: 30px;
 	margin-bottom: 20px;
 }
@@ -71,7 +71,7 @@ a.destructive {
 p.destructive {
 	color: rgb(204,68,75);
 }
-p.bold {
+p.bold, strong {
 	font-weight: 600;
 }
 ol, ul {
@@ -101,6 +101,11 @@ input[type=submit].secondary {
 input[type=submit].destructive {
 	background-color: rgb(204,68,75);
 	color: white;
+}
+input[type=submit].inactive {
+	background-color: rgb(205,212,222);
+	color: white;
+	cursor: default;
 }
 input[type=text], input[type=email], input[type=tel], input[type=date] {
 	height: 40px;
@@ -329,17 +334,19 @@ select:focus {
 }
 .fullscreen {
 	width: 100%;
-	margin-top: 100px;
+	margin-top: 70px;
 	padding: 0 210px 100px 210px;
 }
 .fullscreen.jumbo-second {
-	padding-top: 60px;
+	/*padding-top: 60px;*/
 }
 .form-page {
 	max-width: 730px;
+	padding-top: 40px;
 }
 .interstitial-page {
 	max-width: 600px;
+	padding-top: 40px;
 }
 
 /* ===== SPLASH PAGES ===== */
@@ -381,7 +388,7 @@ select:focus {
 	max-width: 650px; /*for line length readability*/
 }
 .jumbo {
-	margin-top: 50px;
+	padding-top: 50px;
 }
 .jumbo h2 {
 	margin-bottom: 20px;

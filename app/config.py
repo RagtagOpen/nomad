@@ -15,7 +15,7 @@ class Config:
     INTERCOM_KEY = os.environ.get('INTERCOM_KEY')
     GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID')
 
-    MAIL_LOG_ONLY = os.environ.get('MAIL_LOG_ONLY')
+    MAIL_LOG_ONLY = os.environ.get('MAIL_LOG_ONLY', True)
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'localhost')
     MAIL_PORT = os.environ.get('MAIL_PORT', 25)
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')

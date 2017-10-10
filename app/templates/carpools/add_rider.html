@@ -8,12 +8,14 @@
 
         {%- with messages = get_flashed_messages(with_categories=True) %}
         {%- if messages %}
-        <div class="row">
-            {{ utils.flashed_messages(messages) }}
+        <div class="error-messages">
+            {% for cat, msg in messages %}
+            <div class="message {{ cat }}">{{ msg }}</div>
+            {% endfor %}
         </div>
         {%- endif %}
         {%- endwith %}
-        {{ form.errors }}
+
         <form method='post' class="form-page">
             {{ form.hidden_tag() }}
             <h4>Join this carpool</h4>
