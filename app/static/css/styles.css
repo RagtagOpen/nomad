@@ -71,7 +71,7 @@ a.destructive {
 p.destructive {
 	color: rgb(204,68,75);
 }
-p.bold {
+p.bold, strong {
 	font-weight: 600;
 }
 ol, ul {
@@ -101,6 +101,11 @@ input[type=submit].secondary {
 input[type=submit].destructive {
 	background-color: rgb(204,68,75);
 	color: white;
+}
+input[type=submit].inactive {
+	background-color: rgb(205,212,222);
+	color: white;
+	cursor: default;
 }
 input[type=text], input[type=email], input[type=tel], input[type=date] {
 	height: 40px;
@@ -337,9 +342,11 @@ select:focus {
 }
 .form-page {
 	max-width: 730px;
+	padding-top: 40px;
 }
 .interstitial-page {
 	max-width: 600px;
+	padding-top: 40px;
 }
 
 /* ===== SPLASH PAGES ===== */
