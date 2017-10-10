@@ -438,7 +438,7 @@ select:focus {
 	border-bottom: 1px solid rgb(205,212,222);
 }
 .results-box {
-	padding: 0px 0px 0px 40px;
+	padding: 0px 0px 150px 40px;
 	height: 100%;
 	overflow: scroll;
 }
