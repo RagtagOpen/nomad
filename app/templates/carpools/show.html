@@ -10,7 +10,7 @@
             {% set current_user_ride_request = pool.get_current_user_ride_request() %}
 
             <h4>Carpool Details</h4>
-            <h1>{{ pool.from_place }} to {{ pool.to_place }}</h1>
+            <h1>{{ pool.from_place }} to {{ pool.destination.name }}</h1>
 
             <h4>Carpool Status</h4>
 
@@ -23,7 +23,7 @@
                     <a href="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}"><input class="destructive" type="submit" value="Cancel your seat in carpool"></a>
                 </div>
             </div>
-            
+
         {% elif current_user_ride_request %}
             <div class="two-col-layout">
                 <div class="two-col-column">
@@ -108,8 +108,8 @@
                 {% endfor %}
 
                 </ul>
-            </div>          
-            
+            </div>
+
             <div class="two-col-layout first-child top-border">
                 <div class="two-col-column">
                     <h4>Departs</h4>
@@ -118,34 +118,31 @@
                     <h4>Returns</h4>
                     <p>{{ pool.return_time.date() }}</p>
                     <p>{{ pool.return_time.time() }}</p>
-                    <h4>Approx drive time</h4>
-                    <p>1 h 50 min each way</p>
                 </div>
                 <div class="two-col-column">
                     <h4>Pickup</h4>
                     <p>{{ pool.from_place }}</p>
                     <h4>Dropoff</h4>
-                    <p>{{ pool.to_place }}</p>
+                    <p>{{ pool.destination.name }}</p>
                 </div>
             </div>
 
             <div class="two-col-layout top-border">
                 <div class="two-col-column">
                     <h4>Carpool Details</h4>
-                {% if pool.current_user_is_driver %}
-                    <p>Driver: Frank U. (Male)</p>
-                    <p>Vehicle: Black 2015 Honda Accord</p>
-                {% elif current_user_ride_request and current_user_ride_request.status == 'approved'  %}
-                    <p>Driver: Frank U. (Male)</p>
-                    <p>Vehicle: Black 2015 Honda Accord</p>
-                {% elif current_user_ride_request %}
-                    <p>Driver Gender: Male</p>
-                {%- endif %}
-                    <p>Luggage space: 1 medium-sized bag per passenger</p>
+                    {% if pool.current_user_is_driver %}
+                    <p>Driver: {{ pool.driver.name }} ({{ pool.driver.gender }})</p>
+                    <p>Vehicle: {{ pool.vehicle_description or "(None supplied)" }}</p>
+                    {% elif current_user_ride_request and current_user_ride_request.status == 'approved'  %}
+                    <p>Driver: {{ pool.driver.name }} ({{ pool.driver.gender }})</p>
+                    <p>Vehicle: {{ pool.vehicle_description or "(None supplied)" }}</p>
+                    {% elif current_user_ride_request %}
+                    <p>Driver Gender: {{ pool.driver.gender }}</p>
+                    {%- endif %}
                 </div>
                 <div class="two-col-column">
                     <h4>Additional notes</h4>
-                    <p>Flexible on departure time. Non-smoking. Not good for people with dog / cat allergies</p>
+                    <p>{{ pool.notes or "(None supplied)"}}</p>
                 </div>
             </div>
 
