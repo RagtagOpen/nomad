@@ -181,3 +181,7 @@ def profile_delete():
 @auth_bp.route('/privacy.html')
 def privacy():
     return render_template('auth/privacy.html')
+
+@auth_bp.route('/tou.html')
+def tou():
+    return render_template('auth/tou.html')

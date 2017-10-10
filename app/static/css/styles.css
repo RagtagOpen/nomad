@@ -28,13 +28,20 @@ html, body {
 h1, h2, h3, h4, p { margin: 0; }
 h1 { font: 400 28px/140% 'Merriweather', Georgia, serif; }
 h2 { font: 300 28px/120% 'Source Sans Pro', Arial, Helvetica, sans-serif; }
-h3 { font: 600 24px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif; }
+h3 { font: 600 24px/120% 'Source Sans Pro', Arial, Helvetica, sans-serif; }
 h4 {
 	font: 700 16px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
 	text-transform: uppercase;
 	letter-spacing: 1px;
 	margin-top: 30px;
 	margin-bottom: 10px;
+}
+.interstitial-page h3 {
+	padding-top: 20px;
+	margin-bottom: 20px;
+}
+.interstitial-page p {
+	margin-bottom: 20px;
 }
 label {
 	font: 400 14px/150% 'Source Sans Pro', Arial, Helvetica, sans-serif;
@@ -43,6 +50,10 @@ label {
 	margin-bottom: 0;
 }
 ul {
+	list-style: disc outside none;
+	padding-left: 20px;
+}
+.global-header ul {
 	list-style: none;
 }
 a {
