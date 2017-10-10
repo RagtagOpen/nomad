@@ -329,11 +329,11 @@ select:focus {
 }
 .fullscreen {
 	width: 100%;
-	margin-top: 100px;
+	margin-top: 70px;
 	padding: 0 210px 100px 210px;
 }
 .fullscreen.jumbo-second {
-	padding-top: 60px;
+	/*padding-top: 60px;*/
 }
 .form-page {
 	max-width: 730px;
