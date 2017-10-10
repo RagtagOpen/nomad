@@ -237,7 +237,9 @@ def new_rider(carpool_uuid):
         db.session.add(rr)
         db.session.commit()
 
-        flash("You've been added to the list for this carpool!", 'success')
+        flash(
+            "Your ride request has been sent to the driver for approval.",
+            'success')
         _email_driver_ride_requested(carpool, current_user)
 
         return redirect(url_for('carpool.details', uuid=carpool.uuid))
