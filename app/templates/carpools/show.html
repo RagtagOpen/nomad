@@ -69,7 +69,7 @@
         {%- endif %}
 
             <div class="two-col-layout top-border">
-                <h4 class=>Driver's Corner: Passenger Requests</h4>
+                <h4>Driver's Corner: Passenger Requests</h4>
 
                 <ul>
 
@@ -77,7 +77,7 @@
 
                     <li><strong>{{ request.person.name }}</strong>
                         <br>Gender: {{ request.person.gender }}
-                        <br>Notes: {{ request.notes }
+                        <br>Notes: {{ request.notes }}
                         <br>
                     {%- if request.status == 'requested' %}
                         (Waiting for your response:&nbsp;
@@ -108,14 +108,7 @@
                 {% endfor %}
 
                 </ul>
-            </div>
-
-            <div class="two-col-layout">
-                <div class="two-col-column"></div>
-                <div class="two-col-column"></div>
-            </div>
-
-            
+            </div>          
             
             <div class="two-col-layout first-child top-border">
                 <div class="two-col-column">
