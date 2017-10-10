@@ -30,7 +30,7 @@
                     <p>You are confirmed for this carpool!</p>
                 </div>
                 <div class="two-col-column">
-                    <a href="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}"><input class="destructive" type="submit" value="Cancel your seat in carpool"></a>
+                    <a class="btn btn-danger" href="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}">Cancel your seat in carpool</a>
                 </div>
             </div>
 
@@ -40,7 +40,7 @@
                     <p>Your ride request is pending.</p>
                 </div>
                 <div class="two-col-column">
-                    <a href="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}"><input class="destructive" type="submit" value="Cancel your seat request"></a>
+                    <a class="btn btn-danger" href="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}">Cancel your seat request</a>
                 </div>
             </div>
 
@@ -50,7 +50,7 @@
                     <p>You're the driver of this carpool!</p>
                 </div>
                 <div class="two-col-column">
-                    <a href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}"><input class="destructive" type="submit" value="Cancel your carpool"></a>
+                    <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
                 </div>
             </div>
 
