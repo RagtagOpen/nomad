@@ -94,6 +94,7 @@ function mapDataCallback(features) {
         {% endif %}
         results.append(resultdiv);
     }
+    results.addClass("results-box");
 
     map.data.addListener('click', function(event) {
         showCarpoolDetails(event.feature.getId());
