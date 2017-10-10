@@ -36,8 +36,12 @@ h4 {
 	margin-top: 30px;
 	margin-bottom: 10px;
 }
+.interstitial-page h2 {
+	padding-top: 30px;
+	margin-bottom: 20px;
+}
 .interstitial-page h3 {
-	padding-top: 20px;
+	margin-top: 30px;
 	margin-bottom: 20px;
 }
 .interstitial-page p {
@@ -147,6 +151,14 @@ select:focus {
 	position:relative;
 	background: url("../img/logo_ragtag.png") top left / contain no-repeat;
 }
+.anchor::before {
+	display: block;
+    content: " ";
+    margin-top: -40px;
+    height: 40px;
+    visibility: hidden;
+}
+ 
 
 
 /* ===== HEADER ===== */
@@ -317,7 +329,8 @@ select:focus {
 }
 .fullscreen {
 	width: 100%;
-	padding: 100px 210px 100px 210px;
+	margin-top: 100px;
+	padding: 0 210px 100px 210px;
 }
 .fullscreen.jumbo-second {
 	padding-top: 60px;
