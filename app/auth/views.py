@@ -178,10 +178,6 @@ def profile_delete():
     return render_template('profiles/delete.html', form=profile_form)
 
 
-@auth_bp.route('/privacy.html')
-def privacy():
-    return render_template('auth/privacy.html')
-
-@auth_bp.route('/tou.html')
-def tou():
-    return render_template('auth/tou.html')
+@auth_bp.route('/safety.html')
+def safety():
+    return render_template('auth/safety.html')
