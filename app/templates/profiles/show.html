@@ -47,7 +47,7 @@
                     {% if form.name.errors %}
                     <div>
                     {% for err in form.name.errors %}
-                    <p class="destructive">{{ err }}</p>
+                    <label class="destructive">{{ err }}</label>
                     {% endfor %}
                     </div>
                     {% endif %}
@@ -60,7 +60,7 @@
                     {% if form.gender.errors %}
                     <div>
                     {% for err in form.gender.errors %}
-                    <p class="destructive">{{ err }}</p>
+                    <label class="destructive">{{ err }}</label>
                     {% endfor %}
                     </div>
                     {% endif %}
@@ -74,7 +74,7 @@
                     {% if form.email.errors %}
                     <div>
                     {% for err in form.email.errors %}
-                    <p class="destructive">{{ err }}</p>
+                    <label class="destructive">{{ err }}</label>
                     {% endfor %}
                     </div>
                     {% endif %}
@@ -84,7 +84,7 @@
                     {% if form.phone_number.errors %}
                     <div>
                     {% for err in form.phone_number.errors %}
-                    <p class="destructive">{{ err }}</p>
+                    <label class="destructive">{{ err }}</label>
                     {% endfor %}
                     </div>
                     {% endif %}
@@ -96,7 +96,7 @@
                     {% if form.preferred_contact.errors %}
                     <div>
                     {% for err in form.preferred_contact.errors %}
-                    <p class="destructive">{{ err }}</p>
+                    <label class="destructive">{{ err }}</label>
                     {% endfor %}
                     </div>
                     {% endif %}

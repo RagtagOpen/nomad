@@ -104,7 +104,7 @@ function localInitMap() {
                 {% if form.destination.errors %}
                 <div>
                 {% for err in form.destination.errors %}
-                <p class="destructive">{{ err }}</p>
+                <label class="destructive">{{ err }}</label>
                 {% endfor %}
                 </div>
                 {% endif %}
@@ -120,7 +120,7 @@ function localInitMap() {
                 {% if form.departure_name.errors %}
                 <div>
                 {% for err in form.departure_name.errors %}
-                <p class="destructive">{{ err }}</p>
+                <label class="destructive">{{ err }}</label>
                 {% endfor %}
                 </div>
                 {% endif %}
@@ -134,7 +134,7 @@ function localInitMap() {
                 <p>Your carpool pickup/dropoff location will be shown to passengers as:</p>
                 <p id="location-description" class="bold"></p>
                 <br>
-                <p class="destructive">We strongly recommend choosing a landmark or other public place as your pickup / dropoff location. Please use your best judgment to ensure everyone’s safety!</p>
+                <label class="destructive">We strongly recommend choosing a landmark or other public place as your pickup / dropoff location. Please use your best judgment to ensure everyone’s safety!</label>
             </div>
         </div>
 
@@ -146,7 +146,7 @@ function localInitMap() {
                 {% if form.departure_date.errors %}
                 <div>
                 {% for err in form.departure_date.errors %}
-                <p class="destructive">{{ err }}</p>
+                <label class="destructive">{{ err }}</label>
                 {% endfor %}
                 </div>
                 {% endif %}
@@ -158,7 +158,7 @@ function localInitMap() {
                 {% if form.return_date.errors %}
                 <div>
                 {% for err in form.return_date.errors %}
-                <p class="destructive">{{ err }}</p>
+                <label class="destructive">{{ err }}</label>
                 {% endfor %}
                 </div>
                 {% endif %}
@@ -173,7 +173,7 @@ function localInitMap() {
                 {% if form.vehicle_description.errors %}
                 <div>
                 {% for err in form.vehicle_description.errors %}
-                <p class="destructive">{{ err }}</p>
+                <label class="destructive">{{ err }}</label>
                 {% endfor %}
                 </div>
                 {% endif %}
@@ -185,7 +185,7 @@ function localInitMap() {
                 {% if form.vehicle_capacity.errors %}
                 <div>
                 {% for err in form.vehicle_capacity.errors %}
-                <p class="destructive">{{ err }}</p>
+                <label class="destructive">{{ err }}</label>
                 {% endfor %}
                 </div>
                 {% endif %}
@@ -198,7 +198,7 @@ function localInitMap() {
             {% if form.notes.errors %}
             <div>
             {% for err in form.notes.errors %}
-            <p class="destructive">{{ err }}</p>
+            <label class="destructive">{{ err }}</label>
             {% endfor %}
             </div>
             {% endif %}

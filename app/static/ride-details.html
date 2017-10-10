@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+
+<head>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="css/map-icons.css">
+	<link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+	<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<nav class="global-header">
+	<div class="header-left">
+		<div class="logo-container">
+			<a href="index.html"><div class="logo"></div></a>
+			<ul class="mobile-nav-bar">
+				<li><a href="#">Find a ride</a></li>
+				<li><a href="#">Give a ride</a></li>
+				<li><a href="#">About</a></li>
+				<li><a href="#">My Rides</a></li>
+  				<li><a href="#">Profile</a></li>
+  				<li><a href="#">Logout</a></li>
+  			</ul>
+		</div>
+		<form id="ride-select-form" class="header-search-bar">
+			<select>
+				<option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
+				<option value="give-ride">Give a ride</option>
+			</select>
+			<span>near</span>
+			<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State" value="21227" >
+		</form>
+	</div>
+	<ul class="nav-bar">
+		<li class="active"><a href="#">Find a ride</a></li>
+  		<li><a href="#">Give a ride</a></li>
+  		<li><a href="#">About</a></li>
+  		<li><a href="#">My Rides</a></li>
+  		<li class="nav-dropdown">
+  			<a class="arrow" href="#">Roberta</a>
+  			<ul class="nav-bar-secondary">
+  				<li><a href="#">Profile</a></li>
+  				<li><a href="#">Logout</a></li>
+  			</ul>
+  		</li>
+	</ul>
+</nav>
+
+<div class="content">
+
+	<div class="fullscreen">
+		<form class="form-page">
+
+			{% set current_user_ride_request = pool.get_current_user_ride_request() %}
+
+			<h4>Carpool Details</h4>
+			<h1>{{ pool.from_place }} to {{ pool.to_place }}</h1>
+
+			<h4>Carpool Status</h4>
+
+		{% if current_user_ride_request and current_user_ride_request.status == 'approved'  %}
+			<div class="two-col-layout">
+				<div class="two-col-column">
+					<p>You are confirmed for this carpool!</p>
+				</div>
+				<div class="two-col-column">
+					<a href="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}"><input class="destructive" type="submit" value="Cancel your seat in carpool"></a>
+				</div>
+			</div>
+			
+		{% elif current_user_ride_request %}
+			<div class="two-col-layout">
+				<div class="two-col-column">
+					<p>Your ride request is pending.</p>
+				</div>
+				<div class="two-col-column">
+					<a href="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}"><input class="destructive" type="submit" value="Cancel your seat request"></a>
+				</div>
+			</div>
+
+		{% elif pool.current_user_is_driver %}
+			<div class="two-col-layout">
+				<div class="two-col-column">
+					<p>You're the driver of this carpool!</p>
+				</div>
+				<div class="two-col-column">
+					<a href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}"><input class="destructive" type="submit" value="Cancel your carpool"></a>
+				</div>
+			</div>
+
+		{% else %}
+			<div class="two-col-layout">
+				<div class="two-col-column">
+					<p>
+					{%- if pool.seats_available > 1 %}
+					    There are {{ pool.seats_available }} seats available in this carpool.
+					{%- elif pool.seats_available == 1 %}
+					    There is 1 seat available in this carpool.
+					{%- else %}
+					    There are no more seats available in this carpool.
+					{%- endif %}
+					</p>
+				</div>
+				<div class="two-col-column">
+					{%- if pool.seats_available >= 1 %}
+					    <a href="{{ url_for('carpool.new_rider', carpool_uuid=pool.uuid) }}"><input class="primary" type="submit" value="Request a seat in carpool"></a>
+					{%- else %}
+					    <input class="inactive" type="submit" value="No seats available"></a>
+					{%- endif %}
+				</div>
+			</div>
+
+		{%- endif %}
+
+			<div class="two-col-layout top-border">
+				<h4 class=>Driver's Corner: Passenger Requests</h4>
+
+				<ul>
+
+				{% for request in pool.get_ride_requests_query() %}
+
+				    <li><strong>{{ request.person.name }}</strong>
+				    	<br>Gender: {{ request.person.gender }}
+				    	<br>Notes: {{ request.notes }
+				    	<br>
+			    	{%- if request.status == 'requested' %}
+				        (Waiting for your response:&nbsp;
+				        <a href="{{ url_for('carpool.modify_ride_request',
+				                            action='approve',
+				                            carpool_uuid=pool.uuid,
+				                            request_uuid=request.uuid) }}">Approve</a>,&nbsp;
+				        <a class="destructive" href="{{ url_for('carpool.modify_ride_request',
+				                            action='deny',
+				                            carpool_uuid=pool.uuid,
+				                            request_uuid=request.uuid) }}">Deny</a>)
+			        {%- elif request.status == 'approved' %}
+				        (You approved their request:&nbsp;
+				        <a class="destructive" href="{{ url_for('carpool.modify_ride_request',
+				                            action='deny',
+				                            carpool_uuid=pool.uuid,
+				                            request_uuid=request.uuid) }}">Deny</a>)
+			        {%- elif request.status == 'denied' %}
+				        (You denied their request:&nbsp;
+				        <a href="{{ url_for('carpool.modify_ride_request',
+				                            action='approve',
+				                            carpool_uuid=pool.uuid,
+				                            request_uuid=request.uuid) }}">Approve</a>)
+			        {%- endif %}
+				        </small>
+				    </li>
+
+				{% endfor %}
+
+				</ul>
+			</div>
+
+			<div class="two-col-layout">
+				<div class="two-col-column"></div>
+				<div class="two-col-column"></div>
+			</div>
+
+			
+			
+			<div class="two-col-layout first-child top-border">
+				<div class="two-col-column">
+					<h4>Departs</h4>
+					<p>{{ pool.leave_time.date() }}</p>
+					<p>{{ pool.leave_time.time() }}</p>
+					<h4>Returns</h4>
+					<p>{{ pool.return_time.date() }}</p>
+					<p>{{ pool.return_time.time() }}</p>
+					<h4>Approx drive time</h4>
+					<p>1 h 50 min each way</p>
+				</div>
+				<div class="two-col-column">
+					<h4>Pickup</h4>
+					<p>{{ pool.from_place }}</p>
+					<h4>Dropoff</h4>
+					<p>{{ pool.to_place }}</p>
+				</div>
+			</div>
+
+			<div class="two-col-layout top-border">
+				<div class="two-col-column">
+					<h4>Carpool Details</h4>
+				{% if pool.current_user_is_driver %}
+					<p>Driver: Frank U. (Male)</p>
+					<p>Vehicle: Black 2015 Honda Accord</p>
+				{% elif current_user_ride_request and current_user_ride_request.status == 'approved'  %}
+					<p>Driver: Frank U. (Male)</p>
+					<p>Vehicle: Black 2015 Honda Accord</p>
+				{% elif current_user_ride_request %}
+					<p>Driver Gender: Male</p>
+				{%- endif %}
+					<p>Luggage space: 1 medium-sized bag per passenger</p>
+				</div>
+				<div class="two-col-column">
+					<h4>Additional notes</h4>
+					<p>Flexible on departure time. Non-smoking. Not good for people with dog / cat allergies</p>
+				</div>
+			</div>
+
+		</form>
+	</div>
+
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/map-styles.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+ <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtm9OOe24AnTe2kXGdsITXVvj1tovbsws&callback=initMap">
+    </script>
+</body>
+</html>
