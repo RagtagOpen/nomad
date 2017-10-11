@@ -48,6 +48,13 @@
             <div class="two-col-layout">
                 <div class="two-col-column">
                     <p>You're the driver of this carpool!</p>
+                    {% if not pool.seats_available %}
+                        <p>Your carpool is full.
+                        {% if pool.get_ride_requests_query(['requested']).count() %}
+                            Please let people awaiting your response know that they should find another carpool.
+                        {% endif %}
+                    </p>
+                    {% endif %}
                 </div>
                 <div class="two-col-column">
                     <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
@@ -58,7 +65,6 @@
                 <h4>Driver's Corner: Passenger Requests</h4>
 
                 <ul>
-
                 {% for request in pool.get_ride_requests_query() %}
 
                     <li><strong>{{ request.person.name }}</strong>
@@ -67,10 +73,12 @@
                         <br>
                     {%- if request.status == 'requested' %}
                         (Waiting for your response:&nbsp;
+                        {% if pool.seats_available %}
                         <a href="{{ url_for('carpool.modify_ride_request',
                                             action='approve',
                                             carpool_uuid=pool.uuid,
                                             request_uuid=request.uuid) }}">Approve</a>,&nbsp;
+                        {% endif %}
                         <a class="destructive" href="{{ url_for('carpool.modify_ride_request',
                                             action='deny',
                                             carpool_uuid=pool.uuid,

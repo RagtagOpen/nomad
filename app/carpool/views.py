@@ -279,7 +279,9 @@ def modify_ride_request(carpool_uuid, request_uuid, action):
             if not user_is_driver:
                 flash("That's not your carpool", 'error')
                 return redirect(url_for('carpool.details', uuid=carpool.uuid))
-
+            if not request.carpool.seats_available:
+                flash("No seats available", 'error')
+                return redirect(url_for('carpool.details', uuid=carpool.uuid))
             request.status = 'approved'
             db.session.add(request)
             db.session.commit()
