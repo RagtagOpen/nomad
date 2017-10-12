@@ -78,13 +78,16 @@ function showCarpoolDetailsDivClickHandler(event) {
 function mapDataCallback(features) {
     var results = $('#search-results');
     results.empty();
+    var bounds = new google.maps.LatLngBounds();
 
     if (features.length > 0) {
         for (var i = 0; i < features.length; i++) {
             var feature = features[i];
+            var geo = feature.getGeometry();
             var resultdiv = $('<div class="result"><h3 class="result-title">' + feature.getProperty('from_place') + ' to ' + feature.getProperty('to_place') + '</h3><p>' + feature.getProperty('seats_available') + ' seats available</p><p>Departs: ' + feature.getProperty('leave_time') + '</p><p>Returns: ' + feature.getProperty('return_time') + '</p><p>Destination: '+ feature.getProperty('to_place') + '</p></div>');
             resultdiv.click(feature.getId(), showCarpoolDetailsDivClickHandler);
             results.append(resultdiv);
+            bounds.extend(new google.maps.LatLng(geo.b.lat(), geo.b.lng()));
         }
         map.data.setStyle(function(feature) {
             if (feature.getProperty('approx_location')) {
@@ -102,6 +105,12 @@ function mapDataCallback(features) {
                 return {
                     icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|3090C7'
                 };
+            }
+        });
+        map.fitBounds(bounds);
+        google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
+            if (this.getZoom() > 11) {
+                this.setZoom(11);
             }
         });
     } else {
