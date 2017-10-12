@@ -100,11 +100,16 @@ def start_geojson():
 
         pools = pools.order_by(func.ST_Distance(Carpool.from_point, center))
 
+    riders = db.session.query(RideRequest.carpool_id,
+                              func.count(RideRequest.id).label('pax')).\
+        filter(RideRequest.status == 'approved').\
+        group_by(RideRequest.carpool_id).\
+        subquery('riders')
+    pools = pools.filter(Carpool.from_point.isnot(None)).\
+        outerjoin(riders, Carpool.id == riders.c.carpool_id).\
+        filter(riders.c.pax.is_(None) | (riders.c.pax < Carpool.max_riders))
     features = []
     for pool in pools:
-        if pool.from_point is None:
-            continue
-
         features.append({
             'type': 'Feature',
             'geometry': mapping(to_shape(pool.from_point)),
