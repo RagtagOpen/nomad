@@ -86,6 +86,24 @@ function mapDataCallback(features) {
             resultdiv.click(feature.getId(), showCarpoolDetailsDivClickHandler);
             results.append(resultdiv);
         }
+        map.data.setStyle(function(feature) {
+            if (feature.getProperty('approx_location')) {
+                var geo = feature.getGeometry();
+                feature.circle =  new google.maps.Circle({
+                    map:map,
+                    center: geo.get(),
+                    radius: 1800,
+                    fillColor: '#3090C7',
+                    fillOpacity: 0.5,
+                    strokeWeight: 0
+                });
+                return { visible: false };
+            } else {
+                return {
+                    icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|3090C7'
+                };
+            }
+        });
     } else {
         {% if loc_lat and loc_lon %}
         var resultdiv = $('<div class="result"><h3>No carpools nearby</h3><p>Will you consider <a href="{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}">starting one</a>?</p></div>');

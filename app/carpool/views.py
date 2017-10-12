@@ -114,9 +114,9 @@ def start_geojson():
     features = []
     # get the current user's confirmed carpools
     confirmed_carpools = []
-    if current_user.get_id():
+    if not current_user.is_anonymous:
         rides = RideRequest.query.filter(RideRequest.status == 'approved').\
-            filter(RideRequest.person_id == current_user.get_id())
+            filter(RideRequest.person_id == current_user.id)
         for ride in rides:
             confirmed_carpools.append(ride.carpool_id)
     for pool in pools:
@@ -124,7 +124,8 @@ def start_geojson():
             continue
         # show real location to driver and confirmed passenger
         geometry = mapping(to_shape(pool.from_point))
-        if pool.driver_id == current_user.get_id() or pool.id in confirmed_carpools:
+        if not current_user.is_anonymous and \
+            (pool.driver_id == current_user.id or pool.id in confirmed_carpools):
             approx_location = False
         else:
             approx_location = True
