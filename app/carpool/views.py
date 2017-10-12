@@ -1,4 +1,5 @@
 import datetime
+import random
 from flask import (
     abort,
     escape,
@@ -64,6 +65,16 @@ def find():
     )
 
 
+def approximate_location(geometry):
+    # 'coordinates': [-121.88632860000001, 37.3382082]
+    coord = geometry['coordinates']
+    geometry['coordinates'] = [
+        coord[0] + random.uniform(-.02, .02),
+        coord[1] + random.uniform(-.02, .02),
+    ]
+    return geometry
+
+
 @pool_bp.route('/carpools/starts.geojson')
 def start_geojson():
     pools = Carpool.query
@@ -101,13 +112,26 @@ def start_geojson():
         pools = pools.order_by(func.ST_Distance(Carpool.from_point, center))
 
     features = []
+    # get the current user's confirmed carpools
+    confirmed_carpools = []
+    if current_user.get_id():
+        rides = RideRequest.query.filter(RideRequest.status == 'approved').\
+            filter(RideRequest.person_id == current_user.get_id())
+        for ride in rides:
+            confirmed_carpools.append(ride.carpool_id)
     for pool in pools:
         if pool.from_point is None:
             continue
-
+        # show real location to driver and confirmed passenger
+        geometry = mapping(to_shape(pool.from_point))
+        if pool.driver_id == current_user.get_id() or pool.id in confirmed_carpools:
+            approx_location = False
+        else:
+            approx_location = True
+            geometry = approximate_location(geometry)
         features.append({
             'type': 'Feature',
-            'geometry': mapping(to_shape(pool.from_point)),
+            'geometry': geometry,
             'id': url_for('carpool.details', uuid=pool.uuid, _external=True),
             'properties': {
                 'from_place': escape(pool.from_place),
@@ -116,6 +140,7 @@ def start_geojson():
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
                 'driver_gender': escape(pool.driver.gender),
+                'approx_location': approx_location
             },
         })
 
