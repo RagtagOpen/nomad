@@ -41,10 +41,10 @@ def login():
     return render_template('auth/login.html')
 
 
-@auth_bp.route('/logout')
+@auth_bp.route('/logout', methods=['POST'])
 def logout():
     logout_user()
-    return redirect(url_for('carpool.index'))
+    return url_for('carpool.index')
 
 
 @auth_bp.route('/authorize/<provider>')

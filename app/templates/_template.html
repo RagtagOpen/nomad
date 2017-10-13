@@ -44,6 +44,14 @@ function initMap() {
     localInitMap();
   }
 }
+
+function doLogout() {
+    $.post("{{ url_for('auth.logout') }}")
+        .done(function (data) {
+            location.href = data;
+        });
+}
+
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{config.get('GOOGLE_MAPS_API_KEY')}}&libraries=places&callback=initMap" async defer></script>
 {% if config.get('INTERCOM_KEY') %}
@@ -105,7 +113,7 @@ function initMap() {
 {% if current_user.is_authenticated %}
         <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
         <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
-        <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+        <li><a href="#" onClick="return doLogout()">Logout</a></li>
 {% else %}
         <li><a href="{{ url_for('auth.login') }}">Login</a></li>
 {% endif %}
@@ -140,7 +148,7 @@ function initMap() {
 {% if current_user.is_authenticated %}
         <ul class="nav-bar-secondary">
           <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
-          <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+          <li><a href="#" onClick="return doLogout()">Logout</a></li>
         </ul>
 {% endif %}
       </li>
