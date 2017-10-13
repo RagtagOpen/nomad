@@ -254,7 +254,9 @@ def destinations_delete(uuid):
 def _make_destination_action_email_messages(destination, verb, template_base):
     messages_to_send = []
     for carpool in destination.carpools:
-        subject = 'Carpool on {} {}'.format(carpool.leave_time, verb)
+        subject = 'Carpool on {} {}'.format(
+            carpool.leave_time.strftime(current_app.config.get('DATE_FORMAT')),
+            verb)
         people = [
             ride_request.person for ride_request in carpool.ride_requests
         ]

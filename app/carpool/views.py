@@ -1,6 +1,7 @@
 import datetime
 from flask import (
     abort,
+    current_app,
     escape,
     flash,
     jsonify,
@@ -101,6 +102,7 @@ def start_geojson():
         pools = pools.order_by(func.ST_Distance(Carpool.from_point, center))
 
     features = []
+    dt_format = current_app.config.get('DATE_FORMAT')
     for pool in pools:
         if pool.from_point is None:
             continue
@@ -115,6 +117,8 @@ def start_geojson():
                 'seats_available': pool.seats_available,
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
+                'leave_time_human': pool.leave_time.strftime(dt_format),
+                'return_time_human': pool.return_time.strftime(dt_format),
                 'driver_gender': escape(pool.driver.gender),
             },
         })
@@ -395,7 +399,8 @@ def _email_carpool_cancelled(carpool, reason):
     if not reason:
         reason = '<reason not given>'
 
-    subject = 'Carpool session on {} cancelled'.format(carpool.leave_time)
+    subject = 'Carpool session on {} cancelled'.format(
+        carpool.leave_time.strftime(current_app.config.get('DATE_FORMAT')))
 
     messages_to_send = [
         make_email_message(
@@ -435,7 +440,8 @@ def _email_driver_ride_requested(carpool, current_user):
 
 def _email_ride_status(request, subject_beginning, template_name_specifier):
     subject = '{} for carpool on {}'.format(subject_beginning,
-                                            request.carpool.leave_time)
+                                            request.carpool.leave_time.strftime(
+                                                current_app.config.get('DATE_FORMAT')))
 
     message_to_send = make_email_message(
         'carpools/email/ride_{}.html'.format(template_name_specifier),
@@ -466,14 +472,16 @@ def email_driver_rider_cancelled_request(request, carpool, current_user):
 
 def _email_driver_rider_cancelled_request(carpool, current_user):
     subject = '{} cancelled their request to ride in carpool on {}'.format(
-        current_user.name, carpool.leave_time)
+        current_user.name, carpool.leave_time.strftime(
+            current_app.config.get('DATE_FORMAT')))
 
     _email_driver(carpool, current_user, subject, 'ride_request_cancelled')
 
 
 def _email_driver_rider_cancelled_approved_request(carpool, current_user):
     subject = '{} withdrew from the carpool on {}'.format(
-        current_user.name, carpool.leave_time)
+        current_user.name, carpool.leave_time.strftime(
+            current_app.config.get('DATE_FORMAT')))
 
     _email_driver(carpool, current_user, subject,
                   'approved_ride_request_cancelled')

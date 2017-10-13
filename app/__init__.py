@@ -72,6 +72,10 @@ def create_app(config_name):
         response.headers['Server'] = 'Server'
         return response
 
+    @app.template_filter('humanize')
+    def humanize(dt):
+        return dt.strftime(app.config.get('DATE_FORMAT'))
+
     from .carpool import pool_bp
     app.register_blueprint(pool_bp)
 

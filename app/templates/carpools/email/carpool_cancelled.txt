@@ -1,7 +1,7 @@
 Hello rider,
 
 Unfortunately, the carpool session for leaving from {{carpool.from_place}}
-at {{carpool.leave_time}} has been cancelled.
+at {{carpool.leave_time | humanize }} has been cancelled.
 
 The reason given for the cancellation was: {{reason}}.
 
