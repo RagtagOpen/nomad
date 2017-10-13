@@ -140,7 +140,7 @@ function localInitMap() {
 
         <div class="two-col-layout top-border">
             <div class="two-col-column">
-                <h4>Departure time</h4>
+                <h4>Departure Date (MM/DD/YYYY)</h4>
                 {{ form.departure_date(id='departure-date', type='date') }}
                 {{ form.departure_hour(id='departure-time') }}
                 {% if form.departure_date.errors %}
@@ -152,7 +152,7 @@ function localInitMap() {
                 {% endif %}
             </div>
             <div class="two-col-column">
-                <h4>Return Time</h4>
+                <h4>Return Date (MM/DD/YYYY)</h4>
                 {{ form.return_date(id='return-date', type='date') }}
                 {{ form.return_hour(id='return-time') }}
                 {% if form.return_date.errors %}
