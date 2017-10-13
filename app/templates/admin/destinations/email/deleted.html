@@ -1,6 +1,6 @@
 <p>Hello {{person.name}},</p>
 
-<p>Unfortunately, the carpool at {{carpool.leave_time}} leaving from
+<p>Unfortunately, the carpool at {{carpool.leave_time | humanize }} leaving from
 {{carpool.from_place}} has been cancelled because the campaign deleted the
 destination {{destination.name}}.</p>
 

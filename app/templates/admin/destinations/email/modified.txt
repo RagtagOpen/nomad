@@ -1,6 +1,6 @@
 Hello {{person.name}},
 
-The campaign modified the destination for the carpool carpool at {{carpool.leave_time}} leaving from {{carpool.from_place}}.  The destination has been changed to {{destination.address}}.
+The campaign modified the destination for the carpool carpool at {{carpool.leave_time | humanize }} leaving from {{carpool.from_place}}.  The destination has been changed to {{destination.address}}.
 
 
 {% if person.id == carpool.driver_id %}

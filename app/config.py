@@ -44,6 +44,7 @@ class Config:
     }
 
     SENTRY_DSN = os.environ.get('SENTRY_DSN')
+    DATE_FORMAT = os.environ.get('DATE_FORMAT', '%a %b %-d %Y at %-I:%M %p')
 
     @staticmethod
     def init_app(app):
