@@ -90,7 +90,7 @@ function mapDataCallback(features) {
             bounds.extend(new google.maps.LatLng(geo.b.lat(), geo.b.lng()));
         }
         map.data.setStyle(function(feature) {
-            if (feature.getProperty('approximate_location')) {
+            if (feature.getProperty('is_approximate_location')) {
                 var geo = feature.getGeometry();
                 feature.circle =  new google.maps.Circle({
                     map:map,

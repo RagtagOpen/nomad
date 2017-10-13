@@ -126,9 +126,9 @@ def start_geojson():
         geometry = mapping(to_shape(pool.from_point))
         if not current_user.is_anonymous and \
             (pool.driver_id == current_user.id or pool.id in confirmed_carpools):
-            approximate_location = False
+            is_approximate_location = False
         else:
-            approximate_location = True
+            is_approximate_location = True
             geometry = approximate_location(geometry)
         features.append({
             'type': 'Feature',
@@ -141,7 +141,7 @@ def start_geojson():
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
                 'driver_gender': escape(pool.driver.gender),
-                'approximate_location': approximate_location
+                'is_approximate_location': is_approximate_location
             },
         })
 
