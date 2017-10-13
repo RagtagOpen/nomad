@@ -1,9 +1,12 @@
+import csv
+import io
 from flask import (
     current_app,
     flash,
     redirect,
     render_template,
     request,
+    Response,
     url_for,
 )
 from flask_login import current_user, login_required
@@ -25,7 +28,7 @@ from ..carpool.views import (
     cancel_carpool,
     email_driver_rider_cancelled_request,
 )
-from ..models import Destination, Person, Role, PersonRole
+from ..models import Carpool, Destination, Person, Role, PersonRole, RideRequest
 
 
 @admin_bp.route('/admin/')
@@ -143,6 +146,24 @@ def user_list():
         'admin/users/list.html',
         users=users,
     )
+
+
+@admin_bp.route('/admin/users.csv')
+@login_required
+@roles_required('admin')
+def user_list_csv():
+    drivers = Person.query.filter(Carpool.driver_id == Person.id)
+    passengers = Person.query.filter(RideRequest.status == 'approved').\
+        filter(RideRequest.person_id == Person.id)
+    output = io.BytesIO()
+    writer = csv.writer(output)
+    writer.writerow(['Nomad carpool drivers and riders'])
+    writer.writerow(['name', 'email', 'phone', 'preferred'])
+    for user in drivers.union(passengers).order_by(Person.name):
+        writer.writerow([user.name, user.email, user.phone_number,
+            user.preferred_contact_method])
+    return Response(output.getvalue(), mimetype='text/csv',
+        headers={'Content-disposition': 'attachment; filename=nomad_users.csv'})
 
 
 @admin_bp.route('/admin/destinations')
