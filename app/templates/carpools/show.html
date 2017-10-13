@@ -131,11 +131,9 @@
             <div class="two-col-layout first-child top-border">
                 <div class="two-col-column">
                     <h4>Departs</h4>
-                    <p>{{ pool.leave_time.date() }}</p>
-                    <p>{{ pool.leave_time.time() }}</p>
+                    <p>{{ pool.leave_time | humanize }}</p>
                     <h4>Returns</h4>
-                    <p>{{ pool.return_time.date() }}</p>
-                    <p>{{ pool.return_time.time() }}</p>
+                    <p>{{ pool.return_time | humanize }}</p>
                 </div>
                 <div class="two-col-column">
                     <h4>Pickup</h4>

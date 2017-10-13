@@ -6,10 +6,21 @@
 
 <h3>Users</h3>
 
-<a href="{{ url_for('admin.user_list') }}">User List</a>
+<ul class="list-group">
+    <li class="list-group-item">
+        <a href="{{ url_for('admin.user_list') }}">User List</a>
+    </li>
+    <li class="list-group-item">
+        <a href="{{ url_for('admin.user_list_csv')}}">Download drivers and riders (.csv)</a>
+    </li>
+</ul>
 
 <h3>Canned Destinations</h3>
 
-<a href="{{ url_for('admin.destinations_list') }}">Destinations List</a>
+<ul class="list-group">
+    <li class="list-group-item">
+        <a href="{{ url_for('admin.destinations_list') }}">Destinations List</a>
+    </li>
+</ul>
 
 {% endblock %}
