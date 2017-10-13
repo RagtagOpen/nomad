@@ -1,4 +1,5 @@
 import datetime
+import random
 from flask import (
     abort,
     current_app,
@@ -65,6 +66,16 @@ def find():
     )
 
 
+def approximate_location(geometry):
+    # 'coordinates': [-121.88632860000001, 37.3382082]
+    coord = geometry['coordinates']
+    geometry['coordinates'] = [
+        coord[0] + random.uniform(-.02, .02),
+        coord[1] + random.uniform(-.02, .02),
+    ]
+    return geometry
+
+
 @pool_bp.route('/carpools/starts.geojson')
 def start_geojson():
     pools = Carpool.query
@@ -111,10 +122,27 @@ def start_geojson():
         filter(riders.c.pax.is_(None) | (riders.c.pax < Carpool.max_riders))
     features = []
     dt_format = current_app.config.get('DATE_FORMAT')
+    # get the current user's confirmed carpools
+    confirmed_carpools = []
+    if not current_user.is_anonymous:
+        rides = RideRequest.query.filter(RideRequest.status == 'approved').\
+            filter(RideRequest.person_id == current_user.id)
+        for ride in rides:
+            confirmed_carpools.append(ride.carpool_id)
     for pool in pools:
+        if pool.from_point is None:
+            continue
+        # show real location to driver and confirmed passenger
+        geometry = mapping(to_shape(pool.from_point))
+        if not current_user.is_anonymous and \
+            (pool.driver_id == current_user.id or pool.id in confirmed_carpools):
+            is_approximate_location = False
+        else:
+            is_approximate_location = True
+            geometry = approximate_location(geometry)
         features.append({
             'type': 'Feature',
-            'geometry': mapping(to_shape(pool.from_point)),
+            'geometry': geometry,
             'id': url_for('carpool.details', uuid=pool.uuid, _external=True),
             'properties': {
                 'from_place': escape(pool.from_place),
@@ -125,6 +153,7 @@ def start_geojson():
                 'leave_time_human': pool.leave_time.strftime(dt_format),
                 'return_time_human': pool.return_time.strftime(dt_format),
                 'driver_gender': escape(pool.driver.gender),
+                'is_approximate_location': is_approximate_location
             },
         })
 
