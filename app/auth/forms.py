@@ -31,13 +31,6 @@ class ProfileForm(FlaskForm):
                    "Please enter a name between 3 and 80 characters long"),
         ]
     )
-    email = EmailField(
-        "Email",
-        [
-            InputRequired("Please enter your email"),
-            Email("Please enter a valid email"),
-        ]
-    )
     phone_number = TelField(
         "Phone",
         [

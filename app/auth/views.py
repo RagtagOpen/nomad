@@ -110,7 +110,6 @@ def profile():
         name=current_user.name,
         gender=current_user.gender,
         gender_self_describe=current_user.gender_self_describe,
-        email=current_user.email,
         phone_number=current_user.phone_number,
         preferred_contact=current_user.preferred_contact_method,
     )
@@ -120,7 +119,6 @@ def profile():
         current_user.gender = profile_form.gender.data
         current_user.gender_self_describe = \
             profile_form.gender_self_describe.data.strip()
-        current_user.email = profile_form.email.data
         current_user.phone_number = profile_form.phone_number.data
         current_user.preferred_contact_method = \
             profile_form.preferred_contact.data
