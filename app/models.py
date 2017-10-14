@@ -146,7 +146,7 @@ class Carpool(db.Model, UuidMixin):
 
     def get_current_user_ride_request(self):
         if current_user.is_anonymous:
-            return False
+            return None
         else:
             return self.get_ride_requests_query() \
                        .filter_by(person_id=current_user.id) \

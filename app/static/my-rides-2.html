@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<head>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+	<link rel="stylesheet" type="text/css" href="css/map-icons.css">
+	<link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+	<link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+<nav class="global-header">
+	<div class="header-left">
+		<div class="logo-container">
+			<a href="index.html"><div class="logo"></div></a>
+			<ul class="mobile-nav-bar">
+				<li><a href="#">Find a ride</a></li>
+				<li><a href="#">Give a ride</a></li>
+				<li><a href="#">About</a></li>
+				<li><a href="#">My Rides</a></li>
+  				<li><a href="#">Profile</a></li>
+  				<li><a href="#">Logout</a></li>
+  			</ul>
+		</div>
+		<form id="ride-select-form" class="header-search-bar">
+			<select>
+				<option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
+				<option value="give-ride">Give a ride</option>
+			</select>
+			<span>near</span>
+			<input type="text" name="locationQuery" id="locationQuery" placeholder="Zip code or City, State" value="21227" >
+		</form>
+	</div>
+	<ul class="nav-bar">
+		<li class="active"><a href="#">Find a ride</a></li>
+  		<li><a href="#">Give a ride</a></li>
+  		<li><a href="#">About</a></li>
+  		<li><a href="#">My Rides</a></li>
+  		<li class="nav-dropdown">
+  			<a class="arrow" href="#">Roberta</a>
+  			<ul class="nav-bar-secondary">
+  				<li><a href="#">Profile</a></li>
+  				<li><a href="#">Logout</a></li>
+  			</ul>
+  		</li>
+	</ul>
+</nav>
+
+<div class="content">
+
+	<div class="fullscreen">
+		<div class="form-page my-rides">
+			<h1>My upcoming rides</h1>
+			<div class="two-col-layout top-border">
+				<div class="two-col-column">
+					<h4>Jun 5</h4>
+					<h3>Baltimore to Chantilly</h3><p class="view-details"><a href="#">View details</a></p>
+					<p class="message success">You’re the driver of this carpool. Thanks for driving!</p>
+					<p>Departs: Sat Jun 5 (morning)</p>
+					<p>Returns: Sun Jun 6 (afternoon)</p>
+					<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+				</div>
+			</div>			
+			<div class="two-col-layout top-border">
+				<div class="two-col-column">
+					<h4>Jun 5</h4>
+					<h3>Baltimore to Chantilly</h3><p class="view-details"><a href="#">View details</a></p>
+					<p class="message pending">Your ride request is pending. We’re waiting for your driver to confirm.</p>
+					<p>Departs: Sat Jun 5 (morning)</p>
+					<p>Returns: Sun Jun 6 (afternoon)</p>
+					<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+				</div>
+			</div>
+			<div class="two-col-layout top-border">
+				<div class="two-col-column">
+					<h4>Jun 5</h4>
+					<h3>Baltimore to Chantilly</h3><p class="view-details"><a href="#">View details</a></p>
+					<p class="message success">You’re confirmed for this carpool. Have a good trip!</p>
+					<p>Departs: Sat Jun 5 (morning)</p>
+					<p>Returns: Sun Jun 6 (afternoon)</p>
+					<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+				</div>
+			</div>
+			<div class="two-col-layout top-border">
+				<div class="two-col-column">
+					<h4>Jun 5</h4>
+					<h3>Baltimore to Chantilly</h3><p class="view-details"><a href="#">View details</a></p>
+					<p class="message error">This carpool was cancelled by the driver. <a href="{{ url_for('carpool.find') }}">Try looking for another ride!</a></p>
+					<p>Departs: Sat Jun 5 (morning)</p>
+					<p>Returns: Sun Jun 6 (afternoon)</p>
+					<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+				</div>
+			</div>
+			<div class="two-col-layout top-border">
+				<div class="two-col-column">
+					<h4>Jun 5</h4>
+					<h3>Baltimore to Chantilly</h3><p class="view-details"><a href="#">View details</a></p>
+					<p class="message error">Your ride request was declined. <a href="{{ url_for('carpool.find') }}">Try looking for another ride!</a></p>
+					<p>Departs: Sat Jun 5 (morning)</p>
+					<p>Returns: Sun Jun 6 (afternoon)</p>
+					<p>Destination: Joe Candidate's Office (Chantilly, VA)</p>
+				</div>
+			</div>
+
+			<h3>You haven't joined any carpools yet!</h3>
+
+			<p>
+				<br>
+				<a href="{{ url_for('carpool.new') }}"><input class="primary" type="submit" value="Create a new carpool"></a>&nbsp;&nbsp; or &nbsp;&nbsp;<a href="{{ url_for('carpool.find') }}"><input class="primary" type="submit" value="Find a carpool to join"></a>
+			</p>
+
+		</div>
+	</div>
+
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/map-styles.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+ <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAtm9OOe24AnTe2kXGdsITXVvj1tovbsws&callback=initMap">
+    </script>
+</body>
+</html>

@@ -650,19 +650,53 @@ select:focus {
     border-color: rgb(204,68,75);
     background-color: rgba(204,68,75,.2);
 }
+.message.pending {
+    border-color: rgb(205,212,222);
+    background-color: rgba(205,212,222,.4);
+}
 .message.success::before {
 	content: url(../img/ic_error_check.png);
 	position: relative;
     margin-left: 0px;
-    margin-right: 5px;
+    margin-right: 8px;
     top: 3px;
 }
 .message.error::before {
 	content: url(../img/ic_error_x.png);
 	position: relative;
     margin-left: 2px;
-    margin-right: 7px;
+    margin-right: 8px;
     top: 3px;
+}
+.message.pending::before {
+	content: url(../img/ic_error_pending.png);
+	position: relative;
+    margin-left: 0px;
+    margin-right: 7px;
+    top: -3px;
+}
+.message a {
+	color: #333;
+}
+
+/* ===== MY RIDES ===== */
+
+.my-rides > div:nth-child(2) h4::before {
+	content: "Next ride: ";
+}
+.my-rides .message {
+	margin-top: 10px;
+}
+.my-rides h3:hover {
+	/*color: rgba(0,168,225,.6);*/
+}
+.my-rides h3 {
+	/*color: rgba(0,168,225,1);*/
+	display: inline-block;
+}
+.my-rides p.view-details {
+	display: inline-block;
+	margin-left: 12px;
 }
 
 /* MEDIA QUERIES */
