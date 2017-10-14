@@ -1,4 +1,4 @@
-{%- extends "admin/_template.html" %}
+{%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block styles %}
@@ -51,9 +51,9 @@ function initMap() {
 {% endblock %}
 
 {% block site %}
-<div class='page-header'>
+<div class="content">
+    <div class="fullscreen">
     <h1>Add a Destination</h1>
-</div>
 
 <form class='form' method='post'>
 {{ form.hidden_tag() }}
@@ -72,4 +72,6 @@ function initMap() {
     </div>
 </div>
 </form>
+</div>
+</div>
 {% endblock %}
