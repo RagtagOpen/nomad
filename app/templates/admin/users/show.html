@@ -36,6 +36,11 @@
 <a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid, role_name='admin') }}">Make admin</a>
 {% endif %}
 
+{% if user.has_roles('blocked') %}
+<a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid, role_name='blocked') }}">Unblock</a>
+{% else %}
+<a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid, role_name='blocked') }}">Block</a>
+{% endif %}
 
 <dl class="dl-horizontal">
 {% for role in user.roles %}
