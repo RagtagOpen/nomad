@@ -152,18 +152,32 @@ def user_list():
 @login_required
 @roles_required('admin')
 def user_list_csv():
-    drivers = Person.query.filter(Carpool.driver_id == Person.id)
-    passengers = Person.query.filter(RideRequest.status == 'approved').\
-        filter(RideRequest.person_id == Person.id)
-    output = io.StringIO()
+    output = io.BytesIO()
     writer = csv.writer(output)
     writer.writerow(['Nomad carpool drivers and riders'])
-    writer.writerow(['name', 'email', 'phone', 'preferred'])
-    for user in drivers.union(passengers).order_by(Person.name):
-        writer.writerow([user.name, user.email, user.phone_number,
-            user.preferred_contact_method])
+    writer.writerow(['destination', 'carpool leave time', 'carpool return time',
+                     'name', 'email', 'phone', 'preferred contact method'])
+    query = '''
+        select d.name destination, cp.leave_time leave_time,
+            cp.return_time return_time, p.name person_name, p.email email,
+            p.phone_number phone, p.preferred_contact_method contact
+        from carpools cp, destinations d, people p, riders r
+        where cp.destination_id=d.id and cp.id=r.carpool_id and
+            r.status='approved' and r.person_id=p.id
+        union
+        select d.name destination, cp.leave_time leave_time,
+            cp.return_time returntime, p.name person_name, p.email email,
+            p.phone_number phone, p.preferred_contact_method contact
+        from carpools cp, destinations d, people p
+        where cp.destination_id=d.id and cp.driver_id=p.id
+        order by destination, leave_time, person_name
+    '''
+    for row in db.engine.execute(query):
+        writer.writerow([row.destination, row.leave_time.strftime('%x %X'),
+                         row.return_time.strftime('%x %X'), row.person_name,
+                         row.email, row.phone, row.contact])
     return Response(output.getvalue(), mimetype='text/csv',
-        headers={'Content-disposition': 'attachment; filename=nomad_users.csv'})
+                    headers={'Content-disposition': 'attachment; filename=nomad_users.csv'})
 
 
 @admin_bp.route('/admin/destinations')
