@@ -73,12 +73,7 @@ class ProfileForm(FlaskForm):
         ]
     )
     gender_self_describe = StringField(
-        "Gender",
-        [
-            Optional(),
-            Length(3, 80,
-                   "Please enter a name between 3 and 80 characters long"),
-        ]
+        "Gender"
     )
     submit = SubmitField(u'Update Your Profile')
 
