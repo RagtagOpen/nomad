@@ -65,7 +65,7 @@ function localInitMap() {
         geocoder.geocode({location: marker.getPosition()}, function(results, status) {
             if (status === 'OK') {
                 if (results[0]) {
-                    $("#location-description").html(results[0].formatted_address);
+                    $("#location-description").val(results[0].formatted_address);
                 } else {
                     console.log("No reverse geocoder results found");
                 }
@@ -115,7 +115,7 @@ function localInitMap() {
             <div class="two-col-column">
                 <h4>Pickup / Dropoff Location</h4>
                 <label>Find a location on the map:</label>
-                {{ form.departure_name(id='location-seed') }}
+                <input type="text" id="location-seed"></input>
 
                 {% if form.departure_name.errors %}
                 <div>
@@ -132,7 +132,7 @@ function localInitMap() {
             </div>
             <div class="two-col-column location-explainer">
                 <p>Your carpool pickup/dropoff location will be shown to passengers as:</p>
-                <p id="location-description" class="bold"></p>
+                {{ form.departure_name(id='location-description') }}
                 <br>
                 <label class="destructive">We strongly recommend choosing a landmark or other public place as your pickup / dropoff location. Please use your best judgment to ensure everyone’s safety!</label>
             </div>
