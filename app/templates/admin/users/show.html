@@ -1,8 +1,15 @@
-{%- extends "admin/_template.html" %}
+{%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
 {{ super() }}
+<div class="content">
+    <div class="fullscreen">
+    <h4><a href="{{ url_for('admin.admin_index') }}">Admin</a>&nbsp;&raquo;&nbsp;
+        <a href="{{ url_for('admin.user_list') }}">Users</a>&nbsp;&raquo;&nbsp;
+        Edit User
+    </h4>
+    <h1>{{ user.name or 'Unnamed User' }}</h1>
 
 {%- with messages = get_flashed_messages(with_categories=True) %}
 {%- if messages %}
@@ -13,8 +20,6 @@
 </div>
 {%- endif %}
 {%- endwith %}
-
-<h3>User</h3>
 
 <dl class="dl-horizontal">
     <dt>Created At</dt>
@@ -77,4 +82,6 @@
 
 <a class="btn btn-danger" href="{{ url_for('admin.user_purge', uuid=user.uuid) }}">Purge user</a>
 
+</div>
+</div>
 {% endblock %}
