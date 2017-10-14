@@ -232,11 +232,64 @@ def details(uuid):
     return render_template('carpools/show.html', pool=carpool)
 
 
-@pool_bp.route('/carpools/<uuid>/embed')
-def details_embed(uuid):
+@pool_bp.route('/carpools/<uuid>/edit', methods=['GET', 'POST'])
+@login_required
+def edit(uuid):
     carpool = Carpool.uuid_or_404(uuid)
 
-    return render_template('carpools/show_embed.html', pool=carpool)
+    if current_user != carpool.driver:
+        flash("You cannot edit a carpool you didn't create.", 'error')
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
+
+    geometry = mapping(to_shape(carpool.from_point))
+
+    driver_form = DriverForm(
+        destination=carpool.destination.uuid,
+        departure_lat=geometry['coordinates'][1],
+        departure_lon=geometry['coordinates'][0],
+        departure_name=carpool.from_place,
+        departure_date=carpool.leave_time.date(),
+        departure_hour=carpool.leave_time.time().hour,
+        return_date=carpool.return_time.date(),
+        return_hour=carpool.return_time.time().hour,
+        vehicle_description=carpool.vehicle_description,
+        vehicle_capacity=carpool.max_riders,
+        notes=carpool.notes,
+    )
+
+    visible_destinations = Destination.find_all_visible().all()
+
+    driver_form.destination.choices = [
+        (str(r.uuid), r.name) for r in visible_destinations
+    ]
+    driver_form.destination.choices.insert(0, ('', "Select one..."))
+
+    if driver_form.validate_on_submit():
+        dest = Destination.first_by_uuid(driver_form.destination.data)
+
+        carpool.from_place = driver_form.departure_name.data
+        carpool.from_point = 'SRID=4326;POINT({} {})'.format(
+            driver_form.departure_lon.data,
+            driver_form.departure_lat.data)
+        carpool.destination_id = dest.id
+        carpool.leave_time = driver_form.departure_datetime
+        carpool.return_time = driver_form.return_datetime
+        carpool.max_riders = driver_form.vehicle_capacity.data
+        carpool.vehicle_description = driver_form.vehicle_description.data
+        carpool.notes = driver_form.notes.data
+        carpool.driver_id = current_user.id
+        db.session.add(carpool)
+        db.session.commit()
+
+        flash("Your carpool has been updated.", 'success')
+
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
+
+    return render_template(
+        'carpools/edit.html',
+        form=driver_form,
+        destinations=visible_destinations,
+    )
 
 
 @pool_bp.route('/carpools/<carpool_uuid>/newrider', methods=['GET', 'POST'])

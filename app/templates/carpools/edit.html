@@ -1,0 +1,220 @@
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+        map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+        map.setZoom(11);
+    });
+}
+
+$("#location-seed").on('keydown', function(e) {
+    if (e.keyCode == 13) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+});
+
+var map = null;
+function localInitMap() {
+    var geocoder = new google.maps.Geocoder;
+    var position = {
+        lat: parseFloat($("#departure_lat").val()),
+        lng: parseFloat($("#departure_lon").val())
+    };
+
+    map = new google.maps.Map(document.getElementById('mini-map'), {
+        center: position,
+        zoom: 13,
+        styles: mapStyleDiscreet
+    });
+    var marker = new google.maps.Marker({
+        position: position,
+        draggable: true,
+        map: map,
+    });
+    var from_input = document.getElementById('location-seed');
+    var from_options = {
+        componentRestrictions: {country: 'us'}
+    };
+    var from_ac = new google.maps.places.Autocomplete(from_input, from_options);
+    from_ac.addListener('place_changed', function() {
+        var place = from_ac.getPlace();
+
+        if (!place.geometry) {
+            window.alert("Nothing found there");
+            return false;
+        }
+
+        marker.setPosition(place.geometry.location);
+        updateMarkerLocationDescription();
+
+        if (place.geometry.viewport) {
+            map.fitBounds(place.geometry.viewport);
+        } else {
+            map.setCenter(place.geometry.location);
+            map.setZoom(17);  // Why 17? Because it looks good.
+        }
+    });
+    marker.addListener('dragend', function() {
+        updateMarkerLocationDescription();
+    });
+
+    function updateMarkerLocationDescription() {
+        $("#departure_lat").val(marker.getPosition().lat());
+        $("#departure_lon").val(marker.getPosition().lng());
+
+        geocoder.geocode({location: marker.getPosition()}, function(results, status) {
+            if (status === 'OK') {
+                if (results[0]) {
+                    $("#location-description").val(results[0].formatted_address);
+                } else {
+                    console.log("No reverse geocoder results found");
+                }
+            } else {
+                console.log("Reverse geocode failed because: " + status);
+            }
+        });
+    }
+}
+
+</script>
+{% endblock %}
+
+{% block site %}
+<div class="fullscreen">
+    {%- with messages = get_flashed_messages(with_categories=True) %}
+    {%- if messages %}
+    <div class="error-messages">
+        {% for cat, msg in messages %}
+        <div class="message {{ cat }}">{{ msg }}</div>
+        {% endfor %}
+    </div>
+    {%- endif %}
+    {%- endwith %}
+
+    {{ form.errors }}
+
+    <form method="post" class="form-page">
+        {{ form.hidden_tag() }}
+        <h4>Edit your carpool</h4>
+        <h1>Update carpool details</h1>
+        <p>Any riders that have joined your carpool will be notified that you updated your carpool.</p>
+
+        <div class="two-col-layout first-child top-border">
+            <div class="two-col-column">
+                <h4>Destination</h4>
+                {{ form.destination() }}
+                {% if form.destination.errors %}
+                <div>
+                {% for err in form.destination.errors %}
+                <label class="destructive">{{ err }}</label>
+                {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="two-col-layout top-border">
+            <div class="two-col-column">
+                <h4>Pickup / Dropoff Location</h4>
+                <label>Find a location on the map:</label>
+                <input type="text" id="location-seed"></input>
+
+                {% if form.departure_name.errors %}
+                <div>
+                {% for err in form.departure_name.errors %}
+                <label class="destructive">{{ err }}</label>
+                {% endfor %}
+                </div>
+                {% endif %}
+
+                <label>Then drag the pin to your desired carpool pickup location:</label>
+                <div id="mini-map"></div>
+                {{ form.departure_lat() }}
+                {{ form.departure_lon() }}
+            </div>
+            <div class="two-col-column location-explainer">
+                <p>Your carpool pickup/dropoff location will be shown to passengers as:</p>
+                {{ form.departure_name(id='location-description') }}
+                <br>
+                <label class="destructive">We strongly recommend choosing a landmark or other public place as your pickup / dropoff location. Please use your best judgment to ensure everyone’s safety!</label>
+            </div>
+        </div>
+
+        <div class="two-col-layout top-border">
+            <div class="two-col-column">
+                <h4>Departure Date (MM/DD/YYYY)</h4>
+                {{ form.departure_date(id='departure-date', type='date') }}
+                {{ form.departure_hour(id='departure-time') }}
+                {% if form.departure_date.errors %}
+                <div>
+                {% for err in form.departure_date.errors %}
+                <label class="destructive">{{ err }}</label>
+                {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="two-col-column">
+                <h4>Return Date (MM/DD/YYYY)</h4>
+                {{ form.return_date(id='return-date', type='date') }}
+                {{ form.return_hour(id='return-time') }}
+                {% if form.return_date.errors %}
+                <div>
+                {% for err in form.return_date.errors %}
+                <label class="destructive">{{ err }}</label>
+                {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="two-col-layout top-border">
+            <div class="two-col-column">
+                <h4>Vehicle Description</h4>
+                {{ form.vehicle_description(id='vehicle-desc', placeholder='e.g. Black Honda Accord') }}
+                <label>This will only be shown to passengers once you accept them into your carpool.</label>
+                {% if form.vehicle_description.errors %}
+                <div>
+                {% for err in form.vehicle_description.errors %}
+                <label class="destructive">{{ err }}</label>
+                {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="two-col-column">
+                <h4>Number of Passengers</h4>
+                {{ form.vehicle_capacity(id='vehicle-capacity') }}
+                <label>Not including yourself.</label>
+                {% if form.vehicle_capacity.errors %}
+                <div>
+                {% for err in form.vehicle_capacity.errors %}
+                <label class="destructive">{{ err }}</label>
+                {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="top-border">
+            <h4>Additional Notes to Passengers</h4>
+            {{ form.notes(class='textarea-notes', placeholder='e.g. Are you flexible on departure time? For passengers who may have with allergies, do you ever smoke or have animals in the car?') }}
+            {% if form.notes.errors %}
+            <div>
+            {% for err in form.notes.errors %}
+            <label class="destructive">{{ err }}</label>
+            {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="two-col-layout top-border right-align">
+            <input class="primary" type="submit" value="Create new carpool">
+        </div>
+    </form>
+</div>
+
+{% endblock %}
