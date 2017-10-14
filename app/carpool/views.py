@@ -233,8 +233,13 @@ def details(uuid):
 
 
 @pool_bp.route('/carpools/<uuid>/edit', methods=['GET', 'POST'])
+@login_required
 def edit(uuid):
     carpool = Carpool.uuid_or_404(uuid)
+
+    if current_user != carpool.driver:
+        flash("You cannot edit a carpool you didn't create.", 'error')
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
     geometry = mapping(to_shape(carpool.from_point))
 
