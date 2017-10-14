@@ -155,7 +155,7 @@ def user_list_csv():
     drivers = Person.query.filter(Carpool.driver_id == Person.id)
     passengers = Person.query.filter(RideRequest.status == 'approved').\
         filter(RideRequest.person_id == Person.id)
-    output = io.BytesIO()
+    output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(['Nomad carpool drivers and riders'])
     writer.writerow(['name', 'email', 'phone', 'preferred'])
