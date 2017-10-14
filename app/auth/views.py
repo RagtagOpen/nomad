@@ -12,7 +12,7 @@ from six.moves.urllib.parse import urlparse, urljoin
 from . import auth_bp
 from .forms import ProfileForm, ProfileDeleteForm
 from .oauth import OAuthSignIn
-from .. import csrf, db, sentry
+from .. import db, sentry
 from ..models import Person
 from ..carpool.views import email_driver_rider_cancelled_request, cancel_carpool
 
@@ -33,7 +33,6 @@ def get_redirect_target():
 
 
 @auth_bp.route('/login')
-@csrf.exempt
 def login():
     next_url = request.args.get('next')
     if next_url and is_safe_url(next_url):
@@ -49,7 +48,6 @@ def logout():
 
 
 @auth_bp.route('/authorize/<provider>')
-@csrf.exempt
 def oauth_authorize(provider):
     if not current_user.is_anonymous:
         return redirect(url_for('carpool.index'))
@@ -58,7 +56,6 @@ def oauth_authorize(provider):
 
 
 @auth_bp.route('/callback/<provider>')
-@csrf.exempt
 def oauth_callback(provider):
     if not current_user.is_anonymous:
         return redirect(url_for('carpool.index'))
