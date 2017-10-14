@@ -582,6 +582,13 @@ select:focus {
 	display: inline;
 	margin-top: 10px;
 }
+.form-page .left-button {
+    float: left;
+    margin-right: 5px;
+}
+.form-page .carpool-control-button {
+    padding: 0px 2px;
+}
 .two-col-layout {
 	width: 100%;
 	display: -webkit-box;
