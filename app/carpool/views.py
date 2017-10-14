@@ -393,6 +393,7 @@ def modify_ride_request(carpool_uuid, request_uuid, action):
 
     return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
+
 @pool_bp.route('/carpools/<uuid>/cancel', methods=['GET', 'POST'])
 @login_required
 def cancel(uuid):
