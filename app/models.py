@@ -55,6 +55,14 @@ class Role(db.Model):
     name = db.Column(db.String(24))
     description = db.Column(db.String(120))
 
+    @classmethod
+    def first_by_name(clz, name):
+        return clz.query.filter_by(name=name).first()
+
+    @classmethod
+    def first_by_name_or_404(clz, name):
+        return clz.query.filter_by(name=name).first_or_404()
+
 
 class PersonRole(db.Model):
     __tablename__ = 'people_roles'

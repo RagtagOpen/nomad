@@ -111,20 +111,20 @@ def user_purge(uuid):
     )
 
 
-@admin_bp.route('/admin/users/<user_uuid>/role/<role_name>/toggle')
+@admin_bp.route('/admin/users/<user_uuid>/togglerole', methods=['POST'])
 @login_required
 @roles_required('admin')
-def user_toggle_role(user_uuid, role_name):
+def user_toggle_role(user_uuid):
     user = Person.uuid_or_404(user_uuid)
-    role = Role.query.filter_by(name=role_name).first_or_404()
+    role = Role.first_by_name_or_404(request.form.get('role_name'))
 
     pr = PersonRole.query.filter_by(person_id=user.id, role_id=role.id).first()
     if pr:
         db.session.delete(pr)
-        flash('Role {} removed from this user'.format(role.name))
+        flash('Role {} removed from this user'.format(role.name), 'success')
     else:
         user.roles.append(role)
-        flash('Role {} added to this user'.format(role.name))
+        flash('Role {} added to this user'.format(role.name), 'success')
     db.session.commit()
 
     return redirect(url_for('admin.user_show', uuid=user.uuid))
