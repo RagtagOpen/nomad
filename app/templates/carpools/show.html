@@ -30,7 +30,10 @@
                     <p>You are confirmed for this carpool!</p>
                 </div>
                 <div class="two-col-column">
-                    <a class="btn btn-danger" href="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}">Cancel your seat in carpool</a>
+                    <form name="cancel_rider" action="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button class="left-button carpool-control-button" type="submit" name="cancel_button">Cancel your seat in carpool</button>
+                    </form>
                 </div>
             </div>
 
@@ -40,7 +43,10 @@
                     <p>Your ride request is pending.</p>
                 </div>
                 <div class="two-col-column">
-                    <a class="btn btn-danger" href="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}">Cancel your seat request</a>
+                    <form name="cancel_rider" action="{{ url_for('carpool.modify_ride_request', carpool_uuid=pool.uuid, request_uuid=current_user_ride_request.uuid, action='cancel') }}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button class="left-button carpool-control-button" type="submit" name="cancel_button">Cancel your seat request</button>
+                    </form>
                 </div>
             </div>
 
@@ -76,29 +82,25 @@
                     <strong>Waiting for your response&nbsp;</strong>
                     </div>
                         {% if pool.seats_available %}
-                        <form name="approve_rider" action="{{ url_for('carpool.modify_ride_request', action='approve',
-                                                                        carpool_uuid=pool.uuid,
-                                                                        request_uuid=request.uuid) }}" method="POST">
+                        <form name="approve_rider" action="{{ url_for('carpool.modify_ride_request', action='approve', carpool_uuid=pool.uuid, request_uuid=request.uuid) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <button class="left-button carpool-control-button" type="submit" name="approve_button">Approve</button>
                         </form>
                         {% endif %}
-                        <form name="deny_rider" action="{{ url_for('carpool.modify_ride_request', action='deny',
-                                                                        carpool_uuid=pool.uuid,
-                                                                        request_uuid=request.uuid) }}" method="POST">
+                        <form name="deny_rider" action="{{ url_for('carpool.modify_ride_request', action='deny', carpool_uuid=pool.uuid, request_uuid=request.uuid) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <button class="carpool-control-button" type="submit" name="deny_button">Deny</button>
                         </form>
                     {%- elif request.status == 'approved' %}
                     <strong>You approved their request&nbsp;</strong>
-                        <form name="deny_approved_rider" action="{{ url_for('carpool.modify_ride_request', action='deny',
-                                                                        carpool_uuid=pool.uuid,
-                                                                        request_uuid=request.uuid) }}" method="POST">
+                        <form name="deny_approved_rider" action="{{ url_for('carpool.modify_ride_request', action='deny', carpool_uuid=pool.uuid, request_uuid=request.uuid) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <button class="carpool-control-button" type="submit" name="deny_button">Deny</button>
                         </form>
                     {%- elif request.status == 'denied' %}
                     <strong>You denied their request&nbsp;</strong>
-                        <form name="approve_denied_rider" action="{{ url_for('carpool.modify_ride_request', action='approve',
-                                                                        carpool_uuid=pool.uuid,
-                                                                        request_uuid=request.uuid) }}" method="POST">
+                        <form name="approve_denied_rider" action="{{ url_for('carpool.modify_ride_request', action='approve', carpool_uuid=pool.uuid, request_uuid=request.uuid) }}" method="POST">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                             <button class="carpool-control-button" type="submit" name="approve_button">Approve</button>
                         </form>
                     {%- endif %}
