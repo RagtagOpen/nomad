@@ -1,8 +1,15 @@
-import logging
-from flask import Flask, g, render_template
+from flask import (
+    Flask,
+    current_app,
+    flash,
+    g,
+    redirect,
+    render_template,
+    url_for
+)
 from flask_bootstrap import Bootstrap
 from flask_caching import Cache
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -84,5 +91,14 @@ def create_app(config_name):
 
     from .admin import admin_bp
     app.register_blueprint(admin_bp)
+
+    @app.before_request
+    def block_handling():
+        """ Log out a user that's blocked and send them to the index page. """
+        if not current_user.is_anonymous and current_user.has_roles('blocked'):
+            flash("There was a problem with your login.", 'error')
+            current_app.logger.warn("Logged out blocked user %s",
+                                    current_user.id)
+            return redirect(url_for('auth.logout'))
 
     return app
