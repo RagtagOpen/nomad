@@ -29,7 +29,7 @@ from .forms import (
     RiderForm,
 )
 from ..models import Carpool, Destination, RideRequest
-from .. import csrf, db
+from .. import db
 
 
 @pool_bp.route('/robots.txt')
