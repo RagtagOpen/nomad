@@ -14,6 +14,7 @@
             <th>Gender</th>
             <th>Phone</th>
             <th>Admin?</th>
+            <th>Blocked?</th>
         </tr>
     </thead>
     <tbody id='search-results'>
@@ -24,6 +25,7 @@
             <td>{{ user.gender }}</td>
             <td>{{ user.phone }}</td>
             <td>{{ user.has_roles('admin') }}</td>
+            <td>{{ user.has_roles('blocked') }}</td>
         </tr>
 {% endfor %}
     </tbody>

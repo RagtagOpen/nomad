@@ -87,6 +87,13 @@ def oauth_callback(provider):
         # ...and after they update their profile go to the index
         session['next'] = url_for('carpool.index')
 
+    if user.has_roles('blocked'):
+        session.pop('next', None)
+        flash("There was a problem logging you in.", 'error')
+        current_app.logger.warn("Prevented blocked user %s from logging in",
+                                current_user.id)
+        return redirect(url_for('carpool.index'))
+
     login_user(user, True)
 
     next_url = (next_url or
