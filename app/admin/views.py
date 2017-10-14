@@ -330,29 +330,19 @@ def _email_destination_action(dest, verb, template_base):
         send_emails(messages_to_send)
 
 
-@admin_bp.route('/admin/destinations/<uuid>/hide')
+@admin_bp.route('/admin/destinations/<uuid>/togglehidden', methods=['POST'])
 @login_required
 @roles_required('admin')
-def destinations_hide(uuid):
+def destinations_toggle_hidden(uuid):
     dest = Destination.uuid_or_404(uuid)
 
-    dest.hidden = True
+    dest.hidden = not dest.hidden
     db.session.add(dest)
     db.session.commit()
 
-    flash("Your destination was hidden", 'success')
-    return redirect(url_for('admin.destinations_show', uuid=uuid))
+    if dest.hidden:
+        flash("Your destination was hidden", 'success')
+    else:
+        flash("Your destination was unhidden", 'success')
 
-
-@admin_bp.route('/admin/destinations/<uuid>/unhide')
-@login_required
-@roles_required('admin')
-def destinations_unhide(uuid):
-    dest = Destination.uuid_or_404(uuid)
-
-    dest.hidden = False
-    db.session.add(dest)
-    db.session.commit()
-
-    flash("Your destination was unhidden", 'success')
     return redirect(url_for('admin.destinations_show', uuid=uuid))

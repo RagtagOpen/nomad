@@ -58,12 +58,35 @@ function initMap() {
 {% endblock %}
 
 {% block site %}
-<div class='page-header'>
-    <h1>Edit {{ dest.name }}</h1>
+<div class="content">
+    <div class="fullscreen">
+
+{%- with messages = get_flashed_messages(with_categories=True) %}
+{%- if messages %}
+<div class="error-messages">
+    {% for cat, msg in messages %}
+    <div class="message {{ cat }}">{{ msg }}</div>
+    {% endfor %}
 </div>
+{%- endif %}
+{%- endwith %}
+
+    <h4><a href="{{ url_for('admin.admin_index') }}">Admin</a>&nbsp;&raquo;&nbsp;
+        <a href="{{ url_for('admin.destinations_list') }}">Destinations</a>&nbsp;&raquo;&nbsp;
+        Edit Destination
+    </h4>
+    <h1>{{ dest.name }}</h1>
 
 <p>
     <a class="btn btn-default" href="{{ url_for('admin.destinations_delete', uuid=dest.uuid) }}">Delete This Destination</a>
+    <form method="POST" action="{{ url_for('admin.destinations_toggle_hidden', uuid=dest.uuid) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        {% if dest.hidden %}
+        <button class="btn btn-primary" type="submit" name="toggle_button">Unhide Destination</button>
+        {% else %}
+        <button class="btn btn-primary" type="submit" name="toggle_button">Hide Destination</button>
+        {% endif %}
+    </form>
 </p>
 
 <form class='form' method='post'>
@@ -99,4 +122,6 @@ function initMap() {
         </div>
     </div>
 </form>
+</div>
+</div>
 {% endblock %}
