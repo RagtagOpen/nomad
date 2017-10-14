@@ -291,8 +291,6 @@ def new_rider(carpool_uuid):
 def modify_ride_request(carpool_uuid, request_uuid, action):
     carpool = Carpool.uuid_or_404(carpool_uuid)
     request = RideRequest.uuid_or_404(request_uuid)
-    carpool = Carpool.uuid_or_404(carpool_uuid)
-    request = RideRequest.uuid_or_404(request_uuid)
 
     user_is_driver = (current_user.id == carpool.driver_id)
     user_is_rider = (current_user.id == request.person_id)
