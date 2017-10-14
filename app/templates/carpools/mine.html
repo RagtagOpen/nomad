@@ -11,29 +11,29 @@
 {% for carpool in carpools %}
             <div class="two-col-layout top-border">
                 <div class="two-col-column">
-                    <h4>{{ pool.leave_time | humanize }}</h4>
-                    <h3>{{ pool.from_place }} to {{ pool.destination.name }}</h3><p class="view-details"><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">View details</a></p>
+                    <h4>{{ carpool.leave_time | humanize }}</h4>
+                    <h3>{{ carpool.from_place }} to {{ carpool.destination.name }}</h3><p class="view-details"><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">View details</a></p>
 
                 {% if current_user_ride_request and current_user_ride_request.status == 'approved'  %}
                     <p class="message success">You’re confirmed for this carpool. Have a good trip!</p>
 
                 <!-- this is not the right logic for a cancalled ride -->
-                {% if current_user_ride_request and current_user_ride_request.status == 'cancelled'  %}
+                {% elif current_user_ride_request and current_user_ride_request.status == 'cancelled'  %}
                     <p class="message error">This carpool was cancelled by the driver. <a href="{{ url_for('carpool.find') }}">Try looking for another ride!</a></p>
 
                 {% elif current_user_ride_request %}
                     <p class="message pending">Your ride request is pending. We’re waiting for your driver to confirm.</p>
 
-                {% elif pool.current_user_is_driver %}
+                {% elif carpool.current_user_is_driver %}
                     <p class="message success">You’re the driver of this carpool. Thanks for driving!</p>
 
                 {%- endif %}
 
-                    <p>Departs: {{ pool.leave_time | humanize }}</p>
-                    <p>Returns: {{ pool.return_time | humanize }}</p>
-                    <p>Destination: { pool.destination.name }}</p>
+                    <p>Departs: {{ carpool.leave_time | humanize }}</p>
+                    <p>Returns: {{ carpool.return_time | humanize }}</p>
+                    <p>Destination: {{ carpool.destination.name }}</p>
                 </div>
-            </div>          
+            </div>
 {% else %}
             <h3>You haven't joined any carpools yet!</h3>
             <p>
