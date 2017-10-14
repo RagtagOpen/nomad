@@ -76,33 +76,29 @@
                     <strong>Waiting for your response&nbsp;</strong>
                     </div>
                         {% if pool.seats_available %}
-                        <form name="approve_rider" action="{{ url_for('carpool.post_modify_ride_request') }}" method="POST">
-                            <input type="hidden" name="carpool_uuid" value="{{ pool.uuid }}"></input>
-                            <input type="hidden" name="request_uuid" value="{{ request.uuid }}"></input>
-                            <input type="hidden" name="action" value="approve"></input>
+                        <form name="approve_rider" action="{{ url_for('carpool.modify_ride_request', action='approve',
+                                                                        carpool_uuid=pool.uuid,
+                                                                        request_uuid=request.uuid) }}" method="POST">
                             <button class="left-button carpool-control-button" type="submit" name="approve_button">Approve</button>
                         </form>
                         {% endif %}
-                        <form name="deny_rider" action="{{ url_for('carpool.post_modify_ride_request') }}" method="POST">
-                            <input type="hidden" name="carpool_uuid" value="{{ pool.uuid }}"></input>
-                            <input type="hidden" name="request_uuid" value="{{ request.uuid }}"></input>
-                            <input type="hidden" name="action" value="deny"></input>
+                        <form name="deny_rider" action="{{ url_for('carpool.modify_ride_request', action='deny',
+                                                                        carpool_uuid=pool.uuid,
+                                                                        request_uuid=request.uuid) }}" method="POST">
                             <button class="carpool-control-button" type="submit" name="deny_button">Deny</button>
                         </form>
                     {%- elif request.status == 'approved' %}
                     <strong>You approved their request&nbsp;</strong>
-                        <form name="deny_approved_rider" action="{{ url_for('carpool.post_modify_ride_request') }}" method="POST">
-                            <input type="hidden" name="carpool_uuid" value="{{ pool.uuid }}"></input>
-                            <input type="hidden" name="request_uuid" value="{{ request.uuid }}"></input>
-                            <input type="hidden" name="action" value="deny"></input>
+                        <form name="deny_approved_rider" action="{{ url_for('carpool.modify_ride_request', action='deny',
+                                                                        carpool_uuid=pool.uuid,
+                                                                        request_uuid=request.uuid) }}" method="POST">
                             <button class="carpool-control-button" type="submit" name="deny_button">Deny</button>
                         </form>
                     {%- elif request.status == 'denied' %}
                     <strong>You denied their request&nbsp;</strong>
-                        <form name="approve_denied_rider" action="{{ url_for('carpool.post_modify_ride_request') }}" method="POST">
-                            <input type="hidden" name="carpool_uuid" value="{{ pool.uuid }}"></input>
-                            <input type="hidden" name="request_uuid" value="{{ request.uuid }}"></input>
-                            <input type="hidden" name="action" value="approve"></input>
+                        <form name="approve_denied_rider" action="{{ url_for('carpool.modify_ride_request', action='approve',
+                                                                        carpool_uuid=pool.uuid,
+                                                                        request_uuid=request.uuid) }}" method="POST">
                             <button class="carpool-control-button" type="submit" name="approve_button">Approve</button>
                         </form>
                     {%- endif %}

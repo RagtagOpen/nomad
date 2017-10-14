@@ -285,7 +285,12 @@ def new_rider(carpool_uuid):
     return render_template('carpools/add_rider.html', form=rider_form)
 
 
-def do_modify_ride_request(carpool_uuid, request_uuid, action):
+@pool_bp.route('/carpools/<carpool_uuid>/request/<request_uuid>/<action>',
+               methods=['GET','POST'])
+@login_required
+def modify_ride_request(carpool_uuid, request_uuid, action):
+    carpool = Carpool.uuid_or_404(carpool_uuid)
+    request = RideRequest.uuid_or_404(request_uuid)
     carpool = Carpool.uuid_or_404(carpool_uuid)
     request = RideRequest.uuid_or_404(request_uuid)
 
@@ -389,22 +394,6 @@ def do_modify_ride_request(carpool_uuid, request_uuid, action):
         flash("You can't do that to the ride request.", "error")
 
     return redirect(url_for('carpool.details', uuid=carpool.uuid))
-
-
-@pool_bp.route('/carpools/<carpool_uuid>/request/<request_uuid>/<action>',
-               methods=['GET'])
-@login_required
-def modify_ride_request(carpool_uuid, request_uuid, action):
-    carpool = Carpool.uuid_or_404(carpool_uuid)
-    request = RideRequest.uuid_or_404(request_uuid)
-    do_modify_ride_request(carpool_uuid, request_uuid, action)
-
-@pool_bp.route('/carpools/post_modify_ride_request',
-               methods=['POST'])
-@login_required
-def post_modify_ride_request():
-    do_modify_ride_request(request.form['carpool_uuid'], request.form['request_uuid'], request.form['action'])
-
 
 @pool_bp.route('/carpools/<uuid>/cancel', methods=['GET', 'POST'])
 @login_required
