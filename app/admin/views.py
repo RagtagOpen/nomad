@@ -152,11 +152,12 @@ def user_list():
 @login_required
 @roles_required('admin')
 def user_list_csv():
-    output = io.BytesIO()
+    output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(['Nomad carpool drivers and riders'])
     writer.writerow(['destination', 'carpool leave time', 'carpool return time',
                      'name', 'email', 'phone', 'preferred contact method'])
+
     query = '''
         select d.name destination, cp.leave_time leave_time,
             cp.return_time return_time, p.name person_name, p.email email,
@@ -173,11 +174,23 @@ def user_list_csv():
         order by destination, leave_time, person_name
     '''
     for row in db.engine.execute(query):
-        writer.writerow([row.destination, row.leave_time.strftime('%x %X'),
-                         row.return_time.strftime('%x %X'), row.person_name,
-                         row.email, row.phone, row.contact])
-    return Response(output.getvalue(), mimetype='text/csv',
-                    headers={'Content-disposition': 'attachment; filename=nomad_users.csv'})
+        writer.writerow([
+            row.destination,
+            row.leave_time.strftime('%x %X'),
+            row.return_time.strftime('%x %X'),
+            row.person_name,
+            row.email,
+            row.phone,
+            row.contact
+        ])
+
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={
+            'Content-disposition': 'attachment; filename=nomad_users.csv'
+        }
+    )
 
 
 @admin_bp.route('/admin/destinations')
