@@ -286,7 +286,7 @@ def new_rider(carpool_uuid):
 
 
 @pool_bp.route('/carpools/<carpool_uuid>/request/<request_uuid>/<action>',
-               methods=['GET','POST'])
+               methods=['POST'])
 @login_required
 def modify_ride_request(carpool_uuid, request_uuid, action):
     carpool = Carpool.uuid_or_404(carpool_uuid)
