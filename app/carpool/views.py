@@ -39,7 +39,7 @@ def robotstxt():
     return resp
 
 
-@pool_bp.route('/', methods=['GET', 'POST'])
+@pool_bp.route('/')
 def index():
     return render_template('index.html')
 
