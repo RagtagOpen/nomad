@@ -6,6 +6,7 @@ from wtforms import (
 )
 from wtforms.validators import (
     InputRequired,
+    Length,
 )
 
 
@@ -14,12 +15,16 @@ class DestinationForm(FlaskForm):
         "Name",
         [
             InputRequired("Please give this destination a name"),
+            Length(3, 80, "Please enter a name between "
+                          "3 and 80 characters long"),
         ]
     )
     address = StringField(
         "Address",
         [
             InputRequired("An address is required"),
+            Length(3, 300, "Please enter an address between "
+                           "3 and 300 characters long"),
         ]
     )
     destination_lat = HiddenField()
