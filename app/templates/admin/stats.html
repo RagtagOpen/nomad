@@ -1,0 +1,14 @@
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+<div class="content">
+    <div class="fullscreen">
+        <h4><a href="{{ url_for('admin.admin_index')}}">Admin</a> Stats</h4>
+
+        <p class="lead">Nomad has matched <span class="badge">{{ ride_request_count_approved }}</span> riders with <span class="badge">{{ carpool_count }}</span> carpools driven by <span class="badge">{{ driver_count }}</span> volunteers traveling to <span class="badge">{{ destination_count }}</span> destinations.</p>
+        <p class="lead"><span class="badge">{{ ride_request_count_requested }}</span> riders are currently waiting for a ride.</p>
+
+    </div>
+</div>
+{% endblock %}
