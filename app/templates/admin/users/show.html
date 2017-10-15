@@ -47,39 +47,49 @@
 <h3>Roles</h3>
 
 <div>
+    <p>
 {% if user.has_roles('admin') %}
+    User <strong>is</strong> an admin.
     {% if user != current_user %}
     <form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input type="hidden" name="role_name" value="admin"/>
         <button class="btn btn-primary" type="submit" name="toggle_button">Remove Admin</button>
     </form>
+    {% else %}
+    You cannot remove admin from yourself.
     {% endif %}
 {% else %}
+    User <strong>is not</strong> an admin.
     <form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input type="hidden" name="role_name" value="admin"/>
         <button class="btn btn-primary" type="submit" name="toggle_button">Make Admin</button>
     </form>
 {% endif %}
-</div>
+    </p>
 
-<div>
+    <p>
 {% if user.has_roles('blocked') %}
-    {% if user != current_user %}
+    User <strong>is</strong> blocked.
     <form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input type="hidden" name="role_name" value="blocked"/>
         <button class="btn btn-primary" type="submit" name="toggle_button">Unblock</button>
     </form>
-    {% endif %}
 {% else %}
+    User <strong>is not</strong> blocked.
+    {% if user != current_user %}
     <form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <input type="hidden" name="role_name" value="blocked"/>
         <button class="btn btn-primary" type="submit" name="toggle_button">Block</button>
     </form>
+    {% else %}
+    You cannot block yourself.
+    {% endif %}
 {% endif %}
+    </p>
 </div>
 
 <h3>Purge</h3>
