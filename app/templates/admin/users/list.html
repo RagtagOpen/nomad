@@ -25,7 +25,7 @@
         <tr>
             <td><a href="{{ url_for('admin.user_show', uuid=user.uuid) }}">{{ user.email }}</a></td>
             <td>{{ user.name }}</a></td>
-            <td>{{ user.gender }}</td>
+            <td>{{ user.gender_string() }}</td>
             <td>{{ user.phone }}</td>
             <td>{{ user.has_roles('admin') }}</td>
             <td>{{ user.has_roles('blocked') }}</td>
