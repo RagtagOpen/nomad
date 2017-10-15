@@ -102,7 +102,7 @@ class Person(UserMixin, db.Model, UuidMixin):
 
     def gender_string(self):
         result = self.gender
-        if self.gender == 'self-describe':
+        if self.gender == 'Self-described':
             result += ' as {}'.format(self.gender_self_describe)
         return result
 

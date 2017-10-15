@@ -41,7 +41,7 @@
     <dd>{{ user.preferred_contact_method or '<unset>' }}</dd>
 
     <dt>Gender</dt>
-    <dd>{{ user.gender or '<unset>' }} (Self-Describe: {{ user.gender_self_describe or '<unset>' }})</dd>
+    <dd>{{ user.gender_string() or '<unset>' }}</dd>
 </dl>
 
 <h3>Roles</h3>
