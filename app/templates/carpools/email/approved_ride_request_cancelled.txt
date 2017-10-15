@@ -1,8 +1,0 @@
-Hi {{carpool.driver.name}},
-
-We wanted to let you know that {{rider.name}} has dropped out of the carpool
-leaving from {{carpool.leave_place}} at {{carpool.leave_time | humanize }}.
-
-Details about this carpool: {{url_for('carpool.details', uuid=carpool.uuid, _external=True)}}
-
-Thanks!

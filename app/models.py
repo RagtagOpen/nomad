@@ -34,6 +34,11 @@ class UuidMixin(object):
         return clz.query.filter_by(uuid=uuid).first_or_404()
 
 
+class AsDictMixin(object):
+    def as_dict(self):
+        raise NotImplementedError
+
+
 class RideRequest(db.Model, UuidMixin):
     __tablename__ = 'riders'
 
@@ -74,7 +79,7 @@ class PersonRole(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
 
-class Person(UserMixin, db.Model, UuidMixin):
+class Person(UserMixin, db.Model, UuidMixin, AsDictMixin):
     __tablename__ = 'people'
 
     CONTACT_EMAIL = 'email'
@@ -95,6 +100,11 @@ class Person(UserMixin, db.Model, UuidMixin):
     roles = db.relationship('Role', secondary='people_roles',
                             backref=db.backref('roles',
                                                lazy='dynamic'))
+
+    def as_dict(self):
+        return {
+            'uuid': self.uuid,
+        }
 
     def get_id(self):
         """ Overiding the UserMixin `get_id()` to give back the uuid. """
@@ -131,7 +141,7 @@ def load_user(id):
     return Person.first_by_uuid(id)
 
 
-class Carpool(db.Model, UuidMixin):
+class Carpool(db.Model, UuidMixin, AsDictMixin):
     __tablename__ = 'carpools'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -149,6 +159,19 @@ class Carpool(db.Model, UuidMixin):
 
     ride_requests = relationship("RideRequest", cascade="all, delete-orphan")
     destination = relationship("Destination")
+
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'from_place': self.from_place,
+            'leave_time': self.leave_time,
+            'return_time': self.return_time,
+            'max_riders': self.max_riders,
+            'notes': self.notes,
+            'vehicle_description': self.vehicle_description,
+            'destination': self.destination.as_dict(),
+            'driver': self.driver.as_dict(),
+        }
 
     def get_ride_requests_query(self, statuses=None):
         query = RideRequest.query.filter_by(carpool_id=self.id)
@@ -197,7 +220,7 @@ class Carpool(db.Model, UuidMixin):
                self.get_ride_requests_query(['approved']).count()
 
 
-class Destination(db.Model, UuidMixin):
+class Destination(db.Model, UuidMixin, AsDictMixin):
     __tablename__ = 'destinations'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -209,6 +232,11 @@ class Destination(db.Model, UuidMixin):
     address = db.Column(db.String(300))
 
     carpools = relationship("Carpool", cascade="all, delete-orphan")
+
+    def as_dict(self):
+        return {
+            'uuid': self.uuid,
+        }
 
     @classmethod
     def find_all_visible(clz):

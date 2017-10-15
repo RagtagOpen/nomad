@@ -1,49 +1,43 @@
-from contextlib import contextmanager
 from flask import current_app, render_template
 from flask_mail import Message
 
-from .. import mail
+from .. import mail, rq
 
 
-def make_email_message(html_template, text_template, recipient, subject,
-                       **kwargs):
-    body = render_template(text_template, **kwargs)
-    html = render_template(html_template, **kwargs)
-    return Message(
-        recipients=[recipient], body=body, html=html, subject=subject)
+def send_email(template, recipient, subject, **kwargs):
+    if current_app.config.get('RQ_ENABLED'):
+        # Enqueue the message to send by the RQ worker
+        send_email_queued.queue(template, recipient, subject, **kwargs)
+    else:
+        # Do the work during the request
+        send_email_queued(template, recipient, subject, **kwargs)
 
 
-@contextmanager
-def catch_and_log_email_exceptions(messages_to_send):
-    try:
-        yield
-    except Exception as exception:
-        current_app.logger.critical(
-            'Unable to send email.  {}'.format(repr(exception)))
-        _log_emails(messages_to_send)
+@rq.job
+def send_email_queued(template, recipient, subject, **kwargs):
+    message = Message(
+        recipients=[recipient],
+        body=render_template('email/{}.txt'.format(template), **kwargs),
+        html=render_template('email/{}.html'.format(template), **kwargs),
+        subject=subject
+    )
 
-
-def _log_emails(messages_to_send):
-    for message in messages_to_send:
-        current_app.logger.info(
-            'Message to {} with subject {} and body {}'.format(
-                message.recipients[0], message.subject, message.body))
-
-
-def send_emails(messages_to_send):
     if current_app.config.get('MAIL_LOG_ONLY'):
         current_app.logger.info(
-            'Configured to log {} messages without sending.  Messages in the following lines:'.
-            format(len(messages_to_send)))
-        _log_emails(messages_to_send)
+            'Email to "%s", subject "%s", body: "%s"',
+            message.recipients,
+            message.subject,
+            message.body,
+        )
         return
 
     with mail.connect() as conn:
-        for message in messages_to_send:
-            try:
-                conn.send(message)
-            except Exception as exception:
-                current_app.logger.error(
-                    'Failed to send message to {} with subject {} and body {} Exception: {}'.
-                    format(message.recipients[0], message.subject,
-                           message.body, repr(exception)))
+        try:
+            conn.send(message)
+        except Exception:
+            current_app.logger.exception(
+                'Failed to send message to %s with subject %s and body %s'.
+                message.recipients,
+                message.subject,
+                message.body,
+            )

@@ -18,11 +18,7 @@ from .forms import (
 )
 from geoalchemy2.shape import to_shape
 from .. import db
-from ..email import (
-    send_emails,
-    catch_and_log_email_exceptions,
-    make_email_message,
-)
+from ..email import send_email
 from ..auth.permissions import roles_required
 from ..carpool.views import (
     cancel_carpool,

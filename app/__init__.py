@@ -12,6 +12,7 @@ from flask_caching import Cache
 from flask_login import LoginManager, logout_user, current_user
 from flask_mail import Mail
 from flask_migrate import Migrate
+from flask_rq2 import RQ
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from raven.contrib.flask import Sentry
@@ -24,6 +25,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 cache = Cache()
 sentry = Sentry()
+rq = RQ()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
@@ -41,6 +43,7 @@ def create_app(config_name):
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
+    rq.init_app(app)
 
     if app.config.get('SSLIFY_ENABLE'):
         app.logger.info("Using SSLify")
