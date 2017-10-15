@@ -44,10 +44,10 @@ class DriverForm(FlaskForm):
     departure_lat = HiddenField()
     departure_lon = HiddenField()
 
-    departure_date = DateField()
+    departure_date = DateField(format='%m/%d/%Y')
     departure_hour = SelectField(choices=time_select_tuples(), default='9')
 
-    return_date = DateField()
+    return_date = DateField(format='%m/%d/%Y')
     return_hour = SelectField(choices=time_select_tuples(), default='9')
 
     vehicle_description = StringField()
@@ -61,10 +61,25 @@ class DriverForm(FlaskForm):
 
         result = True
 
+        if self.departure_name.data and len(self.departure_name.data) > 120:
+            self.departure_name.errors.append(
+                "The name you entered was too long."
+                " Please make it less than 120 characters.")
+            result = False
+
         if not (self.departure_lon.data and self.departure_lat.data):
             self.departure_name.errors.append(
                 "No location was found. Try a nearby "
                 "street intersection or business.")
+            result = False
+
+        try:
+            self.departure_lon.data = float(self.departure_lon.data)
+            self.departure_lat.data = float(self.departure_lat.data)
+        except:
+            self.departure_name.errors.append(
+                "Your location didn't convert to a valid lat/lon."
+                " Try a different address.")
             result = False
 
         if not (self.destination.data):
