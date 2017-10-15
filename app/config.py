@@ -15,6 +15,11 @@ class Config:
     INTERCOM_KEY = os.environ.get('INTERCOM_KEY')
     GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID')
 
+    # SERVER_NAME is needed here so the email worker can
+    # know what to put in while generating URLs.
+    SERVER_NAME = os.environ.get('SERVER_NAME')
+    RQ_ENABLED = os.environ.get('RQ_ENABLED', False)
+    RQ_REDIS_URL = os.environ.get('REDIS_URL')
     MAIL_LOG_ONLY = os.environ.get('MAIL_LOG_ONLY', True)
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'localhost')
     MAIL_PORT = os.environ.get('MAIL_PORT', 25)
