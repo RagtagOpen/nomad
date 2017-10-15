@@ -364,17 +364,9 @@ select:focus {
 .fullscreen.jumbo.driver-splash a {
 	color:rgb(2,46,91);
 }
-.fullscreen.jumbo .bg-image {
-    position: absolute;
-    margin-top: 40px;
-    margin-left: 640px;
-    width: 800px;
-    height: 300px;
-    background: url(../img/background-image-car.svg) 80% 50% / contain no-repeat;
-    opacity: .2;
-}
-.fullscreen.jumbo.driver-splash .bg-image {
-	opacity: .4;
+.fullscreen.jumbo.bg-image {
+	background: rgb(2,46,91) url(../img/background-image-car.svg) 300% 50% / 80% no-repeat;
+	color: white;
 }
 .fullscreen.jumbo h1, .fullscreen.jumbo h2, .fullscreen.jumbo h3, .fullscreen.jumbo h4, .fullscreen.jumbo p {
 	color: white;
@@ -390,6 +382,7 @@ select:focus {
 	padding-top: 50px;
 }
 .jumbo h2 {
+	padding-top: 0;
 	margin-bottom: 20px;
 }
 .jumbo-second h3 {
@@ -757,13 +750,16 @@ select:focus {
 	}
 	.fullscreen {
 		width: 100%;
-		padding: 100px 114px 50px 114px;
+		padding: 0 114px 50px 114px;
+	}
+	.fullscreen.jumbo.bg-image {
+		background: rgb(2,46,91);
 	}
 }
 @media screen and (max-width:980px) {
 	.fullscreen {
 		width: 100%;
-		padding: 100px 20px 50px 20px;
+		padding: 0 20px 50px 20px;
 	}
 	#detail-pane {
 		padding-top: 80px;
