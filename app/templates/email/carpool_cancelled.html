@@ -1,8 +1,7 @@
 <p>Hello rider,</p>
 
-<p>Unfortunately, the carpool session for leaving from {{carpool.from_place}}
-at {{carpool.leave_time | humanize }} has been cancelled.</p>
+<p>Unfortunately, the carpool session for leaving from {{ carpool['from_place'] }} at {{ carpool['leave_time'] | humanize }} has been cancelled.</p>
 
-<p>The reason given for the cancellation was: {{reason}}.</p>
+<p>The reason given for the cancellation was: {{ reason }}.</p>
 
-<p>Please reach out to {{driver.email}} in order to see if they're willing to reschedule.</p>
+<p>Please reach out to {{ driver['email'] }} in order to see if they're willing to reschedule.</p>

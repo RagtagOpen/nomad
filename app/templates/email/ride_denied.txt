@@ -1,7 +1,5 @@
-Hi {{rider.name}},
+Hi {{ rider['name'] }},
 
-Unfortunately, the driver declined your request to join the
-carpool from {{carpool.leave_place}} to {{carpool.to_place}}, departing at
-{{carpool.leave_time | humanize }}.
+Unfortunately, the driver declined your request to join the carpool from {{ carpool['leave_place'] }} to {{ carpool['to_place'] }}, departing at {{ carpool['leave_time'] | humanize }}.
 
 Please visit {{url_for('carpool.find', _external=True)}} to look for another ride.

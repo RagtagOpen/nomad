@@ -1,8 +1,7 @@
 Hello rider,
 
-Unfortunately, the carpool session for leaving from {{carpool.from_place}}
-at {{carpool.leave_time | humanize }} has been cancelled.
+Unfortunately, the carpool session for leaving from {{ carpool['from_place'] }} at {{ carpool['leave_time'] | humanize }} has been cancelled.
 
-The reason given for the cancellation was: {{reason}}.
+The reason given for the cancellation was: {{ reason }}.
 
-Please reach out to {{driver.email}} in order to see if they're willing to reschedule.
+Please reach out to {{ driver['email'] }} in order to see if they're willing to reschedule.

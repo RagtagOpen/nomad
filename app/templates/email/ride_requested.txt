@@ -1,14 +1,13 @@
-Hi {{carpool.driver.name}},
+Hi {{ carpool['driver']['name'] }},
 
-We wanted to let you know that {{rider.name}} has requested a ride with you
-in the car leaving from {{carpool.leave_place}} at {{carpool.leave_time | humanize }}.
+We wanted to let you know that {{ rider['name'] }} has requested a ride with you in the car leaving from {{ carpool['leave_place'] }} at {{ carpool['leave_time'] | humanize }}.
 
-Please go to {{url_for('carpool.details', uuid=carpool.uuid, _external=True)}} and approve or deny this request.
+Please go to {{url_for('carpool.details', uuid=carpool['uuid'], _external=True)}} and approve or deny this request.
 
 Thanks!
 
 SAFETY TIPS
-    
+
 • Have a live phone conversation with your passengers before the pickup
 • Check out your passengers’ social media profiles
 • Make sure a friend or family member knows where you’re going and with who; check in with them at stages of your trip and canvassing
@@ -18,7 +17,7 @@ CANVASSING TIPS
 • Charge your phone
 • Get the volunteer coordinator’s phone number
 • Listen carefully to all instructions
-• If a house or encounter with a constituent makes you feel uncomfortable for any reason, retreat, move on, 
+• If a house or encounter with a constituent makes you feel uncomfortable for any reason, retreat, move on,
   and alert the local volunteer coordinator
 • Bring water and a snack
 • Wear sturdy walking shoes and weather-appropriate clothing

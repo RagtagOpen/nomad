@@ -1,15 +1,10 @@
-<p>Hi {{rider.name}},</p>
+<p>Hi {{ rider['name'] }},</p>
 
-<p>Good news! {{carpool.driver.name}} approved your request to join the
-carpool from {{carpool.leave_place}} to {{carpool.to_place}}, departing at
-{{carpool.leave_time | humanize }}.</p>
+<p>Good news! {{ carpool['driver']['name'] }} approved your request to join the carpool from {{ carpool['leave_place'] }} to {{ carpool['to_place'] }}, departing at {{ carpool['leave_time'] | humanize }}.</p>
 
-<p>Please contact {{carpool.driver.name}} at {{carpool.driver.email}} to figure out exactly when and where to meet.</p>
+<p>Please contact {{ carpool['driver']['name'] }} at {{carpool.driver.email}} to figure out exactly when and where to meet.</p>
 
-<p>Go to {{url_for('carpool.details', uuid=carpool.uuid, _external=True)}}
-to review the details of this carpool or if you need to withdraw from the
-carpool. If you do withdraw, please try to do early enough so other people can
-plan to join the carpool.</p>
+<p>Go to {{url_for('carpool.details', uuid=carpool['uuid'], _external=True)}} to review the details of this carpool or if you need to withdraw from the carpool. If you do withdraw, please try to do early enough so other people can plan to join the carpool.</p>
 
 <p>SAFETY TIPS
 
