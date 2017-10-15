@@ -40,6 +40,20 @@ def admin_index():
     )
 
 
+@admin_bp.route('/admin/stats/')
+@login_required
+@roles_required('admin')
+def admin_stats():
+    return render_template(
+        'admin/stats.html',
+        carpool_count=Carpool.query.count(),
+        ride_request_count_approved=RideRequest.query.filter_by(status='approved').count(),
+        ride_request_count_requested=RideRequest.query.filter_by(status='requested').count(),
+        destination_count=Destination.query.count(),
+        driver_count=Carpool.query.distinct(Carpool.driver_id).count(),
+    )
+
+
 @admin_bp.route('/admin/users/<uuid>')
 @login_required
 @roles_required('admin')
