@@ -24,6 +24,8 @@ services:
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - SENTRY_DSN=${SENTRY_DSN}
       - VERBOSE_SQLALCHEMY=${VERBOSE_SQLALCHEMY}
+      - RQ_ENABLED=true
+      - REDIS_URL=redis://redis
       - MAIL_LOG_ONLY=${MAIL_LOG_ONLY}
       - MAIL_SERVER=${MAIL_SERVER}
       - MAIL_PORT=${MAIL_PORT}
@@ -35,6 +37,29 @@ services:
     ports:
       - 5000:5000
     depends_on:
+      - redis
+      - db
+      - db_setup
+
+  nomad_worker:
+    extends: base
+    command: flask rq worker
+    environment:
+      - FLASK_DEBUG=${FLASK_DEBUG}
+      - FLASK_APP=${FLASK_APP}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - VERBOSE_SQLALCHEMY=${VERBOSE_SQLALCHEMY}
+      - MAIL_LOG_ONLY=${MAIL_LOG_ONLY}
+      - MAIL_SERVER=${MAIL_SERVER}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USE_TLS=${MAIL_USE_TLS}
+      - MAIL_USE_SSL=${MAIL_USE_SSL}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - PYTHONUNBUFFERED=0
+      - REDIS_URL=redis://redis
+    depends_on:
+      - redis
       - db
       - db_setup
 
@@ -43,6 +68,9 @@ services:
     command: flask db upgrade
     depends_on:
       - db
+
+  redis:
+    image: redis
 
   db:
     image: mdillon/postgis
