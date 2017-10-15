@@ -1,0 +1,18 @@
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+
+<div class="content">
+
+    <div class="fullscreen">
+    <div class="interstitial-page">
+        <h4>405: Method not allowed</h4>
+        <h1>An Error Occurred</h1>
+        <p>In the meantime, try going back <a href="{{ url_for('carpool.index') }}">home</a>.</p>
+    </div>
+    </div>
+
+</div>
+
+{% endblock %}

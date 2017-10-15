@@ -81,6 +81,12 @@ def create_app(config_name):
             '404.html'
         )
 
+    @app.errorhandler(405)
+    def error_405(error):
+        return render_template(
+            '405.html'
+        )
+
     @app.after_request
     def frame_buster(response):
         response.headers['X-Frame-Options'] = 'DENY'
