@@ -119,7 +119,7 @@ function doLogout() {
       <ul class="mobile-nav-bar">
         <li><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
         <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
-        <li><a href="{{ url_for('auth.safety') }}">Privacy & Terms</a></li>
+        <li><a href="{{ url_for('auth.terms') }}">Privacy & Terms</a></li>
 {% if current_user.is_authenticated %}
         <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
         <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
@@ -145,7 +145,7 @@ function doLogout() {
   <ul class="nav-bar">
     <li class="active"><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
       <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
-      <li><a href="{{ url_for('auth.safety') }}">Privacy & Terms</a></li>
+      <li><a href="{{ url_for('auth.terms') }}">Privacy & Terms</a></li>
 {% if current_user.is_authenticated %}
       <li><a href="{{ url_for('carpool.mine') }}">My Rides</a></li>
 {% endif %}

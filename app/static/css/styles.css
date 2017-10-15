@@ -36,12 +36,8 @@ h4 {
 	margin-top: 30px;
 	margin-bottom: 10px;
 }
-.interstitial-page h3 {
+.interstitial-page h2, .interstitial-page h3, .interstitial-page h4 {
 	padding-top: 30px;
-	margin-bottom: 20px;
-}
-.interstitial-page h4 {
-	margin-top: 30px;
 	margin-bottom: 20px;
 }
 .interstitial-page p {
@@ -267,9 +263,11 @@ select:focus {
 	padding-right: 0;
 }
 .nav-bar-secondary {
-    position: fixed;
+    position: absolute;
+    max-width: 130px;
     top: 70px;
-    padding: 0 10px;
+    right: 0;
+    padding: 0;
     margin-left: -10px;
     background-color: white;
     border-left: 1px solid rgb(205,212,222);
@@ -284,8 +282,8 @@ select:focus {
 }
 .nav-bar-secondary li {
 	height: 50px;
-    padding-top: 12px;
-    padding-right: 60px;
+    padding: 12px 20px 0 20px;
+	width: 130px;
 }
 .nav-bar-secondary li:last-child {
 	border-top: 1px solid rgb(205,212,222);
