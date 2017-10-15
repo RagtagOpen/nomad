@@ -64,19 +64,23 @@
 {% endif %}
 </div>
 
+<div>
 {% if user.has_roles('blocked') %}
-<form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-    <input type="hidden" name="role_name" value="blocked"/>
-    <button class="btn btn-primary" type="submit" name="toggle_button">Unblock</button>
-</form>
+    {% if user != current_user %}
+    <form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="role_name" value="blocked"/>
+        <button class="btn btn-primary" type="submit" name="toggle_button">Unblock</button>
+    </form>
+    {% endif %}
 {% else %}
-<form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-    <input type="hidden" name="role_name" value="blocked"/>
-    <button class="btn btn-primary" type="submit" name="toggle_button">Block</button>
-</form>
+    <form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="role_name" value="blocked"/>
+        <button class="btn btn-primary" type="submit" name="toggle_button">Block</button>
+    </form>
 {% endif %}
+</div>
 
 <h3>Purge</h3>
 
