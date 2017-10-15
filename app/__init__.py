@@ -9,7 +9,7 @@ from flask import (
 )
 from flask_bootstrap import Bootstrap
 from flask_caching import Cache
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager, logout_user, current_user
 from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -102,6 +102,7 @@ def create_app(config_name):
             flash("There was a problem with your login.", 'error')
             current_app.logger.warn("Logged out blocked user %s",
                                     current_user.id)
-            return redirect(url_for('auth.logout'))
+            logout_user()
+            return redirect(url_for('auth.login'))
 
     return app

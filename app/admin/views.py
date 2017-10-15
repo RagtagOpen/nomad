@@ -118,6 +118,10 @@ def user_toggle_role(user_uuid):
     user = Person.uuid_or_404(user_uuid)
     role = Role.first_by_name_or_404(request.form.get('role_name'))
 
+    if current_user.uuid == user.uuid:
+        flash("You cannot modify your own roles", 'error')
+        return redirect(url_for('admin.user_show', uuid=user.uuid))
+
     pr = PersonRole.query.filter_by(person_id=user.id, role_id=role.id).first()
     if pr:
         db.session.delete(pr)

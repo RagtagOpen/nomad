@@ -94,8 +94,8 @@ def oauth_callback(provider):
         session.pop('next', None)
         flash("There was a problem logging you in.", 'error')
         current_app.logger.warn("Prevented blocked user %s from logging in",
-                                current_user.id)
-        return redirect(url_for('carpool.index'))
+                                user.id)
+        return redirect(url_for('auth.login'))
 
     login_user(user, True)
 
