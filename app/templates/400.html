@@ -1,0 +1,18 @@
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+
+<div class="content">
+
+    <div class="fullscreen">
+    <div class="interstitial-page">
+        <h4>400: Bad request</h4>
+        <h1>What kind of request is that?</h1>
+        <p>We'll have to think of something funnier to write here, eventually. In the meantime, try going back <a href="{{ url_for('carpool.index') }}">home</a>.</p>
+    </div>
+    </div>
+
+</div>
+
+{% endblock %}
