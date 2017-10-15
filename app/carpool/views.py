@@ -224,7 +224,7 @@ def new():
         db.session.add(c)
         db.session.commit()
 
-        flash("Thanks for adding your carpool!", 'success')
+        flash("Thank you for offering space in your carpool! When nearby volunteers request a ride, you'll be notified automatically to accept or reject them.", 'success')
 
         return redirect(url_for('carpool.details', uuid=c.uuid))
 
