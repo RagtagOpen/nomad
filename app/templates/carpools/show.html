@@ -75,7 +75,7 @@
                 {% for request in pool.get_ride_requests_query() %}
 
                     <li><strong>{{ request.person.name }}</strong>
-                        <br>Gender: {{ request.person.gender }}
+                        <br>Gender: {{ request.person.gender_string() }}
                         <br>Notes: {{ request.notes }}
                         <br>
                     {%- if request.status == 'requested' %}
@@ -156,13 +156,13 @@
                 <div class="two-col-column">
                     <h4>Carpool Details</h4>
                     {% if pool.current_user_is_driver %}
-                    <p>Driver: {{ pool.driver.name }} ({{ pool.driver.gender }})</p>
+                    <p>Driver: {{ pool.driver.name }} ({{ pool.driver.gender_string() }})</p>
                     <p>Vehicle: {{ pool.vehicle_description or "(None supplied)" }}</p>
                     {% elif current_user_ride_request and current_user_ride_request.status == 'approved'  %}
-                    <p>Driver: {{ pool.driver.name }} ({{ pool.driver.gender }})</p>
+                    <p>Driver: {{ pool.driver.name }} ({{ pool.driver.gender_string() }})</p>
                     <p>Vehicle: {{ pool.vehicle_description or "(None supplied)" }}</p>
                     {% elif current_user_ride_request %}
-                    <p>Driver Gender: {{ pool.driver.gender }}</p>
+                    <p>Driver Gender: {{ pool.driver.gender_string() }}</p>
                     {%- endif %}
                 </div>
                 <div class="two-col-column">

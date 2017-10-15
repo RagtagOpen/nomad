@@ -100,6 +100,12 @@ class Person(UserMixin, db.Model, UuidMixin):
         """ Overiding the UserMixin `get_id()` to give back the uuid. """
         return self.uuid
 
+    def gender_string(self):
+        result = self.gender
+        if self.gender == 'self-describe':
+            result += ' as {}'.format(self.gender_self_describe)
+        return result
+
     def get_ride_requests_query(self, status=None):
         query = RideRequest.query.filter_by(person_id=self.id)
 
