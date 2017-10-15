@@ -60,6 +60,12 @@ def create_app(config_name):
             public_dsn=sentry.client.get_public_dsn('https') if sentry else None
         )
 
+    @app.errorhandler(400)
+    def error_400(error):
+        return render_template(
+            '400.html'
+        )
+
     @app.errorhandler(403)
     def error_403(error):
         return render_template(
