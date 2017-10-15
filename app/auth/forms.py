@@ -1,6 +1,5 @@
 from flask_wtf import FlaskForm
 from wtforms.fields.html5 import (
-    EmailField,
     TelField,
 )
 from wtforms import (
@@ -9,7 +8,6 @@ from wtforms import (
     SubmitField,
 )
 from wtforms.validators import (
-    Email,
     InputRequired,
     Length,
     Optional,
@@ -84,13 +82,6 @@ class ProfileForm(FlaskForm):
                 and not self.phone_number.data:
             self.phone_number.errors.append(
                 "You must enter a phone number if you select phone or text "
-                "as your preferred method of contact")
-            result = False
-
-        elif self.preferred_contact.data == 'email' \
-                and not self.email.data:
-            self.email.errors.append(
-                "You must enter an email if you select email "
                 "as your preferred method of contact")
             result = False
 
