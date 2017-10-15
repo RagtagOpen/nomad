@@ -59,7 +59,7 @@ class ProfileForm(FlaskForm):
             ("Female", "Female"),
             ("Male", "Male"),
             ("Non-binary / third gender", "Non-binary / third gender"),
-            ("self-describe", "Prefer to self-describe"),
+            ("Self-described", "Prefer to self-describe"),
             ("Prefer not to say", "Prefer not to say"),
         ]
     )
@@ -85,13 +85,13 @@ class ProfileForm(FlaskForm):
                 "as your preferred method of contact")
             result = False
 
-        if self.gender.data == 'self-describe' \
+        if self.gender.data == 'Self-described' \
                 and not self.gender_self_describe.data:
             self.gender.errors.append(
-                "You selected self-describe but didn't self-describe")
+                "You selected Self-described but didn't self-describe")
             result = False
 
-        if self.gender.data == 'self-describe' \
+        if self.gender.data == 'Self-described' \
                 and self.gender_self_describe.data \
                 and len(self.gender_self_describe.data) > 80:
             self.gender.errors.append(
