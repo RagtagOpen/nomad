@@ -545,7 +545,7 @@ def _email_ride_status(request, subject_beginning, template_name_specifier):
         'carpools/email/ride_{}.txt'.format(template_name_specifier),
         request.person.email,
         subject,
-        rider=current_user,
+        rider=request.person,
         carpool=request.carpool)
 
     with catch_and_log_email_exceptions([message_to_send]):
