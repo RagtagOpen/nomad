@@ -44,10 +44,10 @@ class DriverForm(FlaskForm):
     departure_lat = HiddenField()
     departure_lon = HiddenField()
 
-    departure_date = DateField(format='%m/%d/%Y')
+    departure_date = DateField()
     departure_hour = SelectField(choices=time_select_tuples(), default='9')
 
-    return_date = DateField(format='%m/%d/%Y')
+    return_date = DateField()
     return_hour = SelectField(choices=time_select_tuples(), default='9')
 
     vehicle_description = StringField()
