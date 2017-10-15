@@ -1,53 +1,87 @@
-{%- extends "admin/_template.html" %}
+{%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
 {{ super() }}
+<div class="content">
+    <div class="fullscreen">
+    <h4><a href="{{ url_for('admin.admin_index') }}">Admin</a>&nbsp;&raquo;&nbsp;
+        <a href="{{ url_for('admin.user_list') }}">Users</a>&nbsp;&raquo;&nbsp;
+        Edit User
+    </h4>
+    <h1>{{ user.name or 'Unnamed User' }}</h1>
 
-<h3>User</h3>
+{%- with messages = get_flashed_messages(with_categories=True) %}
+{%- if messages %}
+<div class="error-messages">
+    {% for cat, msg in messages %}
+    <div class="message {{ cat }}">{{ msg }}</div>
+    {% endfor %}
+</div>
+{%- endif %}
+{%- endwith %}
 
 <dl class="dl-horizontal">
     <dt>Created At</dt>
     <dd>{{ user.created_at }}</dd>
 
     <dt>Name</dt>
-    <dd>{{ user.name }}</dd>
+    <dd>{{ user.name or '<unset>' }}</dd>
 
     <dt>Email</dt>
     <dd>{{ user.email }}</dd>
 
+    <dt>Social ID</dt>
+    <dd>{{ user.social_id }}</dd>
+
     <dt>Phone Number</dt>
-    <dd>{{ user.phone_number }}</dd>
+    <dd>{{ user.phone_number or '<unset>' }}</dd>
 
     <dt>Contact Method</dt>
-    <dd>{{ user.preferred_contact_method }}</dd>
+    <dd>{{ user.preferred_contact_method or '<unset>' }}</dd>
 
     <dt>Gender</dt>
-    <dd>{{ user.gender }}</dd>
+    <dd>{{ user.gender or '<unset>' }} (Self-Describe: {{ user.gender_self_describe or '<unset>' }})</dd>
 </dl>
 
 <h3>Roles</h3>
 
+<div>
 {% if user.has_roles('admin') %}
-{% if user != current_user %}
-<a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid, role_name='admin') }}">Remove admin</a>
-{% endif %}
+    {% if user != current_user %}
+    <form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="role_name" value="admin"/>
+        <button class="btn btn-primary" type="submit" name="toggle_button">Remove Admin</button>
+    </form>
+    {% endif %}
 {% else %}
-<a class="btn btn-primary" href="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid, role_name='admin') }}">Make admin</a>
+    <form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="role_name" value="admin"/>
+        <button class="btn btn-primary" type="submit" name="toggle_button">Make Admin</button>
+    </form>
 {% endif %}
+</div>
 
-
-<dl class="dl-horizontal">
-{% for role in user.roles %}
-    <dt>{{ role.name }}</dt>
-    <dd>{{ role.description }}</dd>
+{% if user.has_roles('blocked') %}
+<form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type="hidden" name="role_name" value="blocked"/>
+    <button class="btn btn-primary" type="submit" name="toggle_button">Unblock</button>
+</form>
 {% else %}
-    <dd>No roles set yet.</dd>
-{% endfor %}
-</dl>
+<form method="POST" action="{{ url_for('admin.user_toggle_role', user_uuid=user.uuid) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <input type="hidden" name="role_name" value="blocked"/>
+    <button class="btn btn-primary" type="submit" name="toggle_button">Block</button>
+</form>
+{% endif %}
 
 <h3>Purge</h3>
 
 <a class="btn btn-danger" href="{{ url_for('admin.user_purge', uuid=user.uuid) }}">Purge user</a>
 
+</div>
+</div>
 {% endblock %}

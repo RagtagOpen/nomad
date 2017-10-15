@@ -92,7 +92,7 @@ class DriverForm(FlaskForm):
             result = False
 
         if self.return_datetime < datetime.datetime.today():
-            self.return_datetime.errors.append(
+            self.return_date.errors.append(
                 "Your carpool cannot happen in the past.")
             result = False
 

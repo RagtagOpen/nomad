@@ -1,10 +1,13 @@
-{%- extends "admin/_template.html" %}
+{%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
-{{ super() }}
-
-<h3>Users</h3>
+<div class="content">
+    <div class="fullscreen">
+    <h4><a href="{{ url_for('admin.admin_index') }}">Admin</a>&nbsp;&raquo;&nbsp;
+        Users
+    </h4>
+    <h1>Your Users</h1>
 
 <table class="table table-hover">
     <thead>
@@ -14,6 +17,7 @@
             <th>Gender</th>
             <th>Phone</th>
             <th>Admin?</th>
+            <th>Blocked?</th>
         </tr>
     </thead>
     <tbody id='search-results'>
@@ -21,9 +25,10 @@
         <tr>
             <td><a href="{{ url_for('admin.user_show', uuid=user.uuid) }}">{{ user.email }}</a></td>
             <td>{{ user.name }}</a></td>
-            <td>{{ user.gender }}</td>
+            <td>{{ user.gender_string() }}</td>
             <td>{{ user.phone }}</td>
             <td>{{ user.has_roles('admin') }}</td>
+            <td>{{ user.has_roles('blocked') }}</td>
         </tr>
 {% endfor %}
     </tbody>

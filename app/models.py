@@ -55,6 +55,14 @@ class Role(db.Model):
     name = db.Column(db.String(24))
     description = db.Column(db.String(120))
 
+    @classmethod
+    def first_by_name(clz, name):
+        return clz.query.filter_by(name=name).first()
+
+    @classmethod
+    def first_by_name_or_404(clz, name):
+        return clz.query.filter_by(name=name).first_or_404()
+
 
 class PersonRole(db.Model):
     __tablename__ = 'people_roles'
@@ -91,6 +99,12 @@ class Person(UserMixin, db.Model, UuidMixin):
     def get_id(self):
         """ Overiding the UserMixin `get_id()` to give back the uuid. """
         return self.uuid
+
+    def gender_string(self):
+        result = self.gender
+        if self.gender == 'self-describe':
+            result += ' as {}'.format(self.gender_self_describe)
+        return result
 
     def get_ride_requests_query(self, status=None):
         query = RideRequest.query.filter_by(person_id=self.id)
@@ -146,7 +160,7 @@ class Carpool(db.Model, UuidMixin):
 
     def get_current_user_ride_request(self):
         if current_user.is_anonymous:
-            return False
+            return None
         else:
             return self.get_ride_requests_query() \
                        .filter_by(person_id=current_user.id) \

@@ -1,11 +1,18 @@
-{%- extends "admin/_template.html" %}
+{%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
 {{ super() }}
-
-<h3>Purge User</h3>
+<div class="content">
+    <div class="fullscreen">
+    <h4><a href="{{ url_for('admin.admin_index') }}">Admin</a>&nbsp;&raquo;&nbsp;
+        <a href="{{ url_for('admin.user_list') }}">Users</a>&nbsp;&raquo;&nbsp;
+        Purge User
+    </h4>
+    <h1>{{ user.name or 'Unnamed User' }}</h1>
 
 {{ wtf.quick_form(form) }}
 
+</div>
+</div>
 {% endblock %}

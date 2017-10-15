@@ -29,7 +29,7 @@ function zoomTo(lat, lng) {
 }
 
 function doSearch() {
-    var url = '{{ url_for('carpool.start_geojson') }}?';
+    var url = "{{ url_for('carpool.start_geojson') }}?";
     var parts = [];
     var position = {};
 
@@ -46,6 +46,7 @@ function doSearch() {
     map.data.forEach(function(feature) {
         map.data.remove(feature);
     });
+
     map.data.loadGeoJson(url, null, mapDataCallback);
 }
 
@@ -61,14 +62,6 @@ function localInitMap() {
 function showCarpoolDetails(carpoolId) {
     window.location = carpoolId;
     return;
-    // $.ajax({
-    //     type: "GET",
-    //     url: carpoolId + '/embed',
-    //     success: function(data) {
-    //         $('#detail-pane').html(data);
-    //         $('#detail-pane').show();
-    //     }
-    // })
 }
 
 function showCarpoolDetailsDivClickHandler(event) {
@@ -89,6 +82,24 @@ function mapDataCallback(features) {
             results.append(resultdiv);
             bounds.extend(new google.maps.LatLng(geo.b.lat(), geo.b.lng()));
         }
+        map.data.setStyle(function(feature) {
+            if (feature.getProperty('is_approximate_location')) {
+                var geo = feature.getGeometry();
+                feature.circle =  new google.maps.Circle({
+                    map:map,
+                    center: geo.get(),
+                    radius: 1800,
+                    fillColor: '#3090C7',
+                    fillOpacity: 0.5,
+                    strokeWeight: 0
+                });
+                return { visible: false };
+            } else {
+                return {
+                    icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|3090C7'
+                };
+            }
+        });
         map.fitBounds(bounds);
         google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
             if (this.getZoom() > 11) {

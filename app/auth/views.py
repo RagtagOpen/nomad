@@ -14,7 +14,10 @@ from .forms import ProfileForm, ProfileDeleteForm
 from .oauth import OAuthSignIn
 from .. import db, sentry
 from ..models import Person
-from ..carpool.views import email_driver_rider_cancelled_request, cancel_carpool
+from ..carpool.views import (
+    email_driver_rider_cancelled_request,
+    cancel_carpool,
+)
 
 
 def is_safe_url(target):
@@ -41,10 +44,10 @@ def login():
     return render_template('auth/login.html')
 
 
-@auth_bp.route('/logout')
+@auth_bp.route('/logout', methods=['POST'])
 def logout():
     logout_user()
-    return redirect(url_for('carpool.index'))
+    return url_for('carpool.index')
 
 
 @auth_bp.route('/authorize/<provider>')
@@ -87,6 +90,13 @@ def oauth_callback(provider):
         # ...and after they update their profile go to the index
         session['next'] = url_for('carpool.index')
 
+    if user.has_roles('blocked'):
+        session.pop('next', None)
+        flash("There was a problem logging you in.", 'error')
+        current_app.logger.warn("Prevented blocked user %s from logging in",
+                                current_user.id)
+        return redirect(url_for('carpool.index'))
+
     login_user(user, True)
 
     next_url = (next_url or
@@ -103,7 +113,6 @@ def profile():
         name=current_user.name,
         gender=current_user.gender,
         gender_self_describe=current_user.gender_self_describe,
-        email=current_user.email,
         phone_number=current_user.phone_number,
         preferred_contact=current_user.preferred_contact_method,
     )
@@ -113,7 +122,6 @@ def profile():
         current_user.gender = profile_form.gender.data
         current_user.gender_self_describe = \
             profile_form.gender_self_describe.data.strip()
-        current_user.email = profile_form.email.data
         current_user.phone_number = profile_form.phone_number.data
         current_user.preferred_contact_method = \
             profile_form.preferred_contact.data

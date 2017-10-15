@@ -111,20 +111,20 @@ def user_purge(uuid):
     )
 
 
-@admin_bp.route('/admin/users/<user_uuid>/role/<role_name>/toggle')
+@admin_bp.route('/admin/users/<user_uuid>/togglerole', methods=['POST'])
 @login_required
 @roles_required('admin')
-def user_toggle_role(user_uuid, role_name):
+def user_toggle_role(user_uuid):
     user = Person.uuid_or_404(user_uuid)
-    role = Role.query.filter_by(name=role_name).first_or_404()
+    role = Role.first_by_name_or_404(request.form.get('role_name'))
 
     pr = PersonRole.query.filter_by(person_id=user.id, role_id=role.id).first()
     if pr:
         db.session.delete(pr)
-        flash('Role {} removed from this user'.format(role.name))
+        flash('Role {} removed from this user'.format(role.name), 'success')
     else:
         user.roles.append(role)
-        flash('Role {} added to this user'.format(role.name))
+        flash('Role {} added to this user'.format(role.name), 'success')
     db.session.commit()
 
     return redirect(url_for('admin.user_show', uuid=user.uuid))
@@ -152,18 +152,45 @@ def user_list():
 @login_required
 @roles_required('admin')
 def user_list_csv():
-    drivers = Person.query.filter(Carpool.driver_id == Person.id)
-    passengers = Person.query.filter(RideRequest.status == 'approved').\
-        filter(RideRequest.person_id == Person.id)
-    output = io.BytesIO()
+    output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(['Nomad carpool drivers and riders'])
-    writer.writerow(['name', 'email', 'phone', 'preferred'])
-    for user in drivers.union(passengers).order_by(Person.name):
-        writer.writerow([user.name, user.email, user.phone_number,
-            user.preferred_contact_method])
-    return Response(output.getvalue(), mimetype='text/csv',
-        headers={'Content-disposition': 'attachment; filename=nomad_users.csv'})
+    writer.writerow(['destination', 'carpool leave time', 'carpool return time',
+                     'name', 'email', 'phone', 'preferred contact method'])
+
+    query = '''
+        select d.name destination, cp.leave_time leave_time,
+            cp.return_time return_time, p.name person_name, p.email email,
+            p.phone_number phone, p.preferred_contact_method contact
+        from carpools cp, destinations d, people p, riders r
+        where cp.destination_id=d.id and cp.id=r.carpool_id and
+            r.status='approved' and r.person_id=p.id
+        union
+        select d.name destination, cp.leave_time leave_time,
+            cp.return_time returntime, p.name person_name, p.email email,
+            p.phone_number phone, p.preferred_contact_method contact
+        from carpools cp, destinations d, people p
+        where cp.destination_id=d.id and cp.driver_id=p.id
+        order by destination, leave_time, person_name
+    '''
+    for row in db.engine.execute(query):
+        writer.writerow([
+            row.destination,
+            row.leave_time.strftime('%x %X'),
+            row.return_time.strftime('%x %X'),
+            row.person_name,
+            row.email,
+            row.phone,
+            row.contact
+        ])
+
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={
+            'Content-disposition': 'attachment; filename=nomad_users.csv'
+        }
+    )
 
 
 @admin_bp.route('/admin/destinations')
@@ -303,29 +330,19 @@ def _email_destination_action(dest, verb, template_base):
         send_emails(messages_to_send)
 
 
-@admin_bp.route('/admin/destinations/<uuid>/hide')
+@admin_bp.route('/admin/destinations/<uuid>/togglehidden', methods=['POST'])
 @login_required
 @roles_required('admin')
-def destinations_hide(uuid):
+def destinations_toggle_hidden(uuid):
     dest = Destination.uuid_or_404(uuid)
 
-    dest.hidden = True
+    dest.hidden = not dest.hidden
     db.session.add(dest)
     db.session.commit()
 
-    flash("Your destination was hidden", 'success')
-    return redirect(url_for('admin.destinations_show', uuid=uuid))
+    if dest.hidden:
+        flash("Your destination was hidden", 'success')
+    else:
+        flash("Your destination was unhidden", 'success')
 
-
-@admin_bp.route('/admin/destinations/<uuid>/unhide')
-@login_required
-@roles_required('admin')
-def destinations_unhide(uuid):
-    dest = Destination.uuid_or_404(uuid)
-
-    dest.hidden = False
-    db.session.add(dest)
-    db.session.commit()
-
-    flash("Your destination was unhidden", 'success')
     return redirect(url_for('admin.destinations_show', uuid=uuid))

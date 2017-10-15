@@ -1,4 +1,5 @@
 import datetime
+import random
 from flask import (
     abort,
     current_app,
@@ -38,7 +39,7 @@ def robotstxt():
     return resp
 
 
-@pool_bp.route('/', methods=['GET', 'POST'])
+@pool_bp.route('/')
 def index():
     return render_template('index.html')
 
@@ -63,6 +64,16 @@ def find():
         loc_lat=lat,
         loc_lon=lon,
     )
+
+
+def approximate_location(geometry):
+    # 'coordinates': [-121.88632860000001, 37.3382082]
+    coord = geometry['coordinates']
+    geometry['coordinates'] = [
+        coord[0] + random.uniform(-.02, .02),
+        coord[1] + random.uniform(-.02, .02),
+    ]
+    return geometry
 
 
 @pool_bp.route('/carpools/starts.geojson')
@@ -111,10 +122,27 @@ def start_geojson():
         filter(riders.c.pax.is_(None) | (riders.c.pax < Carpool.max_riders))
     features = []
     dt_format = current_app.config.get('DATE_FORMAT')
+    # get the current user's confirmed carpools
+    confirmed_carpools = []
+    if not current_user.is_anonymous:
+        rides = RideRequest.query.filter(RideRequest.status == 'approved').\
+            filter(RideRequest.person_id == current_user.id)
+        for ride in rides:
+            confirmed_carpools.append(ride.carpool_id)
     for pool in pools:
+        if pool.from_point is None:
+            continue
+        # show real location to driver and confirmed passenger
+        geometry = mapping(to_shape(pool.from_point))
+        if not current_user.is_anonymous and \
+            (pool.driver_id == current_user.id or pool.id in confirmed_carpools):
+            is_approximate_location = False
+        else:
+            is_approximate_location = True
+            geometry = approximate_location(geometry)
         features.append({
             'type': 'Feature',
-            'geometry': mapping(to_shape(pool.from_point)),
+            'geometry': geometry,
             'id': url_for('carpool.details', uuid=pool.uuid, _external=True),
             'properties': {
                 'from_place': escape(pool.from_place),
@@ -125,6 +153,7 @@ def start_geojson():
                 'leave_time_human': pool.leave_time.strftime(dt_format),
                 'return_time_human': pool.return_time.strftime(dt_format),
                 'driver_gender': escape(pool.driver.gender),
+                'is_approximate_location': is_approximate_location
             },
         })
 
@@ -139,7 +168,17 @@ def start_geojson():
 @pool_bp.route('/carpools/mine', methods=['GET', 'POST'])
 @login_required
 def mine():
-    carpools = current_user.get_driving_carpools()
+    # Start with carpools you're driving in
+    carpools = current_user.get_driving_carpools().all()
+
+    # Add in carpools you have ride requests for
+    carpools.extend([
+        req.carpool
+        for req in current_user.get_ride_requests_query()
+    ])
+
+    # Then sort by departure date
+    carpools.sort(key=lambda c: c.leave_time)
 
     return render_template('carpools/mine.html', carpools=carpools)
 
@@ -203,11 +242,64 @@ def details(uuid):
     return render_template('carpools/show.html', pool=carpool)
 
 
-@pool_bp.route('/carpools/<uuid>/embed')
-def details_embed(uuid):
+@pool_bp.route('/carpools/<uuid>/edit', methods=['GET', 'POST'])
+@login_required
+def edit(uuid):
     carpool = Carpool.uuid_or_404(uuid)
 
-    return render_template('carpools/show_embed.html', pool=carpool)
+    if current_user != carpool.driver:
+        flash("You cannot edit a carpool you didn't create.", 'error')
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
+
+    geometry = mapping(to_shape(carpool.from_point))
+
+    driver_form = DriverForm(
+        destination=carpool.destination.uuid,
+        departure_lat=geometry['coordinates'][1],
+        departure_lon=geometry['coordinates'][0],
+        departure_name=carpool.from_place,
+        departure_date=carpool.leave_time.date(),
+        departure_hour=carpool.leave_time.time().hour,
+        return_date=carpool.return_time.date(),
+        return_hour=carpool.return_time.time().hour,
+        vehicle_description=carpool.vehicle_description,
+        vehicle_capacity=carpool.max_riders,
+        notes=carpool.notes,
+    )
+
+    visible_destinations = Destination.find_all_visible().all()
+
+    driver_form.destination.choices = [
+        (str(r.uuid), r.name) for r in visible_destinations
+    ]
+    driver_form.destination.choices.insert(0, ('', "Select one..."))
+
+    if driver_form.validate_on_submit():
+        dest = Destination.first_by_uuid(driver_form.destination.data)
+
+        carpool.from_place = driver_form.departure_name.data
+        carpool.from_point = 'SRID=4326;POINT({} {})'.format(
+            driver_form.departure_lon.data,
+            driver_form.departure_lat.data)
+        carpool.destination_id = dest.id
+        carpool.leave_time = driver_form.departure_datetime
+        carpool.return_time = driver_form.return_datetime
+        carpool.max_riders = driver_form.vehicle_capacity.data
+        carpool.vehicle_description = driver_form.vehicle_description.data
+        carpool.notes = driver_form.notes.data
+        carpool.driver_id = current_user.id
+        db.session.add(carpool)
+        db.session.commit()
+
+        flash("Your carpool has been updated.", 'success')
+
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
+
+    return render_template(
+        'carpools/edit.html',
+        form=driver_form,
+        destinations=visible_destinations,
+    )
 
 
 @pool_bp.route('/carpools/<carpool_uuid>/newrider', methods=['GET', 'POST'])
@@ -257,7 +349,7 @@ def new_rider(carpool_uuid):
 
 
 @pool_bp.route('/carpools/<carpool_uuid>/request/<request_uuid>/<action>',
-               methods=['GET', 'POST'])
+               methods=['POST'])
 @login_required
 def modify_ride_request(carpool_uuid, request_uuid, action):
     carpool = Carpool.uuid_or_404(carpool_uuid)

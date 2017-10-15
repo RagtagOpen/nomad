@@ -1,4 +1,4 @@
-{%- extends "admin/_template.html" %}
+{%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block styles %}
@@ -51,9 +51,23 @@ function initMap() {
 {% endblock %}
 
 {% block site %}
-<div class='page-header'>
-    <h1>Add a Destination</h1>
+<div class="content">
+    <div class="fullscreen">
+    <h4><a href="{{ url_for('admin.admin_index') }}">Admin</a>&nbsp;&raquo;&nbsp;
+        <a href="{{ url_for('admin.destinations_list') }}">Destinations</a>&nbsp;&raquo;&nbsp;
+        Add a Destination
+    </h4>
+    <h1>New Destination</h1>
+
+{%- with messages = get_flashed_messages(with_categories=True) %}
+{%- if messages %}
+<div class="error-messages">
+    {% for cat, msg in messages %}
+    <div class="message {{ cat }}">{{ msg }}</div>
+    {% endfor %}
 </div>
+{%- endif %}
+{%- endwith %}
 
 <form class='form' method='post'>
 {{ form.hidden_tag() }}
@@ -72,4 +86,6 @@ function initMap() {
     </div>
 </div>
 </form>
+</div>
+</div>
 {% endblock %}

@@ -70,14 +70,8 @@
             <div class="two-col-layout top-border">
                 <div class="two-col-column">
                     <h4>Email Address</h4>
-                    {{ form.email(id='user-email', placeholder='Email address') }}
-                    {% if form.email.errors %}
-                    <div>
-                    {% for err in form.email.errors %}
-                    <label class="destructive">{{ err }}</label>
-                    {% endfor %}
-                    </div>
-                    {% endif %}
+                    <p>{{ current_user.email }}</p>
+                    <label>You cannot change your email address with this form. If you need to change it, please email us.</label>
 
                     <h4>Phone Number</h4>
                     {{ form.phone_number(id='user-phone', placeholder='Phone number') }}
