@@ -255,7 +255,7 @@ select:focus {
 	    -ms-flex: 1 0 auto;
 	        flex: 1 0 auto;
 	display: inline-block;
-	padding-right: 40px;
+	padding-right: 25px;
 	height: 70px;
     padding-top: 21px;
 }
