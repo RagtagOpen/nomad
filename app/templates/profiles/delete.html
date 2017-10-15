@@ -6,15 +6,18 @@
 
 	<div class="fullscreen">
 		<div class="interstitial-page">
+			<form method="post" class="form-page">
+			{{ form.hidden_tag() }}
 			<h1>Are you sure you want to permanently delete your account?</h1>
 			<p>This action cannot be undone. You will be removed from all carpools and you will stop receiving further emails.</p>
 			<br>
 			<p>If you are sure you want to delete your account, type your name exactly as found on your profile and confirm below.</p>
 			<br>
-			<input type="text" name="delete-name" id="delete-name">
+			{{ form.name(id='name') }}
 			<br><br>
-			<input class="secondary" type="submit" value="Cancel and go back">
 			<input class="destructive" type="submit" value="Delete my account">
+			<a class="secondary" href="{{ url_for('auth.profile') }}">Cancel and go back</a>
+			</form>
 		</div>
 	</div>
 
