@@ -14,7 +14,10 @@ from .forms import ProfileForm, ProfileDeleteForm
 from .oauth import OAuthSignIn
 from .. import db, sentry
 from ..models import Person
-from ..carpool.views import email_driver_rider_cancelled_request, cancel_carpool
+from ..carpool.views import (
+    email_driver_rider_cancelled_request,
+    cancel_carpool,
+)
 
 
 def is_safe_url(target):
