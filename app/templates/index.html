@@ -40,7 +40,7 @@
 			</ul>
 
 			<h3 class="top-border">Need to contact us?</h3>
-			<p>Email the Nomad team for help: <a href="mailto:nomad-help@ragtag.org">nomad-help@ragtag.org</a>.</p>
+			<p>Email the Nomad team for help: <a href="mailto:{{ config.get('MAIL_DEFAULT_SENDER') }}">{{ config.get('MAIL_DEFAULT_SENDER') }}</a>.</p>
 			<p>Got questions about our Privacy Policy or Terms of Use? You can find them <a href="{{ url_for('auth.terms') }}">here</a>.</p>
 
 			<h3 class="top-border">About Nomad</h3>
