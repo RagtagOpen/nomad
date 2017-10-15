@@ -91,4 +91,11 @@ class ProfileForm(FlaskForm):
                 "You selected self-describe but didn't self-describe")
             result = False
 
+        if self.gender.data == 'self-describe' \
+                and self.gender_self_describe.data \
+                and len(self.gender_self_describe.data) > 80:
+            self.gender.errors.append(
+                "Please self-describe in less than 80 characters")
+            result = False
+
         return result
