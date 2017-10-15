@@ -117,6 +117,7 @@ function doLogout() {
     <div class="logo-container">
       <a href="{{ url_for('carpool.index') }}"><div class="logo"></div></a>
       <ul class="mobile-nav-bar">
+        <li><a href="{{ url_for('carpool.index') }}">Home</a></li>
         <li><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
         <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
         <li><a href="{{ url_for('auth.terms') }}">Privacy & Terms</a></li>
