@@ -24,7 +24,14 @@ from ..carpool.views import (
     cancel_carpool,
     email_driver_rider_cancelled_request,
 )
-from ..models import Carpool, Destination, Person, Role, PersonRole, RideRequest
+from ..models import (
+    Carpool,
+    Destination,
+    Person,
+    Role,
+    PersonRole,
+    RideRequest,
+)
 
 
 @admin_bp.route('/admin/')
@@ -275,7 +282,7 @@ def destinations_show(uuid):
             edit_form.destination_lat.data
         )
 
-        _email_destination_action(dest, 'modified', 'modified')
+        _send_destination_action_email(dest, 'modified', 'modified')
 
         db.session.commit()
         flash("Your destination was updated", 'success')
@@ -297,7 +304,7 @@ def destinations_delete(uuid):
     delete_form = DeleteDestinationForm()
     if delete_form.validate_on_submit():
         if delete_form.submit.data:
-            _email_destination_action(dest, 'cancelled', 'deleted')
+            _send_destination_action_email(dest, 'cancelled', 'deleted')
             db.session.delete(dest)
             db.session.commit()
 
@@ -313,35 +320,35 @@ def destinations_delete(uuid):
     )
 
 
-def _make_destination_action_email_messages(destination, verb, template_base):
-    messages_to_send = []
+def _send_destination_action_email(destination, verb, template_base):
     for carpool in destination.carpools:
         subject = 'Carpool on {} {}'.format(
-            carpool.leave_time.strftime(current_app.config.get('DATE_FORMAT')),
-            verb)
-        people = [
-            ride_request.person for ride_request in carpool.ride_requests
-        ]
-        people.append(carpool.driver)
-        for person in people:
-            messages_to_send.append(
-                make_email_message(
-                    'admin/destinations/email/{}.html'.format(template_base),
-                    'admin/destinations/email/{}.txt'.format(template_base),
-                    person.email,
-                    subject,
-                    destination=destination,
-                    carpool=carpool,
-                    person=person))
+            carpool.leave_time.strftime(
+                current_app.config.get('DATE_FORMAT')
+            ),
+            verb
+        )
 
-    return messages_to_send
+        # For carpool riders
+        for ride_request in carpool.ride_requests:
+            send_email(
+                'admin_destination_{}'.format(template_base),
+                ride_request.person.email,
+                subject,
+                destination=destination,
+                carpool=carpool,
+                person=ride_request.person,
+            )
 
-
-def _email_destination_action(dest, verb, template_base):
-    messages_to_send = _make_destination_action_email_messages(
-        dest, verb, template_base)
-    with catch_and_log_email_exceptions(messages_to_send):
-        send_emails(messages_to_send)
+        # For carpool driver
+        send_email(
+            'admin_destination_{}'.format(template_base),
+            carpool.driver.email,
+            subject,
+            destination=destination,
+            carpool=carpool,
+            person=carpool.driver,
+        )
 
 
 @admin_bp.route('/admin/destinations/<uuid>/togglehidden', methods=['POST'])
