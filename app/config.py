@@ -20,13 +20,13 @@ class Config:
     SERVER_NAME = os.environ.get('SERVER_NAME')
     RQ_ENABLED = os.environ.get('RQ_ENABLED', False)
     RQ_REDIS_URL = os.environ.get('REDIS_URL')
-    MAIL_LOG_ONLY = os.environ.get('MAIL_LOG_ONLY', True)
+    MAIL_LOG_ONLY = os.environ.get('MAIL_LOG_ONLY', 'true') == 'true'
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'localhost')
-    MAIL_PORT = os.environ.get('MAIL_PORT', 25)
+    MAIL_PORT = int(os.environ.get('MAIL_PORT', '25'))
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', False)
-    MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL', False)
+    MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'false') == 'true'
+    MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL', 'false') == 'true'
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'from@example.com')
     PREFERRED_URL_SCHEME = 'https'
 
