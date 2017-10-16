@@ -1,6 +1,6 @@
 <p>Hi {{ carpool['driver']['name'] }},</p>
 
-<p>We wanted to let you know that {{ rider['name'] }} has requested a ride in your carpool from {{ carpool['leave_place'] }} to [DESTINATION HERE!!!] at {{ carpool['leave_time'] | humanize }}.</p>
+<p>We wanted to let you know that {{ rider['name'] }} has requested a ride in your carpool from {{ carpool['leave_place'] }} to {{ carpool['to_place'] }} at {{ carpool['leave_time'] | humanize }}.</p>
 
 <p>Please go to {{url_for('carpool.details', uuid=carpool['uuid'], _external=True)}} and approve or deny this request.</p>
 
