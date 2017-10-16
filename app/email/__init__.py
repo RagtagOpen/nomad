@@ -22,13 +22,14 @@ def send_email_queued(template, recipient, subject, **kwargs):
         subject=subject
     )
 
+    current_app.logger.info(
+        'Email to "%s", subject "%s", body: "%s"',
+        message.recipients,
+        message.subject,
+        message.body,
+    )
+
     if current_app.config.get('MAIL_LOG_ONLY'):
-        current_app.logger.info(
-            'Email to "%s", subject "%s", body: "%s"',
-            message.recipients,
-            message.subject,
-            message.body,
-        )
         return
 
     with mail.connect() as conn:
