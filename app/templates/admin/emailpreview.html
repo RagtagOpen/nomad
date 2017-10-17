@@ -1,0 +1,16 @@
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+<div class="content">
+    <div class="fullscreen">
+    <h4>Admin</h4>
+    <h3>Email preview: {{ template }}</h3>
+
+    <h4>Text</h4>
+    <pre class="text">{{ text }}</pre>
+
+    <h4>HTML</h4>
+    <iframe width="100%" height="400px" style="border:0" src="data:text/html;charset=utf-8,{{html}}"></iframe>
+</div>
+{% endblock %}

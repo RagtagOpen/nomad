@@ -1,9 +1,9 @@
-{% extends "_wrapper.html" %}
+{% extends "email/_wrapper.html" %}
 
 {% block content %}
 <p>Hello {{ person['name'] }},</p>
 
-<p>Unfortunately, the carpool at {{ carpool['leave_time'] | humanize }} from {{ carpool['from_place'] }} to {{ destination['name'] }} 
+<p>Unfortunately, the carpool at {{ carpool['leave_time'] | humanize }} from {{ carpool['from_place'] }} to {{ destination['name'] }}
   has been cancelled because the campaign decided to not hold an event at that location.</p>
 
 <p>Please contact the campaign for more information.</p>
