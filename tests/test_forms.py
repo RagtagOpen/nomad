@@ -44,7 +44,7 @@ class TestProfileForm:
             formdata=MultiDict({
                 'name': 'foo',
                 'preferred_contact': 'phone',
-                'gender': 'self-describe',
+                'gender': 'Self-described',
             }),
             meta={'csrf': False},
         )
@@ -57,20 +57,20 @@ class TestProfileForm:
             formdata=MultiDict({
                 'name': 'foo',
                 'preferred_contact': 'email',
-                'gender': 'self-describe',
+                'gender': 'Self-described',
             }),
             meta={'csrf': False},
         )
         assert form.validate() is False
         assert len(form.errors['gender']) == 1
-        assert "You selected self-describe but didn't self-describe" == form.errors['gender'][0]
+        assert "You selected Self-described but didn't self-describe" == form.errors['gender'][0]
 
     def test_validate_success(self, person):
         form = ProfileForm(
             formdata=MultiDict({
                 'name': 'foo',
                 'preferred_contact': 'email',
-                'gender': 'self-describe',
+                'gender': 'Self-described',
                 'gender_self_describe': 'my-description',
             }),
             meta={'csrf': False},

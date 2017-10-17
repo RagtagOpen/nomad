@@ -1,0 +1,18 @@
+language: python
+python:
+  - "3.5"
+# The following is necessary because of https://github.com/travis-ci/travis-ci/issues/6972
+addons:
+  postgresql: 9.5
+  apt:
+    packages:
+    - postgresql-9.5-postgis-2.3
+install:
+  - pip install -r requirements.txt
+  - pip install -r dev-requirements.txt
+env:
+  - DATABASE_URL=postgresql://postgres@localhost/
+before_script:
+  - psql -U postgres -c "create extension postgis"
+script:
+  - pytest
