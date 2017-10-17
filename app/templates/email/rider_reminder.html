@@ -6,7 +6,7 @@
 <p>Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is
   {{ carpool['leave_time'] | humanize }}, only two days away!</p>
 
-<p>Make sure you have spoken to your driver {{ carpool.driver.name }} to confirm your ride and settle all the details of pickup and drop-off. Your driver's email is {{carpool.driver.email}} and their phone number is {{carpool.driver.phone_number}} ({{carpool.driver.preferred_contact_method}} preferred).</p>
+<p>Make sure you have spoken to your driver {{ carpool['driver']['name'] }} to confirm your ride and settle all the details of pickup and drop-off. Your driver's email is {{carpool['driver']['email']}} and their phone number is {{carpool['driver']['phone_number']}} ({{carpool['driver']['preferred_contact_method']}} preferred).</p>
 
 <p>You can use <a href="{{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }}">this link</a> if you need to withdraw
   from the carpool. If you do withdraw, please try to do so early enough that other volunteers get a chance to join the carpool
