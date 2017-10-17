@@ -38,7 +38,7 @@ class TestPerson:
         assert person.gender_string() == person.gender
 
     def test_gender_string_self_describe(self):
-        person = PersonFactory(gender='self-describe', gender_self_describe='self-described gender')
+        person = PersonFactory(gender='Self-described', gender_self_describe='self-described gender')
         assert person.gender_string() == '{} as {}'.format(person.gender, person.gender_self_describe)
 
     def test_roles(self):

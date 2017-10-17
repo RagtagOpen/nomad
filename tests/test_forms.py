@@ -63,7 +63,7 @@ class TestProfileForm:
         )
         assert form.validate() is False
         assert len(form.errors['gender']) == 1
-        assert "You selected self-describe but didn't self-describe" == form.errors['gender'][0]
+        assert "You selected Self-described but didn't self-describe" == form.errors['gender'][0]
 
     def test_validate_success(self, person):
         form = ProfileForm(
