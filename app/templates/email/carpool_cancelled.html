@@ -3,12 +3,12 @@
 {% block content %}
 <p>Hello rider,</p>
 
-<p>Unfortunately, the carpool from {{ carpool['from_place'] }} to {{ carpool['to_place'] }} at {{ carpool['leave_time'] | humanize }}
+<p>Unfortunately, the carpool from {{ carpool['from_place'] }} to {{ carpool['destination']['name'] }} at {{ carpool['leave_time'] | humanize }}
   has been cancelled.</p>
 
 <p>The driver gave the following reason for cancelling: {{ reason }}.</p>
 
-<p>You can ask them at {{ driver['email'] }} if they're willing to reschedule, or go to {{url_for('carpool.find', _external=True)}}
+<p>You can ask them at {{ driver['email'] }} or {{ driver['phone_number']}} ({{ driver['preferred_contact_method']}} preferred) if they're willing to reschedule, or go to {{url_for('carpool.find', _external=True)}}
   to look for another ride.</p>
 
 <p>Thank you for your enthusiasm!</p>

@@ -6,9 +6,13 @@
 <p>Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, only two days away!</p>
 
 <p>As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm their rides and settle all the details of pickup and drop-off. Your passengers are:</p>
-<p>RIDER_NAME1: RIDER_EMAIL1, RIDER_PHONE1</p>
-<p>RIDER_NAME2: RIDER_EMAIL2, RIDER_PHONE2</p>
-<p>RIDER_NAME3: RIDER_EMAIL3, RIDER_PHONE3</p>
+
+<ul>
+{% for rider in carpool.riders %}
+  <li>{{ rider['name'] }}: {{ rider['email'] }}, {{ rider['phone_number'] }} ({{ rider['preferred_contact_method'] }} preferred)</li>
+{% endfor %}
+</ul>
+
 <p>If you have no passengers yet, make sure you check your email or <a href="{{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }}">your carpool details</a> for any ride requests you may have missed.</p>
 
 <p>You can also use that link to make changes to the details of your carpool, cancel your carpool, or remove a passenger. Please make any changes you need to make in a timely manner so you and your passengers have time to plan around them.</p>
