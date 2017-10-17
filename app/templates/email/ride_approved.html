@@ -1,3 +1,6 @@
+{% extends "_wrapper.html" %}
+
+{% block content %}
 <p>Hi {{ rider['name'] }},</p>
 
 <p>Good news! {{ carpool['driver']['name'] }} approved your request to join the carpool from {{ carpool['from_place'] }} to {{ carpool['destination']['name'] }}, departing at {{ carpool['leave_time'] | humanize }}.</p>
@@ -23,3 +26,4 @@
   <li>Bring water and a snack</li>
   <li>Wear sturdy walking shoes and weather-appropriate clothing</li>
 </ul>
+{% endblock %}

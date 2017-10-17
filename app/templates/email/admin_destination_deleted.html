@@ -1,11 +1,13 @@
-<p>Hello {{person.name}},</p>
+{% extends "_wrapper.html" %}
 
-<p>Unfortunately, the carpool at {{carpool.leave_time | humanize }} leaving from
-{{carpool.from_place}} has been cancelled because the campaign deleted the
-destination {{destination.name}}.</p>
+{% block content %}
+<p>Hello {{ person['name'] }},</p>
 
-{% if person.id == carpool.driver_id %}
+<p>Unfortunately, the carpool at {{ carpool['leave_time'] | humanize }} leaving from {{ carpool['from_place'] }} has been cancelled because the campaign deleted the destination {{ destination['name'] }}.</p>
+
+{% if person['id'] == carpool['driver_id'] %}
 <p><b>You are the driver of that carpool.</b></p>
-
 {% endif %}
+
 <p>Please contact the campaign for more information.</p>
+{% endblock %}

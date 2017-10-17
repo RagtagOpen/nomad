@@ -1,15 +1,14 @@
 Hi {{ carpool['driver']['name'] }}!
 
-Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, 
-only two days away!
+Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, only two days away!
 
-As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm 
-their rides and settle all the details of pickup and drop-off. Your passenger info can be found here:
+As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm their rides and settle all the details of pickup and drop-off. Your passenger info can be found here:
+
 <a href="{{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }}">Details about this carpool.</a>
+
 If you have no passengers yet, make sure you check your email or the link above for any ride requests you may have missed.
 
-You can also use that link to make any changes to the details of your carpool, cancel your carpool, or remove a passenger. 
-Please make any changes you need to make in a timely manner so you and your passengers have time to plan around them.
+You can also use that link to make any changes to the details of your carpool, cancel your carpool, or remove a passenger.  Please make any changes you need to make in a timely manner so you and your passengers have time to plan around them.
 
 You are doing great work, thank you for driving!
 

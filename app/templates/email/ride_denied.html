@@ -1,5 +1,9 @@
+{% extends "_wrapper.html" %}
+
+{% block content %}
 <p>Hi {{ rider['name'] }},</p>
 
 <p>Unfortunately, the driver declined your request to join the carpool from {{ carpool['from_place'] }} to {{ carpool['destination']['name'] }}, departing at {{ carpool['leave_time'] | humanize }}.</p>
 
 <p>Please visit {{url_for('carpool.find', _external=True)}} to look for another ride.</p>
+{% endblock %}

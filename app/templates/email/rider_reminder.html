@@ -1,13 +1,14 @@
+{% extends "_wrapper.html" %}
+
+{% block content %}
 <p>Hi {{ rider['name'] }}!</p>
 
-<p>Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, 
-only two days away!</p>
+<p>Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, only two days away!</p>
 
 <p>Make sure you have spoken to your driver to confirm your ride and settle all the details of pickup and drop-off. Your driver's info can be found here:</p>
 <p><a href="{{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }}">Details about this carpool.</a></p>
 
-<p>You can also use that link if you need to withdraw from the carpool. If you do withdraw, please try to do early enough 
-  that other volunteers get a chance to join the carpool and the driver can make any changes they need to.</p>
+<p>You can also use that link if you need to withdraw from the carpool. If you do withdraw, please try to do early enough that other volunteers get a chance to join the carpool and the driver can make any changes they need to.</p>
 
 <p>You are doing great work, thank you for getting a ride to canvass!</p>
 
@@ -28,3 +29,4 @@ only two days away!</p>
   <li>Bring water and a snack</li>
   <li>Wear sturdy walking shoes and weather-appropriate clothing</li>
 </ul>
+{% endblock %}
