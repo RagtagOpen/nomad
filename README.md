@@ -1,5 +1,7 @@
 # Nomad
 
+[![Build Status](https://travis-ci.org/RagtagOpen/nomad.svg?branch=master)](https://travis-ci.org/RagtagOpen/nomad)
+
 ## Getting Started
 1. Check out the code
 
