@@ -1,6 +1,6 @@
 Hi {{ carpool['driver']['name'] }}!
 
-Thank you for carpooling to canvass at {{ carpool['to_place'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, 
+Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, 
 only two days away!
 
 As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm 

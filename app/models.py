@@ -104,6 +104,7 @@ class Person(UserMixin, db.Model, UuidMixin, AsDictMixin):
     def as_dict(self):
         return {
             'uuid': self.uuid,
+            'name': self.name
         }
 
     def get_id(self):
@@ -236,6 +237,7 @@ class Destination(db.Model, UuidMixin, AsDictMixin):
     def as_dict(self):
         return {
             'uuid': self.uuid,
+            'name': self.name
         }
 
     @classmethod
