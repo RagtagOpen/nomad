@@ -107,7 +107,8 @@ class Person(UserMixin, db.Model, UuidMixin, AsDictMixin):
             'name': self.name,
             'email': self.email,
             'phone_number': self.phone_number,
-            'gender_self_describe': self.gender_self_describe
+            'gender': self.gender,
+            'preferred_contact_method': self.preferred_contact_method
         }
 
     def get_id(self):

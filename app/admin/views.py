@@ -384,6 +384,5 @@ def email_preview(template):
     }
     text = render_template('email/{}.txt'.format(template), **data)
     html = render_template('email/{}.html'.format(template), **data)
-    current_app.logger.warn("rendered html: %s", html)
 
     return render_template('admin/emailpreview.html', template=template, text=text, html=html)
