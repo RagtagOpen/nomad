@@ -10,6 +10,8 @@ RUN apt-get -y install \
   && apt-get autoremove
 RUN pip install -U pip
 ADD requirements.txt .
+ADD dev-requirements.txt .
 RUN pip install -U -r requirements.txt
+RUN pip install -U -r dev-requirements.txt
 ADD . .
 EXPOSE 5000
