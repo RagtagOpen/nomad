@@ -167,32 +167,46 @@ Once you have the app running with Docker or locally, you need to add your first
 
 1. In a console, bring up a Flask shell:
 
-   If you used Docker:
+    If you used Docker:
 
-   ```
-   docker-compose run --service-ports nomad flask shell
-   ```
+    ```
+    docker-compose run --service-ports nomad flask shell
+    ```
 
-   If you are running the app locally:
+    If you are running the app locally:
 
-   ```
-   # Make sure you've activated your virtual environment
-   source venv/bin/activate
-   # Run the flask shell
-   source .env
-   flask shell
-   ```
+    ```
+    # Make sure you've activated your virtual environment
+    source venv/bin/activate
+    # Run the flask shell
+    source .env
+    flask shell
+    ```
 
 1. Add an admin `Role` to your single `Person` instance:
 
-   ```
-   from app.models import Role, Person
-   from app import db
-   r = Role(name='admin', description='Administrator')
-   db.session.add(r)
-   p = Person.query.first()
-   p.roles.append(r)
-   db.session.commit()
-   ```
+    ```
+    from app.models import Role, Person
+    from app import db
+    r = Role(name='admin', description='Administrator')
+    db.session.add(r)
+    p = Person.query.first()
+    p.roles.append(r)
+    db.session.commit()
+    ```
 
 1. Visit `http://127.0.0.1:5000/admin` to verify your account now has the appropriate role.
+
+## Running tests
+
+Using Docker:
+
+    ```
+    docker-compose run nomad pytest
+    ```
+
+Locally:
+
+    ```
+    pytest
+    ```
