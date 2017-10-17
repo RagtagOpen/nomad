@@ -1,8 +1,14 @@
 language: python
 python:
   - "3.5"
+services:
+  - postgresql
 install:
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
+env:
+  - DATABASE_URL=postgresql://postgres@localhost/
+before_script:
+  - psql -U postgres -c "create extension postgis"
 script:
   - pytest
