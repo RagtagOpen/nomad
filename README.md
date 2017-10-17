@@ -43,7 +43,7 @@
     echo GOOGLE_CLIENT_SECRET="YOUR_CLIENT_SECRET" >> .env
     ```
 
-1. (Optional) Configure Email Send
+1. Configure Email Send
     In order for the app to send email, you'll need to add details about what mail server it should use. For testing, you can use a Mailgun or Gmail account. Add those details to the .env file, too!
 
 ```bash
@@ -53,6 +53,16 @@ echo MAIL_USE_SSL=1 >> .env
 echo MAIL_USERNAME=your_username >> .env
 echo MAIL_PASSWORD=your_password >> .env
 ```
+
+If you want to test emails without actually sending them, you can use [MailDev](http://danfarrelly.nyc/MailDev/) with Docker and the following `.env` configuration:
+
+```bash
+echo MAIL_SERVER=fakesmtp >> .env
+echo MAIL_PORT=25 >> .env
+echo MAIL_USE_SSL=0 >> .env
+```
+
+With that setup, you can run `docker-compose up nomad fakesmtp` and view emails at [http://localhost:8081/](http://localhost:8081/).
 
 ## Running with Docker Compose
 
@@ -79,7 +89,7 @@ This will allow you to get up and running quickly while installing a smaller set
     This will set up your database, run migrations, and start the application server for you.
 
     ```bash
-    docker-compose up nomad
+    docker-compose up nomad nomad_worker
     ```
 
 1. Browse to http://127.0.0.1:5000/ in your browser to check it out.

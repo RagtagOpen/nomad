@@ -78,3 +78,9 @@ services:
       POSTGRES_PASSWORD: nomad
       POSTGRES_USER: nomad
       POSTGRES_DB: nomad
+
+  fakesmtp:
+    image: djfarrelly/maildev
+    ports:
+      - 25
+      - 8081:80
