@@ -25,6 +25,40 @@
     </li>
 </ul>
 
+<h3>Email Previews</h3>
+
+<ul class="list-group">
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.email_preview', template='admin_destination_deleted') }}">Admin destination deleted</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.email_preview', template='admin_destination_modified') }}">Admin destination modified</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.email_preview', template='approved_ride_request_cancelled') }}">Approved ride request cancelled</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.email_preview', template='carpool_cancelled') }}">Carpool cancelled</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.email_preview', template='driver_reminder') }}">Driver reminder</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.email_preview', template='ride_approved') }}">Ride approved</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.email_preview', template='ride_denied') }}">Ride denied</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.email_preview', template='ride_request_cancelled') }}">Ride request cancelled</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.email_preview', template='ride_requested') }}">Ride requested</a>
+    </li>
+    <li class="list-group-item">
+      <a href="{{ url_for('admin.email_preview', template='rider_reminder') }}">Rider reminder</a>
+    </li>
+</ul>
 </div>
 </div>
 {% endblock %}

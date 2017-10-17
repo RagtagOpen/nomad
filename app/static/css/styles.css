@@ -160,7 +160,7 @@ select:focus {
     height: 40px;
     visibility: hidden;
 }
- 
+
 
 
 /* ===== HEADER ===== */
@@ -695,6 +695,12 @@ select:focus {
 .my-rides p.view-details {
 	display: inline-block;
 	margin-left: 12px;
+}
+
+/* EMAIL PREVIEW */
+
+pre.text {
+  white-space: pre-line;
 }
 
 /* MEDIA QUERIES */

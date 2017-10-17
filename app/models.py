@@ -104,7 +104,10 @@ class Person(UserMixin, db.Model, UuidMixin, AsDictMixin):
     def as_dict(self):
         return {
             'uuid': self.uuid,
-            'name': self.name
+            'name': self.name,
+            'email': self.email,
+            'phone_number': self.phone_number,
+            'gender_self_describe': self.gender_self_describe
         }
 
     def get_id(self):

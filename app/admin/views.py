@@ -367,3 +367,23 @@ def destinations_toggle_hidden(uuid):
         flash("Your destination was unhidden", 'success')
 
     return redirect(url_for('admin.destinations_show', uuid=uuid))
+
+@admin_bp.route('/admin/emailpreview/<template>')
+@login_required
+@roles_required('admin')
+def email_preview(template):
+    # get enough sample data to cover all templates
+    carpool = Carpool.query.first()
+    data = {
+        'destination': carpool.destination,
+        'carpool': carpool,
+        'person': carpool.driver,
+        'rider': Person.query.first(),
+        'driver': carpool.driver,
+        'reason': 'Placeholder reason'
+    }
+    text = render_template('email/{}.txt'.format(template), **data)
+    html = render_template('email/{}.html'.format(template), **data)
+    current_app.logger.warn("rendered html: %s", html)
+
+    return render_template('admin/emailpreview.html', template=template, text=text, html=html)
