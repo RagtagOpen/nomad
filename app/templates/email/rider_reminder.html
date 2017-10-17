@@ -6,7 +6,7 @@
 <p>Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is 
   {{ carpool['leave_time'] | humanize }}, only two days away!</p>
 
-<p>Make sure you have spoken to your driver to confirm your ride and settle all the details of pickup and drop-off. Your driver's email is 
+<p>Make sure you have spoken to your driver DRIVER_NAME to confirm your ride and settle all the details of pickup and drop-off. Your driver's email is 
   DRIVER_EMAIL and their phone number is DRIVER_PHONE.</p>
 
 <p>You can use <a href="{{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }}">this link</a> if you need to withdraw 
