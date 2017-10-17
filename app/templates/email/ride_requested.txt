@@ -4,6 +4,8 @@ We wanted to let you know that {{ rider['name'] }} has requested a ride in your 
 
 Please go to {{url_for('carpool.details', uuid=carpool['uuid'], _external=True)}} and approve or deny this request.
 
+You'll receive a reminder email containing all of your passengers' contact information two days before your departure date.
+
 Thanks!
 
 SAFETY TIPS
