@@ -168,6 +168,7 @@ class Carpool(db.Model, UuidMixin, AsDictMixin):
     def as_dict(self):
         return {
             'id': self.id,
+            'uuid': self.uuid,
             'from_place': self.from_place,
             'leave_time': self.leave_time,
             'return_time': self.return_time,
