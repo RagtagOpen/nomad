@@ -1,6 +1,6 @@
 Hi {{ rider['name'] }},
 
-Good news! {{ carpool['driver']['name'] }} approved your request to join the carpool from {{ carpool['leave_place'] }} to {{ carpool['to_place'] }}, departing at {{ carpool['leave_time'] | humanize }}.
+Good news! {{ carpool['driver']['name'] }} approved your request to join the carpool from {{ carpool['from_place'] }} to {{ carpool['to_place'] }}, departing at {{ carpool['leave_time'] | humanize }}.
 
 Please contact {{ carpool['driver']['name'] }} at {{carpool.driver.email}} to figure out exactly when and where to meet.
 
