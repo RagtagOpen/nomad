@@ -44,7 +44,7 @@ class TestProfileForm:
             formdata=MultiDict({
                 'name': 'foo',
                 'preferred_contact': 'phone',
-                'gender': 'self-describe',
+                'gender': 'Self-described',
             }),
             meta={'csrf': False},
         )
@@ -57,7 +57,7 @@ class TestProfileForm:
             formdata=MultiDict({
                 'name': 'foo',
                 'preferred_contact': 'email',
-                'gender': 'self-describe',
+                'gender': 'Self-described',
             }),
             meta={'csrf': False},
         )
@@ -70,7 +70,7 @@ class TestProfileForm:
             formdata=MultiDict({
                 'name': 'foo',
                 'preferred_contact': 'email',
-                'gender': 'self-describe',
+                'gender': 'Self-described',
                 'gender_self_describe': 'my-description',
             }),
             meta={'csrf': False},
