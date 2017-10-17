@@ -4,7 +4,7 @@ Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. You
 
 As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm their rides and settle all the details of pickup and drop-off. Your passengers are:
 {% for rider in carpool.riders %}
-  {{ rider.name }}: {{ rider.email }}, {{ rider.phone_number }} ({{ rider.preferred_contact_method }} preferred)
+  {{ rider['name'] }}: {{ rider['email'] }}, {{ rider['phone_number'] }} ({{ rider['preferred_contact_method'] }} preferred)
 {% endfor %}
 If you have no passengers yet, make sure you check your email or your carpool details at {{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }} for any ride requests you may have missed.
 

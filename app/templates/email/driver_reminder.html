@@ -9,7 +9,7 @@
 
 <ul>
 {% for rider in carpool.riders %}
-  <li>{{ rider.name }}: {{ rider.email }}, {{ rider.phone_number }} ({{ rider.preferred_contact_method }} preferred)</li>
+  <li>{{ rider['name'] }}: {{ rider['email'] }}, {{ rider['phone_number'] }} ({{ rider['preferred_contact_method'] }} preferred)</li>
 {% endfor %}
 </ul>
 
