@@ -1,26 +1,25 @@
 Hi {{ rider['name'] }}!
 
-Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, 
-only two days away!
+Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, only two days away!
 
 Make sure you have spoken to your driver to confirm your ride and settle all the details of pickup and drop-off. Your driver's info can be found here:
+
 <a href="{{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }}">Details about this carpool.</a>
 
-You can also use that link if you need to withdraw from the carpool. If you do withdraw, please try to do early enough 
-that other volunteers get a chance to join the carpool and the driver can make any changes they need to.
+You can also use that link if you need to withdraw from the carpool. If you do withdraw, please try to do early enough that other volunteers get a chance to join the carpool and the driver can make any changes they need to.
 
 You are doing great work, thank you for getting a ride to canvass!
 
-SAFETY TIPS 
-• Have a live phone conversation with your driver before the pickup 
-• Check out your driver’s social media profile(s) 
-• Make sure a friend or family member knows where you’re going and with who; check in with them at stages of your trip and canvassing 
-• Charge your phone 
+SAFETY TIPS
+• Have a live phone conversation with your driver before the pickup
+• Check out your driver’s social media profile(s)
+• Make sure a friend or family member knows where you’re going and with who; check in with them at stages of your trip and canvassing
+• Charge your phone
 
-CANVASSING TIPS 
-• Charge your phone 
-• Get the volunteer coordinator’s phone number 
-• Listen carefully to all instructions 
-• If a house or encounter with a constituent makes you feel uncomfortable for any reason, retreat, move on, and alert the local volunteer coordinator 
-• Bring water and a snack 
+CANVASSING TIPS
+• Charge your phone
+• Get the volunteer coordinator’s phone number
+• Listen carefully to all instructions
+• If a house or encounter with a constituent makes you feel uncomfortable for any reason, retreat, move on, and alert the local volunteer coordinator
+• Bring water and a snack
 • Wear sturdy walking shoes and weather-appropriate clothing

@@ -1,15 +1,15 @@
+{% extends "_wrapper.html" %}
+
+{% block content %}
 <p>Hi {{ carpool['driver']['name'] }}!</p>
 
-<p>Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, 
-only two days away!</p>
+<p>Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, only two days away!</p>
 
-<p>As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm 
-their rides and settle all the details of pickup and drop-off. Your passenger info can be found here:</p>
+<p>As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm their rides and settle all the details of pickup and drop-off. Your passenger info can be found here:</p>
 <p><a href="{{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }}">Details about this carpool.</a></p>
 <p>If you have no passengers yet, make sure you check your email or the link above for any ride requests you may have missed.</p>
 
-<p>You can also use that link to make any changes to the details of your carpool, cancel your carpool, or remove a passenger. 
-Please make any changes you need to make in a timely manner so you and your passengers have time to plan around them.</p>
+<p>You can also use that link to make any changes to the details of your carpool, cancel your carpool, or remove a passenger. Please make any changes you need to make in a timely manner so you and your passengers have time to plan around them.</p>
 
 <p>You are doing great work, thank you for driving!</p>
 
@@ -30,3 +30,4 @@ Please make any changes you need to make in a timely manner so you and your pass
   <li>Bring water and a snack</li>
   <li>Wear sturdy walking shoes and weather-appropriate clothing</li>
 </ul>
+{% endblock %}

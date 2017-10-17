@@ -1,9 +1,9 @@
-Hello {{person.name}},
+Hello {{ person['name'] }},
 
-Unfortunately, the carpool at {{carpool.leave_time | humanize }} leaving from {{carpool.from_place}} has been cancelled because the campaign deleted the destination {{destination.name}}.
+Unfortunately, the carpool at {{ carpool['leave_time'] | humanize }} leaving from {{ carpool['from_place'] }} has been cancelled because the campaign deleted the destination {{ destination['name'] }}.
 
-{% if person.id == carpool.driver_id %}
+{% if person['id'] == carpool['driver_id'] %}
 You are the driver of that carpool.
-
 {% endif %}
+
 Please contact the campaign for more information.
