@@ -2,7 +2,7 @@ Hi {{ rider['name'] }}!
 
 Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, only two days away!
 
-Make sure you have spoken to your driver to confirm your ride and settle all the details of pickup and drop-off. Your driver's email is DRIVER_EMAIL and their phone number is DRIVER_PHONE.
+Make sure you have spoken to your driver DRIVER_NAME to confirm your ride and settle all the details of pickup and drop-off. Your driver's email is DRIVER_EMAIL and their phone number is DRIVER_PHONE.
 
 You can use <a href="{{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }}">this link</a> if you need to withdraw from the carpool. If you do withdraw, please try to do so early enough that other volunteers get a chance to join the carpool and the driver can make any changes they need to.
 
