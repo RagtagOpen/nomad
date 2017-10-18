@@ -1,15 +1,15 @@
-Hello {{ person['name'] }},
+Hello {{ person.name }},
 
-Unfortunately, the carpool at {{ carpool['leave_time'] | humanize }} from {{ carpool['from_place'] }} to {{ destination['name'] }} has been cancelled because the campaign decided to not hold an event at that location.
+Unfortunately, the carpool at {{ carpool.leave_time | humanize }} from {{ carpool.from_place }} to {{ destination.name }} has been cancelled because the campaign decided to not hold an event at that location.
 
 Please contact the campaign for more information.
 
-{% if person['id'] == carpool['driver_id'] %}
+{% if person.id == carpool.driver_id %}
 You are the driver of that carpool.
 {% endif %}
 
-Other locations my need your help. To help another campaign by being a driver to an event, please visit {{url_for('carpool.find', _external=True)}}
+Other locations my need your help. To help another campaign by being a driver to an event, please visit {{ url_for('carpool.find', _external=True) }}
 
 Thank you,
 
-Nomad & the campaign
+Nomad &amp; the campaign

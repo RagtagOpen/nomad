@@ -2,15 +2,15 @@
 
 {% block content %}
 
-<p>Hello {{ person['name'] }},</p>
+<p>Hello {{ person.name }},</p>
 
-<p>The campaign modified the destination for the carpool carpool at {{ carpool['leave_time'] | humanize }} leaving from {{ carpool['from_place'] }}. The destination has been changed to {{ destination['address'] }}.</p>
+<p>The campaign modified the destination for the carpool carpool at {{ carpool.leave_time | humanize }} leaving from {{ carpool.from_place }}. The destination has been changed to {{ destination.address }}.</p>
 
-{% if person['id'] == carpool['driver_id'] %}
+{% if person.id == carpool.driver_id %}
 <p><b>You are the driver of that carpool.</b></p>
 {% endif %}
 
-<p>Go to {{url_for('carpool.details', uuid=carpool['uuid'], _external=True)}} to see the carpool's updated details.</p>
+<p>Go to {{ url_for('carpool.details', uuid=carpool.uuid, _external=True) }} to see the carpool's updated details.</p>
 
 <p>Please contact the campaign for more information.</p>
 {% endblock %}

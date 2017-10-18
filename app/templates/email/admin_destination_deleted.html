@@ -1,20 +1,19 @@
 {% extends "email/_wrapper.html" %}
 
 {% block content %}
-<p>Hello {{ person['name'] }},</p>
+<p>Hello {{ person.name }},</p>
 
-<p>Unfortunately, the carpool at {{ carpool['leave_time'] | humanize }} from {{ carpool['from_place'] }} to {{ destination['name'] }}
-  has been cancelled because the campaign decided to not hold an event at that location.</p>
+<p>Unfortunately, the carpool at {{ carpool.leave_time | humanize }} from {{ carpool.from_place }} to {{ destination.name }} has been cancelled because the campaign decided to not hold an event at that location.</p>
 
 <p>Please contact the campaign for more information.</p>
 
-{% if person['id'] == carpool['driver_id'] %}
+{% if person.id == carpool.driver_id %}
 <p><b>You are the driver of that carpool.</b></p>
 {% endif %}
 
-<p>Other locations my need your help. To help another campaign by being a driver to an event, please visit {{url_for('carpool.find', _external=True)}}</p>
+<p>Other locations my need your help. To help another campaign by being a driver to an event, please visit {{ url_for('carpool.find', _external=True) }}</p>
 
 <p>Thank you,</p>
 
-<p>Nomad & the campaign</p>
+<p>Nomad &amp; the campaign</p>
 {% endblock %}
