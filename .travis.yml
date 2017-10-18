@@ -11,8 +11,17 @@ install:
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
 env:
-  - DATABASE_URL=postgresql://postgres@localhost/
+  global:
+    - DATABASE_URL=postgresql://postgres@localhost/
+    - CC_TEST_REPORTER_ID=vEJS4jofyfRFlaf2LWD236lZiynbIK1zoxq0vZnrNCxGHS70V/YV/2dPwTa9SG7tYWbLI2JDyzL90kaKxigR2o8s7bjQdPrleR5DC1FSLhFZMWYG/isQKY1fCyySF8v3D+ecfCcT1KYpts28YTQloiUz77zLyZu0kQ5WNrGCpmb9MJx06r0F5riWf56L1gNEAbVxU/0U+lrqkU08j6TIQTS9xb0PztPxx9IFsHBzuvZyeONR42aqKPLGyItKVykF6V2bDFqCdBwze11IyQwPujzNPItuJfmcNDwpiquoQdP9bs6wwSMFB/fWbnHr1WHFx8Hmw6nRb4oaBnfR32J2MIoW0i6+4Tn50WVQNoOvuLJSJmuYsbk30EM00hGzme01S1p+ThFuzikjoQzigaUfW0QAilKBL+Pw0jK3BJsT3gQzOuVNdInz0EdTHLPb0AOpXA8bAA54wshI8N6Sxqs3SnZ8bmA9iaDHVUWQvUNahHzuWhByEaKK0CjiVuJKHnGcPZK6e52T/imtbuzq2+YkiQPr+85iq9ylArW00S9WROHfvezjCwvn64pIudxnOHEgnJz1CCq+yue7XK3XaGnWu/xJ4cb9DGbsf0GQGrcwJPmjBCzyu9E3GecgR+SgDncecU0TuQgDjyFGWOhkruJ+3mMsP+jxj6ladfLtG60ngRc=
+
 before_script:
   - psql -U postgres -c "create extension postgis"
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 script:
-  - pytest
+  - pytest --cov app --cov-report xml:app/coverage.xml
+after_script:
+  - cd app
+  - ../cc-test-reporter after-build --coverage-input-type coverage.py --exit-code $TRAVIS_TEST_RESULT
