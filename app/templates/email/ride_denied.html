@@ -1,11 +1,11 @@
 {% extends "email/_wrapper.html" %}
 
 {% block content %}
-<p>Hi {{ rider['name'] }},</p>
+<p>Hi {{ rider.name }},</p>
 
-<p>Unfortunately, the driver declined your request to join the carpool from {{ carpool['from_place'] }} to {{ carpool['destination']['name'] }}, departing at {{ carpool['leave_time'] | humanize }}.</p>
+<p>Unfortunately, the driver declined your request to join the carpool from {{ carpool.from_place }} to {{ carpool.destination.name }}, departing at {{ carpool.leave_time | humanize }}.</p>
 
-<p>Please visit {{url_for('carpool.find', _external=True)}} to look for another ride. We want you to get there!</p>
+<p>Please visit <a href="{{ url_for('carpool.find', _external=True) }}">{{ url_for('carpool.find', _external=True) }}</a> to look for another ride. We want you to get there!</p>
 
 <p>P.S. If you're having trouble finding ride offers, make sure your local progressive organizations and party know about Nomad and are sending volunteers to share their carpools!</p>
 {% endblock %}

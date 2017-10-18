@@ -1,11 +1,11 @@
 {% extends "email/_wrapper.html" %}
 
 {% block content %}
-<p>Hi {{ carpool['driver']['name'] }},</p>
+<p>Hi {{ carpool.driver.name }},</p>
 
-<p>We wanted to let you know that {{ rider['name'] }} has dropped out of the carpool from {{ carpool['from_place'] }} to {{ carpool['destination']['name'] }} at {{ carpool['leave_time'] | humanize }}.</p>
+<p>We wanted to let you know that {{ rider.name }} has dropped out of the carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }}.</p>
 
-<p><a href="{{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }}">Details about this carpool.</a></p>
+<p><a href="{{ url_for('carpool.details', uuid=carpool.uuid, _external=True) }}">Details about this carpool.</a></p>
 
 <p>Thanks!</p>
 {% endblock %}

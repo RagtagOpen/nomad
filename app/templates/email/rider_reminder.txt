@@ -1,10 +1,10 @@
-Hi {{ rider['name'] }}!
+Hi {{ rider.name }}!
 
-Thank you for carpooling to canvass at {{ carpool['destination']['name'] }}. Your carpool's departure time is {{ carpool['leave_time'] | humanize }}, only two days away!
+Thank you for carpooling to canvass at {{ carpool.destination.name }}. Your carpool's departure time is {{ carpool.leave_time | humanize }}, only two days away!
 
-Make sure you have spoken to your driver {{ carpool['driver']['name'] }} to confirm your ride and settle all the details of pickup and drop-off. Your driver's email is {{carpool['driver']['email']}} and their phone number is {{carpool['driver']['phone_number']}} ({{carpool['driver']['preferred_contact_method']}} preferred).
+Make sure you have spoken to your driver {{ carpool.driver.name }} to confirm your ride and settle all the details of pickup and drop-off. Your driver's email is {{ carpool.driver.email }} and their phone number is {{ carpool.driver.phone_number }} ({{ carpool.driver.preferred_contact_method }} preferred).
 
-You can go to {{ url_for('carpool.details', uuid=carpool['uuid'], _external=True) }} if you need to withdraw from the carpool. If you do withdraw, please try to do so early enough that other volunteers get a chance to join the carpool and the driver can make any changes they need to.
+You can go to {{ url_for('carpool.details', uuid=carpool.uuid, _external=True) }} if you need to withdraw from the carpool. If you do withdraw, please try to do so early enough that other volunteers get a chance to join the carpool and the driver can make any changes they need to.
 
 You are doing great work, thank you for getting a ride to canvass!
 

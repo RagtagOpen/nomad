@@ -1,13 +1,13 @@
 {% extends "email/_wrapper.html" %}
 
 {% block content %}
-<p>Hi {{ carpool['driver']['name'] }},</p>
+<p>Hi {{ carpool.driver.name }},</p>
 
-<p>We wanted to let you know that {{ rider['name'] }} ({{ rider['gender'] }}) has requested a ride in your carpool from {{ carpool['from_place'] }} to {{ carpool['destination']['name'] }} at {{ carpool['leave_time'] | humanize }}.</p>
+<p>We wanted to let you know that {{ rider.name }} ({{ rider.gender_string() }}) has requested a ride in your carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }}.</p>
 
-<p>Please go to {{url_for('carpool.details', uuid=carpool['uuid'], _external=True)}} and approve or deny this request.</p>
+<p>Please go to {{url_for('carpool.details', uuid=carpool.uuid, _external=True)}} and approve or deny this request.</p>
 
-<p>{{ rider['name'] }} can be contacted at {{ rider['email'] }} or {{ rider['phone_number']}} ({{ rider['preferred_contact_method']}} preferred).</p>
+<p>{{ rider.name }} can be contacted at {{ rider.email }} or {{ rider.phone_number }} ({{ rider.preferred_contact_method }} preferred).</p>
 
 <p>You'll receive a reminder email containing all of your passengers' contact information two days before your departure date.</p>
 
