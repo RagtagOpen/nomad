@@ -4,7 +4,7 @@
 
 <p>Hello {{ person.name }},</p>
 
-<p>The campaign modified the destination for the carpool carpool at {{ carpool.leave_time | humanize }} leaving from {{ carpool.from_place }}. The destination has been changed to {{ destination.address }}.</p>
+<p>The campaign modified the destination for the carpool at {{ carpool.leave_time | humanize }} leaving from {{ carpool.from_place }}. The destination has been changed to {{ destination.address }}.</p>
 
 {% if person.id == carpool.driver_id %}
 <p><b>You are the driver of that carpool.</b></p>
