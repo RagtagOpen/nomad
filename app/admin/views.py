@@ -335,9 +335,9 @@ def _send_destination_action_email(destination, verb, template_base):
                 'admin_destination_{}'.format(template_base),
                 ride_request.person.email,
                 subject,
-                destination=destination.as_dict(),
-                carpool=carpool.as_dict(),
-                person=ride_request.person.as_dict(),
+                destination=destination,
+                carpool=carpool,
+                person=ride_request.person,
             )
 
         # For carpool driver
@@ -345,9 +345,9 @@ def _send_destination_action_email(destination, verb, template_base):
             'admin_destination_{}'.format(template_base),
             carpool.driver.email,
             subject,
-            destination=destination.as_dict(),
-            carpool=carpool.as_dict(),
-            person=carpool.driver.as_dict(),
+            destination=destination,
+            carpool=carpool,
+            person=carpool.driver,
         )
 
 
