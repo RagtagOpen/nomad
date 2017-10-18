@@ -500,9 +500,9 @@ def _email_carpool_cancelled(carpool, reason):
             'carpool_cancelled',
             rider.email,
             subject,
-            driver=driver.as_dict(),
-            rider=rider.as_dict(),
-            carpool=carpool.as_dict(),
+            driver=driver,
+            rider=rider,
+            carpool=carpool,
             reason=reason,
         )
 
@@ -512,8 +512,8 @@ def _email_driver(carpool, current_user, subject, template_name_specifier):
         template_name_specifier,
         carpool.driver.email,
         subject,
-        rider=current_user.as_dict(),
-        carpool=carpool.as_dict(),
+        rider=current_user,
+        carpool=carpool,
     )
 
 
@@ -536,8 +536,8 @@ def _email_ride_status(request, subject_beginning, template_name_specifier):
         template_name_specifier,
         request.person.email,
         subject,
-        rider=request.person.as_dict(),
-        carpool=request.carpool.as_dict(),
+        rider=request.person,
+        carpool=request.carpool,
     )
 
 
