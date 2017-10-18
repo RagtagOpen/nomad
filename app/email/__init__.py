@@ -1,5 +1,6 @@
 from flask import current_app, render_template
 from flask_mail import Message
+from werkzeug.local import LocalProxy
 
 from ..models import UuidMixin
 from .. import mail, rq
@@ -12,6 +13,11 @@ def send_email(template, recipient, subject, **kwargs):
         if isinstance(v, UuidMixin):
             new_kwargs[k] = {
                 'clz': type(v).__name__,
+                'uuid': v.uuid,
+            }
+        elif isinstance(v, LocalProxy) and isinstance(v._get_current_object(), UuidMixin):
+            new_kwargs[k] = {
+                'clz': type(v._get_current_object()).__name__,
                 'uuid': v.uuid,
             }
         else:
