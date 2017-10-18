@@ -5,12 +5,10 @@ See: http://webtest.readthedocs.org/
 import urllib
 from http import HTTPStatus
 
-from flask import url_for
+from flask import url_for, render_template
 import flask_login.utils
 
-from app.models import Person
-
-from .factories import PersonFactory
+from .factories import PersonFactory, CarpoolFactory
 
 
 class TestProfile:
@@ -33,3 +31,44 @@ class TestProfile:
         assert person.name == 'foo'
         assert person.gender == 'Female'
         assert person.preferred_contact_method == 'email'
+
+
+class TestEmailTemplates:
+    def test_ride_requested(self, db):
+        rider = PersonFactory()
+        carpool = CarpoolFactory(from_place='from')
+        db.session.add(rider)
+        db.session.add(carpool)
+        db.session.commit()
+        rendered = render_template(
+            'email/ride_requested.html',
+            carpool=carpool,
+            rider=rider,
+        )
+        assert 'requested a ride in your carpool from from to dest' in rendered
+
+    def test_ride_approved(self, db):
+        rider = PersonFactory()
+        carpool = CarpoolFactory(from_place='from')
+        db.session.add(rider)
+        db.session.add(carpool)
+        db.session.commit()
+        rendered = render_template(
+            'email/ride_approved.html',
+            carpool=carpool,
+            rider=rider,
+        )
+        assert 'approved your request to join the carpool from from to dest' in rendered
+
+    def test_ride_denied(self, db):
+        rider = PersonFactory()
+        carpool = CarpoolFactory(from_place='from')
+        db.session.add(rider)
+        db.session.add(carpool)
+        db.session.commit()
+        rendered = render_template(
+            'email/ride_denied.html',
+            carpool=carpool,
+            rider=rider,
+        )
+        assert 'declined your request to join the carpool from from to dest' in rendered
