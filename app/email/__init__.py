@@ -37,7 +37,16 @@ def send_email_queued(template, recipient, subject, **kwargs):
 
             if clz and uuid:
                 clz = getattr(app.models, clz)
-                new_kwargs[k] = clz.first_by_uuid(uuid)
+                obj = clz.first_by_uuid(uuid)
+                if not obj:
+                    current_app.logger.error(
+                        "Could not find %s instance with uuid %s",
+                        clz,
+                        uuid,
+                    )
+                    return False
+                else:
+                    new_kwargs[k] = obj
         else:
             new_kwargs[k] = v
 
