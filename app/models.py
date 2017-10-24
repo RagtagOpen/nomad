@@ -137,6 +137,8 @@ class Carpool(db.Model, UuidMixin):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime(timezone=True),
                            default=datetime.datetime.utcnow)
+    reminder_email_sent_at = db.Column(db.DateTime(timezone=True),
+                                       nullable=True)
     from_place = db.Column(db.String(120))
     from_point = db.Column(Geometry('POINT'))
     leave_time = db.Column(db.DateTime(timezone=True))

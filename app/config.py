@@ -36,6 +36,8 @@ class Config:
 
     TRIP_MAX_LENGTH_DAYS = 21
     TRIP_MAX_DAYS_IN_FUTURE = 90
+    # Number of hours ahead of departure time to send the reminder email
+    TRIP_REMINDER_HOURS = 48
 
     OAUTH_CREDENTIALS = {
         'facebook': {
