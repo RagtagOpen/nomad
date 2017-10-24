@@ -1,6 +1,6 @@
 language: python
 python:
-  - "3.6"
+- "3.6"
 # The following is necessary because of https://github.com/travis-ci/travis-ci/issues/6972
 addons:
   postgresql: 9.5
@@ -8,20 +8,21 @@ addons:
     packages:
     - postgresql-9.5-postgis-2.3
 install:
-  - pip install -r requirements.txt
-  - pip install -r dev-requirements.txt
+- pip install -r requirements.txt
+- pip install -r dev-requirements.txt
 env:
   global:
-    - FLASK_APP: wsgi.py
-    - DATABASE_URL=postgresql://postgres@localhost/
-    - CC_TEST_REPORTER_ID=vEJS4jofyfRFlaf2LWD236lZiynbIK1zoxq0vZnrNCxGHS70V/YV/2dPwTa9SG7tYWbLI2JDyzL90kaKxigR2o8s7bjQdPrleR5DC1FSLhFZMWYG/isQKY1fCyySF8v3D+ecfCcT1KYpts28YTQloiUz77zLyZu0kQ5WNrGCpmb9MJx06r0F5riWf56L1gNEAbVxU/0U+lrqkU08j6TIQTS9xb0PztPxx9IFsHBzuvZyeONR42aqKPLGyItKVykF6V2bDFqCdBwze11IyQwPujzNPItuJfmcNDwpiquoQdP9bs6wwSMFB/fWbnHr1WHFx8Hmw6nRb4oaBnfR32J2MIoW0i6+4Tn50WVQNoOvuLJSJmuYsbk30EM00hGzme01S1p+ThFuzikjoQzigaUfW0QAilKBL+Pw0jK3BJsT3gQzOuVNdInz0EdTHLPb0AOpXA8bAA54wshI8N6Sxqs3SnZ8bmA9iaDHVUWQvUNahHzuWhByEaKK0CjiVuJKHnGcPZK6e52T/imtbuzq2+YkiQPr+85iq9ylArW00S9WROHfvezjCwvn64pIudxnOHEgnJz1CCq+yue7XK3XaGnWu/xJ4cb9DGbsf0GQGrcwJPmjBCzyu9E3GecgR+SgDncecU0TuQgDjyFGWOhkruJ+3mMsP+jxj6ladfLtG60ngRc=
+  - FLASK_APP: wsgi.py
+  - DATABASE_URL=postgresql://postgres@localhost/
+  - secure: 0LU00AKDCUDrjPpuI9r5DIpVDefsPm1Qcy06uYmopW44LptrG1GT07OPpjzONd1ZYqlPxPZXCIuidtLRFnnLklR4nFuxRxIoT6Ckw3qugw2k7Z2sa2+qa6zinBKyNcOHujtGSHaOVne7v1O36nVNbcq9et59G9V3dtmLXzgLykYCw8XF9U1BTmV3R5OmdUt56KMAZylmYWQCmRUeLSS/i+c5PPMjSY/DgQTGrsHfWYWGC+E7WwJ5cUjvjOpGJJ7FYO1uu39j4BVfaOlmRIyfACTos71FjLVhMpXFIj+sbtAyXBSAOnYBbVPLWoFPt+4wUJCni2zsvt/xcF9WWllJ1klzMc2R1xNIbJXf04D8G6p8vR62bxTJltPHZeZveqPXY2ACEWx4KdOqLaS++XialjaXfq4dHk3KRHF2VZ/Ba4mAL0W4PGGc2lL9nGCFaoB7lBsj7/p0z1WUEcurZiSOCRV7dqShhFxNrtBFvCIwUmXHNeNWS4fVcJa0WxKOfirRAqpj+Q8pZ5JggYXAXEKH3+MNe8+PRYLSugLlbu6HvCdI6PP5vUBy6kypZ1mTE3+NkIsfmYFI5ED2XCv/vv48CoOCvWGsq1HP3kv27g9Q995hwVK3ovTQgYx8rfUvDpK7VIgyCzWOMY1KBsaEZ6DUscakOScRO7RtP6ZK5LjQOIQ=
 before_script:
-  - psql -U postgres -c "create extension postgis"
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
+- psql -U postgres -c "create extension postgis"
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+  > ./cc-test-reporter
+- chmod +x ./cc-test-reporter
+- "./cc-test-reporter before-build"
 script:
-  - pytest --cov app --cov-report xml:app/coverage.xml
+- pytest --cov app --cov-report xml:app/coverage.xml
 after_script:
-  - cd app
-  - ../cc-test-reporter after-build --coverage-input-type coverage.py --exit-code $TRAVIS_TEST_RESULT
+- cd app
+- "../cc-test-reporter after-build --coverage-input-type coverage.py --exit-code $TRAVIS_TEST_RESULT"
