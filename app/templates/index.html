@@ -4,51 +4,52 @@
 
 <div class="content splash-only">
 
-	<div class="fullscreen jumbo">
-		<div class="interstitial-page">
-			<div class="bg-image"></div>
-			<h4>Share your ride</h4>
-			<h1>Virginia has 100 districts that need your help this November!</h1>
-			<h2>Join your neighbors' carpools to save time, money, and the environment.</h2>
-			<form method="GET" action="{{ url_for('carpool.find') }}"">
-				<input type="text" name="q" id="locationQuery" placeholder="Zip code or City, State"> <input class="primary" type="submit" value="Find a ride">
-			</form>
-			<p>Can you drive? <a href="{{ url_for('carpool.new') }}">Start your own carpool</a> instead.</p>
-		</div>
-	</div>
+    <div class="fullscreen jumbo">
+        <div class="interstitial-page">
+            <div class="bg-image"></div>
+            <h4>Share your ride</h4>
+            <h1>Virginia has 100 districts that need your help this November!</h1>
+            <h2>Join carpools traveling to canvass voters in swing districts.</h2>
+            <form method="GET" action="{{ url_for('carpool.find') }}"">
+                <input type="text" name="q" id="locationQuery" placeholder="Zip code or City, State"> <input class="primary" type="submit" value="Find a ride">
+            </form>
+            <p>Can you drive? <a href="{{ url_for('carpool.new') }}">Start your own carpool</a> instead.</p>
+        </div>
+    </div>
 
-	<div class="fullscreen jumbo-second">
-		<div class="interstitial-page">
-			<h3>These candidates are currently looking for volunteers:</h3>
-			<p><a href="https://www.kellyforva.com/" target="_blank">Kelly DeLucia</a> - VA House of Delegates District 96</p>
+    <div class="fullscreen jumbo-second">
+        <div class="interstitial-page">
+            <h3>These candidates are currently looking for volunteers:</h3>
+            <p><a href="https://www.kellyforva.com/" target="_blank">Kelly DeLucia</a> - VA House of Delegates District 96</p>
+            <p><a href="https://events.vademocrats.org/#events" target="_blank">Virginia Democrats</a></p>
 
-			<h3 class="top-border">Safety Tips</h3>
-			<ul>
-				<li>Have a live phone conversation with your driver or passengers before the pickup</li>
-				<li>Check out your driver’s or passengers' social media profile(s)</li>
-				<li>Make sure a friend or family member knows where you’re going and with who; check in with them at stages of your trip and canvassing</li>
-				<li>Charge your phone</li>
-			</ul>
-			
-			<h3 class="top-border">Canvassing Tips</h3>
-			<ul>
-				<li>Charge your phone</li>
-				<li>Get the volunteer coordinator’s phone number</li>
-				<li>Listen carefully to all instructions</li>
-				<li>If a house or encounter with a constituent makes you feel uncomfortable for any reason, retreat, move on, and alert the local volunteer coordinator</li>
-				<li>Bring water and a snack</li>
-			</ul>
+            <h3 class="top-border">Safety Tips</h3>
+            <ul>
+                <li>Have a live phone conversation with your driver or passengers before the pickup</li>
+                <li>Check out your driver’s or passengers' social media profile(s)</li>
+                <li>Make sure a friend or family member knows where you’re going and with who; check in with them at stages of your trip and canvassing</li>
+                <li>Charge your phone</li>
+            </ul>
 
-			<h3 class="top-border">Need to contact us?</h3>
-			<p>Email the Nomad team for help: <a href="mailto:{{ config.get('MAIL_DEFAULT_SENDER') }}">{{ config.get('MAIL_DEFAULT_SENDER') }}</a>.</p>
-			<p>Got questions about our Privacy Policy or Terms of Use? You can find them <a href="{{ url_for('auth.terms') }}">here</a>.</p>
+            <h3 class="top-border">Canvassing Tips</h3>
+            <ul>
+                <li>Charge your phone</li>
+                <li>Get the volunteer coordinator’s phone number</li>
+                <li>Listen carefully to all instructions</li>
+                <li>If a house or encounter with a constituent makes you feel uncomfortable for any reason, retreat, move on, and alert the local volunteer coordinator</li>
+                <li>Bring water and a snack</li>
+            </ul>
 
-			<h3 class="top-border">About Nomad</h3>
-			<p>Nomad was built by Ragtag, a team of tech volunteers who help activists, organizers, non-profits, and candidates break down tech barriers making it easier to achieve their organizing goals. Nomad lets volunteers help their fellow volunteers get to where they can have the biggest impact.</p>
-			<p>Use Nomad to get volunteers to your campaign or find out more about Ragtag: <a href="http://ragtag.org/nomad" target="_blank">http://ragtag.org/nomad</a>.</p>
+            <h3 class="top-border">Need to contact us?</h3>
+            <p>Email the Nomad team for help: <a href="mailto:{{ config.get('MAIL_DEFAULT_SENDER') }}">{{ config.get('MAIL_DEFAULT_SENDER') }}</a>.</p>
+            <p>Got questions about our Privacy Policy or Terms of Use? You can find them <a href="{{ url_for('auth.terms') }}">here</a>.</p>
 
-		</div>
-	</div>
+            <h3 class="top-border">About Nomad</h3>
+            <p>Nomad was built by Ragtag, a team of tech volunteers who help activists, organizers, non-profits, and candidates break down tech barriers making it easier to achieve their organizing goals. Nomad lets volunteers help their fellow volunteers get to where they can have the biggest impact.</p>
+            <p>Use Nomad to get volunteers to your campaign or find out more about Ragtag: <a href="http://ragtag.org/nomad" target="_blank">http://ragtag.org/nomad</a>.</p>
+
+        </div>
+    </div>
 
 </div>
 

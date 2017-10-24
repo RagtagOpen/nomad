@@ -137,6 +137,8 @@ class Carpool(db.Model, UuidMixin):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime(timezone=True),
                            default=datetime.datetime.utcnow)
+    reminder_email_sent_at = db.Column(db.DateTime(timezone=True),
+                                       nullable=True)
     from_place = db.Column(db.String(120))
     from_point = db.Column(Geometry('POINT'))
     leave_time = db.Column(db.DateTime(timezone=True))
@@ -149,6 +151,7 @@ class Carpool(db.Model, UuidMixin):
 
     ride_requests = relationship("RideRequest", cascade="all, delete-orphan")
     destination = relationship("Destination")
+    driver = relationship("Person")
 
     def get_ride_requests_query(self, statuses=None):
         query = RideRequest.query.filter_by(carpool_id=self.id)
@@ -169,10 +172,6 @@ class Carpool(db.Model, UuidMixin):
     @property
     def current_user_is_driver(self):
         return current_user.id == self.driver_id
-
-    @property
-    def driver(self):
-        return Person.query.get(self.driver_id)
 
     def get_riders(self, statuses):
         requests = self.get_ride_requests_query(statuses).all()
@@ -212,7 +211,7 @@ class Destination(db.Model, UuidMixin):
 
     @classmethod
     def find_all_visible(clz):
-        return clz.query.filter(clz.hidden != True).order_by(clz.name)
+        return clz.query.filter(clz.hidden is not True).order_by(clz.name)
 
     def as_geojson(self):
         """ Returns a GeoJSON Feature object for this Destination. """
