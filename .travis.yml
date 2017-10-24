@@ -11,6 +11,8 @@ install:
   - pip install -r requirements.txt
   - pip install -r dev-requirements.txt
 env:
+  global:
+  - FLASK_APP: wsgi.py
   - DATABASE_URL=postgresql://postgres@localhost/
 before_script:
   - psql -U postgres -c "create extension postgis"
