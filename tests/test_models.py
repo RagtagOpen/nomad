@@ -4,9 +4,9 @@ import datetime as dt
 
 import pytest
 
-from app.models import Person, Role
+from app.models import Person, RideRequest, Role
 
-from .factories import PersonFactory
+from .factories import CarpoolFactory, PersonFactory
 
 
 @pytest.mark.usefixtures('db')
@@ -51,3 +51,53 @@ class TestPerson:
         person.roles.append(role)
         assert role in person.roles
         assert person.has_roles('admin')
+
+
+@pytest.mark.usefixtures('db')
+class TestCarpool:
+    """Carpool tests."""
+
+    def test_get_ride_requests_query(self, db):
+        """Test get ride requests query"""
+        carpool_1 = CarpoolFactory()
+        carpool_2 = CarpoolFactory()
+
+        person = PersonFactory()
+
+        ride_request_1 = RideRequest(
+            person = person,
+            carpool = carpool_1,
+        )
+        ride_request_2 = RideRequest(
+            person = person,
+            carpool = carpool_1,
+            status = 'approved',
+        )
+        ride_request_3 = RideRequest(
+            person = person,
+            carpool = carpool_2,
+            status = 'rejected',
+        )
+
+        db.session.add_all([
+            carpool_1,
+            carpool_2,
+            person,
+            ride_request_1,
+            ride_request_2,
+            ride_request_3,
+        ])
+        db.session.commit()
+
+        all_ride_requests = \
+            carpool_1.get_ride_requests_query().all()
+
+        assert len(all_ride_requests) == 2
+        assert all_ride_requests[0] == ride_request_1
+        assert all_ride_requests[1] == ride_request_2
+
+        approved_ride_requests = \
+            carpool_1.get_ride_requests_query([ 'approved' ]).all()
+
+        assert len(approved_ride_requests) == 1
+        assert approved_ride_requests[0] == ride_request_2
