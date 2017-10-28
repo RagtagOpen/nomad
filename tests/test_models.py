@@ -171,3 +171,67 @@ class TestCarpool:
 
         assert carpool_1.current_user_is_driver == True
         assert carpool_2.current_user_is_driver == False
+
+    def test_get_when_no_requests(self, db):
+        """Test get riders when no ride requests have been made"""
+        carpool = CarpoolFactory()
+        assert len(carpool.get_riders(['approved'])) == 0
+
+    def test_get_riders(self, db):
+        """Test get riders"""
+        carpool_1 = CarpoolFactory()
+        carpool_2 = CarpoolFactory()
+
+        person_1 = PersonFactory()
+        person_2 = PersonFactory()
+
+        ride_request_1 = RideRequest(
+            person = person_1,
+            carpool = carpool_1,
+            status = 'approved',
+        )
+        ride_request_2 = RideRequest(
+            person = person_2,
+            carpool = carpool_1,
+            status = 'approved',
+        )
+        ride_request_3 = RideRequest(
+            person = person_1,
+            carpool = carpool_2,
+            status = 'rejected',
+        )
+        ride_request_4 = RideRequest(
+            person = person_2,
+            carpool = carpool_2,
+            status = 'approved',
+        )
+
+        db.session.add_all([
+            carpool_1,
+            carpool_2,
+            person_1,
+            person_2,
+            ride_request_1,
+            ride_request_2,
+            ride_request_3,
+            ride_request_4,
+        ])
+        db.session.commit()
+
+        assert len(carpool_1.get_riders(['rejected'])) == 0
+
+        approved_carpool_1_riders = carpool_1.get_riders(['approved'])
+        assert len(approved_carpool_1_riders) == 2
+        assert approved_carpool_1_riders[0] is person_1
+        assert approved_carpool_1_riders[1] is person_2
+
+        rejected_carpool_2_riders = carpool_2.get_riders(['rejected'])
+
+        assert len(rejected_carpool_2_riders) == 1
+        assert rejected_carpool_2_riders[0] is person_1
+
+        approved_rejected_carpool_2_riders = carpool_2.get_riders(['approved', 'rejected'])
+
+        assert len(approved_rejected_carpool_2_riders) == 2
+        assert approved_rejected_carpool_2_riders[0] is person_1
+        assert approved_rejected_carpool_2_riders[1] is person_2
