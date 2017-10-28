@@ -94,15 +94,12 @@ class TestCarpool:
         all_ride_requests = \
             carpool_1.get_ride_requests_query().all()
 
-        assert len(all_ride_requests) == 2
-        assert all_ride_requests[0] is ride_request_1
-        assert all_ride_requests[1] is ride_request_2
+        assert set(all_ride_requests) == { ride_request_1, ride_request_2 }
 
         approved_ride_requests = \
             carpool_1.get_ride_requests_query([ 'approved' ]).all()
 
-        assert len(approved_ride_requests) == 1
-        assert approved_ride_requests[0] is ride_request_2
+        assert approved_ride_requests == [ ride_request_2 ]
 
     def test_get_current_user_ride_request_not_logged_in(self):
         """Test get curent user ride request when user is not logged in"""
@@ -221,20 +218,15 @@ class TestCarpool:
         assert len(carpool_1.get_riders(['rejected'])) == 0
 
         approved_carpool_1_riders = carpool_1.get_riders(['approved'])
-        assert len(approved_carpool_1_riders) == 2
-        assert approved_carpool_1_riders[0] is person_1
-        assert approved_carpool_1_riders[1] is person_2
+        assert set(approved_carpool_1_riders) == { person_1, person_2 }
 
         rejected_carpool_2_riders = carpool_2.get_riders(['rejected'])
 
-        assert len(rejected_carpool_2_riders) == 1
-        assert rejected_carpool_2_riders[0] is person_1
+        assert rejected_carpool_2_riders == [ person_1 ]
 
         approved_rejected_carpool_2_riders = carpool_2.get_riders(['approved', 'rejected'])
 
-        assert len(approved_rejected_carpool_2_riders) == 2
-        assert approved_rejected_carpool_2_riders[0] is person_1
-        assert approved_rejected_carpool_2_riders[1] is person_2
+        assert set(approved_rejected_carpool_2_riders) == { person_1, person_2 }
 
     def test_riders_and_potential_riders_properties(self, db):
         """Test riders and potential riders properties"""
@@ -263,12 +255,9 @@ class TestCarpool:
         ])
         db.session.commit()
 
-        assert len(carpool.riders) == 1
-        assert carpool.riders[0] is person_1
+        assert carpool.riders == [ person_1 ]
 
-        assert len(carpool.riders_and_potential_riders) == 2
-        assert carpool.riders_and_potential_riders[0] is person_1
-        assert carpool.riders_and_potential_riders[1] is person_2
+        assert set(carpool.riders_and_potential_riders) == { person_1, person_2 }
 
     def test_seats_available(self, db):
         """test seats available property"""
