@@ -235,3 +235,37 @@ class TestCarpool:
         assert len(approved_rejected_carpool_2_riders) == 2
         assert approved_rejected_carpool_2_riders[0] is person_1
         assert approved_rejected_carpool_2_riders[1] is person_2
+
+    def test_riders_and_potential_riders_properties(self, db):
+        """Test riders and potential riders properties"""
+        carpool = CarpoolFactory()
+
+        person_1 = PersonFactory()
+        person_2 = PersonFactory()
+
+        ride_request_1 = RideRequest(
+            person = person_1,
+            carpool = carpool,
+            status = 'approved',
+        )
+        ride_request_2 = RideRequest(
+            person = person_2,
+            carpool = carpool,
+            status = 'requested',
+        )
+
+        db.session.add_all([
+            carpool,
+            person_1,
+            person_2,
+            ride_request_1,
+            ride_request_2,
+        ])
+        db.session.commit()
+
+        assert len(carpool.riders) == 1
+        assert carpool.riders[0] is person_1
+
+        assert len(carpool.riders_and_potential_riders) == 2
+        assert carpool.riders_and_potential_riders[0] is person_1
+        assert carpool.riders_and_potential_riders[1] is person_2
