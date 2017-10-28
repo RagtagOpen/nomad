@@ -4,6 +4,8 @@ import datetime as dt
 
 import pytest
 
+import flask_login.utils
+
 from app.models import Person, RideRequest, Role
 
 from .factories import CarpoolFactory, PersonFactory
@@ -93,11 +95,48 @@ class TestCarpool:
             carpool_1.get_ride_requests_query().all()
 
         assert len(all_ride_requests) == 2
-        assert all_ride_requests[0] == ride_request_1
-        assert all_ride_requests[1] == ride_request_2
+        assert all_ride_requests[0] is ride_request_1
+        assert all_ride_requests[1] is ride_request_2
 
         approved_ride_requests = \
             carpool_1.get_ride_requests_query([ 'approved' ]).all()
 
         assert len(approved_ride_requests) == 1
-        assert approved_ride_requests[0] == ride_request_2
+        assert approved_ride_requests[0] is ride_request_2
+
+    def test_get_current_user_ride_request_not_logged_in(self):
+        """Test get curent user ride request when user is not logged in"""
+        carpool = CarpoolFactory()
+        assert carpool.get_current_user_ride_request() == None
+
+    def test_get_current_user_ride_request_logged_in(self, db, monkeypatch):
+        carpool = CarpoolFactory()
+
+        person_1 = PersonFactory()
+        person_2 = PersonFactory()
+
+        ride_request_1 = RideRequest(
+            person = person_2,
+            carpool = carpool,
+        )
+        ride_request_2 = RideRequest(
+            person = person_1,
+            carpool = carpool,
+        )
+
+        db.session.add_all([
+            carpool,
+            person_1,
+            person_2,
+            ride_request_1,
+            ride_request_2,
+        ])
+        db.session.commit()
+
+        monkeypatch.setattr(
+            flask_login.utils,
+            '_get_user',
+            lambda: person_1,
+        )
+
+        assert carpool.get_current_user_ride_request() is ride_request_2
