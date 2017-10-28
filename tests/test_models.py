@@ -143,12 +143,12 @@ class TestCarpool:
         assert carpool.get_current_user_ride_request() is ride_request_2
 
     def test_current_user_is_driver_not_logged_in(self):
-        """Test current user is driver when user is not logged in"""
+        """Test current user is driver property when user is not logged in"""
         carpool = CarpoolFactory()
         assert carpool.current_user_is_driver == False
 
     def test_current_user_is_driver_logged_in(self, db, monkeypatch):
-        """Test current user is driver when user is logged in"""
+        """Test current user is driver property when user is logged in"""
         person_1 = PersonFactory()
         person_2 = PersonFactory()
 
