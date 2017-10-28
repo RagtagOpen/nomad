@@ -110,6 +110,7 @@ class TestCarpool:
         assert carpool.get_current_user_ride_request() == None
 
     def test_get_current_user_ride_request_logged_in(self, db, monkeypatch):
+        """Test get curent user ride request when user is logged in"""
         carpool = CarpoolFactory()
 
         person_1 = PersonFactory()
@@ -140,3 +141,33 @@ class TestCarpool:
         )
 
         assert carpool.get_current_user_ride_request() is ride_request_2
+
+    def test_current_user_is_driver_not_logged_in(self):
+        """Test current user is driver when user is not logged in"""
+        carpool = CarpoolFactory()
+        assert carpool.current_user_is_driver == False
+
+    def test_current_user_is_driver_logged_in(self, db, monkeypatch):
+        """Test current user is driver when user is logged in"""
+        person_1 = PersonFactory()
+        person_2 = PersonFactory()
+
+        carpool_1 = CarpoolFactory(driver = person_1)
+        carpool_2 = CarpoolFactory(driver = person_2)
+
+        db.session.add_all([
+            person_1,
+            person_2,
+            carpool_1,
+            carpool_2,
+        ])
+        db.session.commit()
+
+        monkeypatch.setattr(
+            flask_login.utils,
+            '_get_user',
+            lambda: person_1,
+        )
+
+        assert carpool_1.current_user_is_driver == True
+        assert carpool_2.current_user_is_driver == False
