@@ -169,7 +169,10 @@ class Carpool(db.Model, UuidMixin):
 
     @property
     def current_user_is_driver(self):
-        return current_user.id == self.driver_id
+        if current_user.is_anonymous:
+            return False
+        else:
+            return current_user.id == self.driver_id
 
     def get_riders(self, statuses):
         requests = self.get_ride_requests_query(statuses).all()
