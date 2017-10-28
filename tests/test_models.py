@@ -6,9 +6,9 @@ import pytest
 
 import flask_login.utils
 
-from app.models import Person, RideRequest, Role
+from app.models import Person, Role
 
-from .factories import CarpoolFactory, PersonFactory
+from .factories import CarpoolFactory, PersonFactory, RideRequestFactory
 
 
 @pytest.mark.usefixtures('db')
@@ -64,19 +64,12 @@ class TestCarpool:
         carpool_1 = CarpoolFactory()
         carpool_2 = CarpoolFactory()
 
-        person = PersonFactory()
-
-        ride_request_1 = RideRequest(
-            person = person,
-            carpool = carpool_1,
-        )
-        ride_request_2 = RideRequest(
-            person = person,
+        ride_request_1 = RideRequestFactory(carpool = carpool_1)
+        ride_request_2 = RideRequestFactory(
             carpool = carpool_1,
             status = 'approved',
         )
-        ride_request_3 = RideRequest(
-            person = person,
+        ride_request_3 = RideRequestFactory(
             carpool = carpool_2,
             status = 'rejected',
         )
@@ -84,7 +77,6 @@ class TestCarpool:
         db.session.add_all([
             carpool_1,
             carpool_2,
-            person,
             ride_request_1,
             ride_request_2,
             ride_request_3,
@@ -110,22 +102,11 @@ class TestCarpool:
         """Test get curent user ride request when user is logged in"""
         carpool = CarpoolFactory()
 
-        person_1 = PersonFactory()
-        person_2 = PersonFactory()
-
-        ride_request_1 = RideRequest(
-            person = person_2,
-            carpool = carpool,
-        )
-        ride_request_2 = RideRequest(
-            person = person_1,
-            carpool = carpool,
-        )
+        ride_request_1 = RideRequestFactory(carpool = carpool)
+        ride_request_2 = RideRequestFactory(carpool = carpool)
 
         db.session.add_all([
             carpool,
-            person_1,
-            person_2,
             ride_request_1,
             ride_request_2,
         ])
@@ -134,7 +115,7 @@ class TestCarpool:
         monkeypatch.setattr(
             flask_login.utils,
             '_get_user',
-            lambda: person_1,
+            lambda: ride_request_2.person,
         )
 
         assert carpool.get_current_user_ride_request() is ride_request_2
@@ -146,15 +127,10 @@ class TestCarpool:
 
     def test_current_user_is_driver_logged_in(self, db, monkeypatch):
         """Test current user is driver property when user is logged in"""
-        person_1 = PersonFactory()
-        person_2 = PersonFactory()
-
-        carpool_1 = CarpoolFactory(driver = person_1)
-        carpool_2 = CarpoolFactory(driver = person_2)
+        carpool_1 = CarpoolFactory()
+        carpool_2 = CarpoolFactory()
 
         db.session.add_all([
-            person_1,
-            person_2,
             carpool_1,
             carpool_2,
         ])
@@ -163,7 +139,7 @@ class TestCarpool:
         monkeypatch.setattr(
             flask_login.utils,
             '_get_user',
-            lambda: person_1,
+            lambda: carpool_1.driver,
         )
 
         assert carpool_1.current_user_is_driver == True
@@ -179,26 +155,19 @@ class TestCarpool:
         carpool_1 = CarpoolFactory()
         carpool_2 = CarpoolFactory()
 
-        person_1 = PersonFactory()
-        person_2 = PersonFactory()
-
-        ride_request_1 = RideRequest(
-            person = person_1,
+        ride_request_1 = RideRequestFactory(
             carpool = carpool_1,
             status = 'approved',
         )
-        ride_request_2 = RideRequest(
-            person = person_2,
+        ride_request_2 = RideRequestFactory(
             carpool = carpool_1,
             status = 'approved',
         )
-        ride_request_3 = RideRequest(
-            person = person_1,
+        ride_request_3 = RideRequestFactory(
             carpool = carpool_2,
             status = 'rejected',
         )
-        ride_request_4 = RideRequest(
-            person = person_2,
+        ride_request_4 = RideRequestFactory(
             carpool = carpool_2,
             status = 'approved',
         )
@@ -206,8 +175,6 @@ class TestCarpool:
         db.session.add_all([
             carpool_1,
             carpool_2,
-            person_1,
-            person_2,
             ride_request_1,
             ride_request_2,
             ride_request_3,
@@ -218,67 +185,64 @@ class TestCarpool:
         assert len(carpool_1.get_riders(['rejected'])) == 0
 
         approved_carpool_1_riders = carpool_1.get_riders(['approved'])
-        assert set(approved_carpool_1_riders) == { person_1, person_2 }
+        assert set(approved_carpool_1_riders) == {
+            ride_request_1.person,
+            ride_request_2.person,
+        }
 
         rejected_carpool_2_riders = carpool_2.get_riders(['rejected'])
 
-        assert rejected_carpool_2_riders == [ person_1 ]
+        assert rejected_carpool_2_riders == [ ride_request_3.person ]
 
         approved_rejected_carpool_2_riders = carpool_2.get_riders(['approved', 'rejected'])
 
-        assert set(approved_rejected_carpool_2_riders) == { person_1, person_2 }
+        assert set(approved_rejected_carpool_2_riders) == {
+            ride_request_3.person,
+            ride_request_4.person,
+        }
 
     def test_riders_and_potential_riders_properties(self, db):
         """Test riders and potential riders properties"""
         carpool = CarpoolFactory()
 
-        person_1 = PersonFactory()
-        person_2 = PersonFactory()
-
-        ride_request_1 = RideRequest(
-            person = person_1,
+        ride_request_1 = RideRequestFactory(
             carpool = carpool,
             status = 'approved',
         )
-        ride_request_2 = RideRequest(
-            person = person_2,
+        ride_request_2 = RideRequestFactory(
             carpool = carpool,
             status = 'requested',
         )
 
         db.session.add_all([
             carpool,
-            person_1,
-            person_2,
             ride_request_1,
             ride_request_2,
         ])
         db.session.commit()
 
-        assert carpool.riders == [ person_1 ]
+        assert carpool.riders == [ ride_request_1.person ]
 
-        assert set(carpool.riders_and_potential_riders) == { person_1, person_2 }
+        assert set(carpool.riders_and_potential_riders) == {
+            ride_request_1.person,
+            ride_request_2.person,
+        }
 
     def test_seats_available(self, db):
         """test seats available property"""
         carpool = CarpoolFactory(max_riders = 4)
 
-        person = PersonFactory()
-
-        ride_request_1 = RideRequest(
-            person = person,
+        ride_request_1 = RideRequestFactory(
             carpool = carpool,
             status = 'approved',
         )
-        ride_request_2 = RideRequest(
-            person = person,
+        ride_request_2 = RideRequestFactory(
             carpool = carpool,
             status = 'requested',
         )
 
         db.session.add_all([
             carpool,
-            person,
             ride_request_1,
             ride_request_2,
         ])
