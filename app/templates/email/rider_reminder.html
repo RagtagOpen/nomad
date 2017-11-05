@@ -3,7 +3,12 @@
 {% block content %}
 <p>Hi {{ rider.name }}!</p>
 
-<p>Thank you for carpooling to canvass at {{ carpool.destination.name }}. Your carpool's departure time is
+<p>Thank you for carpooling to canvass</p>
+<p>Pickup: {{ carpool.from_place }}</p>
+<p>Destination Name: {{ carpool.destination.name }}</p>
+<p>Destination Address: {{ carpool.destination.address }}</p>
+
+<p> Your carpool's departure time is
   {{ carpool.leave_time | humanize }}, only two days away!</p>
 
 <p>Make sure you have spoken to your driver {{ carpool.driver.name }} to confirm your ride and settle all the details of pickup and drop-off. Your driver's email is {{ carpool.driver.email }} and their phone number is {{ carpool.driver.phone_number }} ({{ carpool.driver.preferred_contact_method }} preferred).</p>
