@@ -32,6 +32,7 @@ class PersonFactory(BaseFactory):
 class DestinationFactory(BaseFactory):
     """Carpool factory."""
     name = Sequence(lambda n: 'dest{0}'.format(n))
+    address = Sequence(lambda n: '123 fake street'.format(n))
 
     class Meta:
         """Factory configuration."""

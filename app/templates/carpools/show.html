@@ -20,7 +20,12 @@
             {% set current_user_ride_request = pool.get_current_user_ride_request() %}
 
             <h4>Carpool Details</h4>
-            <h1>{{ pool.from_place }} to {{ pool.destination.name }}</h1>
+            <p><b>pickup</b>: {{ pool.from_place }}</p>
+            <p><b>destination name</b>: {{ pool.destination.name }}</p>
+            {% if pool.current_user_is_driver or current_user_ride_request and current_user_ride_request.status == 'approved' %}
+            <p><b>destination address</b>: {{ pool.destination.address }}</p>
+            {%- endif %}
+
 
             <h4>Carpool Status</h4>
 

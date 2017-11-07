@@ -35,7 +35,10 @@
 
                     <p>Departs: {{ pool.leave_time | humanize }}</p>
                     <p>Returns: {{ pool.return_time | humanize }}</p>
-                    <p>Destination: {{ pool.destination.name }}</p>
+                    <p>Destination name: {{ pool.destination.name }}</p>
+                    {% if pool.current_user_is_driver or current_user_ride_request and current_user_ride_request.status == 'approved' %}
+                    <p>Destination address: {{ pool.destination.address }}</p>
+                    {%- endif %}
                 </div>
             </div>
 {% else %}

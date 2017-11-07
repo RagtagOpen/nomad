@@ -1,6 +1,11 @@
 Hi {{ carpool.driver.name }}!
 
-Thank you for carpooling to canvass at {{ carpool.destination.name }}. Your carpool's departure time is {{ carpool.leave_time | humanize }}, only two days away!
+Thank you for carpooling to canvass
+Pickup: {{ carpool.from_place }}
+Destination Name: {{ carpool.destination.name }}
+Destination Address: {{ carpool.destination.address }}
+
+Your carpool's departure time is {{ carpool.leave_time | humanize }}, only two days away!
 
 As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm their rides and settle all the details of pickup and drop-off. Your passengers are:
 {% for rider in carpool.riders %}
