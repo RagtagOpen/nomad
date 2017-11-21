@@ -102,7 +102,7 @@ def start_geojson():
             # The conversion factor here is based on a 40deg latitude
             # (roughly around Virginia)
             radius_degrees = near_radius / 111034.61
-            pools.filter(
+            pools = pools.filter(
                 func.ST_Distance(Carpool.from_point, center) <= radius_degrees
             )
 
