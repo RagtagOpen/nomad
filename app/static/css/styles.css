@@ -211,6 +211,10 @@ select:focus {
 	margin: 10px 0;
 	background: url("../img/logo-dark.png") top left / contain no-repeat;
 }
+.header-left .logo.generic {
+	background: url("../img/logo-dark-generic.png") top left / contain no-repeat;
+}
+
 .header-left .header-search-bar {
 	-webkit-box-flex: 1;
 	    -ms-flex: 1 0 500px;
