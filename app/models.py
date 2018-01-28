@@ -95,6 +95,8 @@ class Person(UserMixin, db.Model, UuidMixin):
     roles = db.relationship('Role', secondary='people_roles',
                             backref=db.backref('roles',
                                                lazy='dynamic'))
+    visits = relationship("Visit", cascade="all, delete-orphan")
+    hostings = relationship("Hosting", cascade="all, delete-orphan")
 
     def get_id(self):
         """ Overiding the UserMixin `get_id()` to give back the uuid. """
@@ -125,6 +127,15 @@ class Person(UserMixin, db.Model, UuidMixin):
 
         return requested_role_set.issubset(our_role_set)
 
+    def get_hostings_query(self):
+        query = Hosting.query.filter_by(host_id=self.id)
+
+        return query
+
+    def get_visits_query(self):
+        query = Visit.query.filter_by(host_id=self.id)
+
+        return query
 
 @login_manager.user_loader
 def load_user(id):
@@ -226,3 +237,74 @@ class Destination(db.Model, UuidMixin):
             },
             "geometry": mapping(to_shape(self.point))
         }
+
+class Contact(db.Model, UuidMixin):
+    __tablename__ = 'contacts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    hosting_id = db.Column(db.Integer, db.ForeignKey('hostings.id'))
+    visit_id = db.Column(db.Integer, db.ForeignKey('visits.id'))
+    sent_at = db.Column(db.DateTime(timezone=True),
+                        nullable=True)
+    created_at = db.Column(db.DateTime(timezone=True),
+                           default=datetime.datetime.utcnow)
+
+    hosting = db.relationship("Hosting")
+    visit = db.relationship("Visit")
+
+    # TODO: add status for approvals
+    # TODO: add methods: find by status, ...
+
+class Hosting(db.Model, UuidMixin):
+    __tablename__ = 'hostings'
+
+    id = db.Column(db.Integer, primary_key=True)
+    host_id = db.Column(db.Integer, db.ForeignKey('people.id'))
+    max_guests = db.Column(db.Integer)
+    contact_count = db.Column(db.Integer)
+    comments = db.Column(db.Text)
+    city = db.Column(db.String(50))
+    state = db.Column(db.String(2))
+    zipcode = db.Column(db.String(10))
+    point = db.Column(Geometry('POINT'))
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+    accomodation_type = db.Column(db.Enum(['home', 'hotel']))
+    created_at = db.Column(db.DateTime(timezone=True),
+                           default=datetime.datetime.utcnow)
+
+    host = db.relationship("Person")
+    contacts = relationship("Contact", cascade="all, delete-orphan")
+
+    def get_contacts_query(self):
+        query = Contact.query.filter_by(hosting_id=self.id)
+
+        return query
+
+    # TODO: add methods: geocoding, spaces available
+
+class Visit(db.Model, UuidMixin):
+    __tablename__ = 'visits'
+
+    id = db.Column(db.Integer, primary_key=True)
+    visitor_id = db.Column(db.Integer, db.ForeignKey('people.id'))
+    num_travelers = db.Column(db.Integer,
+                              default=1)
+    city = db.Column(db.String(50))
+    state = db.Column(db.String(13))
+    zipcode = db.Column(db.String(2))
+    point = db.Column(Geometry('POINT'))
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
+    created_at = db.Column(db.DateTime(timezone=True),
+                           default=datetime.datetime.utcnow)
+
+    visitor = db.relationship("Person")
+    contacts = relationship("Contact", cascade="all, delete-orphan")
+
+    def get_contacts_query(self):
+        query = Contact.query.filter_by(visit_id=self.id)
+
+        return query
+
+    # TODO: add methods: geocoding, ...
