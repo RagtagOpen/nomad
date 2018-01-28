@@ -1,4 +1,5 @@
 import datetime
+import enum
 import uuid
 from flask import abort
 from flask_login import UserMixin, current_user
@@ -255,6 +256,10 @@ class Contact(db.Model, UuidMixin):
     # TODO: add status for approvals
     # TODO: add methods: find by status, ...
 
+class HostingEnum(enum.Enum):
+    home = 1
+    hotel = 2
+
 class Hosting(db.Model, UuidMixin):
     __tablename__ = 'hostings'
 
@@ -269,7 +274,7 @@ class Hosting(db.Model, UuidMixin):
     point = db.Column(Geometry('POINT'))
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
-    accomodation_type = db.Column(db.Enum(['home', 'hotel']))
+    accomodation_type = db.Column(db.Enum(HostingEnum))
     created_at = db.Column(db.DateTime(timezone=True),
                            default=datetime.datetime.utcnow)
 
