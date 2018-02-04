@@ -247,14 +247,14 @@ class Contact(db.Model, UuidMixin):
     visit_id = db.Column(db.Integer, db.ForeignKey('visits.id'))
     sent_at = db.Column(db.DateTime(timezone=True),
                         nullable=True)
+    status = db.Column(db.String(120))
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)
     created_at = db.Column(db.DateTime(timezone=True),
                            default=datetime.datetime.utcnow)
 
     hosting = db.relationship("Hosting")
     visit = db.relationship("Visit")
-
-    # TODO: add status for approvals
-    # TODO: add methods: find by status, ...
 
 class HostingEnum(enum.Enum):
     home = 1
@@ -286,8 +286,6 @@ class Hosting(db.Model, UuidMixin):
 
         return query
 
-    # TODO: add methods: geocoding, spaces available
-
 class Visit(db.Model, UuidMixin):
     __tablename__ = 'visits'
 
@@ -311,5 +309,3 @@ class Visit(db.Model, UuidMixin):
         query = Contact.query.filter_by(visit_id=self.id)
 
         return query
-
-    # TODO: add methods: geocoding, ...
