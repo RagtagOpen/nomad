@@ -10,3 +10,5 @@
 
 # vim stuff
 *.swp
+
+.DS_Store
