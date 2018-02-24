@@ -4,14 +4,18 @@
 <p>Hi {{ rider.name }},</p>
 
 <p>Good news! {{ carpool.driver.name }} approved your request to join the carpool</p>
-<p>pickup: {{ carpool.from_place }}</p>
-<p>destination name: {{ carpool.destination.name }}</p>
-<p>destination address: {{ carpool.destination.address }}</p>
-<p>departing at: {{ carpool.leave_time | humanize }}</p>
+<p>Pickup: {{ carpool.from_place }}</p>
+<p>Destination name: {{ carpool.destination.name }}</p>
+<p>Destination address: {{ carpool.destination.address }}</p>
+<p>Departing at: {{ carpool.leave_time | humanize }}</p>
 
 <p>Please contact {{ carpool.driver.name }} at {{ carpool.driver.email }} or {{ carpool.driver.phone_number }} ({{ carpool.driver.preferred_contact_method }} preferred) to figure out exactly when and where to meet.</p>
 
-<p>Go to {{ url_for('carpool.details', uuid=carpool.uuid, _external=True) }} to review the details of this carpool or if you need to withdraw from the carpool. If you do withdraw, please try to do early enough so other people can plan to join the carpool.</p>
+<p>View <a href="{{ url_for('carpool.details', uuid=carpool.uuid, _external=True) }}">>your carpool details</a> to review the details of this carpool or if you need to withdraw from the carpool. If you do withdraw, please try to do early enough so other people can plan to join the carpool.</p>
+
+<p>Thanks for joining the ride!</p>
+
+<p>Swing Left &amp; the Nomad team</p>
 
 <p>SAFETY TIPS</p>
 <ul>
