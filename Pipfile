@@ -1,0 +1,33 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[packages]
+
+flask = "*"
+flask-bootstrap = "*"
+flask-caching = "*"
+flask-login = "*"
+flask-mail = "*"
+flask-migrate = "*"
+"flask-rq2" = "*"
+flask-sqlalchemy = "*"
+flask-sslify = "*"
+flask-wtf = "*"
+"geoalchemy2" = "*"
+gunicorn = "*"
+"psycopg2" = "*"
+python-dateutil = "*"
+raven = "*"
+redis = "*"
+requests = "*"
+shapely = "*"
+wtforms = "*"
+rauth = "*"
+
+
+[dev-packages]
+
