@@ -1,6 +1,6 @@
 Hi {{ carpool.driver.name }},
 
-We wanted to let you know that {{ rider.name }} ({{ rider.gender_string() }}) has requested a ride in your carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }}.
+You have a new ride request! {{ rider.name }} ({{ rider.gender_string() }}) has requested a ride in your carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }}.
 
 Please go to {{url_for('carpool.details', uuid=carpool.uuid, _external=True)}} and approve or deny this request.
 
@@ -9,6 +9,8 @@ Please go to {{url_for('carpool.details', uuid=carpool.uuid, _external=True)}} a
 You'll receive a reminder email containing all of your passengers' contact information two days before your departure date.
 
 Thanks!
+
+Swing Left & the Nomad team
 
 SAFETY TIPS
 
