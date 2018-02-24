@@ -7,7 +7,7 @@ Destination Address: {{ carpool.destination.address }}
 
 Your carpool's departure time is {{ carpool.leave_time | humanize }}, only two days away!
 
-As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm their rides and settle all the details of pickup and drop-off. Your passengers are:
+As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm their rides and settle all the details of pickup and drop-off.
 {% for rider in carpool.riders %}
   {{ rider.name }}: {{ rider.email }}, {{ rider.phone_number }} ({{ rider.preferred_contact_method }} preferred)
 {% endfor %}
@@ -17,6 +17,8 @@ If you have no passengers yet, make sure you check your email or your carpool de
 You can also use that link to make changes to the details of your carpool, cancel your carpool, or remove a passenger. Please make any changes you need to make in a timely manner so you and your passengers have time to plan around them.
 
 You are doing great work, thank you for driving!
+
+Swing Left & the Nomad team
 
 SAFETY TIPS
 
