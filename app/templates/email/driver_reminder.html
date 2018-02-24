@@ -3,14 +3,16 @@
 {% block content %}
 <p>Hi {{ carpool.driver.name }}!</p>
 
-<p>Thank you for carpooling to canvass</p>
+<p>Thank you for signing up to carpool!</p>
+
+<p>Here's the information you entered about your trip:</p>
 <p>Pickup: {{ carpool.from_place }}</p>
 <p>Destination Name: {{ carpool.destination.name }}</p>
 <p>Destination Address: {{ carpool.destination.address }}</p>
 
 <p>Your carpool's departure time is {{ carpool.leave_time | humanize }}, only two days away!</p>
 
-<p>As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm their rides and settle all the details of pickup and drop-off. Your passengers are:</p>
+<p>As the driver, it's your responsibility to coordinate with your riders. Make sure you have spoken with them to confirm their rides and settle all the details of pickup and drop-off.</p>
 
 <ul>
 {% for rider in carpool.riders %}
@@ -24,11 +26,13 @@
 
 <p>You are doing great work, thank you for driving!</p>
 
+<p>Swing Left &amp; the Nomad team</p>
+
 <p>SAFETY TIPS</p>
 <ul>
   <li>Have a live phone conversation with your passengers before the pickup</li>
   <li>Check out your passengers' social media profiles</li>
-  <li>Make sure a friend or family member knows where you’re going and with who; check in with them at stages of your trip and canvassing</li>
+  <li>Make sure a friend or family member knows where you’re going and with whom; check in with them at stages of your trip and canvassing</li>
   <li>Charge your phone</li>
 </ul>
 <p>CANVASSING TIPS</p>
