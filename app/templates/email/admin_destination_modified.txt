@@ -1,6 +1,6 @@
 Hello {{ person.name }},
 
-The campaign modified the destination for the carpool at {{ carpool.leave_time | humanize }} leaving from {{ carpool.from_place }}. The destination has been changed to {{ destination.address }}.
+The organizers modified the destination for the carpool at {{ carpool.leave_time | humanize }} leaving from {{ carpool.from_place }}. The destination has been changed to {{ destination.address }}.
 
 {% if person.id == carpool.driver_id %}
 You are the driver of that carpool.
@@ -8,4 +8,8 @@ You are the driver of that carpool.
 
 Go to {{url_for('carpool.details', uuid=carpool.uuid, _external=True) }} to see the carpool's updated details.
 
-Please contact the campaign for more information.
+Please contact the organizers for more information.
+
+
+Thank you,
+Swing Left & the Nomad team
