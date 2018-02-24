@@ -144,10 +144,6 @@ select:focus {
 	height: 50px;
 	margin-right: 20px;
 }
-.inline-image.vadems {
-	width: 200px;
-	background: url("../img/logo_vadems.svg") top left / contain no-repeat;
-}
 .inline-image.ragtag {
 	width: 230px;
 	position:relative;
@@ -209,10 +205,10 @@ select:focus {
 	width: 143px;
 	height: 50px;
 	margin: 10px 0;
-	background: url("../img/logo-dark.png") top left / contain no-repeat;
+	background: url("../img/logo-swingleft.png") top left / contain no-repeat;
 }
 .header-left .logo.generic {
-	background: url("../img/logo-dark-generic.png") top left / contain no-repeat;
+	background: url("../img/logo-swingleft.png") top left / contain no-repeat;
 }
 
 .header-left .header-search-bar {
