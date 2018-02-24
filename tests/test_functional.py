@@ -59,9 +59,9 @@ class TestEmailTemplates:
             rider=rider,
         )
         assert 'approved your request to join the carpool' in rendered
-        assert 'pickup: from' in rendered
-        assert 'destination name: dest' in rendered
-        assert 'destination address: 123 fake street' in rendered
+        assert 'Pickup: from' in rendered
+        assert 'Destination name: dest' in rendered
+        assert 'Destination address: 123 fake street' in rendered
 
     def test_ride_denied(self, db):
         rider = PersonFactory()
