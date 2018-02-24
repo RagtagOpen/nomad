@@ -10,6 +10,9 @@ Please contact {{ carpool.driver.name }} at {{ carpool.driver.email }} or {{ car
 
 Go to {{ url_for('carpool.details', uuid=carpool.uuid, _external=True) }} to review the details of this carpool or if you need to withdraw from the carpool. If you do withdraw, please try to do early enough so other people can plan to join the carpool.
 
+Thanks for joining the ride!
+
+Swing Left & the Nomad team
 
 SAFETY TIPS
 
