@@ -7,3 +7,5 @@ The driver gave the following reason for cancelling: {{ reason }}.
 You can ask them at {{ driver.email }} or {{ driver.phone_number }} ({{ driver.preferred_contact_method }} preferred) if they're willing to reschedule, or go to {{url_for('carpool.find', _external=True) }} to look for another ride.
 
 Thank you for your enthusiasm!
+
+Swing Left & the Nomad team
