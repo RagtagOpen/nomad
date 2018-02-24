@@ -6,4 +6,4 @@ Details about this carpool: {{ url_for('carpool.details', uuid=carpool.uuid, _ex
 
 Thanks!
 
-P.S. If you're having trouble getting riders, make sure your local progressive organizations and party know about Nomad and are sending volunteers to use it!
+Swing Left & the Nomad team
