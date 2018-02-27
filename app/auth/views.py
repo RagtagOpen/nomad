@@ -135,7 +135,7 @@ def profile():
         next_url = session.pop('next', None) or url_for('auth.profile')
 
         return redirect(next_url)
-    else:
+    elif request.method == 'POST':
         flash("We couldn't save your profile changes. See below for the errors.", 'error')
 
 
