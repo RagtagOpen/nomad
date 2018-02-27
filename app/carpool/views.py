@@ -224,6 +224,9 @@ def new():
 
         return redirect(url_for('carpool.details', uuid=c.uuid))
 
+    elif request.method == 'POST':
+        flash("We couldn't save your new carpool. See below for the errors.", 'error')
+
     return render_template(
         'carpools/add_driver.html',
         form=driver_form,
