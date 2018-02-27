@@ -67,6 +67,9 @@ a.destructive {
 p.destructive {
 	color: rgb(204,68,75);
 }
+label.destructive {
+	color: rgb(204,68,75);
+}
 p.bold, strong {
 	font-weight: 600;
 }
