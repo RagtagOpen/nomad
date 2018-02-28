@@ -5,7 +5,7 @@
 
 <p>You have a new ride request! {{ rider.name }} ({{ rider.gender_string() }}) has requested a ride in your carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }}.</p>
 
-<p>Please <a href="{{url_for('carpool.details', uuid=carpool.uuid, _external=True)}}> click here</a> and approve or deny this request.</p>
+<p>Please <a href="{{url_for('carpool.details', uuid=carpool.uuid, _external=True)}}"> click here</a> and approve or deny this request.</p>
 
 <p>{{ rider.name }} can be contacted at {{ rider.email }} or {{ rider.phone_number }} ({{ rider.preferred_contact_method }} preferred).</p>
 
