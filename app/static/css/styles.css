@@ -754,7 +754,7 @@ pre.text {
 	    padding-top: 12px;
 	    padding-right: 60px;
 	}
-	.mobile-nav-bar li:last-child {
+	.mobile-nav-bar li.divider {
 		border-top: 1px solid rgb(205,212,222);
 	}
 	.fullscreen {
