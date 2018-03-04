@@ -49,6 +49,7 @@ class Config:
             'secret': os.environ.get('GOOGLE_CLIENT_SECRET'),
         },
     }
+    USE_SESSION_FOR_NEXT = True
 
     SENTRY_DSN = os.environ.get('SENTRY_DSN')
     DATE_FORMAT = os.environ.get('DATE_FORMAT', '%a %b %-d %Y at %-I:%M %p')
