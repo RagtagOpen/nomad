@@ -12,7 +12,7 @@
             <div class="two-col-layout top-border">
                 <div class="two-col-column">
                     <h4>{{ pool.leave_time | humanize }}</h4>
-                    <h3>{{ pool.from_place }} to {{ pool.destination.name }}</h3><p class="view-details"><a href="{{ url_for('carpool.details', uuid=pool.uuid) }}">View details</a></p>
+                    <h3>{{ pool.from_place }} to {{ pool.destination.name }}</h3>
 
                 {% set current_user_ride_request = pool.get_current_user_ride_request() %}
                 {% if current_user_ride_request %}
@@ -28,6 +28,10 @@
                     {% endif %}
                 {% else %}
                     {% if pool.current_user_is_driver %}
+                    <a class="btn btn-primary" href="{{ url_for('carpool.details', uuid=pool.uuid) }}">View details</a>
+                    <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
+                    <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
+
                     <p class="message success">You’re the driver of this carpool. Thanks for driving!</p>
 
                     {% endif %}
