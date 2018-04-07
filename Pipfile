@@ -19,7 +19,6 @@ flask-sslify = "*"
 flask-wtf = "*"
 "geoalchemy2" = "*"
 gunicorn = "*"
-"psycopg2" = "*"
 python-dateutil = "*"
 raven = "*"
 redis = "*"
@@ -27,6 +26,7 @@ requests = "*"
 shapely = "*"
 wtforms = "*"
 rauth = "*"
+"psycopg2-binary" = "*"
 
 
 [dev-packages]

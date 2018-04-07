@@ -106,7 +106,7 @@ This will allow you to get up and running quickly while installing a smaller set
 
 #### On requirements
 
-If `requirements.txt` changes, a `docker-compose build` will reinstall all Python dependencies
+If `Pipfile` changes, a `docker-compose build` will reinstall all Python dependencies
 
 #### Accessing the DB
 
@@ -120,11 +120,16 @@ docker-compose run --service-ports nomad "psql postgresql://nomad:nomad@db/nomad
 
 ## Running on Localhost
 
-1. Set up a virtual environment
+1. Install [`pipenv`](https://docs.pipenv.org/#install-pipenv-today)
 
    ```bash
-   virtualenv venv
-   source venv/bin/activate
+   brew install pipenv
+   ```
+
+   or
+
+   ```bash
+   pip install pipenv
    ```
 
 1. Install the database. The app requires PostgreSQL and PostGIS. [This guide](http://www.postgresguide.com/setup/install.html) describes how to get PostgreSQL running on your computer.
@@ -152,7 +157,8 @@ docker-compose run --service-ports nomad "psql postgresql://nomad:nomad@db/nomad
 1. Install the Python dependencies.
 
    ```bash
-   pip install -r requirements.txt
+   pipenv install
+   pipenv shell
    ```
 
 1. Set up the database
