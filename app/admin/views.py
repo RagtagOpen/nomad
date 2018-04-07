@@ -177,19 +177,21 @@ def user_list_csv():
     writer = csv.writer(output)
     writer.writerow(['Nomad carpool drivers and riders'])
     writer.writerow(['destination', 'carpool leave time', 'carpool return time',
-                     'name', 'email', 'phone', 'preferred contact method'])
+                     'driver/rider', 'name', 'email', 'phone', 'preferred contact method'])
 
     query = '''
         select d.name destination, cp.leave_time leave_time,
-            cp.return_time return_time, p.name person_name, p.email email,
-            p.phone_number phone, p.preferred_contact_method contact
+            cp.return_time return_time, 'rider' as rider_driver,
+            p.name person_name, p.email email, p.phone_number phone,
+            p.preferred_contact_method contact
         from carpools cp, destinations d, people p, riders r
         where cp.destination_id=d.id and cp.id=r.carpool_id and
             r.status='approved' and r.person_id=p.id
         union
         select d.name destination, cp.leave_time leave_time,
-            cp.return_time returntime, p.name person_name, p.email email,
-            p.phone_number phone, p.preferred_contact_method contact
+            cp.return_time returntime, 'driver' as rider_driver,
+            p.name person_name, p.email email, p.phone_number phone,
+            p.preferred_contact_method contact
         from carpools cp, destinations d, people p
         where cp.destination_id=d.id and cp.driver_id=p.id
         order by destination, leave_time, person_name
@@ -199,6 +201,7 @@ def user_list_csv():
             row.destination,
             row.leave_time.strftime('%x %X'),
             row.return_time.strftime('%x %X'),
+            row.rider_driver,
             row.person_name,
             row.email,
             row.phone,
