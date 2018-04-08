@@ -8,8 +8,8 @@ addons:
     packages:
     - postgresql-9.5-postgis-2.3
 install:
-  - pip install -r requirements.txt
-  - pip install -r dev-requirements.txt
+  - pip install -U pipenv
+  - pipenv install --dev --system --deploy
 env:
   global:
   - FLASK_APP: wsgi.py

@@ -31,3 +31,6 @@ rauth = "*"
 
 [dev-packages]
 
+webtest = "*"
+pytest = "*"
+factory-boy = "*"

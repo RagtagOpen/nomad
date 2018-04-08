@@ -17,7 +17,7 @@ class TestProfile:
         assert res.status_code == HTTPStatus.FOUND
         url = urllib.parse.urlparse(res.headers['Location'])
         assert url.path == url_for('auth.login')
-        assert url.query == 'next=%2Fprofile'
+        assert url.query == ''
 
     def test_profile_logged_in(self, testapp, db, person, monkeypatch):
         monkeypatch.setattr(flask_login.utils, '_get_user', lambda: person)
