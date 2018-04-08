@@ -31,3 +31,5 @@ rauth = "*"
 
 [dev-packages]
 
+webtest = "*"
+pytest = "*"
