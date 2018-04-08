@@ -14,6 +14,8 @@ services:
     extends: base
     command: flask run -h 0.0.0.0
     environment:
+      - ENABLE_PROXYFIX=${ENABLE_PROXYFIX}
+      - SECRET_KEY=${SECRET_KEY}
       - FLASK_DEBUG=${FLASK_DEBUG}
       - FLASK_APP=${FLASK_APP}
       - GOOGLE_MAPS_API_KEY=${GOOGLE_MAPS_API_KEY}
