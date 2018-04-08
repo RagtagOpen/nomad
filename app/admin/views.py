@@ -217,6 +217,59 @@ def user_list_csv():
     )
 
 
+@admin_bp.route('/admin/carpools.csv')
+@login_required
+@roles_required('admin')
+def carpool_list_csv():
+    output = io.StringIO()
+    writer = csv.writer(output)
+    writer.writerow(['Nomad carpools'])
+    writer.writerow(['from', 'from lat/lon',
+                     'destination', 'destination lat/lon', 'destination address',
+                     'leave time', 'return time',
+                     'driver name', 'drive email',
+                     'max riders', 'ride requests', 'approved riders',
+                     ])
+
+    query = '''
+        select cp.from_place as from_place, st_x(cp.from_point) as from_lon, st_y(cp.from_point) as from_lat,
+               d.name as destination, st_x(d.point) as destination_lon, st_y(d.point) as destination_lat,
+               d.address as destination_address,
+               cp.leave_time as leave_time,
+               cp.return_time as return_time,
+               dp.name as driver_name, dp.email as driver_email,
+               cp.max_riders as max_riders,
+               (select count(*) from riders where carpool_id=cp.id) as request_count,
+               (select count(*) from riders where carpool_id=cp.id and status='approved') as approved_count
+        from carpools cp
+        full outer join destinations d on (cp.destination_id=d.id)
+        inner join people dp on (dp.id=cp.driver_id)
+    '''
+    for row in db.engine.execute(query):
+        writer.writerow([
+            row.from_place,
+            ','.join(map(str, [row.from_lat, row.from_lon])),
+            row.destination,
+            ','.join(map(str, [row.destination_lat, row.destination_lon])),
+            row.destination_address,
+            row.leave_time.strftime('%x %X'),
+            row.return_time.strftime('%x %X'),
+            row.driver_name,
+            row.driver_email,
+            row.max_riders,
+            row.request_count,
+            row.approved_count,
+        ])
+
+    return Response(
+        output.getvalue(),
+        mimetype='text/csv',
+        headers={
+            'Content-disposition': 'attachment; filename=nomad_carpools.csv'
+        }
+    )
+
+
 @admin_bp.route('/admin/destinations')
 @login_required
 @roles_required('admin')
