@@ -33,3 +33,4 @@ rauth = "*"
 
 webtest = "*"
 pytest = "*"
+factory-boy = "*"
