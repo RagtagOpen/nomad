@@ -30,7 +30,7 @@
 
     In order to run the search frontend you will need an API key for Google maps. You can get one [here](https://developers.google.com/maps/documentation/javascript/get-api-key).
     On the "Enable Google Maps Platform" page choose "Maps" as the product.
-    ![Enable Google Maps Platform dialog](https://s3.amazonaws.com/assets.ragtag.tech/examples/Screenshot%202018-07-16%2015.31.30.png)
+    ![Enable Google Maps Platform dialog](https://s3.amazonaws.com/assets.ragtag.tech/examples/Screenshot%202018-07-16%2015.30.49.png)
     Then set the key as a variable in your `.env` file.
 
     ```bash
