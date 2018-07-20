@@ -21,20 +21,22 @@
             <th>Max Riders</th>
             <th>Ride Requests</th>
             <th>Approved Riders</th>
+            <th>Carpool Details Link</th>
         </tr>
     </thead>
     <tbody id='search-results'>
 {% for carpool in carpools.items %}
         <tr>
-            <td>{{ carpool.from }}</td>
-            <td>{{ carpool.destination }}</td>
+            <td>{{ carpool.from_place }}</td>
+            <td>{{ carpool.destination.name }}</td>
             <td>{{ carpool.leave_time }}</td>
             <td>{{ carpool.return_time }}</td>
-            <td>{{ carpool.driver_name }}</td>
-            <td>{{ carpool.driver_email }}</td>
+            <td>{{ carpool.driver.name }}</td>
+            <td>{{ carpool.driver.email }}</td>
             <td>{{ carpool.max_riders }}</td>
-            <td>{{ carpool.request_count }}</td>
-            <td>{{ carpool.approved_count }}</td>
+            <td>{{ carpool.riders_and_potential_riders|length }}</td>
+            <td>{{ carpool.riders|length }}</td>
+            <td><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">Details</a></td>
         </tr>
 {% endfor %}
     </tbody>
