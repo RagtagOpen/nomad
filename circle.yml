@@ -1,3 +1,0 @@
-database:
-  post:
-    - psql -c "CREATE EXTENSION postgis;" -d circle_test
