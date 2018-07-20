@@ -227,10 +227,6 @@ def carpool_list():
     carpools = Carpool.query.\
         order_by(Carpool.created_at.desc()).\
         paginate(page, per_page)
-    for car in carpools.items:
-        print(car)
-        print(dir(car))
-        print(dir(car.destination))
     return render_template(
         'admin/carpool/list.html',
         carpools=carpools,
