@@ -216,6 +216,22 @@ def user_list_csv():
         }
     )
 
+@admin_bp.route('/admin/carpools')
+@login_required
+@roles_required('admin')
+def carpool_list():
+    page = request.args.get('page')
+    page = int(page) if page is not None else None
+    per_page = 15
+
+    carpools = Carpool.query.\
+        order_by(Carpool.created_at.desc()).\
+        paginate(page, per_page)
+
+    return render_template(
+        'admin/carpool/list.html',
+        carpools=carpools,
+    )
 
 @admin_bp.route('/admin/carpools.csv')
 @login_required
