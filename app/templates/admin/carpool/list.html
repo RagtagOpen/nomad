@@ -44,13 +44,13 @@
 </table>
 
 {% if carpools.has_prev %}
-<a href="{{ url_for('admin.carpool_list', page=carpools.prev_num) }}">&lt;&lt; Newer users</a>
+<a href="{{ url_for('admin.carpool_list', page=carpools.prev_num) }}">&lt;&lt; Newer carpools</a>
 {% else %}
 &lt;&lt; Newer carpools
 {% endif %} |
 
 {% if carpools.has_next %}
-<a href="{{ url_for('admin.carpool_list', page=carpools.next_num) }}">Older users &gt;&gt;</a>
+<a href="{{ url_for('admin.carpool_list', page=carpools.next_num) }}">Older carpools &gt;&gt;</a>
 {% else %}
 Older carpools &gt;&gt;
 {% endif %}
