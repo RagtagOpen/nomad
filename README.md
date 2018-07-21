@@ -25,6 +25,11 @@
     echo FLASK_APP=wsgi.py >> .env
     echo FLASK_DEBUG=1 >> .env
     ```
+1.  Add a `SECRET_KEY` to your `.env`. The value for `SECRET_KEY` can be any value for the purposes of local development.
+
+    ```bash
+     echo SECRET_KEY=your_secret_key >> .env
+    ```
 
 1.  (Optional) Get a Google Maps Api Key
 
