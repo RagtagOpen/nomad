@@ -28,7 +28,7 @@
 1.  Add a `SECRET_KEY` to your `.env`. The value for `SECRET_KEY` can be any value for the purposes of local development.
 
     ```bash
-     echo SECRET_KEY="YOUR_SECRET_KEY"
+     echo SECRET_KEY=your_secret_key >> .env
     ```
 
 1.  (Optional) Get a Google Maps Api Key
