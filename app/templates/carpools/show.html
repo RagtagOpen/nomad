@@ -55,21 +55,29 @@
                 </div>
             </div>
 
-        {% elif pool.current_user_is_driver %}
+        {% elif pool.current_user_is_driver or current_user.has_roles('admin') %}
             <div class="two-col-layout">
                 <div class="two-col-column">
-                    <p>You're the driver of this carpool!</p>
-                    {% if not pool.seats_available %}
-                        <p>Your carpool is full.
-                        {% if pool.get_ride_requests_query(['requested']).count() %}
-                            Please let people awaiting your response know that they should find another carpool.
+                    {% if pool.current_user_is_driver %}
+                        <p>You're the driver of this carpool!</p>
+                        {% if not pool.seats_available %}
+                            <p>Your carpool is full.
+                            {% if pool.get_ride_requests_query(['requested']).count() %}
+                                Please let people awaiting your response know that they should find another carpool.
+                            {% endif %}
+                        </p>
                         {% endif %}
-                    </p>
+                    {% else %}
+                        {{pool.riders|length}} confirmed passengers
                     {% endif %}
                 </div>
                 <div class="two-col-column">
-                    <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
-                    <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
+                    {% if pool.current_user_is_driver %}
+                        <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel this carpool</a>
+                        <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
+                    {% else %}
+                        <a class="btn btn-danger" href="{{ url_for('admin.admin_cancel_carpool', uuid=pool.uuid) }}">Cancel this carpool</a>
+                    {% endif %}
                 </div>
             </div>
 

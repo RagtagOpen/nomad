@@ -7,13 +7,13 @@
     <div class="fullscreen">
       <div class="interstitial-page">
         <h1>Are you sure you want to cancel this carpool?</h1>
-        <p>Your passengers will be notified.</p>
+        <p>All passengers will be notified.</p>
 
         <form method="post" class="form-page">
             {{ form.hidden_tag() }}
 
             <h4>Why are you canceling?</h4>
-            <h5>(This reason will be shared with your passengers.)</h5>
+            <h5>(This reason will be shared with the passengers.)</h5>
             <p>{{ form.reason() }}</p>
 
             <p>
