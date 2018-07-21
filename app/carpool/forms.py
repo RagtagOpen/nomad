@@ -101,14 +101,21 @@ class DriverForm(FlaskForm):
             int(self.return_hour.data)
         )
 
+        # Departure and return scheduling rules
+
+	# - Not departing or returning in the past
+        # - Not departing after return
+        # - Not exceeding TRIP_MAX_LENGTH_DAYS
+        # - Not happening after TRIP_MAX_DAYS_IN_FUTURE    
+
         if self.departure_datetime >= self.return_datetime:
             self.departure_date.errors.append(
                 "Your return date should be after your departure date.")
             result = False
 
-        if self.return_datetime < datetime.datetime.today():
-            self.return_date.errors.append(
-                "Your carpool cannot happen in the past.")
+        if (self.departure_datetime <= datetime.datetime.now()) or (self.return_datetime < datetime.datetime.today());
+            self.departure_date.errors.append(
+                "Your carpool cannot happen in the past")
             result = False
 
         delta = self.return_datetime - self.departure_datetime
