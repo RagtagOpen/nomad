@@ -2,13 +2,14 @@ Hello {{ rider.name }},
 
 Unfortunately, the carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }} has been cancelled.
 {{% if is_driver %}}
-The driver gave the following reason for cancelling: {{ reason }}.
 
-You can ask them at {{ driver.email }} or {{ driver.phone_number }} ({{ driver.preferred_contact_method }} preferred) if they're willing to reschedule, or go to {% else %}
 This carpool was cancelled by an administrator.
 
 The administrator gave the following reason for cancelling: {{ reason }}.
-{{url_for('carpool.find', _external=True) }} to look for another ride.
+{% else %}
+The driver gave the following reason for cancelling: {{ reason }}.
+
+You can ask them at {{ driver.email }} or {{ driver.phone_number }} ({{ driver.preferred_contact_method }} preferred) if they're willing to reschedule, or go to {{ url_for('carpool.find', _external=True) }} to look for another ride.
 {% endif %}
 Thank you for your enthusiasm!
 
