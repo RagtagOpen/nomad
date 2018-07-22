@@ -10,6 +10,7 @@ addons:
 install:
   - pip install -U pipenv
   - pipenv install --dev --system --deploy
+cache: pip
 env:
   global:
   - FLASK_APP: wsgi.py

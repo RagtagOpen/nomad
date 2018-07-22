@@ -1,7 +1,7 @@
 Hello {{ rider.name }},
 
 Unfortunately, the carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }} has been cancelled.
-{{% if is_driver %}}
+{% if is_driver %}
 
 This carpool was cancelled by an administrator.
 
