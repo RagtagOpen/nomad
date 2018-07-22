@@ -20,10 +20,10 @@
             {% set current_user_ride_request = pool.get_current_user_ride_request() %}
 
             <h4>Carpool Details</h4>
-            <p><b>pickup</b>: {{ pool.from_place }}</p>
-            <p><b>destination name</b>: {{ pool.destination.name }}</p>
+            <p><b>Pickup</b>: {{ pool.from_place }}</p>
+            <p><b>Destination name</b>: {{ pool.destination.name }}</p>
             {% if pool.current_user_is_driver or current_user_ride_request and current_user_ride_request.status == 'approved' %}
-            <p><b>destination address</b>: {{ pool.destination.address }}</p>
+            <p><b>Destination address</b>: {{ pool.destination.address }}</p>
             {%- endif %}
 
 
@@ -55,21 +55,29 @@
                 </div>
             </div>
 
-        {% elif pool.current_user_is_driver %}
+        {% elif pool.current_user_is_driver or current_user.has_roles('admin') %}
             <div class="two-col-layout">
                 <div class="two-col-column">
-                    <p>You're the driver of this carpool!</p>
-                    {% if not pool.seats_available %}
-                        <p>Your carpool is full.
-                        {% if pool.get_ride_requests_query(['requested']).count() %}
-                            Please let people awaiting your response know that they should find another carpool.
+                    {% if pool.current_user_is_driver %}
+                        <p>You're the driver of this carpool!</p>
+                        {% if not pool.seats_available %}
+                            <p>Your carpool is full.
+                            {% if pool.get_ride_requests_query(['requested']).count() %}
+                                Please let people awaiting your response know that they should find another carpool.
+                            {% endif %}
+                        </p>
                         {% endif %}
-                    </p>
+                    {% else %}
+                        {{pool.riders|length}} confirmed passengers
                     {% endif %}
                 </div>
                 <div class="two-col-column">
-                    <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
-                    <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
+                    {% if pool.current_user_is_driver %}
+                        <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel this carpool</a>
+                        <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
+                    {% else %}
+                        <a class="btn btn-danger" href="{{ url_for('admin.admin_cancel_carpool', uuid=pool.uuid) }}">Cancel this carpool</a>
+                    {% endif %}
                 </div>
             </div>
 

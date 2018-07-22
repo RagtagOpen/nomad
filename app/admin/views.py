@@ -12,6 +12,7 @@ from flask import (
 from flask_login import current_user, login_required
 from . import admin_bp
 from .forms import (
+    CancelCarpoolAdminForm,
     DeleteDestinationForm,
     DestinationForm,
     ProfilePurgeForm,
@@ -166,6 +167,45 @@ def user_list():
     return render_template(
         'admin/users/list.html',
         users=users,
+    )
+
+
+@admin_bp.route('/admin/drivers_and_riders')
+@login_required
+@roles_required('admin')
+def driver_and_rider_list():
+    page = request.args.get('page')
+    page = int(page) if page is not None else 0
+    per_page = 15
+
+    query = '''
+        select d.name destination, cp.leave_time leave_time,
+            cp.return_time return_time, 'rider' as rider_driver,
+            p.name person_name, p.email email, p.phone_number phone,
+            p.preferred_contact_method contact, p.uuid uuid
+        from carpools cp, destinations d, people p, riders r
+        where cp.destination_id=d.id and cp.id=r.carpool_id and
+            r.status='approved' and r.person_id=p.id
+        union
+        select d.name destination, cp.leave_time leave_time,
+            cp.return_time returntime, 'driver' as rider_driver,
+            p.name person_name, p.email email, p.phone_number phone,
+            p.preferred_contact_method contact, p.uuid uuid
+        from carpools cp, destinations d, people p
+        where cp.destination_id=d.id and cp.driver_id=p.id
+        order by destination, leave_time, person_name
+    '''
+    result = list(db.engine.execute(query))
+    if per_page * (page + 1) > len(result):
+        result = result[per_page * page:]
+    else:
+        result = result[per_page * page:per_page * (page + 1)]
+    return render_template(
+        'admin/users/drivers_and_riders.html',
+        drivers_and_riders=result,
+        page=page,
+        not_last=(per_page * (page + 1) < len(result)),
+        not_first=(page > 0)
     )
 
 
@@ -457,3 +497,24 @@ def email_preview(template):
     html = render_template('email/{}.html'.format(template), **data)
 
     return render_template('admin/emailpreview.html', template=template, text=text, html=html)
+
+
+@admin_bp.route('/admin/<uuid>/cancel', methods=['GET', 'POST'])
+@login_required
+@roles_required('admin')
+def admin_cancel_carpool(uuid):
+    carpool = Carpool.uuid_or_404(uuid)
+
+    cancel_form = CancelCarpoolAdminForm()
+    if cancel_form.validate_on_submit():
+        if cancel_form.submit.data:
+            cancel_carpool(carpool, cancel_form.reason.data, notify_driver=True)
+
+            flash('The carpool was cancelled', 'success')
+
+            # TODO: redirect to carpool list page when available
+            return redirect(url_for('admin.admin_index'))
+
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
+
+    return render_template('carpools/cancel.html', form=cancel_form)

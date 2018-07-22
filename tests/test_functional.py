@@ -8,7 +8,7 @@ from http import HTTPStatus
 from flask import url_for, render_template
 import flask_login.utils
 
-from .factories import PersonFactory, CarpoolFactory, DestinationFactory
+from .factories import PersonFactory, CarpoolFactory, DestinationFactory, RideRequestFactory
 
 
 class TestProfile:
@@ -116,3 +116,48 @@ class TestEmailTemplates:
                 )
                 assert config['BRANDING_EMAIL_SIGNATURE'] in rendered, \
                     '%s missing signature' % template_path
+
+    def test_admin_cancelled(self, db):
+        driver = PersonFactory()
+        db.session.add(driver)
+        carpool = CarpoolFactory(from_place='from', driver=driver)
+        db.session.add(carpool)
+        rider = PersonFactory()
+        db.session.add(rider)
+        ride_request = RideRequestFactory(person=rider, carpool=carpool)
+        db.session.add(ride_request)
+        db.session.commit()
+        rendered = render_template(
+            'email/carpool_cancelled.html',
+            driver=driver,
+            rider=rider,
+            carpool=carpool,
+            is_driver=True,
+            reason='test_admin_cancelled',
+            person=driver,
+        )
+        assert 'carpool was cancelled by an administrator' in rendered
+        assert 'test_admin_cancelled' in rendered
+        assert 'driver gave the following reason' not in rendered
+
+    def test_driver_cancelled(self, db):
+        driver = PersonFactory()
+        db.session.add(driver)
+        carpool = CarpoolFactory(from_place='from', driver=driver)
+        db.session.add(carpool)
+        rider = PersonFactory()
+        db.session.add(rider)
+        ride_request = RideRequestFactory(person=rider, carpool=carpool)
+        db.session.add(ride_request)
+        db.session.commit()
+        rendered = render_template(
+            'email/carpool_cancelled.html',
+            driver=driver,
+            rider=rider,
+            carpool=carpool,
+            reason='test_driver_cancelled',
+            person=rider,
+        )
+        assert 'carpool was cancelled by an administrator' not in rendered
+        assert 'test_driver_cancelled' in rendered
+        assert 'driver gave the following reason' in rendered
