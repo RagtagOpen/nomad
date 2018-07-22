@@ -241,3 +241,43 @@ Locally:
     ```
     pytest
     ```
+
+## Branding
+
+Organizations using Nomad need to set these environment variables:
+
+  - `BRANDING_ORG_NAME` - organization name; default "Ragtag"
+  - `BRANDING_ORG_SITE_NAME` - site name (not full URL), default "ragtag.org"
+  - `BRANDING_LIABILITY_URL` - URL to organizer liability statement (required)
+  - `BRANDING_EMAIL_SIGNATURE` - default "The Nomad team"
+  - `BRANDING_SUPPORT_EMAIL` - default `support@ragtag.org`
+
+These environment variables have reasonable defaults; setting these is optiona:
+
+  - `BRANDING_CSS_URL` - URL to CSS with skin-specific overrides; default is no overrides
+  - `BRANDING_HEADLINE_1` - default "Carpool to canvass in battleground districts near you"
+  - `BRANDING_HEADLINE_2` - default "Find other volunteers near you and join a carpool."
+  - `BRANDING_PRIVACY_URL` - default `/terms.html`; the default `terms.html` uses values of `BRANDING_ORG_NAME`, `BRANDING_ORG_SITE_NAME`, and `BRANDING_SUPPORT_EMAIL`
+
+### sample Swing Left branding
+
+to use sample sample config for Swing Left locally:
+
+    cat branding/swing-left >> .env
+
+sample branding config values: [branding/swing-left](branding/swing-left)
+
+sample CSS overrides: [static/css/swing-left.css](static/css/swing-left.css)
+
+restart app to reload config from `.env`
+
+### branding QA
+
+  - `BRANDING_ORG_NAME` in [terms.html](templates/auth/terms.html) (ie "Ragtag Nomad Privacy Policy")
+  - `BRANDING_ORG_SITE_NAME` in [terms.html](templates/auth/terms.html) ie "nomad.ragtag.org, the "Site""
+  - `BRANDING_SUPPORT_EMAIL` in [terms.html](templates/auth/terms.html) ie "email support@ragtag.org"
+  - `BRANDING_LIABILITY_URL` in email templates: [driver_reminder](templates/email/driver_reminder.html), [ride_approved.html](templates/email/ride_approved.html)
+  - `BRANDING_EMAIL_SIGNATURE` in all [email templates](templates/email)
+  - logo on home page, defined in CSS referenced by `BRANDING_CSS_URL`
+  - `BRANDING_HEADLINE_1` and `BRANDING_HEADLINE_1` on home page, below "SHARE YOUR RIDE"
+  - `BRANDING_PRIVACY_URL` privacy policy links on [login](app/templates/auth/login.html) and [mobile and desktop nav](app/templates/_template.html)

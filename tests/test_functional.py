@@ -8,7 +8,7 @@ from http import HTTPStatus
 from flask import url_for, render_template
 import flask_login.utils
 
-from .factories import PersonFactory, CarpoolFactory
+from .factories import PersonFactory, CarpoolFactory, DestinationFactory
 
 
 class TestProfile:
@@ -53,15 +53,22 @@ class TestEmailTemplates:
         db.session.add(rider)
         db.session.add(carpool)
         db.session.commit()
+        config = {
+            'BRANDING_LIABILITY_URL': 'liability.html',
+            'BRANDING_EMAIL_SIGNATURE': '-- Test Team',
+        }
         rendered = render_template(
             'email/ride_approved.html',
             carpool=carpool,
             rider=rider,
+            config=config,
         )
         assert 'approved your request to join the carpool' in rendered
         assert 'Pickup: from' in rendered
         assert 'Destination name: dest' in rendered
         assert 'Destination address: 123 fake street' in rendered
+        for key in config:
+            assert config[key] in rendered
 
     def test_ride_denied(self, db):
         rider = PersonFactory()
@@ -75,3 +82,37 @@ class TestEmailTemplates:
             rider=rider,
         )
         assert 'declined your request to join the carpool from from to dest' in rendered
+
+    def test_email_signature(self, db):
+        templates = [
+            'admin_destination_deleted', 'admin_destination_modified',
+            'approved_ride_request_cancelled', 'carpool_cancelled', 'driver_reminder',
+            'ride_approved', 'ride_denied', 'ride_request_cancelled',
+            'ride_requested', 'rider_reminder']
+        config = {
+            'BRANDING_EMAIL_SIGNATURE': '-- Test Team',
+        }
+        rider = PersonFactory()
+        db.session.add(rider)
+        driver = PersonFactory()
+        db.session.add(driver)
+        carpool = CarpoolFactory(from_place='from')
+        db.session.add(carpool)
+        destination = DestinationFactory()
+        db.session.add(destination)
+        db.session.commit()
+        for ext in ['html', 'txt']:
+            for template in templates:
+                template_path = 'email/%s.%s' % (template, ext)
+                print(template_path)
+                rendered = render_template(
+                    template_path,
+                    config=config,
+                    carpool=carpool,
+                    rider=rider,
+                    driver=driver,
+                    person=rider,
+                    destination=destination,
+                )
+                assert config['BRANDING_EMAIL_SIGNATURE'] in rendered, \
+                    '%s missing signature' % template_path

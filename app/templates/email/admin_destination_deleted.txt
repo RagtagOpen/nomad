@@ -12,4 +12,4 @@ Your volunteer help is still needed! To help another campaign by being a driver 
 
 Thank you,
 
-Swing Left &amp; the Nomad team
+{{ config.get('BRANDING_EMAIL_SIGNATURE') }}

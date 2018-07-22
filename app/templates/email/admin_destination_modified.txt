@@ -12,4 +12,4 @@ Please contact the organizers for more information.
 
 
 Thank you,
-Swing Left & the Nomad team
+{{ config.get('BRANDING_EMAIL_SIGNATURE') }}
