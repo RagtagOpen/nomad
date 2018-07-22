@@ -12,6 +12,7 @@ from flask import (
 from flask_login import current_user, login_required
 from . import admin_bp
 from .forms import (
+    CancelCarpoolAdminForm,
     DeleteDestinationForm,
     DestinationForm,
     ProfilePurgeForm,
@@ -457,3 +458,24 @@ def email_preview(template):
     html = render_template('email/{}.html'.format(template), **data)
 
     return render_template('admin/emailpreview.html', template=template, text=text, html=html)
+
+
+@admin_bp.route('/admin/<uuid>/cancel', methods=['GET', 'POST'])
+@login_required
+@roles_required('admin')
+def admin_cancel_carpool(uuid):
+    carpool = Carpool.uuid_or_404(uuid)
+
+    cancel_form = CancelCarpoolAdminForm()
+    if cancel_form.validate_on_submit():
+        if cancel_form.submit.data:
+            cancel_carpool(carpool, cancel_form.reason.data, notify_driver=True)
+
+            flash('The carpool was cancelled', 'success')
+
+            # TODO: redirect to carpool list page when available
+            return redirect(url_for('admin.admin_index'))
+
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
+
+    return render_template('carpools/cancel.html', form=cancel_form)

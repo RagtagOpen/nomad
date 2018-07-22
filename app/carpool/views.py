@@ -480,17 +480,15 @@ def cancel(uuid):
     return render_template('carpools/cancel.html', form=cancel_form)
 
 
-def cancel_carpool(carpool, reason=None):
-    _email_carpool_cancelled(carpool, reason)
+def cancel_carpool(carpool, reason=None, notify_driver=False):
+    _email_carpool_cancelled(carpool, reason, notify_driver)
     db.session.delete(carpool)
     db.session.commit()
 
 
-def _email_carpool_cancelled(carpool, reason):
+def _email_carpool_cancelled(carpool, reason, notify_driver):
     driver = carpool.driver
     riders = carpool.riders_and_potential_riders
-    if not riders:
-        return
 
     if not reason:
         reason = '<reason not given>'
@@ -507,6 +505,17 @@ def _email_carpool_cancelled(carpool, reason):
             rider=rider,
             carpool=carpool,
             reason=reason,
+        )
+
+    if notify_driver:
+        send_email(
+            'carpool_cancelled',
+            driver.email,
+            subject,
+            driver=driver,
+            carpool=carpool,
+            reason=reason,
+            is_driver=True
         )
 
 
