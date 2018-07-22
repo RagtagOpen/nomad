@@ -106,9 +106,9 @@ class DriverForm(FlaskForm):
                 "Your return date should be after your departure date.")
             result = False
 
-        if self.return_datetime < datetime.datetime.today():
-            self.return_date.errors.append(
-                "Your carpool cannot happen in the past.")
+        if (self.departure_datetime <= datetime.datetime.now()) or (self.return_datetime < datetime.datetime.today()):
+            self.departure_date.errors.append(
+                "Your carpool cannot happen in the past")
             result = False
 
         delta = self.return_datetime - self.departure_datetime
