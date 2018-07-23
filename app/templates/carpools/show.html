@@ -39,6 +39,9 @@
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <button class="left-button carpool-control-button" type="submit" name="cancel_button">Cancel your seat in carpool</button>
                     </form>
+                    {% if current_user.has_roles('admin') %}
+                    <a class="btn btn-danger" href="{{ url_for('admin.admin_cancel_carpool', uuid=pool.uuid) }}">Cancel this carpool</a>
+                    {% endif %}
                 </div>
             </div>
 
@@ -52,13 +55,15 @@
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <button class="left-button carpool-control-button" type="submit" name="cancel_button">Cancel your seat request</button>
                     </form>
+                    {% if current_user.has_roles('admin') %}
+                    <a class="btn btn-danger" href="{{ url_for('admin.admin_cancel_carpool', uuid=pool.uuid) }}">Cancel this carpool</a>
+                    {% endif %}
                 </div>
             </div>
 
-        {% elif pool.current_user_is_driver or current_user.has_roles('admin') %}
+        {% elif pool.current_user_is_driver  %}
             <div class="two-col-layout">
                 <div class="two-col-column">
-                    {% if pool.current_user_is_driver %}
                         <p>You're the driver of this carpool!</p>
                         {% if not pool.seats_available %}
                             <p>Your carpool is full.
@@ -67,17 +72,10 @@
                             {% endif %}
                         </p>
                         {% endif %}
-                    {% else %}
-                        {{pool.riders|length}} confirmed passengers
-                    {% endif %}
                 </div>
                 <div class="two-col-column">
-                    {% if pool.current_user_is_driver %}
-                        <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel this carpool</a>
-                        <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
-                    {% else %}
-                        <a class="btn btn-danger" href="{{ url_for('admin.admin_cancel_carpool', uuid=pool.uuid) }}">Cancel this carpool</a>
-                    {% endif %}
+                  <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
+                  <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel this carpool</a>
                 </div>
             </div>
 
@@ -145,6 +143,9 @@
                     {%- else %}
                         <a class="btn disabled">No seats available</a>
                     {%- endif %}
+                    {% if current_user.has_roles('admin') %}
+                        <a class="btn btn-danger" href="{{ url_for('admin.admin_cancel_carpool', uuid=pool.uuid) }}">Cancel this carpool</a>
+                    {% endif %}
                 </div>
             </div>
 
