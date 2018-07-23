@@ -77,6 +77,11 @@
                         <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
                     {% else %}
                         <a class="btn btn-danger" href="{{ url_for('admin.admin_cancel_carpool', uuid=pool.uuid) }}">Cancel this carpool</a>
+                        {%- if pool.seats_available > 0 %}
+                            <a class="btn btn-primary" href="{{ url_for('carpool.new_rider', carpool_uuid=pool.uuid) }}">Request a seat in carpool</a>
+                        {%- else %}
+                            <a class="btn disabled">No seats available</a>
+                        {%- endif %}
                     {% endif %}
                 </div>
             </div>
