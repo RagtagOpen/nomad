@@ -39,7 +39,7 @@
     Then set the key as a variable in your `.env` file.
 
     ```bash
-    echo GOOGLE_MAPS_API_KEY="YOUR_KEY_HERE" >> .env
+    echo GOOGLE_MAPS_API_KEY=YOUR_KEY_HERE >> .env
     ```
 
 1.  (Optional) Configure Google Sign-In
@@ -49,9 +49,10 @@
     After creating credentials you'll get an OAuth Client ID and Client Secret.
 
     ```bash
-    echo GOOGLE_CLIENT_ID="YOUR_CLIENT_ID" >> .env
-    echo GOOGLE_CLIENT_SECRET="YOUR_CLIENT_SECRET" >> .env
+    echo GOOGLE_CLIENT_ID=YOUR_CLIENT_ID >> .env
+    echo GOOGLE_CLIENT_SECRET=YOUR_CLIENT_SECRET >> .env
     ```
+
 
 1.  Configure Email Send
     In order for the app to send email, you'll need to add details about what mail server it should use. For testing, you can use a Mailgun or Gmail account. Add those details to the .env file, too!
