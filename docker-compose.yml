@@ -45,7 +45,7 @@ services:
 
   nomad_worker:
     extends: base
-    command: flask rq worker
+    command: flask rq worker --worker-ttl 450
     environment:
       - FLASK_DEBUG=${FLASK_DEBUG}
       - FLASK_APP=${FLASK_APP}
