@@ -126,7 +126,7 @@ def start_geojson():
         for ride in rides:
             confirmed_carpools.append(ride.carpool_id)
     for pool in pools:
-        if pool.from_point is None:
+        if (pool.from_point is None) or pool.destination.hidden:
             continue
         # show real location to driver and confirmed passenger
         geometry = mapping(to_shape(pool.from_point))
@@ -149,7 +149,8 @@ def start_geojson():
                 'leave_time_human': pool.leave_time.strftime(dt_format),
                 'return_time_human': pool.return_time.strftime(dt_format),
                 'driver_gender': escape(pool.driver.gender),
-                'is_approximate_location': is_approximate_location
+                'is_approximate_location': is_approximate_location,
+                'hidden': pool.destination.hidden
             },
         })
 
