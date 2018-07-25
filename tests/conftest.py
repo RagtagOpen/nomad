@@ -7,20 +7,15 @@ from webtest import TestApp
 from app import create_app
 from app import db as _db
 
-from .factories import PersonFactory
-
+from .factories import PersonFactory, RoleFactory
 
 @pytest.fixture
 def app():
-    """An application for the tests."""
-    _app = create_app('default')
-    ctx = _app.test_request_context()
-    ctx.push()
-
-    yield _app
-
-    ctx.pop()
-
+    app = create_app('default')
+    context = app.app_context()
+    context.push()
+    yield app
+    context.pop()
 
 @pytest.fixture
 def testapp(app):
@@ -29,11 +24,17 @@ def testapp(app):
 
 
 @pytest.fixture
+def request_context(app):
+    """A Request Context (for when request-specific information is needed in scope)."""
+    with app.test_request_context() as ctx:
+        yield ctx
+
+
+@pytest.fixture
 def db(app):
     """A database for the tests."""
     _db.app = app
-    with app.app_context():
-        _db.create_all()
+    _db.create_all()
 
     yield _db
 
@@ -48,3 +49,11 @@ def person(db):
     person = PersonFactory()
     db.session.commit()
     return person
+
+@pytest.fixture
+def blocked_role(db):
+    """A blocked role for the tests."""
+    role = RoleFactory(name='blocked')
+    db.session.commit()
+
+    return role
