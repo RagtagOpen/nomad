@@ -5,10 +5,31 @@ See: http://webtest.readthedocs.org/
 import urllib
 from http import HTTPStatus
 
-from flask import url_for, render_template
-import flask_login.utils
+from app.auth.oauth import OAuthSignIn
+from flask import request
 
 from .factories import PersonFactory, CarpoolFactory, DestinationFactory, RideRequestFactory
+
+# A Mock OAuth Provider. Allows for users to be logged in
+class MockSignIn(OAuthSignIn):
+    def __init__(self):
+        self.provider_name = 'mock'
+
+    def authorize(self):
+        pass
+
+    def callback(self):
+        return (
+            request.args.get('id'),
+            request.args.get('name'),
+            request.args.get('email'),
+        )
+
+def login(testapp, social_id, user_name, user_email):
+    testapp.get('/callback/mock', params=dict(id=social_id, name=user_name, email=user_email))
+
+def login_person(testapp, person):
+    login(testapp, person.social_id, person.name, person.email)
 
 
 class TestProfile:
@@ -16,11 +37,11 @@ class TestProfile:
         res = testapp.get('/profile')
         assert res.status_code == HTTPStatus.FOUND
         url = urllib.parse.urlparse(res.headers['Location'])
-        assert url.path == url_for('auth.login')
+        assert url.path == '/login'
         assert url.query == ''
 
-    def test_profile_logged_in(self, testapp, db, person, monkeypatch):
-        monkeypatch.setattr(flask_login.utils, '_get_user', lambda: person)
+    def test_profile_logged_in(self, testapp, db, person):
+        login_person(testapp, person)
         res = testapp.get('/profile')
         assert res.status_code == HTTPStatus.OK
         form = res.forms[1]
@@ -32,132 +53,13 @@ class TestProfile:
         assert person.gender == 'Female'
         assert person.preferred_contact_method == 'email'
 
-
-class TestEmailTemplates:
-    def test_ride_requested(self, db):
-        rider = PersonFactory()
-        carpool = CarpoolFactory(from_place='from')
-        db.session.add(rider)
-        db.session.add(carpool)
+    def test_profile_blocked_is_logged_out(self, testapp, db, person, blocked_role):
+        login_person(testapp, person)
+        person.roles.append(blocked_role)
+        print(person.is_active)
         db.session.commit()
-        rendered = render_template(
-            'email/ride_requested.html',
-            carpool=carpool,
-            rider=rider,
-        )
-        assert 'requested a ride in your carpool from from to dest' in rendered
-
-    def test_ride_approved(self, db):
-        rider = PersonFactory()
-        carpool = CarpoolFactory(from_place='from')
-        db.session.add(rider)
-        db.session.add(carpool)
-        db.session.commit()
-        config = {
-            'BRANDING_LIABILITY_URL': 'liability.html',
-            'BRANDING_EMAIL_SIGNATURE': '-- Test Team',
-        }
-        rendered = render_template(
-            'email/ride_approved.html',
-            carpool=carpool,
-            rider=rider,
-            config=config,
-        )
-        assert 'approved your request to join the carpool' in rendered
-        assert 'Pickup: from' in rendered
-        assert 'Destination name: dest' in rendered
-        assert 'Destination address: 123 fake street' in rendered
-        for key in config:
-            assert config[key] in rendered
-
-    def test_ride_denied(self, db):
-        rider = PersonFactory()
-        carpool = CarpoolFactory(from_place='from')
-        db.session.add(rider)
-        db.session.add(carpool)
-        db.session.commit()
-        rendered = render_template(
-            'email/ride_denied.html',
-            carpool=carpool,
-            rider=rider,
-        )
-        assert 'declined your request to join the carpool from from to dest' in rendered
-
-    def test_email_signature(self, db):
-        templates = [
-            'admin_destination_deleted', 'admin_destination_modified',
-            'approved_ride_request_cancelled', 'carpool_cancelled', 'driver_reminder',
-            'ride_approved', 'ride_denied', 'ride_request_cancelled',
-            'ride_requested', 'rider_reminder']
-        config = {
-            'BRANDING_EMAIL_SIGNATURE': '-- Test Team',
-        }
-        rider = PersonFactory()
-        db.session.add(rider)
-        driver = PersonFactory()
-        db.session.add(driver)
-        carpool = CarpoolFactory(from_place='from')
-        db.session.add(carpool)
-        destination = DestinationFactory()
-        db.session.add(destination)
-        db.session.commit()
-        for ext in ['html', 'txt']:
-            for template in templates:
-                template_path = 'email/%s.%s' % (template, ext)
-                print(template_path)
-                rendered = render_template(
-                    template_path,
-                    config=config,
-                    carpool=carpool,
-                    rider=rider,
-                    driver=driver,
-                    person=rider,
-                    destination=destination,
-                )
-                assert config['BRANDING_EMAIL_SIGNATURE'] in rendered, \
-                    '%s missing signature' % template_path
-
-    def test_admin_cancelled(self, db):
-        driver = PersonFactory()
-        db.session.add(driver)
-        carpool = CarpoolFactory(from_place='from', driver=driver)
-        db.session.add(carpool)
-        rider = PersonFactory()
-        db.session.add(rider)
-        ride_request = RideRequestFactory(person=rider, carpool=carpool)
-        db.session.add(ride_request)
-        db.session.commit()
-        rendered = render_template(
-            'email/carpool_cancelled.html',
-            driver=driver,
-            rider=rider,
-            carpool=carpool,
-            is_driver=True,
-            reason='test_admin_cancelled',
-            person=driver,
-        )
-        assert 'carpool was cancelled by an administrator' in rendered
-        assert 'test_admin_cancelled' in rendered
-        assert 'driver gave the following reason' not in rendered
-
-    def test_driver_cancelled(self, db):
-        driver = PersonFactory()
-        db.session.add(driver)
-        carpool = CarpoolFactory(from_place='from', driver=driver)
-        db.session.add(carpool)
-        rider = PersonFactory()
-        db.session.add(rider)
-        ride_request = RideRequestFactory(person=rider, carpool=carpool)
-        db.session.add(ride_request)
-        db.session.commit()
-        rendered = render_template(
-            'email/carpool_cancelled.html',
-            driver=driver,
-            rider=rider,
-            carpool=carpool,
-            reason='test_driver_cancelled',
-            person=rider,
-        )
-        assert 'carpool was cancelled by an administrator' not in rendered
-        assert 'test_driver_cancelled' in rendered
-        assert 'driver gave the following reason' in rendered
+        res = testapp.get('/profile')
+        assert res.status_code == HTTPStatus.FOUND
+        url = urllib.parse.urlparse(res.headers['Location'])
+        assert url.path == '/login'
+        assert url.query == ''

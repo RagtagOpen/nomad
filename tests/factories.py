@@ -6,7 +6,7 @@ from factory import Sequence, SubFactory, LazyFunction
 from factory.alchemy import SQLAlchemyModelFactory
 
 from app import db
-from app.models import Person, Carpool, Destination, RideRequest
+from app.models import Person, Carpool, Destination, RideRequest, Role
 
 
 class BaseFactory(SQLAlchemyModelFactory):
@@ -27,6 +27,15 @@ class PersonFactory(BaseFactory):
     class Meta:
         """Factory configuration."""
         model = Person
+
+class RoleFactory(BaseFactory):
+    """Role factory."""
+    name = Sequence(lambda n: 'Role{0}'.format(n))
+    description = "role description"
+
+    class Meta:
+        """Factory configuration."""
+        model = Role
 
 
 class DestinationFactory(BaseFactory):

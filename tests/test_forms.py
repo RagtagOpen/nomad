@@ -4,8 +4,10 @@
 from werkzeug.datastructures import MultiDict
 
 from app.auth.forms import ProfileForm
+import pytest
 
 
+@pytest.mark.usefixtures('request_context')
 class TestProfileForm:
     """Profile form."""
     def test_validate_name_missing(self, person):
