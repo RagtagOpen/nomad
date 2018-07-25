@@ -13,4 +13,4 @@ You can ask them at {{ driver.email }} or {{ driver.phone_number }} ({{ driver.p
 {% endif %}
 Thank you for your enthusiasm!
 
-Swing Left & the Nomad team
+{{ config.get('BRANDING_EMAIL_SIGNATURE') }}

@@ -6,4 +6,4 @@ Please visit {{url_for('carpool.find', _external=True)}} to find another ride. W
 
 Thank you,
 
-Swing Left & the Nomad team
+{{ config.get('BRANDING_EMAIL_SIGNATURE') }}

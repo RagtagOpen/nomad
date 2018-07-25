@@ -208,10 +208,10 @@ select:focus {
 	width: 143px;
 	height: 50px;
 	margin: 10px 0;
-	background: url("../img/logo-swingleft.png") top left / contain no-repeat;
+	background: url("../img/logo_ragtag.png") top left / contain no-repeat;
 }
 .header-left .logo.generic {
-	background: url("../img/logo-swingleft.png") top left / contain no-repeat;
+	background: url("../img/logo_ragtag.png") top left / contain no-repeat;
 }
 
 .header-left .header-search-bar {

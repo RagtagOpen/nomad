@@ -52,7 +52,29 @@ class Config:
     USE_SESSION_FOR_NEXT = True
 
     SENTRY_DSN = os.environ.get('SENTRY_DSN')
+
     DATE_FORMAT = os.environ.get('DATE_FORMAT', '%a %b %-d %Y at %-I:%M %p')
+
+    BRANDING_ORG_NAME = os.environ.get('BRANDING_ORG_NAME') or \
+        'Ragtag'
+    BRANDING_ORG_SITE_NAME = os.environ.get('BRANDING_SITE_NAME') or \
+        'ragtag.org'
+    BRANDING_ORG_EMAIL = os.environ.get('BRANDING_ORG_EMAIL') or \
+        'support@ragtag.org'
+    BRANDING_LIABILITY_URL = os.environ.get('BRANDING_LIABILITY_URL') or \
+        'set config BRANDING_LIABILITY_URL'
+    # see example static/css/swing-left.css
+    BRANDING_CSS_URL = os.environ.get('BRANDING_CSS_URL', None)
+    BRANDING_HEADLINE_1 = os.environ.get('BRANDING_HEADLINE_1') or \
+        'Carpool to canvass in battleground districts near you'
+    BRANDING_HEADLINE_2 = os.environ.get('BRANDING_HEADLINE_2') or \
+        'Find other volunteers near you and join a carpool.'
+    BRANDING_EMAIL_SIGNATURE = os.environ.get('BRANDING_EMAIL_SIGNATURE') or \
+        'The Nomad team'
+    BRANDING_PRIVACY_URL = os.environ.get('BRANDING_PRIVACY_URL') or \
+        '/terms.html'
+    BRANDING_SUPPORT_EMAIL = os.environ.get('BRANDING_SUPPORT_EMAIL') or \
+        'from@example.com'
 
     @staticmethod
     def init_app(app):
