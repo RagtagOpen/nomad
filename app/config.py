@@ -1,5 +1,15 @@
 import os
 
+def int_env(key, default):
+    """ Handle empty values for environment variables
+    and return the value as an int
+    """
+    val = os.environ.get(key, default)
+    if val == default or not val:
+        return int(default)
+
+    return int(val)
+
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', None)
@@ -22,7 +32,7 @@ class Config:
     RQ_REDIS_URL = os.environ.get('REDIS_URL')
     MAIL_LOG_ONLY = os.environ.get('MAIL_LOG_ONLY', 'true') == 'true'
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'localhost')
-    MAIL_PORT = int(os.environ.get('MAIL_PORT', '25'))
+    MAIL_PORT = int_env('MAIL_PORT', 25)
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'false') == 'true'
