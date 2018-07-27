@@ -6,7 +6,7 @@ from flask import render_template
 @pytest.mark.usefixtures('request_context')
 class TestEmailTemplates:
     def test_ride_requested(self, db):
-        rider = PersonFactory()
+        rider = PersonFactory(email='test@test.com', phone_number='')
         carpool = CarpoolFactory(from_place='from')
         db.session.add(rider)
         db.session.add(carpool)
@@ -17,6 +17,22 @@ class TestEmailTemplates:
             rider=rider,
         )
         assert 'requested a ride in your carpool from from to dest' in rendered
+        assert 'can be contacted at test@test.com.' in rendered
+
+
+    def test_ride_requested(self, db):
+        rider = PersonFactory(email='test@test.com', phone_number='1231231234')
+        carpool = CarpoolFactory(from_place='from')
+        db.session.add(rider)
+        db.session.add(carpool)
+        db.session.commit()
+        rendered = render_template(
+            'email/ride_requested.html',
+            carpool=carpool,
+            rider=rider,
+        )
+        assert 'requested a ride in your carpool from from to dest' in rendered
+        assert 'can be contacted at test@test.com or 1231231234' in rendered
 
     def test_ride_approved(self, db):
         rider = PersonFactory()

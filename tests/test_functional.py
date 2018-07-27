@@ -53,40 +53,6 @@ class TestProfile:
         assert person.gender == 'Female'
         assert person.preferred_contact_method == 'email'
 
-class TestEmailTemplates:
-    def test_ride_requested(self, db):
-        rider = PersonFactory(email='test@test.com', phone_number='')
-        carpool = CarpoolFactory(from_place='from')
-        db.session.add(rider)
-        db.session.add(carpool)
-        db.session.commit()
-        rendered = render_template(
-            'email/ride_requested.html',
-            carpool=carpool,
-            rider=rider,
-        )
-        assert 'requested a ride in your carpool from from to dest' in rendered
-        assert 'can be contacted at test@test.com.' in rendered
-
-    def test_ride_requested_multi_comms(self, db):
-        rider = PersonFactory(email='test@test.com', phone_number='1231231234')
-        carpool = CarpoolFactory(from_place='from')
-        db.session.add(rider)
-        db.session.add(carpool)
-        db.session.commit()
-        rendered = render_template(
-            'email/ride_requested.html',
-            carpool=carpool,
-            rider=rider,
-        )
-        assert 'requested a ride in your carpool from from to dest' in rendered
-        assert 'can be contacted at test@test.com or 1231231234' in rendered
-
-    def test_ride_approved(self, db):
-        rider = PersonFactory()
-        carpool = CarpoolFactory(from_place='from')
-        db.session.add(rider)
-        db.session.add(carpool)
     def test_profile_blocked_is_logged_out(self, testapp, db, person, blocked_role):
         login_person(testapp, person)
         person.roles.append(blocked_role)
