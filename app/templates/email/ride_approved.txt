@@ -12,9 +12,9 @@ Go to {{ url_for('carpool.details', uuid=carpool.uuid, _external=True) }} to rev
 
 Thanks for joining the ride!
 
-Swing Left & the Nomad team
+{{ config.get('BRANDING_EMAIL_SIGNATURE') }}
 
-Using this tool is at your own risk, neither drivers or riders are vetted by Swing Left. By using this tool you agree to our organizer liability statement which you can read here: https://swingleft.org/p/liability
+Using this tool is at your own risk, neither drivers or riders are vetted by {{ config.get('BRANDING_ORG_NAME') }}. By using this tool you agree to our organizer liability statement which you can read here: {{ config.get('BRANDING_LIABILITY_URL') }}
 
 
 SAFETY TIPS

@@ -1,0 +1,62 @@
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+<div class="content">
+    <div class="fullscreen">
+    <h4><a href="{{ url_for('admin.admin_index') }}">Admin</a>&nbsp;&raquo;&nbsp;
+        Carpools
+    </h4>
+    <h1>Nomad Carpools</h1>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>From</th>
+            <th>Destination</th>
+            <th>Leave Time</th>
+            <th>Return Time</th>
+            <th>Driver Name</th>
+            <th>Driver Email</th>
+            <th>Max Riders</th>
+            <th>Ride Requests</th>
+            <th>Approved Riders</th>
+            <th>Carpool Details Link</th>
+        </tr>
+    </thead>
+    <tbody id='search-results'>
+{% for carpool in carpools.items %}
+        <tr>
+            <td>{{ carpool.from_place }}</td>
+            <td>{{ carpool.destination.name }}</td>
+            <td>{{ carpool.leave_time }}</td>
+            <td>{{ carpool.return_time }}</td>
+            <td>{{ carpool.driver.name }}</td>
+            <td>{{ carpool.driver.email }}</td>
+            <td>{{ carpool.max_riders }}</td>
+            <td>{{ carpool.riders_and_potential_riders|length }}</td>
+            <td>{{ carpool.riders|length }}</td>
+            <td><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">Details</a></td>
+        </tr>
+{% endfor %}
+    </tbody>
+</table>
+</table>
+
+{% if carpools.has_prev %}
+<a href="{{ url_for('admin.carpool_list', page=carpools.prev_num) }}">&lt;&lt; Newer carpools</a>
+{% else %}
+&lt;&lt; Newer carpools
+{% endif %} |
+
+{% if carpools.has_next %}
+<a href="{{ url_for('admin.carpool_list', page=carpools.next_num) }}">Older carpools &gt;&gt;</a>
+{% else %}
+Older carpools &gt;&gt;
+{% endif %}
+
+</br>
+</br>
+<button type="button" class="btn btn-outline-primary"><a href="{{ url_for('admin.carpool_list_csv') }}">Download as CSV</a></button>
+
+{% endblock %}

@@ -54,3 +54,13 @@ class DeleteDestinationForm(FlaskForm):
 class ProfilePurgeForm(FlaskForm):
     cancel = SubmitField("Nevermind, Go Back")
     submit = SubmitField("Permanently Delete Their Profile")
+
+
+class CancelCarpoolAdminForm(FlaskForm):
+    reason = StringField(
+        "Reason",
+        description="Describe why you're canceling this carpool. "
+                    "This will be visible to all riders."
+    )
+    cancel = SubmitField("Never Mind, Go Back")
+    submit = SubmitField("Cancel This Ride")

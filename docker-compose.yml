@@ -35,6 +35,14 @@ services:
       - MAIL_USE_SSL=${MAIL_USE_SSL}
       - MAIL_USERNAME=${MAIL_USERNAME}
       - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - BRANDING_ORG_NAME=${BRANDING_ORG_NAME}
+      - BRANDING_ORG_SITE_NAME=${BRANDING_ORG_SITE_NAME}
+      - BRANDING_CSS_URL=${BRANDING_CSS_URL}
+      - BRANDING_HEADLINE_1=${BRANDING_HEADLINE_1}
+      - BRANDING_HEADLINE_2=${BRANDING_HEADLINE_2}
+      - BRANDING_EMAIL_SIGNATURE=${BRANDING_EMAIL_SIGNATURE}
+      - BRANDING_PRIVACY_URL=${BRANDING_PRIVACY_URL}
+      - BRANDING_SUPPORT_EMAIL=${BRANDING_SUPPORT_EMAIL}
       - PYTHONUNBUFFERED=0
     ports:
       - 5000:5000
@@ -45,7 +53,7 @@ services:
 
   nomad_worker:
     extends: base
-    command: flask rq worker
+    command: flask rq worker --worker-ttl 450
     environment:
       - FLASK_DEBUG=${FLASK_DEBUG}
       - FLASK_APP=${FLASK_APP}

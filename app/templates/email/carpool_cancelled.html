@@ -5,11 +5,17 @@
 
 <p>Unfortunately, the carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }} has been cancelled.</p>
 
-<p>The driver gave the following reason for cancelling: {{ reason }}.</p>
+{% if is_driver %}
+    <p>This carpool was cancelled by an administrator.</p>
 
-<p>You can ask them at {{ driver.email }} or {{ driver.phone_number }} ({{ driver.preferred_contact_method }} preferred) if they're willing to reschedule, or go to {{ url_for('carpool.find', _external=True) }} to look for another ride.</p>
+    <p>The administrator gave the following reason for cancelling: {{ reason }}.</p>
+{% else %}
+    <p>The driver gave the following reason for cancelling: {{ reason }}.</p>
 
-<p>Thank you for your enthusiasm!</p>
+    <p>You can ask them at {{ driver.email }} or {{ driver.phone_number }} ({{ driver.preferred_contact_method }} preferred) if they're willing to reschedule, or go to {{ url_for('carpool.find', _external=True) }} to look for another ride.</p>
 
-<p>Swing Left &amp; the Nomad team</p>
+    <p>Thank you for your enthusiasm!</p>
+{% endif %}
+
+<p>{{ config.get('BRANDING_EMAIL_SIGNATURE') }}</p>
 {% endblock %}

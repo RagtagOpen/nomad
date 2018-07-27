@@ -82,7 +82,7 @@ function initMap() {
         {{ form.destination_lon }}
         {{ wtf.form_field(form.name) }}
         {{ wtf.form_field(form.address) }}
-        {{ wtf.form_field(form.submit) }}
+        {{ form.submit(_class='primary') }}
     </div>
 </div>
 </form>

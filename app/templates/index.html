@@ -8,8 +8,8 @@
         <div class="interstitial-page">
             <div class="bg-image"></div>
             <h4>Share your ride</h4>
-            <h1>Carpool to canvass in battleground districts near you</h1>
-            <h2>Find other volunteers near you and join a carpool.</h2>
+            <h1>{{ config.get('BRANDING_HEADLINE_1') }}</h1>
+            <h2>{{ config.get('BRANDING_HEADLINE_2') }}</h2>
             <form method="GET" action="{{ url_for('carpool.find') }}"">
                 <input type="text" name="q" id="locationQuery" placeholder="Zip code or City, State"> <input class="primary" type="submit" value="Find a ride">
             </form>
@@ -39,7 +39,7 @@
 
             <h3 class="top-border">Need to contact us?</h3>
             <p>Email the Nomad team for help: <a href="mailto:{{ config.get('MAIL_DEFAULT_SENDER') }}">{{ config.get('MAIL_DEFAULT_SENDER') }}</a>.</p>
-            <p>Got questions about our Privacy Policy or Terms of Use? You can find them <a href="{{ url_for('auth.terms') }}">here</a>.</p>
+            <p>Got questions about our Privacy Policy or Terms of Use? You can find them <a href="{{ config.get('BRANDING_PRIVACY_URL') }}">here</a>.</p>
 
             <h3 class="top-border">About Nomad</h3>
             <p>Nomad was built by Ragtag, a team of tech volunteers who help activists, organizers, non-profits, and candidates break down tech barriers making it easier to achieve their organizing goals. Nomad lets volunteers help their fellow volunteers get to where they can have the biggest impact.</p>

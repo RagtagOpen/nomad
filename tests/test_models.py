@@ -55,7 +55,7 @@ class TestPerson:
         assert person.has_roles('admin')
 
 
-@pytest.mark.usefixtures('db')
+@pytest.mark.usefixtures('db', 'request_context')
 class TestCarpool:
     """Carpool tests."""
 
@@ -117,7 +117,6 @@ class TestCarpool:
             '_get_user',
             lambda: ride_request_2.person,
         )
-
         assert carpool.get_current_user_ride_request() is ride_request_2
 
     def test_current_user_is_driver_not_logged_in(self):

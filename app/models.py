@@ -1,7 +1,7 @@
 import datetime
 import uuid
 from flask import abort
-from flask_login import UserMixin, current_user
+from flask_login import AnonymousUserMixin, UserMixin, current_user
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
@@ -72,6 +72,13 @@ class PersonRole(db.Model):
                            default=datetime.datetime.utcnow)
     person_id = db.Column(db.Integer, db.ForeignKey('people.id'))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+
+
+class AnonymousUser(AnonymousUserMixin):
+    def has_roles(self, *roles):
+        return False
+
+login_manager.anonymous_user = AnonymousUser
 
 
 class Person(UserMixin, db.Model, UuidMixin):

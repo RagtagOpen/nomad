@@ -1,6 +1,7 @@
 *.pyc
 *.sqlite
 .python-version
+.pytest_cache
 
 # Jetbrains IDEs
 .idea/

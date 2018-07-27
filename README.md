@@ -25,6 +25,11 @@
     echo FLASK_APP=wsgi.py >> .env
     echo FLASK_DEBUG=1 >> .env
     ```
+1.  Add a `SECRET_KEY` to your `.env`. The value for `SECRET_KEY` can be any value for the purposes of local development.
+
+    ```bash
+     echo SECRET_KEY=your_secret_key >> .env
+    ```
 
 1.  (Optional) Get a Google Maps Api Key
 
@@ -34,7 +39,7 @@
     Then set the key as a variable in your `.env` file.
 
     ```bash
-    echo GOOGLE_MAPS_API_KEY="YOUR_KEY_HERE" >> .env
+    echo GOOGLE_MAPS_API_KEY=YOUR_KEY_HERE >> .env
     ```
 
 1.  (Optional) Configure Google Sign-In
@@ -44,9 +49,10 @@
     After creating credentials you'll get an OAuth Client ID and Client Secret.
 
     ```bash
-    echo GOOGLE_CLIENT_ID="YOUR_CLIENT_ID" >> .env
-    echo GOOGLE_CLIENT_SECRET="YOUR_CLIENT_SECRET" >> .env
+    echo GOOGLE_CLIENT_ID=YOUR_CLIENT_ID >> .env
+    echo GOOGLE_CLIENT_SECRET=YOUR_CLIENT_SECRET >> .env
     ```
+
 
 1.  Configure Email Send
     In order for the app to send email, you'll need to add details about what mail server it should use. For testing, you can use a Mailgun or Gmail account. Add those details to the .env file, too!
@@ -236,3 +242,43 @@ Locally:
     ```
     pytest
     ```
+
+## Branding
+
+Organizations using Nomad need to set these environment variables:
+
+  - `BRANDING_ORG_NAME` - organization name; default "Ragtag"
+  - `BRANDING_ORG_SITE_NAME` - site name (not full URL), default "ragtag.org"
+  - `BRANDING_LIABILITY_URL` - URL to organizer liability statement (required)
+  - `BRANDING_EMAIL_SIGNATURE` - default "The Nomad team"
+  - `BRANDING_SUPPORT_EMAIL` - default `support@ragtag.org`
+
+These environment variables have reasonable defaults; setting these is optional:
+
+  - `BRANDING_CSS_URL` - URL to CSS with skin-specific overrides; default is no overrides
+  - `BRANDING_HEADLINE_1` - default "Carpool to canvass in battleground districts near you"
+  - `BRANDING_HEADLINE_2` - default "Find other volunteers near you and join a carpool."
+  - `BRANDING_PRIVACY_URL` - default `/terms.html`; the default [terms.html](app/templates/auth/terms.html) uses values of `BRANDING_ORG_NAME`, `BRANDING_ORG_SITE_NAME`, and `BRANDING_SUPPORT_EMAIL`
+
+### sample Swing Left branding
+
+to use sample sample config for Swing Left locally:
+
+    cat branding/swing-left >> .env
+
+sample branding config values: [branding/swing-left](branding/swing-left)
+
+sample CSS overrides: [static/css/swing-left.css](app/static/css/swing-left.css)
+
+restart app to reload config from `.env`
+
+### branding QA
+
+  - `BRANDING_ORG_NAME` in [terms.html](app/templates/auth/terms.html) (ie "Ragtag Nomad Privacy Policy")
+  - `BRANDING_ORG_SITE_NAME` in [terms.html](app/templates/auth/terms.html) ie "nomad.ragtag.org, the "Site""
+  - `BRANDING_SUPPORT_EMAIL` in [terms.html](app/templates/auth/terms.html) ie "email support@ragtag.org"
+  - `BRANDING_LIABILITY_URL` in email templates: [driver_reminder](app/templates/email/driver_reminder.html), [ride_approved.html](app/templates/email/ride_approved.html)
+  - `BRANDING_EMAIL_SIGNATURE` in all [email templates](app/templates/email)
+  - logo on home page, defined in CSS referenced by `BRANDING_CSS_URL`
+  - `BRANDING_HEADLINE_1` and `BRANDING_HEADLINE_1` on home page, below "SHARE YOUR RIDE"
+  - `BRANDING_PRIVACY_URL` privacy policy links on [login](app/templates/auth/login.html) and [mobile and desktop nav](app/templates/_template.html)

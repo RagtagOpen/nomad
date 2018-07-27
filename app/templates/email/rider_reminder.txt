@@ -13,7 +13,7 @@ You can go to {{ url_for('carpool.details', uuid=carpool.uuid, _external=True) }
 
 You are doing great work, thank you for joining us!
 
-Swing Left & the Nomad team
+{{ config.get('BRANDING_EMAIL_SIGNATURE') }}
 
 SAFETY TIPS
 • Have a live phone conversation with your driver before the pickup

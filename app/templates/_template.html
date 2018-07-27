@@ -90,6 +90,9 @@ function doLogout() {
 <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:300,400,600,700" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" integrity="sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=" crossorigin="anonymous" />
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+{% if config.get('BRANDING_CSS_URL') %}
+  <link rel="stylesheet" type="text/css" href="{{config.get('BRANDING_CSS_URL')}}">
+{% endif %}
 
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ url_for('static', filename='img/favicon/apple-touch-icon-144x144.png') }}" />
 <link rel="apple-touch-icon-precomposed" sizes="152x152" href="{{ url_for('static', filename='img/favicon/apple-touch-icon-152x152.png') }}" />
@@ -123,7 +126,7 @@ function doLogout() {
 {% endif %}
         <li><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
         <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
-        <li class="divider"><a href="{{ url_for('auth.terms') }}">Privacy &amp; Terms</a></li>
+        <li class="divider"><a href="{{ config.get('BRANDING_PRIVACY_URL') }}">Privacy &amp; Terms</a></li>
 {% if current_user.is_authenticated %}
         <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
         <li><a href="#" onClick="return doLogout()">Logout</a></li>
@@ -148,7 +151,7 @@ function doLogout() {
   <ul class="nav-bar">
     <li class="active"><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
       <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
-      <li><a href="{{ url_for('auth.terms') }}">Privacy &amp; Terms</a></li>
+      <li><a href="{{ config.get('BRANDING_PRIVACY_URL') }}">Privacy &amp; Terms</a></li>
 {% if current_user.is_authenticated %}
       <li><a href="{{ url_for('carpool.mine') }}">My rides</a></li>
 {% endif %}

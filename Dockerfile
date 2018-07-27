@@ -18,7 +18,7 @@ RUN pip install -U --no-cache-dir pipenv
 
 ADD Pipfile .
 ADD Pipfile.lock .
-RUN pipenv install --system --deploy
+RUN pipenv install --system --deploy --dev
 
 ADD . .
 
