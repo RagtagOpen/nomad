@@ -76,36 +76,8 @@ p.bold, strong {
 ol, ul {
 	margin-bottom: 0;
 }
-input[type=submit] {
-	height: 40px;
-    padding: 5px 25px;
-    border: 0;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	margin-right: 10px;
-}
-input[type=submit]:focus, textarea:focus {
+textarea:focus {
 	outline: none;
-}
-input[type=submit].primary {
-	background-color: rgb(0,168,225);
-	color: white;
-	margin-bottom: 8px;
-}
-input[type=submit].secondary {
-	background-color: rgba(0,168,225,0);
-	color: rgba(0,168,225,1);
-    border: 1px solid rgba(0,168,225,1);
-}
-input[type=submit].destructive {
-	background-color: rgb(204,68,75);
-	color: white;
-}
-input[type=submit].inactive {
-	background-color: rgb(205,212,222);
-	color: white;
-	cursor: default;
 }
 input[type=text], input[type=email], input[type=tel], input[type=date] {
 	height: 40px;
@@ -360,10 +332,6 @@ select:focus {
 .fullscreen.jumbo.driver-splash {
 	background-color: rgb(0,168,225);
 }
-.fullscreen.jumbo.driver-splash input[type=submit] {
-	background-color: rgb(2,46,91);
-	color: white;
-}
 .fullscreen.jumbo.driver-splash a {
 	color:rgb(2,46,91);
 }
@@ -579,9 +547,6 @@ select:focus {
 .form-page .left-button {
     float: left;
     margin-right: 5px;
-}
-.form-page .carpool-control-button {
-    padding: 0px 2px;
 }
 .two-col-layout {
 	width: 100%;
@@ -918,4 +883,8 @@ pre.text {
 	.mobile-back-link.active{
 		display: block;
 	}
+}
+
+a.btn {
+	text-decoration: none
 }
