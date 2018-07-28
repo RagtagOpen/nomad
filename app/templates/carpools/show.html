@@ -20,10 +20,10 @@
             {% set current_user_ride_request = pool.get_current_user_ride_request() %}
 
             <h4>Carpool Details</h4>
-            <p><b>Pickup</b>: {{ pool.from_place }}</p>
+            <p><b>Pickup</b>: <a href="https://maps.google.com/?q={{ pool.from_place }}" target="_blank">{{ pool.from_place }}</a></p>
             <p><b>Destination name</b>: {{ pool.destination.name }}</p>
             {% if pool.current_user_is_driver or current_user_ride_request and current_user_ride_request.status == 'approved' %}
-            <p><b>Destination address</b>: {{ pool.destination.address }}</p>
+            <p><b>Destination address</b>: <a href="https://maps.google.com/?q={{ pool.destination.address }}" target="_blank">{{ pool.destination.address }}</a></p>
             {%- endif %}
 
 
@@ -160,9 +160,9 @@
                 </div>
                 <div class="two-col-column">
                     <h4>Departure Point</h4>
-                    <p>{{ pool.from_place }}</p>
+                    <p><a href="https://maps.google.com/?q={{ pool.from_place }}" target="_blank">{{ pool.from_place }}</a></p>
                     <h4>Destination</h4>
-                    <p>{{ pool.destination.name }}</p>
+                    <p><a href="https://maps.google.com/?q={{ pool.destination.address }}" target="_blank">{{ pool.destination.name }}</a></p>
                 </div>
             </div>
 
