@@ -12,7 +12,7 @@
             <div class="two-col-layout top-border">
                 <div class="two-col-column">
                     <h4>{{ pool.leave_time | humanize }}</h4>
-                    <h3>{{ pool.from_place }} to {{ pool.destination.name }}</h3>
+                    <h3><a href="https://maps.google.com/?q={{ pool.from_place }}" target="_blank">{{ pool.from_place }}</a> to {{ pool.destination.name }}</h3>
 
                 {% set current_user_ride_request = pool.get_current_user_ride_request() %}
                 {% if current_user_ride_request %}
@@ -41,7 +41,7 @@
                     <p>Returns: {{ pool.return_time | humanize }}</p>
                     <p>Destination name: {{ pool.destination.name }}</p>
                     {% if pool.current_user_is_driver or current_user_ride_request and current_user_ride_request.status == 'approved' %}
-                    <p>Destination address: {{ pool.destination.address }}</p>
+                        <p>Destination address: <a href="https://maps.google.com/?q={{ pool.destination.address }}" target="_blank">{{ pool.destination.address }}</a></p>
                     {%- endif %}
                 </div>
             </div>

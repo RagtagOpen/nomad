@@ -60,6 +60,7 @@ a {
 	color: rgba(0,168,225,1);
 	text-decoration: underline;
 	cursor: pointer;
+	font-size: inherit;
 }
 a.destructive {
 	color: rgb(204,68,75);
