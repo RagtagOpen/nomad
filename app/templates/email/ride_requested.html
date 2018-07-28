@@ -7,7 +7,7 @@
 
 <p>Please <a href="{{url_for('carpool.details', uuid=carpool.uuid, _external=True)}}"> click here</a> and approve or deny this request.</p>
 
-<p>{{ rider.name }} can be contacted at {{ rider.email }} or {{ rider.phone_number }} ({{ rider.preferred_contact_method }} preferred).</p>
+<p>{{ rider.name }} can be contacted at {{ rider.email }}{% if rider.phone_number|trim() %} or {{ rider.phone_number }} ({{ rider.preferred_contact_method }} preferred){% endif %}.</p>
 
 <p>You'll receive a reminder email containing all of your passengers' contact information two days before your departure date.</p>
 
