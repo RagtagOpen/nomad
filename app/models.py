@@ -1,5 +1,6 @@
 import datetime
 import uuid
+from dateutil import tz
 from flask import abort
 from flask_login import AnonymousUserMixin, UserMixin, current_user
 from geoalchemy2 import Geometry
@@ -204,6 +205,11 @@ class Carpool(db.Model, UuidMixin):
     def seats_available(self):
         return self.max_riders - \
                self.get_ride_requests_query(['approved']).count()
+
+    @property
+    def future(self):
+        now = datetime.datetime.now().replace(tzinfo=tz.gettz('UTC'))
+        return self.leave_time > now
 
 
 class Destination(db.Model, UuidMixin):

@@ -4,12 +4,11 @@
 {% block site %}
 
 <div class="content">
-
     <div class="fullscreen">
         <div class="form-page my-rides">
             <h1>My upcoming rides</h1>
-{% for pool in carpools %}
-            <div class="two-col-layout top-border">
+{% for pool in carpools['future'] %}
+            <div class="two-col-layout top-border carpools future">
                 <div class="two-col-column">
                     <h4>{{ pool.leave_time | humanize }}</h4>
                     <h3>{{ pool.from_place }} to {{ pool.destination.name }}</h3>
@@ -46,16 +45,29 @@
                 </div>
             </div>
 {% else %}
-            <h3>You haven't joined any carpools yet!</h3>
+            <h3>You have no upcoming carpools!</h3>
             <p>
                 <br>
                 <a class="btn" href="{{ url_for('carpool.new') }}">Create a new carpool</a>&nbsp;&nbsp; or &nbsp;&nbsp;<a class="btn" href="{{ url_for('carpool.find') }}">Find a carpool to join</a>
             </p>
 
 {% endfor %}
-        </div>
-    </div>
 
+{% if carpools['past'] %}
+            <h1>My past rides</h1>
+{% endif %}
+{% for pool in carpools['past'] %}
+            <div class="two-col-layout top-border carpools past">
+                <div class="two-col-column">
+                    <h4>{{ pool.leave_time | humanize }}</h4>
+                    <h3>{{ pool.from_place }} to {{ pool.destination.name }}</h3>
+                    {% if pool.current_user_is_driver %}
+                    <p class="message success">Thanks for driving!</p>
+                    {% endif %}
+                </div>
+            </div>
+{% endfor %}
+    </div>
 </div>
 
 {% endblock %}

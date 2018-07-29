@@ -700,6 +700,10 @@ select:focus {
 	margin-left: 12px;
 }
 
+.carpools.past h3, .carpools.past h4 {
+	color: #666;
+}
+
 /* EMAIL PREVIEW */
 
 pre.text {
