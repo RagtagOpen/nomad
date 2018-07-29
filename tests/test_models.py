@@ -4,8 +4,6 @@ import datetime as dt
 
 import pytest
 
-import flask_login.utils
-
 from app.models import Person, Role, AnonymousUser
 
 from .factories import CarpoolFactory, PersonFactory, RideRequestFactory
