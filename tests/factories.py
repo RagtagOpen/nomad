@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Factories to help in tests."""
-import datetime
+from datetime import datetime, timedelta
 
 from factory import Sequence, SubFactory, LazyFunction
 from factory.alchemy import SQLAlchemyModelFactory
@@ -50,9 +50,11 @@ class DestinationFactory(BaseFactory):
 
 class CarpoolFactory(BaseFactory):
     """Carpool factory."""
-    leave_time = LazyFunction(datetime.datetime.now)
+    leave_time = LazyFunction(datetime.now)
+    return_time = LazyFunction(lambda : datetime.now() + timedelta(hours=2))
     destination = SubFactory(DestinationFactory)
     driver = SubFactory(PersonFactory)
+    max_riders = 4
 
     class Meta:
         """Factory configuration."""
