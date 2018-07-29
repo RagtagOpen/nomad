@@ -26,10 +26,10 @@ class MockSignIn(OAuthSignIn):
         )
 
 def login(testapp, social_id, user_name, user_email):
-    testapp.get('/callback/mock', params=dict(id=social_id, name=user_name, email=user_email))
+    return testapp.get('/callback/mock', params=dict(id=social_id, name=user_name, email=user_email))
 
 def login_person(testapp, person):
-    login(testapp, person.social_id, person.name, person.email)
+    return login(testapp, person.social_id, person.name, person.email)
 
 
 class TestProfile:
@@ -63,3 +63,12 @@ class TestProfile:
         url = urllib.parse.urlparse(res.headers['Location'])
         assert url.path == '/login'
         assert url.query == ''
+
+    def test_redirect_on_login(self, testapp, db, person, carpool):
+        cancel_carpool_url = '/carpools/{}/cancel'.format(carpool.uuid)
+        res = testapp.get(cancel_carpool_url)
+        res = res.follow()
+        res = login_person(testapp, person)
+        assert res.status_code == HTTPStatus.FOUND
+        url = urllib.parse.urlparse(res.headers['Location'])
+        assert url.path == cancel_carpool_url

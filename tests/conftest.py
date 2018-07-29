@@ -7,7 +7,7 @@ from webtest import TestApp
 from app import create_app
 from app import db as _db
 
-from .factories import PersonFactory, RoleFactory
+from .factories import PersonFactory, RoleFactory, CarpoolFactory
 
 TEST_DB='testdb'
 
@@ -80,5 +80,11 @@ def blocked_role(db):
     """A blocked role for the tests."""
     role = RoleFactory(name='blocked')
     db.session.commit()
-
     return role
+
+@pytest.fixture
+def carpool(db):
+    """A carpool for the tests"""
+    carpool = CarpoolFactory()
+    db.session.commit()
+    return carpool
