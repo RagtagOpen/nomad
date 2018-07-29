@@ -4,9 +4,7 @@ import datetime as dt
 
 import pytest
 
-import flask_login.utils
-
-from app.models import Person, Role
+from app.models import Person, Role, AnonymousUser
 
 from .factories import CarpoolFactory, PersonFactory, RideRequestFactory
 
@@ -54,8 +52,57 @@ class TestPerson:
         assert role in person.roles
         assert person.has_roles('admin')
 
+    def test_get_carpool_ride_request(self, db):
+        carpool = CarpoolFactory()
 
-@pytest.mark.usefixtures('db', 'request_context')
+        ride_request_1 = RideRequestFactory(carpool = carpool)
+        ride_request_2 = RideRequestFactory(carpool = carpool)
+
+        db.session.add_all([
+            carpool,
+            ride_request_1,
+            ride_request_2,
+        ])
+        db.session.commit()
+
+        person = ride_request_2.person
+        assert person.get_ride_request_in_carpool(carpool) is ride_request_2
+
+
+    def test_is_driver(self, db):
+        """Test current user is driver property when user is logged in"""
+        user_1 = PersonFactory()
+        user_2 = PersonFactory()
+        carpool_1 = CarpoolFactory(driver = user_1)
+        carpool_2 = CarpoolFactory(driver = user_2)
+
+        db.session.add_all([
+            carpool_1,
+            carpool_2,
+            user_1,
+            user_2
+        ])
+        db.session.commit()
+
+        assert user_1.is_driver(carpool_1)
+        assert user_1.is_driver(carpool_2) == False
+
+
+class TestAnonymousUser:
+    """Anonymous User Tests"""
+
+    def test_anonymous_user_has_no_ride_request(self):
+        carpool = CarpoolFactory()
+        anonymous = AnonymousUser()
+        assert anonymous.get_ride_request_in_carpool(carpool) == None
+
+    def test_anonymous_user_is_not_driver(self):
+        carpool = CarpoolFactory()
+        anonymous = AnonymousUser()
+        assert anonymous.is_driver(carpool) == False
+
+
+@pytest.mark.usefixtures('db')
 class TestCarpool:
     """Carpool tests."""
 
@@ -93,56 +140,6 @@ class TestCarpool:
 
         assert approved_ride_requests == [ ride_request_2 ]
 
-    def test_get_current_user_ride_request_not_logged_in(self):
-        """Test get curent user ride request when user is not logged in"""
-        carpool = CarpoolFactory()
-        assert carpool.get_current_user_ride_request() == None
-
-    def test_get_current_user_ride_request_logged_in(self, db, monkeypatch):
-        """Test get curent user ride request when user is logged in"""
-        carpool = CarpoolFactory()
-
-        ride_request_1 = RideRequestFactory(carpool = carpool)
-        ride_request_2 = RideRequestFactory(carpool = carpool)
-
-        db.session.add_all([
-            carpool,
-            ride_request_1,
-            ride_request_2,
-        ])
-        db.session.commit()
-
-        monkeypatch.setattr(
-            flask_login.utils,
-            '_get_user',
-            lambda: ride_request_2.person,
-        )
-        assert carpool.get_current_user_ride_request() is ride_request_2
-
-    def test_current_user_is_driver_not_logged_in(self):
-        """Test current user is driver property when user is not logged in"""
-        carpool = CarpoolFactory()
-        assert carpool.current_user_is_driver == False
-
-    def test_current_user_is_driver_logged_in(self, db, monkeypatch):
-        """Test current user is driver property when user is logged in"""
-        carpool_1 = CarpoolFactory()
-        carpool_2 = CarpoolFactory()
-
-        db.session.add_all([
-            carpool_1,
-            carpool_2,
-        ])
-        db.session.commit()
-
-        monkeypatch.setattr(
-            flask_login.utils,
-            '_get_user',
-            lambda: carpool_1.driver,
-        )
-
-        assert carpool_1.current_user_is_driver == True
-        assert carpool_2.current_user_is_driver == False
 
     def test_get_when_no_requests(self, db):
         """Test get riders when no ride requests have been made"""

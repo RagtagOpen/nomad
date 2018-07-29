@@ -1,7 +1,7 @@
 import datetime
 import uuid
 from flask import abort
-from flask_login import AnonymousUserMixin, UserMixin, current_user
+from flask_login import AnonymousUserMixin, UserMixin
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
@@ -78,6 +78,12 @@ class AnonymousUser(AnonymousUserMixin):
     def has_roles(self, *roles):
         return False
 
+    def get_ride_request_in_carpool(self, carpool):
+        return None
+
+    def is_driver(self, carpool):
+        return False
+
 login_manager.anonymous_user = AnonymousUser
 
 
@@ -120,6 +126,12 @@ class Person(UserMixin, db.Model, UuidMixin):
             query = query.filter_by(status=status)
 
         return query
+
+    def get_ride_request_in_carpool(self, carpool):
+        return self.get_ride_requests_query().filter_by(carpool_id=carpool.id).first()
+
+    def is_driver(self, carpool):
+        return self.id == carpool.driver_id
 
     def get_driving_carpools(self):
         query = Carpool.query.filter_by(driver_id=self.id)
@@ -167,21 +179,6 @@ class Carpool(db.Model, UuidMixin):
             query = query.filter(RideRequest.status.in_(statuses))
 
         return query
-
-    def get_current_user_ride_request(self):
-        if current_user.is_anonymous:
-            return None
-        else:
-            return self.get_ride_requests_query() \
-                       .filter_by(person_id=current_user.id) \
-                       .first()
-
-    @property
-    def current_user_is_driver(self):
-        if current_user.is_anonymous:
-            return False
-        else:
-            return current_user.id == self.driver_id
 
     def get_riders(self, statuses):
         requests = self.get_ride_requests_query(statuses).all()
