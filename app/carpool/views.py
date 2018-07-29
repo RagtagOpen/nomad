@@ -307,7 +307,7 @@ def edit(uuid):
 def new_rider(carpool_uuid):
     carpool = Carpool.uuid_or_404(carpool_uuid)
 
-    if carpool.current_user_is_driver:
+    if current_user.is_driver(carpool):
         flash("You can't request a ride on a carpool you're driving in", 'error')
         return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
@@ -323,7 +323,7 @@ def new_rider(carpool_uuid):
                   "this ride. Try another one?", 'error')
             return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
-        if carpool.get_current_user_ride_request():
+        if current_user.get_ride_request_in_carpool(carpool):
             flash("You've already requested a seat on "
                   "this ride. Try another one or cancel your "
                   "existing request.", 'error')
