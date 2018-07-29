@@ -37,6 +37,7 @@ def get_redirect_target():
 
 @auth_bp.route('/login')
 def login():
+    session['login-referrer'] = request.referrer
     return render_template('auth/login.html')
 
 
@@ -83,8 +84,9 @@ def oauth_callback(provider):
         flash("Thanks for logging in! Please update your profile.", 'success')
         # Go to the profile now...
         next_url = url_for('auth.profile')
-        # ...and after they update their profile go to the index
-        session['next'] = url_for('carpool.index')
+        # ...and after they update their profile, go to the page that referred them here
+        session['next'] = session['login-referrer']
+        del session['login-referrer']
 
     if user.has_roles('blocked'):
         session.pop('next', None)
