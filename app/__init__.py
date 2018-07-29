@@ -61,31 +61,23 @@ def create_app(config_name):
             '500.html',
             event_id=g.sentry_event_id,
             public_dsn=sentry.client.get_public_dsn('https') if sentry else None
-        )
+        ), 500
 
     @app.errorhandler(400)
     def error_400(error):
-        return render_template(
-            '400.html'
-        )
+        return render_template('400.html'), 400
 
     @app.errorhandler(403)
     def error_403(error):
-        return render_template(
-            '403.html'
-        )
+        return render_template('403.html'), 403
 
     @app.errorhandler(404)
     def error_404(error):
-        return render_template(
-            '404.html'
-        )
+        return render_template('404.html'), 404
 
     @app.errorhandler(405)
     def error_405(error):
-        return render_template(
-            '405.html'
-        )
+        return render_template('405.html'), 405
 
     @app.after_request
     def frame_buster(response):

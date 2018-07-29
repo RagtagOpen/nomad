@@ -83,6 +83,13 @@ def blocked_role(db):
     return role
 
 @pytest.fixture
+def admin_role(db):
+    """A blocked role for the tests."""
+    role = RoleFactory(name='admin')
+    db.session.commit()
+    return role
+
+@pytest.fixture
 def carpool(db):
     """A carpool for the tests"""
     carpool = CarpoolFactory()

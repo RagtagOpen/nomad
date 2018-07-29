@@ -56,7 +56,6 @@ class TestProfile:
     def test_profile_blocked_is_logged_out(self, testapp, db, person, blocked_role):
         login_person(testapp, person)
         person.roles.append(blocked_role)
-        print(person.is_active)
         db.session.commit()
         res = testapp.get('/profile')
         assert res.status_code == HTTPStatus.FOUND
@@ -72,3 +71,15 @@ class TestProfile:
         assert res.status_code == HTTPStatus.FOUND
         url = urllib.parse.urlparse(res.headers['Location'])
         assert url.path == cancel_carpool_url
+
+    def test_admin_user_can_access_admin(self, testapp, db, person, admin_role):
+        person.roles.append(admin_role)
+        db.session.commit()
+        login_person(testapp, person)
+        res = testapp.get('/admin/')
+        assert res.status_code == HTTPStatus.OK
+
+    def test_non_admin_user_cannot_access_admin(self, testapp, db, person):
+        login_person(testapp, person)
+        print(person.roles)
+        res = testapp.get('/admin/', status=HTTPStatus.FORBIDDEN)
