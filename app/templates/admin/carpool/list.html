@@ -19,7 +19,7 @@
             <th>Driver Name</th>
             <th>Driver Email</th>
             <th>Max Riders</th>
-            <th>Ride Requests</th>
+            <th>All requests (pending and approved)</th>
             <th>Approved Riders</th>
             <th>Carpool Details Link</th>
         </tr>
@@ -57,6 +57,6 @@ Older carpools &gt;&gt;
 
 </br>
 </br>
-<button type="button" class="btn btn-outline-primary"><a href="{{ url_for('admin.carpool_list_csv') }}">Download as CSV</a></button>
+<a href="{{ url_for('admin.carpool_list_csv') }}" class="btn btn-primary">Download as CSV</a>
 
 {% endblock %}

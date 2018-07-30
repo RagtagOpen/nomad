@@ -9,7 +9,7 @@ from flask import (
     Response,
     url_for,
 )
-from flask_login import current_user, login_required
+from flask_login import current_user
 from . import admin_bp
 from .forms import (
     CancelCarpoolAdminForm,
@@ -20,7 +20,6 @@ from .forms import (
 from geoalchemy2.shape import to_shape
 from .. import db
 from ..email import send_email
-from ..auth.permissions import roles_required
 from ..carpool.views import (
     cancel_carpool,
     email_driver_rider_cancelled_request,
@@ -36,8 +35,6 @@ from ..models import (
 
 
 @admin_bp.route('/admin/')
-@login_required
-@roles_required('admin')
 def admin_index():
     return render_template(
         'admin/index.html',
@@ -45,8 +42,6 @@ def admin_index():
 
 
 @admin_bp.route('/admin/stats/')
-@login_required
-@roles_required('admin')
 def admin_stats():
     return render_template(
         'admin/stats.html',
@@ -59,8 +54,6 @@ def admin_stats():
 
 
 @admin_bp.route('/admin/users/<uuid>')
-@login_required
-@roles_required('admin')
 def user_show(uuid):
     user = Person.uuid_or_404(uuid)
     return render_template(
@@ -70,8 +63,6 @@ def user_show(uuid):
 
 
 @admin_bp.route('/admin/users/<uuid>/purge', methods=['GET', 'POST'])
-@login_required
-@roles_required('admin')
 def user_purge(uuid):
     user = Person.uuid_or_404(uuid)
 
@@ -130,8 +121,6 @@ def user_purge(uuid):
 
 
 @admin_bp.route('/admin/users/<user_uuid>/togglerole', methods=['POST'])
-@login_required
-@roles_required('admin')
 def user_toggle_role(user_uuid):
     user = Person.uuid_or_404(user_uuid)
     role = Role.first_by_name_or_404(request.form.get('role_name'))
@@ -153,8 +142,6 @@ def user_toggle_role(user_uuid):
 
 
 @admin_bp.route('/admin/users')
-@login_required
-@roles_required('admin')
 def user_list():
     page = request.args.get('page')
     page = int(page) if page is not None else None
@@ -171,8 +158,6 @@ def user_list():
 
 
 @admin_bp.route('/admin/drivers_and_riders')
-@login_required
-@roles_required('admin')
 def driver_and_rider_list():
     page = request.args.get('page')
     page = int(page) if page is not None else 0
@@ -210,8 +195,6 @@ def driver_and_rider_list():
 
 
 @admin_bp.route('/admin/users.csv')
-@login_required
-@roles_required('admin')
 def user_list_csv():
     output = io.StringIO()
     writer = csv.writer(output)
@@ -257,8 +240,6 @@ def user_list_csv():
     )
 
 @admin_bp.route('/admin/carpools')
-@login_required
-@roles_required('admin')
 def carpool_list():
     page = request.args.get('page')
     page = int(page) if page is not None else None
@@ -273,8 +254,6 @@ def carpool_list():
     )
 
 @admin_bp.route('/admin/carpools.csv')
-@login_required
-@roles_required('admin')
 def carpool_list_csv():
     output = io.StringIO()
     writer = csv.writer(output)
@@ -326,8 +305,6 @@ def carpool_list_csv():
 
 
 @admin_bp.route('/admin/destinations')
-@login_required
-@roles_required('admin')
 def destinations_list():
     page = request.args.get('page')
     page = int(page) if page is not None else None
@@ -344,8 +321,6 @@ def destinations_list():
 
 
 @admin_bp.route('/admin/destinations/new', methods=['GET', 'POST'])
-@login_required
-@roles_required('admin')
 def destinations_add():
     dest_form = DestinationForm()
     if dest_form.validate_on_submit():
@@ -372,8 +347,6 @@ def destinations_add():
 
 
 @admin_bp.route('/admin/destinations/<uuid>', methods=['GET', 'POST'])
-@login_required
-@roles_required('admin')
 def destinations_show(uuid):
     dest = Destination.uuid_or_404(uuid)
 
@@ -407,8 +380,6 @@ def destinations_show(uuid):
 
 
 @admin_bp.route('/admin/destinations/<uuid>/delete', methods=['GET', 'POST'])
-@login_required
-@roles_required('admin')
 def destinations_delete(uuid):
     dest = Destination.uuid_or_404(uuid)
 
@@ -463,8 +434,6 @@ def _send_destination_action_email(destination, verb, template_base):
 
 
 @admin_bp.route('/admin/destinations/<uuid>/togglehidden', methods=['POST'])
-@login_required
-@roles_required('admin')
 def destinations_toggle_hidden(uuid):
     dest = Destination.uuid_or_404(uuid)
 
@@ -480,8 +449,6 @@ def destinations_toggle_hidden(uuid):
     return redirect(url_for('admin.destinations_show', uuid=uuid))
 
 @admin_bp.route('/admin/emailpreview/<template>')
-@login_required
-@roles_required('admin')
 def email_preview(template):
     # get enough sample data to cover all templates
     carpool = Carpool.query.first()
@@ -500,8 +467,6 @@ def email_preview(template):
 
 
 @admin_bp.route('/admin/<uuid>/cancel', methods=['GET', 'POST'])
-@login_required
-@roles_required('admin')
 def admin_cancel_carpool(uuid):
     carpool = Carpool.uuid_or_404(uuid)
 

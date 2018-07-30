@@ -78,13 +78,13 @@ function initMap() {
     <h1>{{ dest.name }}</h1>
 
 <p>
-    <a class="btn btn-default" href="{{ url_for('admin.destinations_delete', uuid=dest.uuid) }}">Delete This Destination</a>
     <form method="POST" action="{{ url_for('admin.destinations_toggle_hidden', uuid=dest.uuid) }}">
+        <a class="btn btn-danger" href="{{ url_for('admin.destinations_delete', uuid=dest.uuid) }}">Delete This Destination</a>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         {% if dest.hidden %}
-        <button class="btn btn-primary" type="submit" name="toggle_button">Unhide Destination</button>
+        <button class="btn btn-warning" type="submit" name="toggle_button">Unhide Destination</button>
         {% else %}
-        <button class="btn btn-primary" type="submit" name="toggle_button">Hide Destination</button>
+        <button class="btn btn-warning" type="submit" name="toggle_button">Hide Destination</button>
         {% endif %}
     </form>
 </p>
@@ -117,7 +117,7 @@ function initMap() {
                     {% endfor %}
                 </ul>
             </p>
-            {{ wtf.form_field(form.submit) }}
+            <input class="btn btn-primary" id="submit" name="submit" type="submit" value="Save">
             <a class="btn btn-default" href="{{ url_for('admin.destinations_list') }}">Nevermind, Go Back</a>
         </div>
     </div>

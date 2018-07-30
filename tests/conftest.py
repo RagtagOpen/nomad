@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 """Defines fixtures available to all tests."""
-
+import sqlalchemy
 import pytest
 from webtest import TestApp
 
 from app import create_app
 from app import db as _db
 
-from .factories import PersonFactory, RoleFactory
+from .factories import PersonFactory, RoleFactory, CarpoolFactory, DestinationFactory
+
+TEST_DB='testdb'
 
 @pytest.fixture
 def app():
     app = create_app('default')
+    app.config['SQLALCHEMY_DATABASE_URI'] = test_db_uri()
+
     context = app.app_context()
     context.push()
     yield app
@@ -42,6 +46,27 @@ def db(app):
     _db.session.close()
     _db.drop_all()
 
+@pytest.fixture(scope='session', autouse=True)
+def create_test_db():
+    def_app = create_app('default')
+    conn = sqlalchemy.create_engine(def_app.config['SQLALCHEMY_DATABASE_URI']).connect()
+    conn.execute('commit')
+
+    try:
+        conn.execute("create database {}".format(TEST_DB))
+    except sqlalchemy.exc.ProgrammingError:
+        pass # Ignore if db already exists
+    finally:
+        conn.close()
+
+    conn = sqlalchemy.create_engine(test_db_uri()).connect()
+    conn.execute('create extension if not exists postgis')
+    conn.close()
+
+def test_db_uri():
+    app = create_app('default')
+    parts = app.config['SQLALCHEMY_DATABASE_URI'].split('/')
+    return '/'.join(parts[:-1]) + '/' + TEST_DB
 
 @pytest.fixture
 def person(db):
@@ -51,9 +76,41 @@ def person(db):
     return person
 
 @pytest.fixture
+def full_person(db):
+    """A user for the tests."""
+    person = PersonFactory()
+    person.name = "John Doe"
+    person.gender = "Male"
+    db.session.commit()
+    return person
+
+
+@pytest.fixture
 def blocked_role(db):
     """A blocked role for the tests."""
     role = RoleFactory(name='blocked')
     db.session.commit()
-
     return role
+
+@pytest.fixture
+def admin_role(db):
+    """A blocked role for the tests."""
+    role = RoleFactory(name='admin')
+    db.session.commit()
+    return role
+
+
+@pytest.fixture
+def destination(db):
+    """A carpool for the tests"""
+    carpool = DestinationFactory()
+    db.session.commit()
+    return carpool
+
+
+@pytest.fixture
+def carpool(db):
+    """A carpool for the tests"""
+    carpool = CarpoolFactory()
+    db.session.commit()
+    return carpool

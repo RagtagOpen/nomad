@@ -98,14 +98,14 @@
             </div>
 
             <div class="two-col-layout top-border right-align">
-                <input class="primary" type="submit" value="Save changes">
+                <input class="btn btn-primary" type="submit" value="Save">
             </div>
 
             <div class="top-border">
                 <h4>Delete your account</h4>
                 <p>Deleting your account will remove you from all carpools and you will stop receiving further emails.</p>
                 <br>
-                <p><a class="destructive" href="{{ url_for('auth.profile_delete') }}">Delete account</a></p>
+                <p><a class="btn btn-danger" href="{{ url_for('auth.profile_delete') }}">Delete account</a></p>
             </div>
 
         </form>
