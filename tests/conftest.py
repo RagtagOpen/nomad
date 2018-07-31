@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Defines fixtures available to all tests."""
+from datetime import timedelta
 import sqlalchemy
 import pytest
 from webtest import TestApp
@@ -112,5 +113,8 @@ def destination(db):
 def carpool(db):
     """A carpool for the tests"""
     carpool = CarpoolFactory()
+    # make sure it's in future
+    carpool.leave_time = carpool.leave_time + timedelta(days=3)
+    carpool.return_time = carpool.leave_time + timedelta(days=1)
     db.session.commit()
     return carpool

@@ -648,9 +648,6 @@ select:focus {
 
 /* ===== MY RIDES ===== */
 
-.my-rides > div:nth-child(2) h4::before {
-	content: "Next ride: ";
-}
 .my-rides .message {
 	margin-top: 10px;
 }
@@ -664,6 +661,23 @@ select:focus {
 .my-rides p.view-details {
 	display: inline-block;
 	margin-left: 12px;
+}
+.my-rides .carpools {
+	margin-bottom: 30px;
+}
+.my-rides .carpools .buttons {
+	margin: 15px 0 15px 0;
+}
+.my-rides .carpools.past h3, .my-rides .carpools.past h4 {
+	color: #666;
+}
+.my-rides .carpool h2 {
+	font: 700 16px/150%;
+	font-size: 18px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 /* EMAIL PREVIEW */

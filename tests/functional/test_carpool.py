@@ -1,3 +1,4 @@
+from datetime import timedelta
 from . import login_person
 from http import HTTPStatus
 import urllib
@@ -37,3 +38,9 @@ class TestCarpool:
         my_page = testapp.get('/carpools/mine')
         assert carpool.destination.name in my_page
         assert "Your ride request is pending. We’re waiting for your driver to confirm." in my_page
+        # make carpool in past; no details
+        carpool.leave_time = carpool.leave_time - timedelta(days=100)
+        db.session.commit()
+        my_page = testapp.get('/carpools/mine')
+        assert carpool.destination.name in my_page
+        assert "Your ride request is pending." not in my_page

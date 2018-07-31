@@ -165,17 +165,18 @@ def start_geojson():
 @pool_bp.route('/carpools/mine', methods=['GET', 'POST'])
 @login_required
 def mine():
+    carpools = {'future': [], 'past': []}
     # Start with carpools you're driving in
-    carpools = current_user.get_driving_carpools().all()
+    for carpool in current_user.get_driving_carpools():
+        carpools['future' if carpool.future else 'past'].append(carpool)
 
     # Add in carpools you have ride requests for
-    carpools.extend([
-        req.carpool
-        for req in current_user.get_ride_requests_query()
-    ])
+    for req in current_user.get_ride_requests_query():
+        carpools['future' if req.carpool.future else 'past'].append(req.carpool)
 
     # Then sort by departure date
-    carpools.sort(key=lambda c: c.leave_time)
+    carpools['future'].sort(key=lambda c: c.leave_time)
+    carpools['past'].sort(key=lambda c: c.leave_time)
 
     return render_template('carpools/mine.html', carpools=carpools)
 
