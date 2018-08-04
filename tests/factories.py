@@ -65,6 +65,7 @@ class RideRequestFactory(BaseFactory):
     """Ride Request factory."""
     person = SubFactory(PersonFactory)
     carpool = SubFactory(CarpoolFactory)
+    notes = None
 
     class Meta:
         """Factory configuration."""

@@ -8,31 +8,41 @@ class TestEmailTemplates:
     def test_ride_requested(self, db):
         rider = PersonFactory(email='test@test.com', phone_number='')
         carpool = CarpoolFactory(from_place='from')
+        notes = 'Can we stop for coffee?'
+        ride_request = RideRequestFactory(person=rider, carpool=carpool, notes=notes)
         db.session.add(rider)
         db.session.add(carpool)
+        db.session.add(ride_request)
         db.session.commit()
         rendered = render_template(
             'email/ride_requested.html',
             carpool=carpool,
             rider=rider,
+            ride_request=ride_request,
         )
         assert 'requested a ride in your carpool from from to dest' in rendered
         assert 'can be contacted at test@test.com.' in rendered
+        assert notes in rendered
 
 
-    def test_ride_requested(self, db):
+    def test_ride_requested_phone(self, db):
         rider = PersonFactory(email='test@test.com', phone_number='1231231234')
         carpool = CarpoolFactory(from_place='from')
+        ride_request = RideRequestFactory(person=rider, carpool=carpool)
         db.session.add(rider)
         db.session.add(carpool)
+        db.session.add(ride_request)
         db.session.commit()
         rendered = render_template(
             'email/ride_requested.html',
             carpool=carpool,
             rider=rider,
+            ride_request=ride_request,
+
         )
         assert 'requested a ride in your carpool from from to dest' in rendered
         assert 'can be contacted at test@test.com or 1231231234' in rendered
+        assert 'Message from ' not in rendered
 
     def test_ride_approved(self, db):
         rider = PersonFactory()
@@ -87,6 +97,8 @@ class TestEmailTemplates:
         db.session.add(carpool)
         destination = DestinationFactory()
         db.session.add(destination)
+        ride_request = RideRequestFactory(person=rider, carpool=carpool)
+        db.session.add(ride_request)
         db.session.commit()
         for ext in ['html', 'txt']:
             for template in templates:
@@ -100,6 +112,7 @@ class TestEmailTemplates:
                     driver=driver,
                     person=rider,
                     destination=destination,
+                    ride_request=ride_request,
                 )
                 assert config['BRANDING_EMAIL_SIGNATURE'] in rendered, \
                     '%s missing signature' % template_path

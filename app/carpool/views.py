@@ -342,7 +342,7 @@ def new_rider(carpool_uuid):
         flash(
             "Your ride request has been sent to the driver for approval.",
             'success')
-        _email_driver_ride_requested(carpool, current_user)
+        _email_driver_ride_requested(carpool, rr, current_user)
 
         return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
@@ -521,21 +521,22 @@ def _email_carpool_cancelled(carpool, reason, notify_driver):
         )
 
 
-def _email_driver(carpool, current_user, subject, template_name_specifier):
+def _email_driver(carpool, current_user, subject, template_name_specifier, ride_request=None):
     send_email(
         template_name_specifier,
         carpool.driver.email,
         subject,
         rider=current_user,
         carpool=carpool,
+        ride_request=ride_request,
     )
 
 
-def _email_driver_ride_requested(carpool, current_user):
+def _email_driver_ride_requested(carpool, ride_request, current_user):
     subject = '{} requested a ride in carpool on {}'.format(
         current_user.name, carpool.leave_time)
 
-    _email_driver(carpool, current_user, subject, 'ride_requested')
+    _email_driver(carpool, current_user, subject, 'ride_requested', ride_request)
 
 
 def _email_ride_status(request, subject_beginning, template_name_specifier):

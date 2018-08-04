@@ -1,6 +1,10 @@
 Hi {{ carpool.driver.name }},
 
 You have a new ride request! {{ rider.name }} ({{ rider.gender_string() }}) has requested a ride in your carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }}.
+{% if ride_request.notes %}
+  Message from {{rider.name}}: {{ride_request.notes}}
+{% endif %}
+
 
 Please go to {{url_for('carpool.details', uuid=carpool.uuid, _external=True)}} and approve or deny this request.
 
