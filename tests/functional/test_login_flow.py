@@ -8,7 +8,7 @@ class TestLoginFlow:
         cancel_carpool_url = '/carpools/{}/cancel'.format(carpool.uuid)
         res = testapp.get(cancel_carpool_url)
         res = res.follow()
-        res = login_person(testapp, person)
+        res = login_person(testapp, person, follow=False)
         assert res.status_code == HTTPStatus.FOUND
         url = urllib.parse.urlparse(res.headers['Location'])
         assert url.path == cancel_carpool_url
