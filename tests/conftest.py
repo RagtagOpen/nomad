@@ -16,7 +16,8 @@ TEST_DB='testdb'
 def app():
     app = create_app('default')
     app.config['SQLALCHEMY_DATABASE_URI'] = test_db_uri()
-
+    # WTF CSRF Protection and Webtest seem to disagree.
+    app.config['WTF_CSRF_ENABLED']  = False
     context = app.app_context()
     context.push()
     yield app
@@ -79,9 +80,7 @@ def person(db):
 @pytest.fixture
 def full_person(db):
     """A user for the tests."""
-    person = PersonFactory()
-    person.name = "John Doe"
-    person.gender = "Male"
+    person = PersonFactory(name = "John Doe", gender="Male")
     db.session.commit()
     return person
 

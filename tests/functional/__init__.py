@@ -19,5 +19,8 @@ class MockSignIn(OAuthSignIn):
 def login(testapp, social_id, user_name, user_email):
     return testapp.get('/callback/mock', params=dict(id=social_id, name=user_name, email=user_email))
 
-def login_person(testapp, person):
-    return login(testapp, person.social_id, person.name, person.email)
+def login_person(testapp, person, follow=True):
+    l = login(testapp, person.social_id, person.name, person.email)
+    if(follow):
+        return l.follow()
+    return l
