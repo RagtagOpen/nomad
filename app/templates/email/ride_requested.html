@@ -3,7 +3,11 @@
 {% block content %}
 <p>Hi {{ carpool.driver.name }},</p>
 
-<p>You have a new ride request! {{ rider.name }} ({{ rider.gender_string() }}) has requested a ride in your carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }}.</p>
+<p>You have a new ride request! {{ rider.name }} ({{ rider.gender_string() }}) has requested a ride in your carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }}.
+{% if ride_request.notes %}
+  <br>Message from {{rider.name}}: {{ride_request.notes}}
+{% endif %}
+</p>
 
 <p>Please <a href="{{url_for('carpool.details', uuid=carpool.uuid, _external=True)}}"> click here</a> and approve or deny this request.</p>
 
@@ -12,7 +16,7 @@
 <p>You'll receive a reminder email containing all of your passengers' contact information two days before your departure date.</p>
 
 <p>Thanks!</p>
-  
+
 <p>{{ config.get('BRANDING_EMAIL_SIGNATURE') }}</p>
 
 <p>SAFETY TIPS</p>
