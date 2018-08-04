@@ -1,6 +1,6 @@
 language: python
 python:
-  - "3.5"
+  - "3.6"
 # The following is necessary because of https://github.com/travis-ci/travis-ci/issues/6972
 addons:
   postgresql: 9.5
