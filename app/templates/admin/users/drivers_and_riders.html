@@ -3,56 +3,61 @@
 
 {% block site %}
 <div class="content">
-    <div class="fullscreen">
+  <div class="fullscreen">
     <h4><a href="{{ url_for('admin.admin_index') }}">Admin</a>&nbsp;&raquo;&nbsp;
         Drivers and Riders
     </h4>
     <h1>Nomad Registered Drivers and Riders</h1>
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>Destination</th>
-            <th>Leave Time</th>
-            <th>Return Time</th>
-            <th>Driver or Rider</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Preferred Contact Method</th>
-            <th>User Details Link</th>
-        </tr>
-    </thead>
-    <tbody id='search-results'>
-{% for row in drivers_and_riders %}
-        <tr>
-            <td>{{ row.destination }}</td>
-            <td>{{ row.leave_time }}</td>
-            <td>{{ row.return_time }}</td>
-            <td>{{ row.rider_driver }}</td>
-            <td>{{ row.person_name }}</td>
-            <td>{{ row.email }}</td>
-            <td>{{ row.phone }}</td>
-            <td>{{ row.contact }}</td>
-            <td><a href="{{ url_for('admin.user_show', uuid=row.uuid) }}">Details</a></td>
-        </tr>
-{% endfor %}
-    </tbody>
-</table>
-</table>
-{% if not_first %}
-<a href="{{ url_for('admin.driver_and_rider_list', page=page-1) }}">&lt;&lt; Previous Page</a>
-{% else %}
-&lt;&lt; Previous Page
-{% endif %}
-| {{ page }} |
-{% if not_last %}
-<a href="{{ url_for('admin.driver_and_rider_list', page=page+1) }}">Next Page &gt;&gt;</a>
-{% else %}
-Next Page &gt;&gt;
-{% endif %}
-</br>
-</br>
-<a class="btn btn-primary" href="{{ url_for('admin.user_list_csv') }}">Download as CSV</a>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Destination</th>
+                <th>Leave Time</th>
+                <th>Return Time</th>
+                <th>Driver or Rider</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Preferred Contact Method</th>
+                <th>User Details Link</th>
+            </tr>
+        </thead>
+        <tbody id='search-results'>
+    {% for row in drivers_and_riders %}
+            <tr>
+                <td>{{ row.destination }}</td>
+                <td>{{ row.leave_time }}</td>
+                <td>{{ row.return_time }}</td>
+                <td>{{ row.rider_driver }}</td>
+                <td>{{ row.person_name }}</td>
+                <td>{{ row.email }}</td>
+                <td>{{ row.phone }}</td>
+                <td>{{ row.contact }}</td>
+                <td><a href="{{ url_for('admin.user_show', uuid=row.uuid) }}">Details</a></td>
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
 
+    <p>
+      {% if not_first %}
+        <a href="{{ url_for('admin.driver_and_rider_list', page=page - 1) }}">&lt;&lt; Previous Page</a>
+      {% else %}
+        &lt;&lt; Previous Page
+      {% endif %}
+      | {{ page }} |
+      {% if not_last %}
+        <a href="{{ url_for('admin.driver_and_rider_list', page=page + 1) }}">Next Page &gt;&gt;</a>
+      {% else %}
+        Next Page &gt;&gt;
+      {% endif %}
+    </p>
+
+    <p>
+      <br>
+      <a class="btn btn-primary" href="{{ url_for('admin.user_list_csv') }}">Download as CSV</a>
+    </p>
+  </div>
+</div>
 {% endblock %}
