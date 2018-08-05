@@ -112,63 +112,61 @@ function doLogout() {
 
 {% block content %}
 
-<nav class="global-header">
-  <div class="header-left">
-    <div class="mobile-back-link">
-      <a href="#"><div class="back-button"></div></a>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header ">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mobile-nav" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a href="{{ url_for('carpool.index') }}" class="navbar-brand logo generic">
+      </a>
     </div>
-    <div class="logo-container">
-      <a href="{{ url_for('carpool.index') }}"><div class="logo generic"></div></a>
-      <ul class="mobile-nav-bar">
-        <li><a href="{{ url_for('carpool.index') }}">Home</a></li>
+
+    <div class="collapse navbar-collapse" id="mobile-nav">
+      <ul class="nav navbar-nav visible-xs-block">
+        <li>
+          <a href="{{ url_for('carpool.index') }}">Home</a>
+        </li>
+        <li>
+          <a href="{{ url_for('carpool.mine') }}">My rides</a>
+        </li>
+        <li>
+          <a href="{{ url_for('carpool.find') }}">Find a ride</a>
+        </li>
+        <li>
+          <a href="{{ url_for('carpool.new') }}">Give a ride</a>
+        </li>
+        <li role="separator" class="divider"></li>
 {% if current_user.is_authenticated %}
-        <li><a href="{{ url_for('carpool.mine') }}">My rides</a></li>
-{% endif %}
-        <li><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
-        <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
-        <li class="divider"><a href="{{ config.get('BRANDING_PRIVACY_URL') }}">Privacy &amp; Terms</a></li>
-{% if current_user.is_authenticated %}
-        <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
-        <li><a href="#" onClick="return doLogout()">Logout</a></li>
+        <li>
+          <a href="{{ url_for('auth.profile') }}">Profile</a>
+        </li>
+        <li>
+          <a href="#" onClick="return doLogout()">Logout</a>
+        </li>
 {% else %}
-        <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+        <li>
+          <a href="{{ url_for('auth.login') }}">Login</a>
+        </li>
 {% endif %}
-        </ul>
-    </div>
-<!-- if this page is related to a find / give page -->
-    <form id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}" class="header-search-bar">
-      <input type="hidden" id="ride-select-lat" name="lat"></input>
-      <input type="hidden" id="ride-select-lon" name="lon"></input>
-      <select id="ride-select">
-        <option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
-        <option value="give-ride">Give a ride</option>
-      </select>
-      <span>near</span>
-      <input type="text" name="q" id="locationQuery" placeholder="Zip code or City, State"/>
-    </form>
-<!-- end if -->
-  </div>
-  <ul class="nav-bar">
-    <li class="active"><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
-      <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
-      <li><a href="{{ config.get('BRANDING_PRIVACY_URL') }}">Privacy &amp; Terms</a></li>
-{% if current_user.is_authenticated %}
-      <li><a href="{{ url_for('carpool.mine') }}">My rides</a></li>
-{% endif %}
-      <li class="nav-dropdown">
-{% if current_user.is_authenticated %}
-        <a class="arrow" href="#">{{ current_user.name }}</a>
-{% else %}
-        <a href="{{ url_for('auth.login') }}">Login</a>
-{% endif %}
-{% if current_user.is_authenticated %}
-        <ul class="nav-bar-secondary">
-          <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
-          <li><a href="#" onClick="return doLogout()">Logout</a></li>
-        </ul>
-{% endif %}
-      </li>
-  </ul>
+      </ul>
+      <ul class="nav navbar-nav hidden-xs wide-nav">
+        <form class="navbar-form" id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}">
+          <div class="form-group">
+            <select id="ride-select" class="form-control input-lg" >
+              <option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
+              <option value="give-ride">Give a ride</option>
+            </select>
+            <span>near</span>
+            <input type="text" name="q" id="locationQuery" class="form-control input-lg"  placeholder="Zip code or City, State"/>
+          </div>
+        </form>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
 </nav>
 
 {% block site %}{% endblock %}
