@@ -1,8 +1,5 @@
-.header-left .logo {
+.logo {
     width: 143px;
     height: 50px;
-    background: url("../img/logo-swingleft.png") top left / contain no-repeat;
-}
-.header-left .logo.generic {
-    background: url("../img/logo-swingleft.png") top left / contain no-repeat;
+    background: url("../img/logo-swingleft.png") center / contain no-repeat;
 }
