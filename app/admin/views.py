@@ -160,7 +160,7 @@ def user_list():
 @admin_bp.route('/admin/drivers_and_riders')
 def driver_and_rider_list():
     page = request.args.get('page')
-    page = int(page) if page is not None else 0
+    page = int(page) if page is not None else 1
     per_page = 15
 
     query = '''
@@ -181,16 +181,16 @@ def driver_and_rider_list():
         order by destination, leave_time, person_name
     '''
     result = list(db.engine.execute(query))
-    if per_page * (page + 1) > len(result):
-        result = result[per_page * page:]
+    if per_page * page > len(result):
+        paginated_result = result[per_page * (page - 1):]
     else:
-        result = result[per_page * page:per_page * (page + 1)]
+        paginated_result = result[per_page * (page - 1):per_page * page]
     return render_template(
         'admin/users/drivers_and_riders.html',
-        drivers_and_riders=result,
+        drivers_and_riders=paginated_result,
         page=page,
-        not_last=(per_page * (page + 1) < len(result)),
-        not_first=(page > 0)
+        not_last=(per_page * page) < len(result),
+        not_first=(page > 1)
     )
 
 
