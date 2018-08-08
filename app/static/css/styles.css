@@ -53,9 +53,6 @@ ul {
 	list-style: disc outside none;
 	padding-left: 20px;
 }
-.global-header ul {
-	list-style: none;
-}
 a {
 	color: rgba(0,168,225,1);
 	text-decoration: underline;
@@ -135,38 +132,12 @@ select:focus {
 
 
 
-/* ===== HEADER ===== */
-
-.global-header {
-	width: 100%;
-	height: 70px;
-	position: fixed;
-	top: 0;
-	left: 0;
-	padding: 10px 40px;
-	z-index: 20;
-	background-color: white;
-	border-bottom: 1px solid rgb(205,212,222);
-	display: -webkit-box;
-	display: -ms-flexbox;
-	display: flex;
-	-webkit-box-align: center;
-	    -ms-flex-align: center;
-	        align-items: center;
-	-webkit-box-pack: justify;
-	    -ms-flex-pack: justify;
-	        justify-content: space-between;
-}
-
 /* ===== NAVBAR ===== */
 
 .logo {
 	width: 143px;
 	height: 50px;
 	background: url("../img/logo_ragtag.png") center / contain no-repeat;
-}
-button.navbar-toggle {
-	margin-top: 20px;
 }
 #locationQuery {
 	min-width: 300px;
@@ -176,6 +147,7 @@ button.navbar-toggle {
 .navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
 	margin-left: 20px;
 	margin-right: 20px;
+	margin-top: 10px;
 }
 #ride-select-form span {
 	padding: 0 10px 0 10px;
@@ -570,54 +542,6 @@ pre.text {
 /* MEDIA QUERIES */
 
 @media screen and (max-width:1200px) {
-	.global-header {
-		padding: 10px 20px;
-	}
-	.global-header .nav-bar {
-		-webkit-box-flex: 1;
-		    -ms-flex: 1	1 auto;
-		        flex: 1	1 auto;
-	}
-	.header-left .logo-container {
-		width: 70px;
-	}
-	.header-left .logo {
-		margin-right: 0;
-		background: url("../img/logo-small.png") top left / contain no-repeat;
-		cursor: pointer;
-	}
-	.header-left .logo::after {
-		content: url(../img/ic_arrow_down_gray.svg);
-		position: relative;
-		margin-left: 45px;
-		top: 11px;
-	}
-	.global-header .nav-bar {
-		display: none;
-	}
-	.global-header .mobile-nav-bar {
-		position: absolute;
-		width: 100%;
-	    top: 70px;
-	    left: 0;
-	    padding: 0 20px;
-	    background-color: white;
-	    border-left: 1px solid rgb(205,212,222);
-	    border-right: 1px solid rgb(205,212,222);
-	    border-bottom: 1px solid rgb(205,212,222);
-	    z-index: 21;
-	}
-	.mobile-nav-bar.visible {
-		display: block;
-	}
-	.mobile-nav-bar li {
-		height: 50px;
-	    padding-top: 12px;
-	    padding-right: 60px;
-	}
-	.mobile-nav-bar li.divider {
-		border-top: 1px solid rgb(205,212,222);
-	}
 	.fullscreen {
 		width: 100%;
 		padding: 0 114px 50px 114px;
@@ -664,28 +588,11 @@ pre.text {
 	}
 }
 @media screen and (max-width:720px) {
+	.navbar-brand {
+		margin-top: 0;
+	}
 	.fullscreen h1 {
 		font: 400 28px/140%;
-	}
-	.header-left {
-		-webkit-box-pack: center;
-		    -ms-flex-pack: center;
-		        justify-content: center;
-	}
-	.header-left .header-search-bar {
-		display: none;
-	}
-	.header-left .logo-container {
-		width: 125px;
-	}
-	.header-left .logo {
-		background: url("../img/logo-dark.png") top left / contain no-repeat;
-	}
-	.header-left .logo::after {
-		content: url(../img/ic_arrow_down_gray.svg);
-		position: relative;
-		margin-left: 150px;
-		top: 11px;
 	}
 	.jumbo {
 		margin-top: 0px;

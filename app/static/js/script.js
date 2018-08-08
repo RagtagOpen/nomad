@@ -106,18 +106,6 @@ var activeDetail = false;
 var navMenuOpen = false;
 
 $(document).ready(function() {
-  $('.logo').click( function() {
-    if ($(window).width() <= 1200) {
-      event.preventDefault(); // prevent redirect to index
-      if (navMenuOpen == false) {
-        navMenuOpen = true;
-        $('.mobile-nav-bar').addClass('visible');
-      } else {
-        navMenuOpen = false;
-        $('.mobile-nav-bar').removeClass('visible');
-      }
-    };
-  });
   $('.results-box .result').hover(
     // mouse in
     function () {
