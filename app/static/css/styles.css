@@ -209,7 +209,7 @@ button.navbar-toggle {
 }
 .content.constrained {
 	/* this allows for overflow/scroll on single screen pages */
-	height: 100%;
+	height: calc(100% - 85px);  /* exclude navbar */
 }
 .content.splash-only {
 	flex-direction: column;
@@ -299,27 +299,68 @@ button.navbar-toggle {
 	font: 400 24px/150%;
 }
 
-/* ===== MAP SEARCH RESULTS - LEFT ===== */
-
-.left-bar {
-	-webkit-box-flex: 0;
-	    -ms-flex: 0 1 33%;
-	        flex: 0 1 33%;
-	height: 100%;
-	z-index: 10;
-	border-right: 1px solid rgb(205,212,222);
-	overflow: hidden;
-}
-.left-bar h1 {
-	margin-left: 40px;
-	padding: 90px 40px 20px 0px;
-	border-bottom: 1px solid rgb(205,212,222);
-}
+/* ===== MAP SEARCH RESULTS ===== */
 .results-box {
 	padding: 0px 0px 150px 40px;
 	height: 100%;
-	overflow: scroll;
 }
+
+#carpool-map {
+	width: 100%;
+	height: 300px;
+	background-color: grey;
+	-webkit-transition: -webkit-transform .5s;
+	transition: -webkit-transform .5s;
+	-o-transition: transform .5s;
+	transition: transform .5s;
+	transition: transform .5s, -webkit-transform .5s;
+}
+
+#detail-pane {
+	z-index: 5;
+	background-color: #fcfbf9;
+	border: 1px solid rgb(205,212,222);
+	padding: 10px 40px 20px 40px;
+	-webkit-transition: -webkit-transform .5s;
+	transition: -webkit-transform .5s;
+	-o-transition: transform .5s;
+	transition: transform .5s;
+	transition: transform .5s, -webkit-transform .5s;
+}
+
+.carpool-results {
+	flex: 1 1 40%;
+	border-right: 1px solid rgb(205,212,222);
+	padding-right: 20px;
+	overflow: auto;
+}
+
+.carpool-results h1 {
+	margin-left: 40px;
+	padding: 0px 40px 20px 0px;
+	border-bottom: 1px solid rgb(205,212,222);
+}
+
+.carpool-map {
+	flex: 1 1 60%;
+}
+
+#give-ride-map, #my-rides-map {
+	height: 100%;
+	width: 100%;
+	z-index: 0;
+	background-color: grey;
+	-webkit-transition: -webkit-transform .5s;
+	transition: -webkit-transform .5s;
+	-o-transition: transform .5s;
+	transition: transform .5s;
+	transition: transform .5s, -webkit-transform .5s;
+}
+
+#background-map {
+	height:100%;
+}
+
 .result {
 	padding: 20px 40px 20px 0;
 	border-bottom: 1px solid rgb(205,212,222);
@@ -343,15 +384,7 @@ button.navbar-toggle {
 
 /* ===== MAP SEARCH RESULTS - RIGHT ===== */
 
-.right-bar {
-	-webkit-box-flex: 0;
-	    -ms-flex: 0 1 67%;
-	        flex: 0 1 67%;
-	height: 100%;
-	z-index: 0;
-	overflow: hidden;
-}
-#background-map, #give-ride-map, #my-rides-map {
+#give-ride-map, #my-rides-map {
 	height: 100%;
 	width: 100%;
 	z-index: 0;
@@ -362,26 +395,7 @@ button.navbar-toggle {
 	transition: transform .5s;
 	transition: transform .5s, -webkit-transform .5s;
 }
-#detail-pane {
-	width: 100%;
-	height: 67%;
-	z-index: 5;
-	background-color: #fcfbf9;
-	border: 1px solid rgb(205,212,222);
-	padding: 10px 40px 20px 40px;
-	-webkit-transition: -webkit-transform .5s;
-	transition: -webkit-transform .5s;
-	-o-transition: transform .5s;
-	transition: transform .5s;
-	transition: transform .5s, -webkit-transform .5s;
-	overflow: scroll;
-}
-.active #detail-pane {
-	-webkit-transform: translate(0px, -100%);
-	    -ms-transform: translate(0px, -100%);
-	        transform: translate(0px, -100%)
-}
-.active #background-map, .active #give-ride-map, .active #my-rides-map  {
+.active #give-ride-map, .active #my-rides-map  {
 	-webkit-transform: translate(0px, -25%);
 	    -ms-transform: translate(0px, -25%);
 	        transform: translate(0px, -25%)
@@ -669,22 +683,13 @@ pre.text {
 		    -ms-transform: translate(100%, 0px);
 		        transform: translate(100%, 0px)
 	}
-	.active #background-map, .active #give-ride-map, .active #my-rides-map  {
+	.active #give-ride-map, .active #my-rides-map  {
 		-webkit-transform: translate(25%, 0px);
 		    -ms-transform: translate(25%, 0px);
 		        transform: translate(25%, 0px)
 	}
-	.left-bar {
-		-webkit-box-flex: 1;
-		    -ms-flex: 1 0 355px;
-		        flex: 1 0 355px;
-	}
-	.right-bar {
-		-webkit-box-flex: 1;
-		    -ms-flex: 1 1 60%;
-		        flex: 1 1 60%;
-	}
-	.left-bar h1 {
+	.carpool-results h1 {
+		margin-top: 10px;
 		margin-left: 0px;
 		padding-left: 20px;
 	}
@@ -742,33 +747,6 @@ pre.text {
 	.jumbo {
 		margin-top: 0px;
 	}
-	.left-bar {
-		-webkit-box-flex: 0;
-		    -ms-flex: none;
-		        flex: none;
-		position: relative;
-		width: 100%;
-		background-color: white;
-		z-index: 10;
-		/*left: -50%;*/
-		/*display: none;*/
-	}
-	.right-bar {
-		-webkit-box-flex: 0;
-		    -ms-flex: none;
-		        flex: none;
-		position: relative;
-		width: 100%;
-		height: 100%;
-		background-color: #fcfbf9;
-		z-index: 15;
-		left: 0%;
-		-webkit-transition: -webkit-transform .5s;
-		transition: -webkit-transform .5s;
-		-o-transition: transform .5s;
-		transition: transform .5s;
-		transition: transform .5s, -webkit-transform .5s;
-	}
 	#detail-pane {
 	     top: 0%;
 		 left: 0%;
@@ -784,26 +762,21 @@ pre.text {
 		    -ms-transform: none;
 		        transform: none;
 	}
-	.right-bar.active {
-		/*left: -100%;*/
-		-webkit-transform: translate(-100%, 0);
-		    -ms-transform: translate(-100%, 0);
-		        transform: translate(-100%, 0)
-	}
-	#background-map, #give-ride-map, #my-rides-map {
-		height: 0%;
-		width: 0%;
-		-webkit-transition: none;
-		-o-transition: none;
-		transition: none;
-	}
-	.active #background-map, .active #give-ride-map, .active #my-rides-map {
-		-webkit-transform: none;
-		    -ms-transform: none;
-		        transform: none;
-	}
 	.mobile-back-link.active{
 		display: block;
+	}
+
+	.content {
+		flex-wrap: wrap;
+	}
+	.carpool-map {
+		order: 1;
+		flex: 0 0 100%;
+		height: 40%;
+	}
+	.carpool-results {
+		order: 2;
+		flex: 0 0 100%;
 	}
 }
 

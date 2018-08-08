@@ -128,7 +128,7 @@ function mapDataCallback(features) {
 
 <div class="content constrained">
 
-    <div class="left-bar">
+    <div class="carpool-results">
         {% if loc_name %}
         <h1>Find rides near {{ loc_name }}</h1>
         {% else %}
@@ -138,10 +138,8 @@ function mapDataCallback(features) {
         </div>
     </div>
 
-    <!-- <div class="right-bar active"> -->
-    <div class="right-bar">
+    <div class="carpool-map">
         <div id="background-map"></div>
-        <div id="detail-pane" class="active"></div>
     </div>
 
 </div>
