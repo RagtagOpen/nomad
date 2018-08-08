@@ -316,18 +316,6 @@ button.navbar-toggle {
 	transition: transform .5s, -webkit-transform .5s;
 }
 
-#detail-pane {
-	z-index: 5;
-	background-color: #fcfbf9;
-	border: 1px solid rgb(205,212,222);
-	padding: 10px 40px 20px 40px;
-	-webkit-transition: -webkit-transform .5s;
-	transition: -webkit-transform .5s;
-	-o-transition: transform .5s;
-	transition: transform .5s;
-	transition: transform .5s, -webkit-transform .5s;
-}
-
 .carpool-results {
 	flex: 1 1 40%;
 	border-right: 1px solid rgb(205,212,222);
@@ -343,18 +331,6 @@ button.navbar-toggle {
 
 .carpool-map {
 	flex: 1 1 60%;
-}
-
-#give-ride-map, #my-rides-map {
-	height: 100%;
-	width: 100%;
-	z-index: 0;
-	background-color: grey;
-	-webkit-transition: -webkit-transform .5s;
-	transition: -webkit-transform .5s;
-	-o-transition: transform .5s;
-	transition: transform .5s;
-	transition: transform .5s, -webkit-transform .5s;
 }
 
 #background-map {
@@ -384,22 +360,6 @@ button.navbar-toggle {
 
 /* ===== MAP SEARCH RESULTS - RIGHT ===== */
 
-#give-ride-map, #my-rides-map {
-	height: 100%;
-	width: 100%;
-	z-index: 0;
-	background-color: grey;
-	-webkit-transition: -webkit-transform .5s;
-	transition: -webkit-transform .5s;
-	-o-transition: transform .5s;
-	transition: transform .5s;
-	transition: transform .5s, -webkit-transform .5s;
-}
-.active #give-ride-map, .active #my-rides-map  {
-	-webkit-transform: translate(0px, -25%);
-	    -ms-transform: translate(0px, -25%);
-	        transform: translate(0px, -25%)
-}
 .detail-top {
 	width: 100%;
 	display: -webkit-box;
@@ -671,23 +631,6 @@ pre.text {
 		width: 100%;
 		padding: 0 20px 50px 20px;
 	}
-	#detail-pane {
-		padding-top: 80px;
-		position: relative;
-		height: 100%;
-		top: -100%;
-		left: -100%;
-	}
-	.active #detail-pane {
-		-webkit-transform: translate(100%, 0px);
-		    -ms-transform: translate(100%, 0px);
-		        transform: translate(100%, 0px)
-	}
-	.active #give-ride-map, .active #my-rides-map  {
-		-webkit-transform: translate(25%, 0px);
-		    -ms-transform: translate(25%, 0px);
-		        transform: translate(25%, 0px)
-	}
 	.carpool-results h1 {
 		margin-top: 10px;
 		margin-left: 0px;
@@ -746,21 +689,6 @@ pre.text {
 	}
 	.jumbo {
 		margin-top: 0px;
-	}
-	#detail-pane {
-	     top: 0%;
-		 left: 0%;
-		 z-index: 20;
-	     padding: 80px 20px 20px 20px;
-		 -webkit-transition: none;
-		 -o-transition: none;
-		 transition: none;
-
-	}
-	.active #detail-pane {
-		-webkit-transform: none;
-		    -ms-transform: none;
-		        transform: none;
 	}
 	.mobile-back-link.active{
 		display: block;
