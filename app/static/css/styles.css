@@ -53,9 +53,6 @@ ul {
 	list-style: disc outside none;
 	padding-left: 20px;
 }
-.global-header ul {
-	list-style: none;
-}
 a {
 	color: rgba(0,168,225,1);
 	text-decoration: underline;
@@ -135,38 +132,12 @@ select:focus {
 
 
 
-/* ===== HEADER ===== */
-
-.global-header {
-	width: 100%;
-	height: 70px;
-	position: fixed;
-	top: 0;
-	left: 0;
-	padding: 10px 40px;
-	z-index: 20;
-	background-color: white;
-	border-bottom: 1px solid rgb(205,212,222);
-	display: -webkit-box;
-	display: -ms-flexbox;
-	display: flex;
-	-webkit-box-align: center;
-	    -ms-flex-align: center;
-	        align-items: center;
-	-webkit-box-pack: justify;
-	    -ms-flex-pack: justify;
-	        justify-content: space-between;
-}
-
 /* ===== NAVBAR ===== */
 
 .logo {
 	width: 143px;
 	height: 50px;
 	background: url("../img/logo_ragtag.png") center / contain no-repeat;
-}
-button.navbar-toggle {
-	margin-top: 20px;
 }
 #locationQuery {
 	min-width: 300px;
@@ -176,6 +147,7 @@ button.navbar-toggle {
 .navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
 	margin-left: 20px;
 	margin-right: 20px;
+	margin-top: 10px;
 }
 #ride-select-form span {
 	padding: 0 10px 0 10px;
@@ -209,7 +181,7 @@ button.navbar-toggle {
 }
 .content.constrained {
 	/* this allows for overflow/scroll on single screen pages */
-	height: 100%;
+	height: calc(100% - 85px);  /* exclude navbar */
 }
 .content.splash-only {
 	flex-direction: column;
@@ -299,27 +271,44 @@ button.navbar-toggle {
 	font: 400 24px/150%;
 }
 
-/* ===== MAP SEARCH RESULTS - LEFT ===== */
-
-.left-bar {
-	-webkit-box-flex: 0;
-	    -ms-flex: 0 1 33%;
-	        flex: 0 1 33%;
-	height: 100%;
-	z-index: 10;
-	border-right: 1px solid rgb(205,212,222);
-	overflow: hidden;
-}
-.left-bar h1 {
-	margin-left: 40px;
-	padding: 90px 40px 20px 0px;
-	border-bottom: 1px solid rgb(205,212,222);
-}
+/* ===== MAP SEARCH RESULTS ===== */
 .results-box {
 	padding: 0px 0px 150px 40px;
 	height: 100%;
-	overflow: scroll;
 }
+
+#carpool-map {
+	width: 100%;
+	height: 300px;
+	background-color: grey;
+	-webkit-transition: -webkit-transform .5s;
+	transition: -webkit-transform .5s;
+	-o-transition: transform .5s;
+	transition: transform .5s;
+	transition: transform .5s, -webkit-transform .5s;
+}
+
+.carpool-results {
+	flex: 1 1 40%;
+	border-right: 1px solid rgb(205,212,222);
+	padding-right: 20px;
+	overflow: auto;
+}
+
+.carpool-results h1 {
+	margin-left: 40px;
+	padding: 0px 40px 20px 0px;
+	border-bottom: 1px solid rgb(205,212,222);
+}
+
+.carpool-map {
+	flex: 1 1 60%;
+}
+
+#background-map {
+	height:100%;
+}
+
 .result {
 	padding: 20px 40px 20px 0;
 	border-bottom: 1px solid rgb(205,212,222);
@@ -343,49 +332,6 @@ button.navbar-toggle {
 
 /* ===== MAP SEARCH RESULTS - RIGHT ===== */
 
-.right-bar {
-	-webkit-box-flex: 0;
-	    -ms-flex: 0 1 67%;
-	        flex: 0 1 67%;
-	height: 100%;
-	z-index: 0;
-	overflow: hidden;
-}
-#background-map, #give-ride-map, #my-rides-map {
-	height: 100%;
-	width: 100%;
-	z-index: 0;
-	background-color: grey;
-	-webkit-transition: -webkit-transform .5s;
-	transition: -webkit-transform .5s;
-	-o-transition: transform .5s;
-	transition: transform .5s;
-	transition: transform .5s, -webkit-transform .5s;
-}
-#detail-pane {
-	width: 100%;
-	height: 67%;
-	z-index: 5;
-	background-color: #fcfbf9;
-	border: 1px solid rgb(205,212,222);
-	padding: 10px 40px 20px 40px;
-	-webkit-transition: -webkit-transform .5s;
-	transition: -webkit-transform .5s;
-	-o-transition: transform .5s;
-	transition: transform .5s;
-	transition: transform .5s, -webkit-transform .5s;
-	overflow: scroll;
-}
-.active #detail-pane {
-	-webkit-transform: translate(0px, -100%);
-	    -ms-transform: translate(0px, -100%);
-	        transform: translate(0px, -100%)
-}
-.active #background-map, .active #give-ride-map, .active #my-rides-map  {
-	-webkit-transform: translate(0px, -25%);
-	    -ms-transform: translate(0px, -25%);
-	        transform: translate(0px, -25%)
-}
 .detail-top {
 	width: 100%;
 	display: -webkit-box;
@@ -596,54 +542,6 @@ pre.text {
 /* MEDIA QUERIES */
 
 @media screen and (max-width:1200px) {
-	.global-header {
-		padding: 10px 20px;
-	}
-	.global-header .nav-bar {
-		-webkit-box-flex: 1;
-		    -ms-flex: 1	1 auto;
-		        flex: 1	1 auto;
-	}
-	.header-left .logo-container {
-		width: 70px;
-	}
-	.header-left .logo {
-		margin-right: 0;
-		background: url("../img/logo-small.png") top left / contain no-repeat;
-		cursor: pointer;
-	}
-	.header-left .logo::after {
-		content: url(../img/ic_arrow_down_gray.svg);
-		position: relative;
-		margin-left: 45px;
-		top: 11px;
-	}
-	.global-header .nav-bar {
-		display: none;
-	}
-	.global-header .mobile-nav-bar {
-		position: absolute;
-		width: 100%;
-	    top: 70px;
-	    left: 0;
-	    padding: 0 20px;
-	    background-color: white;
-	    border-left: 1px solid rgb(205,212,222);
-	    border-right: 1px solid rgb(205,212,222);
-	    border-bottom: 1px solid rgb(205,212,222);
-	    z-index: 21;
-	}
-	.mobile-nav-bar.visible {
-		display: block;
-	}
-	.mobile-nav-bar li {
-		height: 50px;
-	    padding-top: 12px;
-	    padding-right: 60px;
-	}
-	.mobile-nav-bar li.divider {
-		border-top: 1px solid rgb(205,212,222);
-	}
 	.fullscreen {
 		width: 100%;
 		padding: 0 114px 50px 114px;
@@ -657,34 +555,8 @@ pre.text {
 		width: 100%;
 		padding: 0 20px 50px 20px;
 	}
-	#detail-pane {
-		padding-top: 80px;
-		position: relative;
-		height: 100%;
-		top: -100%;
-		left: -100%;
-	}
-	.active #detail-pane {
-		-webkit-transform: translate(100%, 0px);
-		    -ms-transform: translate(100%, 0px);
-		        transform: translate(100%, 0px)
-	}
-	.active #background-map, .active #give-ride-map, .active #my-rides-map  {
-		-webkit-transform: translate(25%, 0px);
-		    -ms-transform: translate(25%, 0px);
-		        transform: translate(25%, 0px)
-	}
-	.left-bar {
-		-webkit-box-flex: 1;
-		    -ms-flex: 1 0 355px;
-		        flex: 1 0 355px;
-	}
-	.right-bar {
-		-webkit-box-flex: 1;
-		    -ms-flex: 1 1 60%;
-		        flex: 1 1 60%;
-	}
-	.left-bar h1 {
+	.carpool-results h1 {
+		margin-top: 10px;
 		margin-left: 0px;
 		padding-left: 20px;
 	}
@@ -716,94 +588,30 @@ pre.text {
 	}
 }
 @media screen and (max-width:720px) {
+	.navbar-brand {
+		margin-top: 0;
+	}
 	.fullscreen h1 {
 		font: 400 28px/140%;
-	}
-	.header-left {
-		-webkit-box-pack: center;
-		    -ms-flex-pack: center;
-		        justify-content: center;
-	}
-	.header-left .header-search-bar {
-		display: none;
-	}
-	.header-left .logo-container {
-		width: 125px;
-	}
-	.header-left .logo {
-		background: url("../img/logo-dark.png") top left / contain no-repeat;
-	}
-	.header-left .logo::after {
-		content: url(../img/ic_arrow_down_gray.svg);
-		position: relative;
-		margin-left: 150px;
-		top: 11px;
 	}
 	.jumbo {
 		margin-top: 0px;
 	}
-	.left-bar {
-		-webkit-box-flex: 0;
-		    -ms-flex: none;
-		        flex: none;
-		position: relative;
-		width: 100%;
-		background-color: white;
-		z-index: 10;
-		/*left: -50%;*/
-		/*display: none;*/
-	}
-	.right-bar {
-		-webkit-box-flex: 0;
-		    -ms-flex: none;
-		        flex: none;
-		position: relative;
-		width: 100%;
-		height: 100%;
-		background-color: #fcfbf9;
-		z-index: 15;
-		left: 0%;
-		-webkit-transition: -webkit-transform .5s;
-		transition: -webkit-transform .5s;
-		-o-transition: transform .5s;
-		transition: transform .5s;
-		transition: transform .5s, -webkit-transform .5s;
-	}
-	#detail-pane {
-	     top: 0%;
-		 left: 0%;
-		 z-index: 20;
-	     padding: 80px 20px 20px 20px;
-		 -webkit-transition: none;
-		 -o-transition: none;
-		 transition: none;
-
-	}
-	.active #detail-pane {
-		-webkit-transform: none;
-		    -ms-transform: none;
-		        transform: none;
-	}
-	.right-bar.active {
-		/*left: -100%;*/
-		-webkit-transform: translate(-100%, 0);
-		    -ms-transform: translate(-100%, 0);
-		        transform: translate(-100%, 0)
-	}
-	#background-map, #give-ride-map, #my-rides-map {
-		height: 0%;
-		width: 0%;
-		-webkit-transition: none;
-		-o-transition: none;
-		transition: none;
-	}
-	.active #background-map, .active #give-ride-map, .active #my-rides-map {
-		-webkit-transform: none;
-		    -ms-transform: none;
-		        transform: none;
-	}
 	.mobile-back-link.active{
 		display: block;
+	}
+
+	.content {
+		flex-wrap: wrap;
+	}
+	.carpool-map {
+		order: 1;
+		flex: 0 0 100%;
+		height: 40%;
+	}
+	.carpool-results {
+		order: 2;
+		flex: 0 0 100%;
 	}
 }
 
