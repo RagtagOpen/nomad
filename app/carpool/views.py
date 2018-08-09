@@ -239,6 +239,7 @@ def new():
 @pool_bp.route('/carpools/<uuid>', methods=['GET', 'POST'])
 def details(uuid):
     carpool = Carpool.uuid_or_404(uuid)
+    carpool.has_left = carpool.leave_time < datetime.datetime.now(datetime.timezone.utc)
 
     return render_template('carpools/show.html', pool=carpool)
 
