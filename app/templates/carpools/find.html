@@ -5,41 +5,43 @@
 {{super()}}
 <script>
 
-var lat = {% if loc_lat %}{{loc_lat}}{% else %}38.518{% endif %};
-var lng = {% if loc_lon %}{{loc_lon}}{% else %}-97.328{% endif %};
-var urlCoords = {% if loc_lat and loc_lon %}true{% else %}false{% endif %};
+const defaultLat = 38.518;
+const defaultLng = -97.328;
+const userQuery = '{{userQuery}}';
+const nearLatLng = {};  // geocoded from userQuery: { lat: 38, lng: -97 }
+const geocodeParams = { componentRestrictions: { country: 'US' } };
+const distances = {};
+let geocoder, carpools;
+let carpoolFeatures = [];
 
 $(function () {
     $('#submit').on('click', function() {
         doSearch();
     });
-    if (!urlCoords && navigator.geolocation) {
+    // zoom to user location only if no query in URL
+    if (!userQuery && navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(geoSuccess);
     }
 });
 
 var geoSuccess = function(position) {
     // zoom to user position if/when they allow location access
-    zoomTo(position.coords.latitude, position.coords.longitude);
+    console.log('event: browser geolocation');
+    const coords = position.coords;
+    nearLatLng.lat = coords.latitude;
+    nearLatLng.lng = coords.longitude;
+    zoomMap();
 };
 
-function zoomTo(lat, lng) {
-    map.setCenter(new google.maps.LatLng(lat, lng));
-    map.setZoom(11);
+function setSetLng(lat, lng) {
+    nearLatLng.lat = lat;
+    nearLatLng.lng = lng;
 }
 
 function doSearch() {
     var url = "{{ url_for('carpool.start_geojson') }}?";
     var parts = [];
     var position = {};
-
-    {% if loc_lat and loc_lon %}
-    parts.push('near.lat=' + encodeURIComponent({{ loc_lat }}));
-    parts.push('near.lon=' + encodeURIComponent({{ loc_lon }}));
-    parts.push('near.radius=10000');
-    {% endif %}
-
-    url += parts.join('&');
 
     var results = $('#search-results');
     results.empty();
@@ -52,11 +54,87 @@ function doSearch() {
 
 function localInitMap() {
     map = new google.maps.Map(document.getElementById('background-map'), {
-        center: {lat: lat, lng: lng},
-        zoom: urlCoords ? 11 : 3,
+        center: { lat: defaultLat, lng: defaultLng },
+        zoom: userQuery ? 11 : 3,
         styles: mapStyleDiscreet
     });
+    geocoder = new google.maps.Geocoder();
+    if (userQuery) {
+        geocode(userQuery);
+    }
     doSearch();
+}
+
+function geocode(address) {
+    // if geocoded within 30d (Google limit)
+    const cache = JSON.parse(localStorage.getItem('geocode') || '{}');
+    // geocode = {"query": {"ts": 1534038439340, "lat": -97.328, "lng": 38.518}}
+    const ts = cache[userQuery] ? cache[userQuery].ts : 0;
+    const age = (new Date()).getTime() - ts;
+
+    if (age < 30 * 24 * 60 * 60 * 1000) {
+        setLatLng(cache[userQuery].lat, cache[userQuery].lng);
+        sortDOMResults();
+    } else {
+        $('.geocode-error').hide();
+        geocodeParams.address = userQuery;
+        geocoder.geocode(geocodeParams, geocodeResults);
+    }
+}
+
+function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+}
+
+function distance(lat2, lng2) {
+    const lat1 = nearLatLng.lat;
+    const lng1 = nearLatLng.lng;
+    // distance in km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLng = deg2rad(lng2 - lng1);
+    const a = (Math.sin(dLat / 2) * Math.sin(dLat / 2)) +
+        (Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+         Math.sin(dLng / 2) * Math.sin(dLng / 2));
+    return 6371 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function sortDOMResults() {
+    // if there are results in the DOM, sort them
+    if (!$('.results').length) {
+        return;
+    }
+    $('.result').each(function (idx, el) {
+        // set distance from nearLatLng
+        distances[$(el).get('id')] = distance(
+            parseInt($(el.data('lat'))),
+            parseInt($(el).data('lng')));
+    });
+    $('.result').sort(function(a, b) {
+        return distances[$(a).get('id')] - distances[$(b).get('id')];
+    });
+    zoomMap();
+}
+
+function geocodeResults(results, status) {
+    console.log('event: geocode');
+    // got lat/lng for user query
+    if (status == 'OK') {
+        const location = results[0].geometry.location;
+        setLatLng(location.lat(), nearLatLng.lng);
+        sortDOMResults();
+
+        // save geocoding results
+        const cache = JSON.parse(localStorage.getItem('geocode') || '{}');
+        cache[userQuery] = {
+            ts: (new Date().getTime()),
+            lat: location.lat(),
+            lng: location.lng(),
+        }
+        localStorage.setItem(JSON.stringify(cache));
+    } else {
+        // set error under input
+        $('.geocode-error').show();
+    }
 }
 
 function showCarpoolDetails(carpoolId) {
@@ -68,19 +146,76 @@ function showCarpoolDetailsDivClickHandler(event) {
     showCarpoolDetails(event.data);
 }
 
+function sortFeaturesByDistance(features) {
+    // set distance from requested location
+    features.forEach(function(feature) {
+        const geo = feature.getGeometry().get();
+        distance[feature.getId()] = distance(geo.lat(), geo.lng());
+    });
+    // sort by distance
+    return features.sort(function(a, b) {
+        return distances[a.getId()] - distances[b.getId()];
+    });
+}
+
+function zoomMap() {
+    let features = [];
+    if (nearLatLng.lat) {
+        // if nearLatLng, zoom to nearLatLng +- 100km or minimum 3 closest features
+        features = carpoolFeatures.slice(0, 3);
+        carpoolFeatures.slice(3).forEach(function(feature) {
+            if (distances[feature.getId()] < 100) {
+                features.push(feature);
+            }
+        });
+    } else {
+        // else fit to all features
+        features = carpoolFeatures;
+    }
+
+    if (!features.length) {
+        if (nearLatLng.lat) {
+            map.setCenter(new google.maps.LatLng(nearLatLng.lat, nearLatLng.lng));
+            map.setZoom(11);
+        }
+        return;
+    }
+    const bounds = new google.maps.LatLngBounds();
+    features.forEach(function (feature) {
+        const geo = feature.getGeometry().get();
+            bounds.extend(new google.maps.LatLng(geo.lat(), geo.lng()))
+    });
+    map.fitBounds(bounds);
+}
+
 function mapDataCallback(features) {
+    console.log('event: loaded features');
     var results = $('#search-results');
     results.empty();
-    var bounds = new google.maps.LatLngBounds();
+    // get carpool is from /carpools/id
+    const featureExp = new RegExp(/.*?\/carpools\/(.*)/);
 
     if (features.length > 0) {
-        for (var i = 0; i < features.length; i++) {
+        // if userQuery, sort by distance
+        carpoolFeatures = nearLatLng ? sortFeaturesByDistance(features) : features;
+        for (var i = 0; i < carpoolFeatures.length; i++) {
             var feature = features[i];
-            var geo = feature.getGeometry();
-            var resultdiv = $('<div class="result"><h3 class="result-title">' + feature.getProperty('from_place') + ' to ' + feature.getProperty('to_place') + '</h3><p>' + feature.getProperty('seats_available') + ' seats available</p><p>Departs: ' + feature.getProperty('leave_time_human') + '</p><p>Returns: ' + feature.getProperty('return_time_human') + '</p><p>Destination: '+ feature.getProperty('to_place') + '</p></div>');
+            var geo = feature.getGeometry().get();
+            const id = feature.getId().replace(/.*?\/carpools\/(.*)/, '$1');
+            feature.setProperty('featureId', id);
+            var resultdiv = $(
+                '<div class="result" id="' + id + '" data-lat="' + geo.lat() + '" data-lng="' + geo.lng() + '">' +
+                    '<h3 class="result-title">' +
+                        feature.getProperty('from_place') + ' to ' + feature.getProperty('to_place') +
+                    '</h3>' +
+                    '<p>' + feature.getProperty('seats_available') + ' seats available</p>' +
+                    '<p>Departs: ' + feature.getProperty('leave_time_human') + '</p>' +
+                    '<p>Returns: ' + feature.getProperty('return_time_human') + '</p>' +
+                    '<p>Destination: '+ feature.getProperty('to_place') + '</p>' +
+                '</div>');
             resultdiv.click(feature.getId(), showCarpoolDetailsDivClickHandler);
+            carpools = resultdiv;
             results.append(resultdiv);
-            bounds.extend(new google.maps.LatLng(geo.b.lat(), geo.b.lng()));
         }
         map.data.setStyle(function(feature) {
             if (feature.getProperty('is_approximate_location')) {
@@ -100,13 +235,14 @@ function mapDataCallback(features) {
                 };
             }
         });
-        map.fitBounds(bounds);
+        zoomMap();
         google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
             if (this.getZoom() > 11) {
                 this.setZoom(11);
             }
         });
     } else {
+        // !! TODO:
         {% if loc_lat and loc_lon %}
         var resultdiv = $('<div class="result"><h3>No carpools nearby</h3><p>Will you consider <a href="{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}">starting one</a>?</p></div>');
         {% else %}
@@ -114,7 +250,7 @@ function mapDataCallback(features) {
         {% endif %}
         results.append(resultdiv);
     }
-    results.addClass("results-box");
+    results.addClass('results-box');
 
     map.data.addListener('click', function(event) {
         showCarpoolDetails(event.feature.getId());
@@ -125,15 +261,16 @@ function mapDataCallback(features) {
 
 {% block site %}
 
-
 <div class="content constrained">
 
     <div class="carpool-results">
-        {% if loc_name %}
-        <h1>Find rides near {{ loc_name }}</h1>
-        {% else %}
-        <h1>Find rides near you</h1>
-        {% endif %}
+        <h1>
+            Find rides near
+            <input type="text" name="q" id="locationQuery" class="form-control input-lg" placeholder="Zip code or City, State" value="{{userQuery}}" />
+        </h1>
+        <div class="geocode-error">
+            Sorry, we can't understand that location. Please try again.
+        </div>
         <div id="search-results">
         </div>
     </div>
