@@ -44,8 +44,12 @@
 
     <div class="carpool-results">
         <h1 class="hidden-lg">
-            Find rides near
-            <input type="text" name="q" id="locationQuery" class="form-control input-lg" placeholder="Zip code or City, State" value="{{userQuery}}" />
+            <form class="ride-form">
+                <input type="hidden" name="lat">
+                <input type="hidden" name="lng">
+                Find rides near
+                <input type="text" name="q" class="form-control input-lg location-input" placeholder="Zip code or City, State" value="{{user_query}}" />
+            </form>
         </h1>
         <h1 class="visible-lg-block">
             Find rides near

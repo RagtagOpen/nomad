@@ -13,6 +13,7 @@ let carpoolFeatures = [];
 /* eslint no-use-before-define: 0 */ // no-undef
 /* eslint no-console: 0 */
 /* global $: false, geoJSONUrl: false, google: false, map: true, mapStyleDiscreet: false, newCarpoolUrl: false, userLatLng: false, userQuery: true */
+
 /*
     externally defined globals
       geoJSONUrl - URL to get carpool list GeoJSON
@@ -21,6 +22,11 @@ let carpoolFeatures = [];
       newCarpoolUrl - URL to create new carpool
       userQuery - sanitized user query string
 */
+
+// zoom to user location only if no query in URL
+if (!userQuery && !userLatLng.lat && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(geoSuccess);
+}
 
 function setLatLng(lat, lng) {
     nearLatLng.lat = lat;
@@ -44,20 +50,11 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
         geocode(userQuery);
     }
     doSearch();
-}
-
-/*
-$(function () {
-    // TODO: onchange, reorder/rezoom; don't reload
-    $('#submit').on('click', function() {
-        doSearch();
+    // don't reload page; just update sort and map
+    $('.ride-form').submit(function (ev) {
+        ev.preventDefault();
     });
-    // zoom to user location only if no query in URL
-    if (!userQuery && navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(geoSuccess);
-    }
-});
-*/
+}
 
 function geoSuccess(position) {
     // zoom to user position if/when they allow location access
