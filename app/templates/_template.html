@@ -25,7 +25,7 @@ $(function() {
 
   $.ajaxSetup({
     beforeSend: function(xhr, settings) {
-      if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+     if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
         xhr.setRequestHeader("X-CSRFToken", csrf_token);
       }
     }
@@ -44,10 +44,17 @@ function initMap() {
   };
   var from_ac = new google.maps.places.Autocomplete(from_input, from_options);
   from_ac.addListener('place_changed', function() {
-    var chosen = from_ac.getPlace();
-    $("#ride-select-lat").val(chosen.geometry.location.lat());
-    $("#ride-select-lon").val(chosen.geometry.location.lng());
-    $("#ride-select-form").submit();
+    const loc = from_ac.getPlace().geometry.location;
+    if (location.href.indexOf($('#ride-select-form').attr('action')) >= 0) {
+      // if find page already, re-order and re-zoom
+      setLatLng(loc.lat(), loc.lng());
+      sortDOMResults();
+    } else {
+      // go to find/give with lat/lng params
+      $('#ride-select-form input[name="lat"]').val(loc.lat());
+      $('#ride-select-form input[name="lng"]').val(loc.lng());
+      $('#ride-select-form').submit();
+    }
   });
 
   if (typeof localInitMap === "function") {
@@ -142,13 +149,15 @@ function doLogout() {
       <ul class="nav navbar-nav visible-lg-block wide-nav">
         <li>
           <form class="navbar-form" id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}">
+            <input type="hidden" name="lat">
+            <input type="hidden" name="lng">
             <div class="form-group">
               <select id="ride-select" class="form-control input-lg" >
                 <option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
                 <option value="give-ride">Give a ride</option>
               </select>
               <span>near</span>
-              <input type="text" name="q" id="locationQuery" class="form-control input-lg"  placeholder="Zip code or City, State"/>
+              <input type="text" name="q" id="locationQuery" class="form-control input-lg"  placeholder="Zip code or City, State" value="{{user_query}}"/>
             </div>
           </form>
         </li>

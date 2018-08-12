@@ -6,13 +6,13 @@ const nearLatLng = {};
 // restrict results to US
 const geocodeParams = { componentRestrictions: { country: 'US' } };
 // { featureId: val }
-const distances = {};
+const carpoolDistance = {};
 // list of all geoJSON features
 let carpoolFeatures = [];
 
 /* eslint no-use-before-define: 0 */ // no-undef
 /* eslint no-console: 0 */
-/* global $: false, geoJSONUrl: false, google: false, map: true, mapStyleDiscreet: false, newCarpoolUrl: false, userQuery: false */
+/* global $: false, geoJSONUrl: false, google: false, map: true, mapStyleDiscreet: false, newCarpoolUrl: false, userLatLng: false, userQuery: true */
 /*
     externally defined globals
       geoJSONUrl - URL to get carpool list GeoJSON
@@ -21,6 +21,12 @@ let carpoolFeatures = [];
       newCarpoolUrl - URL to create new carpool
       userQuery - sanitized user query string
 */
+
+function setLatLng(lat, lng) {
+    nearLatLng.lat = lat;
+    nearLatLng.lng = lng;
+}
+
 function localInitMap() {  // eslint-disable-line no-unused-vars
     // called from _template.html callback when Google Maps API loads
     map = new google.maps.Map(document.getElementById('background-map'), {
@@ -29,6 +35,11 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
         styles: mapStyleDiscreet
     });
     geocoder = new google.maps.Geocoder();
+    if (userLatLng.lat) {
+        setLatLng(userLatLng.lat, userLatLng.lng);
+        // ignore query if already have lat/lng
+        userQuery = null;
+    }
     if (userQuery) {
         geocode(userQuery);
     }
@@ -47,11 +58,6 @@ $(function () {
     }
 });
 */
-
-function setLatLng(lat, lng) {
-    nearLatLng.lat = lat;
-    nearLatLng.lng = lng;
-}
 
 function geoSuccess(position) {
     // zoom to user position if/when they allow location access
@@ -115,14 +121,19 @@ function sortDOMResults() {
     if (!$('.result').length) {
         return;
     }
-    $('.result').each(function (idx, el) {
+    const results = $('.result');
+    results.each(function (idx, el) {
         // set distance from nearLatLng
-        distances[$(el).get('id')] = distance(
-            parseInt($(el).data('lat')),
-            parseInt($(el).data('lng')));
+        carpoolDistance[$(el).attr('id')] = distance(
+            parseFloat($(el).data('lat')),
+            parseFloat($(el).data('lng')));
     });
-    $('.result').sort(function(a, b) {
-        return distances[$(a).get('id')] - distances[$(b).get('id')];
+    results.sort(function(a, b) {
+        return carpoolDistance[$(a).attr('id')] - carpoolDistance[$(b).attr('id')];
+    });
+    results.detach().appendTo('#search-results');
+    carpoolFeatures.sort(function (a, b) {
+        return carpoolDistance[a.getProperty('carpoolId')] - carpoolDistance[b.getProperty('carpoolId')];
     });
     zoomMap();
 }
@@ -162,11 +173,14 @@ function sortFeaturesByDistance(features) {
     // set distance from requested location
     features.forEach(function(feature) {
         const geo = feature.getGeometry().get();
-        distance[feature.getId()] = distance(geo.lat(), geo.lng());
+        // extract id from URL
+        const id = feature.getId().replace(/.*?\/carpools\/(.*)/, '$1');
+        feature.setProperty('carpoolId', id);
+        carpoolDistance[feature.getProperty('carpoolId')] = distance(geo.lat(), geo.lng());
     });
     // sort by distance
     return features.sort(function(a, b) {
-        return distances[a.getId()] - distances[b.getId()];
+        return carpoolDistance[a.getProperty('carpoolId')] - carpoolDistance[b.getProperty('carpoolId')];
     });
 }
 
@@ -182,7 +196,7 @@ function zoomMap() {
         // if nearLatLng, zoom to nearLatLng +- 100km or minimum 3 closest features
         features = carpoolFeatures.slice(0, 3);
         carpoolFeatures.slice(3).forEach(function(feature) {
-            if (distances[feature.getId()] < 100) {
+            if (carpoolDistance[feature.getId()] < 100) {
                 features.push(feature);
             }
         });
@@ -219,10 +233,8 @@ function mapDataCallback(features) {
         for (var i = 0; i < carpoolFeatures.length; i++) {
             const feature = features[i];
             const geo = feature.getGeometry().get();
-            // extract id from URL
-            const id = feature.getId().replace(/.*?\/carpools\/(.*)/, '$1');
             var resultdiv = $(
-                '<div class="result" id="' + id + '" data-lat="' + geo.lat() + '" data-lng="' + geo.lng() + '">' +
+                '<div class="result" id="' + feature.getProperty('carpoolId') + '" data-lat="' + geo.lat() + '" data-lng="' + geo.lng() + '">' +
                     '<h3 class="result-title">' +
                         feature.getProperty('from_place') + ' to ' + feature.getProperty('to_place') +
                     '</h3>' +
