@@ -53,6 +53,14 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
     // don't reload page; just update sort and map
     $('.ride-form').submit(function (ev) {
         ev.preventDefault();
+        try {
+            const lat = parseFloat($('.ride-form input[name="lat"]').val());
+            const lng = parseFloat($('.ride-form input[name="lat"]').val());
+            setLatLng(lat, lng);
+            sortDOMResults();
+        } catch (e) {
+            console.log('no lat/lng');
+        }
     });
 }
 
