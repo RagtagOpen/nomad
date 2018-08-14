@@ -43,20 +43,18 @@ def index():
 @pool_bp.route('/carpools/find')
 def find():
     query = request.args.get('q', '').strip().replace("'", '')
-    lat = request.args.get('lat')
+    
     try:
-        lat = float(lat) if lat else None
+        lat = request.args.get('lat', type=float)
+        lon = request.args.get('lon', type=float)
     except ValueError:
         lat = None
-    lng = request.args.get('lng')
-    try:
-        lng = float(lng) if lng else None
-    except ValueError:
-        lng = None
+        lon = None
+
     return render_template(
         'carpools/find.html',
         lat=lat,
-        lng=lng,
+        lon=lon,
         user_query=query,  # let jinja sanitize
     )
 
