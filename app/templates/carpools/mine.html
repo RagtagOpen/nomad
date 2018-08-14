@@ -7,7 +7,14 @@
     <div class="fullscreen">
         <div class="form-page my-rides">
             <div class="carpools future">
-                <h1>My upcoming rides</h1>
+                <div class="row">
+                    <div class="col-sm-10">
+                        <h1>My upcoming rides</h1>
+                    </div>
+                    <div class="col-sm-2">
+                        <a class="btn btn-primary" href="{{ url_for('carpool.new') }}">Give a ride</a>
+                    </div>
+                </div>
 {% for pool in carpools['future'] %}
                 <div class="carpool">
                     <h2>{{ pool.leave_time | humanize }}</h2>
