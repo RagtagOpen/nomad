@@ -6,8 +6,11 @@
 {% block scripts %}
 {{super()}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js" integrity="sha256-1hjUhpc44NwiNg8OwMu2QzJXhD8kcj+sJA3aCQZoUjg=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js" integrity="sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/date-time-picker.min.js') }}"></script>
+<!--[if lt IE 9]>
+<script type="text/javascript" src="{{ url_for('static', filename='js/es5-shim.min.js') }}"></script>
+<![endif]-->
 <script type="text/javascript" src="{{ url_for('static', filename='js/map-styles.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
 <script type="text/javascript">
@@ -96,7 +99,6 @@ function doLogout() {
 {% block styles %}
 {{super()}}
 <link href="https://fonts.googleapis.com/css?family=Merriweather:400,700|Source+Sans+Pro:300,400,600,700" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" integrity="sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=" crossorigin="anonymous" />
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
 {% if config.get('BRANDING_CSS_URL') %}
   <link rel="stylesheet" type="text/css" href="{{config.get('BRANDING_CSS_URL')}}">
@@ -134,22 +136,26 @@ function doLogout() {
     </div>
 
     <div class="collapse navbar-collapse" id="mobile-nav">
-      <ul class="nav navbar-nav hidden-lg">
+      <ul class="nav navbar-nav visible-xs">
         <li><a href="{{ url_for('carpool.index') }}">Home</a></li>
-        <li><a href="{{ url_for('carpool.mine') }}">My rides</a></li>
         <li><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
         <li><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
+        <li><a href="{{ config.get('BRANDING_PRIVACY_URL') }}">Privacy &amp; Terms</a></li>
         <li role="separator" class="divider"></li>
 {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('carpool.mine') }}">My rides</a></li>
         <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
+        {% if current_user.has_roles('admin') %}
+          <li><a href="{{ url_for('admin.admin_index') }}">Admin Tools</a></li>
+        {% endif %}
         <li><a href="#" onClick="return doLogout()">Logout</a></li>
 {% else %}
         <li><a href="{{ url_for('auth.login') }}">Login</a></li>
 {% endif %}
       </ul>
-      <ul class="nav navbar-nav visible-lg-block wide-nav">
-        <li>
-          <form class="navbar-form" id="ride-select-form" class="ride-form" method="GET" action="{{ url_for('carpool.find') }}">
+      <ul class="nav navbar-nav hidden-xs wide-nav">
+        <li class="visible-lg-block">
+          <form class="navbar-form" id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}">
             <input type="hidden" name="lat">
             <input type="hidden" name="lng">
             <div class="form-group">
@@ -162,15 +168,21 @@ function doLogout() {
             </div>
           </form>
         </li>
+        <li class="hidden-lg"><a href="{{ url_for('carpool.find') }}">Find a ride</a></li>
+        <li class="hidden-lg"><a href="{{ url_for('carpool.new') }}">Give a ride</a></li>
         <li><a href="{{ config.get('BRANDING_PRIVACY_URL') }}">Privacy &amp; Terms</a></li>
 {% if current_user.is_authenticated %}
-        <li><a href="{{ url_for('carpool.mine') }}">My rides</a></li>
+        <li class="hidden-sm"><a href="{{ url_for('carpool.mine') }}">My rides</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             {{ current_user.name }}<span class="caret"></span>
           </a>
           <ul class="dropdown-menu">
+            <li class="visible-sm"><a href="{{ url_for('carpool.mine') }}">My rides</a></li>
             <li><a href="{{ url_for('auth.profile') }}">Profile</a></li>
+            {% if current_user.has_roles('admin') %}
+              <li><a href="{{ url_for('admin.admin_index') }}">Admin Tools</a></li>
+            {% endif %}
             <li><a href="#" onClick="return doLogout()">Logout</a></li>
           </ul>
         </li>

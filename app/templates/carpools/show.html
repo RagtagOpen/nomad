@@ -17,6 +17,10 @@
 
         <div class="form-page">
 
+	    {% if not pool.future %}
+                <h3>This carpool has left!</h3>
+            {%- endif %}
+
             {% set current_user_ride_request = current_user.get_ride_request_in_carpool(pool) %}
 
             <h4>Carpool Details</h4>
@@ -27,6 +31,7 @@
             {%- endif %}
 
 
+        {% if pool.future or current_user_ride_request.status == 'approved' or current_user.is_driver(pool) %}
             <h4>Carpool Status</h4>
 
         {% if current_user_ride_request and current_user_ride_request.status == 'approved'  %}
@@ -150,6 +155,7 @@
             </div>
 
         {%- endif %}
+	{%- endif %} <!-- end not in the future if -->
 
             <div class="two-col-layout first-child top-border">
                 <div class="two-col-column">
