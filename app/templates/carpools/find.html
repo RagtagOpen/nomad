@@ -16,7 +16,7 @@
         sort features by distance from query location
         zoom map to fit features within 100km or at least 3 features
 
-    /carpools/find.html?lat=33.9802893&lng=-118.4517449
+    /carpools/find.html?lat=33.9802893&lon=-118.4517449
         sort features by distance from query location
         zoom map to fit features within 100km or at least 3 features
 #}
@@ -26,10 +26,9 @@
     // sanitized query from URL: q=12345
     let userQuery = '{{user_query}}';  // eslint-disable-line no-unused-vars
     const userLatLng = {};
-    {% if lat and lng %}
+    {% if lat and lon %}
     userLatLng.lat = {{lat}};
-    userLatLng.lng = {{lng}};
-    {% else %}
+    userLatLng.lng = {{lon}};
     {% endif %}
     const geoJSONUrl = "{{ url_for('carpool.start_geojson') }}?"; // eslint-disable-line no-unused-vars
     const newCarpoolUrl = "{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}"; // eslint-disable-line no-unused-vars
