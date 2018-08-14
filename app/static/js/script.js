@@ -150,6 +150,14 @@ $(document).ready(function() {
       $('.mobile-back-link').removeClass("active");
     }
   });
+  // Cross-browser date widget for /carpools/new page
+  $('input[type="date"]').each(function () {
+    $(this).dateTimePicker({
+      monthName: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+      dayName: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+      mode: 'date',
+    });
+  })
 });
 
 
