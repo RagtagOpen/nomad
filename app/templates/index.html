@@ -11,7 +11,7 @@
             <h1>{{ config.get('BRANDING_HEADLINE_1') }}</h1>
             <h2>{{ config.get('BRANDING_HEADLINE_2') }}</h2>
             <form method="GET" action="{{ url_for('carpool.find') }}"">
-                <input type="text" name="q" class="locationQuery" placeholder="Zip code or City, State"> <input class="btn btn-success" type="submit" value="Find a ride">
+                <input type="text" name="q" placeholder="Zip code or City, State"> <input class="btn btn-default" type="submit" value="Find a ride">
             </form>
             <p>Can you drive? <a href="{{ url_for('carpool.new') }}">Start your own carpool</a> instead.</p>
         </div>
