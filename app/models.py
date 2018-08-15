@@ -223,8 +223,8 @@ class Destination(db.Model, UuidMixin):
     carpools = relationship("Carpool", cascade="all, delete-orphan")
 
     @classmethod
-    def find_all_visible(clz):
-        return clz.query.filter(clz.hidden is not True).order_by(clz.name)
+    def find_all_visible(cls):
+        return cls.query.filter(cls.hidden == False).order_by(cls.name)
 
     def as_geojson(self):
         """ Returns a GeoJSON Feature object for this Destination. """

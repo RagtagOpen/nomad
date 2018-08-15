@@ -4,9 +4,9 @@ import datetime as dt
 
 import pytest
 
-from app.models import Person, Role, AnonymousUser
+from app.models import Person, Role, AnonymousUser, Destination
 
-from .factories import CarpoolFactory, PersonFactory, RideRequestFactory
+from .factories import CarpoolFactory, PersonFactory, RideRequestFactory, DestinationFactory
 
 
 @pytest.mark.usefixtures('db')
@@ -245,3 +245,19 @@ class TestCarpool:
         db.session.commit()
 
         assert carpool.seats_available == 3
+
+@pytest.mark.usefixtures('db')
+class TestDestination:
+    """Destination tests."""
+
+    def test_visible(self, db):
+        d = DestinationFactory()
+        assert not d.hidden
+
+        assert d in Destination.find_all_visible().all()
+
+        d.hidden = True
+        db.session.add(d)
+        db.session.commit()
+
+        assert d not in Destination.find_all_visible().all()
