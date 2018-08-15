@@ -145,6 +145,9 @@ select:focus {
 	background: white url("../img/ic_search_24px.svg") 7px center no-repeat;
 	text-indent: 25px;
 }
+.navbar {
+    margin-bottom: 0;
+}
 .navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
 	margin-left: 20px;
 	margin-right: 20px;
@@ -189,7 +192,6 @@ select:focus {
 }
 .fullscreen {
 	width: 100%;
-	margin-top: 70px;
 	padding: 0 210px 100px 210px;
 }
 .fullscreen.jumbo-second {
@@ -230,9 +232,6 @@ select:focus {
 .fullscreen h1, .fullscreen p {
 	max-width: 650px; /*for line length readability*/
 }
-.jumbo {
-	padding-top: 50px;
-}
 .jumbo h2 {
 	padding-top: 0;
 	margin-bottom: 20px;
@@ -265,6 +264,12 @@ select:focus {
 	font-weight: 400;
     font-size: 24px;
 }
+@media screen and (max-width:767px) {
+    .jumbo input[type=text] {
+        max-width: 100%;
+        margin-right: 0;
+    }
+}
 .jumbo input[type=text]::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
     color: #999999;
     opacity: 1; /* Firefox */
@@ -279,6 +284,7 @@ select:focus {
 	-webkit-box-flex: 1;
 	    -ms-flex: 1 0 100px;
 	        flex: 1 0 100px;
+    background-color: rgba(0,168,225,1);
 	height: 50px;
 	font-weight: 400;
     font-size: 24px;
