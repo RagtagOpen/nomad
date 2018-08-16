@@ -25,10 +25,10 @@
 <script>
     // sanitized query from URL: q=12345
     let userQuery = '{{user_query}}';  // eslint-disable-line no-unused-vars
-    const userLatLng = {};
+    const userLatLon = {};
     {% if lat and lon %}
-    userLatLng.lat = {{lat}};
-    userLatLng.lng = {{lon}};
+    userLatLon.lat = {{lat}};
+    userLatLon.lng = {{lon}};
     {% endif %}
     const geoJSONUrl = "{{ url_for('carpool.start_geojson') }}?"; // eslint-disable-line no-unused-vars
     const newCarpoolUrl = "{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}"; // eslint-disable-line no-unused-vars
@@ -46,7 +46,7 @@
             Find rides near
             <form class="ride-form">
                 <input type="hidden" name="lat">
-                <input type="hidden" name="lng">
+                <input type="hidden" name="lon">
                 <input type="text" name="q" class="form-control input-lg location-input" placeholder="Zip code or City, State" value="{{user_query}}" />
             </form>
         </h1>

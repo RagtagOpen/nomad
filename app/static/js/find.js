@@ -1,8 +1,8 @@
 let geocoder;
 const defaultLat = 38.518;
-const defaultLng = -97.328;
+const defaultLon = -97.328;
 // geocoded from userQuery: { lat: 38, lng: -97 }
-const nearLatLng = {};
+const nearLatLon = {};
 // restrict results to US
 const geocodeParams = { componentRestrictions: { country: 'US' } };
 // { featureId: val }
@@ -12,7 +12,7 @@ let carpoolFeatures = [];
 
 /* eslint no-use-before-define: 0 */ // no-undef
 /* eslint no-console: 0 */
-/* global $: false, geoJSONUrl: false, google: false, map: true, mapStyleDiscreet: false, newCarpoolUrl: false, userLatLng: false, userQuery: true */
+/* global $: false, geoJSONUrl: false, google: false, map: true, mapStyleDiscreet: false, newCarpoolUrl: false, userLatLon: false, userQuery: true */
 
 /*
     externally defined globals
@@ -24,25 +24,25 @@ let carpoolFeatures = [];
 */
 
 // zoom to user location only if no query in URL
-if (!userQuery && !userLatLng.lat && navigator.geolocation) {
+if (!userQuery && !userLatLon.lat && navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(geoSuccess);
 }
 
 function setLatLng(lat, lng) {
-    nearLatLng.lat = lat;
-    nearLatLng.lng = lng;
+    nearLatLon.lat = lat;
+    nearLatLon.lng = lng;
 }
 
 function localInitMap() {  // eslint-disable-line no-unused-vars
     // called from _template.html callback when Google Maps API loads
     map = new google.maps.Map(document.getElementById('background-map'), {
-        center: { lat: defaultLat, lng: defaultLng },
+        center: { lat: defaultLat, lng: defaultLon },
         zoom: userQuery ? 11 : 3,
         styles: mapStyleDiscreet
     });
     geocoder = new google.maps.Geocoder();
-    if (userLatLng.lat) {
-        setLatLng(userLatLng.lat, userLatLng.lng);
+    if (userLatLon.lat) {
+        setLatLng(userLatLon.lat, userLatLon.lng);
         // ignore query if already have lat/lng
         userQuery = null;
     }
@@ -55,7 +55,7 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
         ev.preventDefault();
         try {
             const lat = parseFloat($('.ride-form input[name="lat"]').val());
-            const lng = parseFloat($('.ride-form input[name="lat"]').val());
+            const lng = parseFloat($('.ride-form input[name="lon"]').val());
             setLatLng(lat, lng);
             sortDOMResults();
         } catch (e) {
@@ -68,8 +68,8 @@ function geoSuccess(position) {
     // zoom to user position if/when they allow location access
     console.log('event: browser geolocation');
     const coords = position.coords;
-    nearLatLng.lat = coords.latitude;
-    nearLatLng.lng = coords.longitude;
+    nearLatLon.lat = coords.latitude;
+    nearLatLon.lng = coords.longitude;
     zoomMap();
 }
 
@@ -108,10 +108,10 @@ function deg2rad(deg) {
 
 function distance(lat2, lng2) {
     // use Haversine formula to calculate approximate distance between
-    // nearLatLng and this point
+    // nearLatLon and this point
     // https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
-    const lat1 = nearLatLng.lat;
-    const lng1 = nearLatLng.lng;
+    const lat1 = nearLatLon.lat;
+    const lng1 = nearLatLon.lng;
     // distance in km
     const dLat = deg2rad(lat2 - lat1);
     const dLng = deg2rad(lng2 - lng1);
@@ -128,7 +128,7 @@ function sortDOMResults() {
     }
     const results = $('.result');
     results.each(function (idx, el) {
-        // set distance from nearLatLng
+        // set distance from nearLatLon
         carpoolDistance[$(el).attr('id')] = distance(
             parseFloat($(el).data('lat')),
             parseFloat($(el).data('lng')));
@@ -148,7 +148,7 @@ function geocodeResults(results, status) {
     // got lat/lng for user query
     if (status == 'OK') {
         const location = results[0].geometry.location;
-        setLatLng(location.lat(), nearLatLng.lng);
+        setLatLng(location.lat(), nearLatLon.lng);
         sortDOMResults();
 
         // save geocoding results
@@ -197,8 +197,8 @@ function sortFeaturesByProperty(features, prop) {
 
 function zoomMap() {
     let features = [];
-    if (nearLatLng.lat) {
-        // if nearLatLng, zoom to nearLatLng +- 100km or minimum 3 closest features
+    if (nearLatLon.lat) {
+        // if nearLatLon, zoom to nearLatLon +- 100km or minimum 3 closest features
         features = carpoolFeatures.slice(0, 3);
         carpoolFeatures.slice(3).forEach(function(feature) {
             if (carpoolDistance[feature.getId()] < 100) {
@@ -212,8 +212,8 @@ function zoomMap() {
 
     if (!features.length) {
         // no carpools: zoom to requested location
-        if (nearLatLng.lat) {
-            map.setCenter(new google.maps.LatLng(nearLatLng.lat, nearLatLng.lng));
+        if (nearLatLon.lat) {
+            map.setCenter(new google.maps.LatLng(nearLatLon.lat, nearLatLon.lng));
             map.setZoom(11);
         }
         return;
@@ -234,7 +234,7 @@ function mapDataCallback(features) {
 
     if (features.length > 0) {
         // if userQuery, sort by distance
-        carpoolFeatures = nearLatLng ? sortFeaturesByDistance(features) : sortFeaturesByProperty(features, 'leave_time');
+        carpoolFeatures = nearLatLon ? sortFeaturesByDistance(features) : sortFeaturesByProperty(features, 'leave_time');
         for (var i = 0; i < carpoolFeatures.length; i++) {
             const feature = features[i];
             const geo = feature.getGeometry().get();
