@@ -238,12 +238,20 @@ function mapDataCallback(features) {
         for (var i = 0; i < carpoolFeatures.length; i++) {
             const feature = features[i];
             const geo = feature.getGeometry().get();
+
+            const seatsAvailable = feature.getProperty('seats_available');
+            let seatString = '<p>' + seatsAvailable + ' seats available</p>';
+            if (seatsAvailable === 1 ) {
+                seatString = '<p>' + seatsAvailable + ' seat available</p>';
+            } else if (seatsAvailable < 1) {
+                seatString = '<p>No seats available</p>';
+            }
+
             var resultdiv = $(
                 '<div class="result" id="' + feature.getProperty('carpoolId') + '" data-lat="' + geo.lat() + '" data-lng="' + geo.lng() + '">' +
                     '<h3 class="result-title">' +
                         feature.getProperty('from_place') + ' to ' + feature.getProperty('to_place') +
-                    '</h3>' +
-                    '<p>' + feature.getProperty('seats_available') + ' seats available</p>' +
+                    '</h3>' + seatString +
                     '<p>Departs: ' + feature.getProperty('leave_time_human') + '</p>' +
                     '<p>Returns: ' + feature.getProperty('return_time_human') + '</p>' +
                     '<p>Destination: '+ feature.getProperty('to_place') + '</p>' +
