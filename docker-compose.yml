@@ -8,7 +8,7 @@ services:
       DATABASE_URL: postgresql://nomad:nomad@db/nomad
     entrypoint: ./wait-for-it.sh db:5432 --
     volumes:
-    - .:/opt/nomad/
+    - .:/opt/nomad/:ro
 
   nomad:
     extends: base
@@ -55,6 +55,7 @@ services:
     extends: base
     command: flask rq worker --worker-ttl 450
     environment:
+      - SERVER_NAME=app
       - FLASK_DEBUG=${FLASK_DEBUG}
       - FLASK_APP=${FLASK_APP}
       - SENTRY_DSN=${SENTRY_DSN}
