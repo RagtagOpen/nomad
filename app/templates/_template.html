@@ -148,7 +148,12 @@ function doLogout() {
         {% if current_user.has_roles('admin') %}
           <li><a href="{{ url_for('admin.admin_index') }}">Admin Tools</a></li>
         {% endif %}
-        <li><a href="#" onClick="return doLogout()">Logout</a></li>
+        <li>
+          <form method="POST" action="{{ url_for('auth.logout') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn">Log out</button>
+          </form>
+        </li>
 {% else %}
         <li><a href="{{ url_for('auth.login') }}">Login</a></li>
 {% endif %}
@@ -183,7 +188,12 @@ function doLogout() {
             {% if current_user.has_roles('admin') %}
               <li><a href="{{ url_for('admin.admin_index') }}">Admin Tools</a></li>
             {% endif %}
-            <li><a href="#" onClick="return doLogout()">Logout</a></li>
+            <li>
+              <form method="POST" action="{{ url_for('auth.logout') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="btn">Log out</button>
+              </form>
+            </li>
           </ul>
         </li>
 {% else %}

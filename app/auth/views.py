@@ -1,23 +1,16 @@
-from flask import (
-    current_app,
-    flash,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import (current_app, flash, redirect, render_template, request,
+                   session, url_for)
 from flask_login import current_user, login_required, login_user, logout_user
-from six.moves.urllib.parse import urlparse, urljoin
+
+from six.moves.urllib.parse import urljoin, urlparse
+
 from . import auth_bp
-from .forms import ProfileForm, ProfileDeleteForm
-from .oauth import OAuthSignIn
 from .. import db, sentry
+from ..carpool.views import (cancel_carpool,
+                             email_driver_rider_cancelled_request)
 from ..models import Person
-from ..carpool.views import (
-    email_driver_rider_cancelled_request,
-    cancel_carpool,
-)
+from .forms import ProfileDeleteForm, ProfileForm
+from .oauth import OAuthSignIn
 
 
 def is_safe_url(target):
@@ -44,7 +37,7 @@ def login():
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
     logout_user()
-    return url_for('carpool.index')
+    return redirect(url_for('carpool.index'))
 
 
 @auth_bp.route('/authorize/<provider>')
@@ -135,7 +128,6 @@ def profile():
         return redirect(next_url)
     elif request.method == 'POST':
         flash("We couldn't save your profile changes. See below for the errors.", 'error')
-
 
     return render_template('profiles/show.html', form=profile_form)
 
