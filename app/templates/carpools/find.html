@@ -1,139 +1,66 @@
 {%- extends "_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
+{#
+    load all carpools as geoJSON from /carpools/starts.geojson
+
+    /carpools/find.html
+        sort features by leave time
+        zoom map to fit all features
+        if user geolocation results,
+            sort features by distance from user location
+            zoom map to fit features within 100km or at least 3 features
+
+    /carpools/find.html?q=92683
+        get lat/lng of query from Google Geocoder
+        sort features by distance from query location
+        zoom map to fit features within 100km or at least 3 features
+
+    /carpools/find.html?lat=33.9802893&lon=-118.4517449
+        sort features by distance from query location
+        zoom map to fit features within 100km or at least 3 features
+#}
+
 {% block scripts %}
-{{super()}}
 <script>
-
-var lat = {% if loc_lat %}{{loc_lat}}{% else %}38.518{% endif %};
-var lng = {% if loc_lon %}{{loc_lon}}{% else %}-97.328{% endif %};
-var urlCoords = {% if loc_lat and loc_lon %}true{% else %}false{% endif %};
-
-$(function () {
-    $('#submit').on('click', function() {
-        doSearch();
-    });
-    if (!urlCoords && navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(geoSuccess);
-    }
-});
-
-var geoSuccess = function(position) {
-    // zoom to user position if/when they allow location access
-    zoomTo(position.coords.latitude, position.coords.longitude);
-};
-
-function zoomTo(lat, lng) {
-    map.setCenter(new google.maps.LatLng(lat, lng));
-    map.setZoom(11);
-}
-
-function doSearch() {
-    var url = "{{ url_for('carpool.start_geojson') }}?";
-    var parts = [];
-    var position = {};
-
-    {% if loc_lat and loc_lon %}
-    parts.push('near.lat=' + encodeURIComponent({{ loc_lat }}));
-    parts.push('near.lon=' + encodeURIComponent({{ loc_lon }}));
-    parts.push('near.radius=10000');
+    // sanitized query from URL: q=12345
+    let userQuery = '{{user_query}}';  // eslint-disable-line no-unused-vars
+    const userLatLon = {};
+    {% if lat and lon %}
+    userLatLon.lat = {{lat}};
+    userLatLon.lng = {{lon}};
     {% endif %}
-
-    url += parts.join('&');
-
-    var results = $('#search-results');
-    results.empty();
-    map.data.forEach(function(feature) {
-        map.data.remove(feature);
-    });
-
-    map.data.loadGeoJson(url, null, mapDataCallback);
-}
-
-function localInitMap() {
-    map = new google.maps.Map(document.getElementById('background-map'), {
-        center: {lat: lat, lng: lng},
-        zoom: urlCoords ? 11 : 3,
-        styles: mapStyleDiscreet
-    });
-    doSearch();
-}
-
-function showCarpoolDetails(carpoolId) {
-    window.location = carpoolId;
-    return;
-}
-
-function showCarpoolDetailsDivClickHandler(event) {
-    showCarpoolDetails(event.data);
-}
-
-function mapDataCallback(features) {
-    var results = $('#search-results');
-    results.empty();
-    var bounds = new google.maps.LatLngBounds();
-
-    if (features.length > 0) {
-        for (var i = 0; i < features.length; i++) {
-            var feature = features[i];
-            var geo = feature.getGeometry();
-            var resultdiv = $('<div class="result"><h3 class="result-title">' + feature.getProperty('from_place') + ' to ' + feature.getProperty('to_place') + '</h3><p>' + feature.getProperty('seats_available') + ' seats available</p><p>Departs: ' + feature.getProperty('leave_time_human') + '</p><p>Returns: ' + feature.getProperty('return_time_human') + '</p><p>Destination: '+ feature.getProperty('to_place') + '</p></div>');
-            resultdiv.click(feature.getId(), showCarpoolDetailsDivClickHandler);
-            results.append(resultdiv);
-            bounds.extend(new google.maps.LatLng(geo.b.lat(), geo.b.lng()));
-        }
-        map.data.setStyle(function(feature) {
-            if (feature.getProperty('is_approximate_location')) {
-                var geo = feature.getGeometry();
-                feature.circle =  new google.maps.Circle({
-                    map:map,
-                    center: geo.get(),
-                    radius: 1800,
-                    fillColor: '#3090C7',
-                    fillOpacity: 0.5,
-                    strokeWeight: 0
-                });
-                return { visible: false };
-            } else {
-                return {
-                    icon: 'https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|3090C7'
-                };
-            }
-        });
-        map.fitBounds(bounds);
-        google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
-            if (this.getZoom() > 11) {
-                this.setZoom(11);
-            }
-        });
-    } else {
-        {% if loc_lat and loc_lon %}
-        var resultdiv = $('<div class="result"><h3>No carpools nearby</h3><p>Will you consider <a href="{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}">starting one</a>?</p></div>');
-        {% else %}
-        var resultdiv = $('<div class="result"><h3>No carpools nearby</h3><p>Will you consider <a href="{{ url_for('carpool.new') }}">starting one</a>?</p></div>');
-        {% endif %}
-        results.append(resultdiv);
-    }
-    results.addClass("results-box");
-
-    map.data.addListener('click', function(event) {
-        showCarpoolDetails(event.feature.getId());
-    });
-}
+    const geoJSONUrl = "{{ url_for('carpool.start_geojson') }}?"; // eslint-disable-line no-unused-vars
+    const newCarpoolUrl = "{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}"; // eslint-disable-line no-unused-vars
 </script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/find.js') }}"></script>
+{{super()}}
 {% endblock %}
 
 {% block site %}
 
-
 <div class="content constrained">
 
     <div class="carpool-results">
-        {% if loc_name %}
-        <h1>Find rides near {{ loc_name }}</h1>
-        {% else %}
-        <h1>Find rides near you</h1>
-        {% endif %}
+        <h1 class="hidden-lg">
+            Find rides near
+            <form class="ride-form">
+                <input type="hidden" name="lat">
+                <input type="hidden" name="lon">
+                <input type="text" name="q" class="form-control input-lg location-input" placeholder="Zip code or City, State" value="{{user_query}}" />
+            </form>
+        </h1>
+        <h1 class="visible-lg-block">
+            Find rides near
+            {% if user_query %}
+                {{user_query}}
+            {% else %}
+                you
+            {% endif %}
+        </h1>
+        <div class="geocode-error">
+            Sorry, we can't understand that location. Please try again.
+        </div>
         <div id="search-results">
         </div>
     </div>

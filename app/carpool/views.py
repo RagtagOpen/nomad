@@ -42,23 +42,20 @@ def index():
 
 @pool_bp.route('/carpools/find')
 def find():
-    lat = request.args.get('lat')
-    lon = request.args.get('lon')
-    name = request.args.get('q')
-
+    query = request.args.get('q', '').strip().replace("'", '')
+    
     try:
-        lat = float(lat)
-        lon = float(lon)
-    except (ValueError, TypeError):
+        lat = request.args.get('lat', type=float)
+        lon = request.args.get('lon', type=float)
+    except ValueError:
         lat = None
         lon = None
-        name = None
 
     return render_template(
         'carpools/find.html',
-        loc_name=name,
-        loc_lat=lat,
-        loc_lon=lon,
+        lat=lat,
+        lon=lon,
+        user_query=query,  # let jinja sanitize
     )
 
 
@@ -79,22 +76,18 @@ def start_geojson():
     if request.args.get('ignore_prior') != 'false':
         pools = pools.filter(Carpool.leave_time >= datetime.datetime.utcnow())
 
-    near_lat = request.args.get('near.lat')
-    near_lon = request.args.get('near.lon')
-    near_radius = request.args.get('near.radius') or None
+    try:
+        near_lat = request.args.get('near.lat', type=float)
+        near_lon = request.args.get('near.lon', type=float)
+    except ValueError:
+        abort(400, "Invalid lat/lon format")
+
+    try:
+        near_radius = request.args.get('near.radius', type=int)
+    except ValueError:
+        abort(400, "Invalid radius format")
 
     if near_lat and near_lon:
-        try:
-            near_lat = float(near_lat)
-            near_lon = float(near_lon)
-        except ValueError:
-            abort(400, "Invalid lat/lon format")
-
-        try:
-            near_radius = int(near_radius)
-        except ValueError:
-            abort(400, "Invalid radius format")
-
         center = from_shape(Point(near_lon, near_lat), srid=4326)
 
         if near_radius:
@@ -113,11 +106,14 @@ def start_geojson():
         filter(RideRequest.status == 'approved').\
         group_by(RideRequest.carpool_id).\
         subquery('riders')
+
     pools = pools.filter(Carpool.from_point.isnot(None)).\
         outerjoin(riders, Carpool.id == riders.c.carpool_id).\
         filter(riders.c.pax.is_(None) | (riders.c.pax < Carpool.max_riders))
+
     features = []
     dt_format = current_app.config.get('DATE_FORMAT')
+
     # get the current user's confirmed carpools
     confirmed_carpools = []
     if not current_user.is_anonymous:
@@ -125,9 +121,11 @@ def start_geojson():
             filter(RideRequest.person_id == current_user.id)
         for ride in rides:
             confirmed_carpools.append(ride.carpool_id)
+
     for pool in pools:
         if (pool.from_point is None) or pool.destination.hidden:
             continue
+
         # show real location to driver and confirmed passenger
         geometry = mapping(to_shape(pool.from_point))
         if not current_user.is_anonymous and \
@@ -136,6 +134,7 @@ def start_geojson():
         else:
             is_approximate_location = True
             geometry = approximate_location(geometry)
+
         features.append({
             'type': 'Feature',
             'geometry': geometry,

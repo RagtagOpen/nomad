@@ -28,7 +28,7 @@ $(function() {
 
   $.ajaxSetup({
     beforeSend: function(xhr, settings) {
-      if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+     if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
         xhr.setRequestHeader("X-CSRFToken", csrf_token);
       }
     }
@@ -40,17 +40,25 @@ $(function() {
 });
 
 function initMap() {
-  var from_input = document.getElementById('locationQuery');
-  var from_options = {
+  const fromOptions = {
     types: ['(regions)'],
     componentRestrictions: {country: 'us'}
   };
-  var from_ac = new google.maps.places.Autocomplete(from_input, from_options);
-  from_ac.addListener('place_changed', function() {
-    var chosen = from_ac.getPlace();
-    $("#ride-select-lat").val(chosen.geometry.location.lat());
-    $("#ride-select-lon").val(chosen.geometry.location.lng());
-    $("#ride-select-form").submit();
+  $('.location-input').each(function (idx, el) {
+    const fromAutocomplete = new google.maps.places.Autocomplete(el, fromOptions);
+    fromAutocomplete.addListener('place_changed', function() {
+      const loc = fromAutocomplete.getPlace().geometry.location;
+      if (location.href.indexOf($('#ride-select-form').attr('action')) >= 0) {
+        // if on find page already, re-order and re-zoom
+        setLatLng(loc.lat(), loc.lng());
+        sortDOMResults();
+      } else {
+        // go to find/give with lat/lng params
+        $('.ride-form input[name="lat"]').val(loc.lat());
+        $('.ride-form input[name="lng"]').val(loc.lng());
+        $('.ride-form').submit();
+      }
+    });
   });
 
   if (typeof localInitMap === "function") {
@@ -148,13 +156,15 @@ function doLogout() {
       <ul class="nav navbar-nav hidden-xs wide-nav">
         <li class="visible-lg-block">
           <form class="navbar-form" id="ride-select-form" method="GET" action="{{ url_for('carpool.find') }}">
+            <input type="hidden" name="lat">
+            <input type="hidden" name="lng">
             <div class="form-group">
               <select id="ride-select" class="form-control input-lg" >
                 <option value="find-ride">Find a ride&nbsp;&nbsp;&nbsp;</option>
                 <option value="give-ride">Give a ride</option>
               </select>
               <span>near</span>
-              <input type="text" name="q" id="locationQuery" class="form-control input-lg locationQuery"  placeholder="Zip code or City, State"/>
+              <input type="text" name="q" id="locationQuery" class="form-control input-lg location-input"  placeholder="Zip code or City, State" value="{{user_query}}"/>
             </div>
           </form>
         </li>
