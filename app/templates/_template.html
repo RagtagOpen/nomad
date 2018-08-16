@@ -149,7 +149,7 @@ function doLogout() {
           <li><a href="{{ url_for('admin.admin_index') }}">Admin Tools</a></li>
         {% endif %}
         <li>
-          <form method="POST" action="{{ url_for('auth.logout') }}">
+          <form method="POST" action="{{ url_for('auth.logout') }}" id="logout-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit" class="btn">Log out</button>
           </form>
