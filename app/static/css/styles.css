@@ -89,7 +89,8 @@ input[type=text], input[type=email], input[type=tel], input[type=date] {
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	margin-right: 10px;
-	font: 400 18px/150%;
+	font-size: 18px;
+    line-height: 150%;
 	color: #333;
 }
 input[type=text]:placeholder, input[type=email]:placeholder, input[type=tel]:placeholder, input[type=date]:placeholder {
@@ -139,10 +140,13 @@ select:focus {
 	height: 50px;
 	background: url("../img/logo_ragtag.png") center / contain no-repeat;
 }
-#locationQuery {
+.locationQuery {
 	min-width: 300px;
-	background: url("../img/ic_search_24px.svg") 7px center no-repeat;
+	background: white url("../img/ic_search_24px.svg") 7px center no-repeat;
 	text-indent: 25px;
+}
+.navbar {
+    margin-bottom: 0;
 }
 .navbar>.container .navbar-brand, .navbar>.container-fluid .navbar-brand {
 	margin-left: 20px;
@@ -188,7 +192,6 @@ select:focus {
 }
 .fullscreen {
 	width: 100%;
-	margin-top: 70px;
 	padding: 0 210px 100px 210px;
 }
 .fullscreen.jumbo-second {
@@ -229,9 +232,6 @@ select:focus {
 .fullscreen h1, .fullscreen p {
 	max-width: 650px; /*for line length readability*/
 }
-.jumbo {
-	padding-top: 50px;
-}
 .jumbo h2 {
 	padding-top: 0;
 	margin-bottom: 20px;
@@ -261,14 +261,33 @@ select:focus {
 	max-width: 450px;
 	margin-right: 15px;
 	margin-bottom: 15px;
-	font: 400 24px/150%;
+	font-weight: 400;
+    font-size: 24px;
+}
+@media screen and (max-width:767px) {
+    .jumbo input[type=text] {
+        max-width: 100%;
+        margin-right: 0;
+    }
+}
+.jumbo input[type=text]::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #999999;
+    opacity: 1; /* Firefox */
+}
+.jumbo input[type=text]:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #999999;
+}
+.jumbo input[type=text]::-ms-input-placeholder { /* Microsoft Edge */
+    color: #999999;
 }
 .jumbo input[type=submit] {
 	-webkit-box-flex: 1;
 	    -ms-flex: 1 0 100px;
 	        flex: 1 0 100px;
+    background-color: rgba(0,168,225,1);
 	height: 50px;
-	font: 400 24px/150%;
+	font-weight: 400;
+    font-size: 24px;
 }
 
 /* ===== MAP SEARCH RESULTS ===== */
