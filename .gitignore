@@ -1,7 +1,6 @@
 *.pyc
 *.sqlite
 .python-version
-.pytest_cache
 
 # Jetbrains IDEs
 .idea/
@@ -13,3 +12,4 @@
 *.swp
 
 .DS_Store
+__pycache__/
