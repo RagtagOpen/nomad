@@ -1,4 +1,4 @@
-{%- extends "_template.html" %}
+{%- extends "admin/_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
@@ -13,7 +13,7 @@
     <a class="btn btn-primary" href="{{ url_for('admin.destinations_add') }}" role="button">Add a Location</a>
 </p>
 
-<table class="table table-hover">
+<table class="table table-hover sortable-theme-bootstrap" data-sortable>
     <thead>
         <tr>
             <th>Name</th>

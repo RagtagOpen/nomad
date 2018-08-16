@@ -1,4 +1,4 @@
-{%- extends "_template.html" %}
+{%- extends "admin/_template.html" %}
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {% block site %}
@@ -9,7 +9,7 @@
     </h4>
     <h1>Nomad Carpools</h1>
 
-<table class="table table-hover">
+<table class="table table-hover sortable-theme-bootstrap" data-sortable>
     <thead>
         <tr>
             <th>From</th>
