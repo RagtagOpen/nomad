@@ -1,5 +1,6 @@
 import os
 
+
 def int_env(key, default):
     """ Handle empty values for environment variables
     and return the value as an int
@@ -14,7 +15,8 @@ def int_env(key, default):
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', None)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'postgresql://localhost/carpools')
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        'DATABASE_URL', 'postgresql://localhost/carpools')
     CACHE_TYPE = os.environ.get('CACHE_TYPE', 'simple')
     CACHE_REDIS_URL = os.environ.get('REDIS_URL')
     DEBUG = os.environ.get('FLASK_DEBUG', False)
@@ -37,7 +39,8 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'false') == 'true'
     MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL', 'false') == 'true'
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'from@example.com')
+    MAIL_DEFAULT_SENDER = os.environ.get(
+        'MAIL_DEFAULT_SENDER', 'from@example.com')
     PREFERRED_URL_SCHEME = 'https'
 
     REMEMBER_COOKIE_SECURE = True
@@ -67,7 +70,7 @@ class Config:
 
     BRANDING_ORG_NAME = os.environ.get('BRANDING_ORG_NAME') or \
         'Ragtag'
-    BRANDING_ORG_SITE_NAME = os.environ.get('BRANDING_SITE_NAME') or \
+    BRANDING_ORG_SITE_NAME = os.environ.get('BRANDING_ORG_SITE_NAME') or \
         'ragtag.org'
     BRANDING_ORG_EMAIL = os.environ.get('BRANDING_ORG_EMAIL') or \
         'support@ragtag.org'
