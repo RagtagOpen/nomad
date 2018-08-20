@@ -40,6 +40,7 @@ class DriverForm(FlaskForm):
         ]
     )
 
+    departure_seed = StringField()
     departure_name = StringField()
     departure_lat = HiddenField()
     departure_lon = HiddenField()
