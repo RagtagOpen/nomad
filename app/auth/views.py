@@ -78,8 +78,9 @@ def oauth_callback(provider):
         # Go to the profile now...
         next_url = url_for('auth.profile')
         # ...and after they update their profile, go to the page that referred them here
-        session['next'] = session['login-referrer']
-        del session['login-referrer']
+        login_referrer = session.pop('login-referrer', None)
+        if login_referrer:
+            session['next'] = login_referrer
 
     if user.has_roles('blocked'):
         session.pop('next', None)
