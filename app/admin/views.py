@@ -458,6 +458,7 @@ def email_preview(template):
         'person': carpool.driver,
         'rider': Person.query.first(),
         'driver': carpool.driver,
+        'ride_request': RideRequest.query.first(),
         'reason': 'Placeholder reason'
     }
     text = render_template('email/{}.txt'.format(template), **data)
