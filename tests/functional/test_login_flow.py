@@ -31,4 +31,4 @@ class TestLoginFlow:
         res = login(testapp, 'steve@google', 'stevejobs', 'steve@example.com')
         assert res.status_code == HTTPStatus.FOUND
         url = urllib.parse.urlparse(res.headers['Location'])
-        assert url.path == '/'
+        assert url.path == '/login'

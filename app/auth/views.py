@@ -68,7 +68,7 @@ def oauth_callback(provider):
 
     next_url = None
 
-    user = Person.query.filter_by(social_id=social_id).first()
+    user = Person.query.filter_by(email=email).first()
     if not user:
         user = Person(social_id=social_id, name=username, email=email)
         db.session.add(user)
@@ -81,6 +81,19 @@ def oauth_callback(provider):
         login_referrer = session.pop('login-referrer', None)
         if login_referrer:
             session['next'] = login_referrer
+
+    elif user and user.social_id != social_id:
+        # Prevent a user from logging in if they log in with a social account
+        # that has an email already added to the system. They should log in with
+        # the original social account.
+        flash("There was a problem logging you in.", 'error')
+        current_app.logger.warn(
+            "User %s logged in with a different social provider "
+            "(%s) that had a matching email",
+            user.id,
+            provider,
+        )
+        return redirect(url_for('auth.login'))
 
     if user.has_roles('blocked'):
         session.pop('next', None)
