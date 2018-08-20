@@ -65,6 +65,19 @@ def run_migrations_online():
                 directives[:] = []
                 logger.info('No changes in schema detected.')
 
+    # this function is used to filter out the postgis index / spatial_ref_sys
+    # tables when identifying changes. these are not mentioned in our local
+    # model and as such the migration script sees them as "removed".
+    # reference: https://github.com/miguelgrinberg/Flask-Migrate/issues/18
+    # reference: http://alembic.zzzcomputing.com/en/latest/api/runtime.html
+    def include_object(object, name, type_, reflected, compare_to):
+        # two whitelisted elements: index `idx_destinations_point` and table
+        # `spatial_ref_sys`
+        return not any([
+            type_ == 'index' and name == 'idx_destinations_point',
+            type_ == 'table' and name == 'spatial_ref_sys'
+        ])
+
     engine = engine_from_config(config.get_section(config.config_ini_section),
                                 prefix='sqlalchemy.',
                                 poolclass=pool.NullPool)
@@ -73,6 +86,7 @@ def run_migrations_online():
     context.configure(connection=connection,
                       target_metadata=target_metadata,
                       process_revision_directives=process_revision_directives,
+                      include_object=include_object,
                       **current_app.extensions['migrate'].configure_args)
 
     try:
