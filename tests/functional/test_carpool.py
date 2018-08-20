@@ -1,17 +1,21 @@
-from datetime import date, datetime, timedelta
-from . import login_person
-from http import HTTPStatus
 import urllib
+from datetime import date, datetime, timedelta
+from http import HTTPStatus
+
 from freezegun import freeze_time
+
+from . import login_person
+
 
 def register_for_carpool(testapp, carpool_uuid):
     carpool_page = testapp.get('/carpools/{}'.format(carpool_uuid))
     confirmation_page = carpool_page.click("Request a seat in carpool")
-    return confirmation_page.forms[1].submit("Request A Seat").follow()
+    return confirmation_page.forms['join-carpool-form'].submit("Request A Seat").follow()
+
 
 def create_carpool_for_tomorrow(testapp, destination):
     new_carpool = testapp.get('/carpools/new')
-    form = new_carpool.forms[1]
+    form = new_carpool.forms['new-carpool-form']
     form['destination'] = destination.uuid
     # If we're using some sort of webdriver, we could actually integrate with a map
     form.set('departure_lat', '40.7128', index=0)
@@ -22,6 +26,7 @@ def create_carpool_for_tomorrow(testapp, destination):
     form['return_date'] = (date.today() + timedelta(days=1)).isoformat()
     form['return_hour'] = '18'
     return form.submit('submit').follow()
+
 
 class TestCarpool:
     def test_carpool_creation(self, testapp, db, full_person, destination):
@@ -53,7 +58,7 @@ class TestCarpool:
         person_2_home = login_person(testapp, person_2)
         new_carpool = person_2_home.click('Give a ride', index=0)
         driver_carpool_page = testapp.get('/carpools/{}'.format(carpool.uuid))
-        approve_form = driver_carpool_page.forms[1]
+        approve_form = driver_carpool_page.forms['approve-rider-form']
         driver_confirmation_page = approve_form.submit().follow()
         assert "You approved their ride request" in driver_confirmation_page
 
@@ -63,7 +68,6 @@ class TestCarpool:
         carpool_page = testapp.get('/carpools/{}'.format(carpool.uuid))
         assert "You are confirmed for this carpool" in carpool_page
 
-
     def test_old_carpools_disappear(self, testapp, full_person, destination):
         login_person(testapp, full_person)
         create_carpool_for_tomorrow(testapp, destination)
@@ -71,7 +75,9 @@ class TestCarpool:
         with freeze_time(date.today() + timedelta(days=3)):
             my_page = testapp.get('/carpools/mine')
             assert "You have no upcoming carpools!" in my_page
-            past_carpools = my_page.html.find("div", {"class": "carpools past"})
+            past_carpools = my_page.html.find(
+                "div", {"class": "carpools past"})
             assert destination.name in past_carpools.text
-            future_carpools = my_page.html.find("div", {"class": "carpools future"})
+            future_carpools = my_page.html.find(
+                "div", {"class": "carpools future"})
             assert destination.name not in future_carpools.text

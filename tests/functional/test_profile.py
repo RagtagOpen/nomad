@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import urllib
 from http import HTTPStatus
-from . import login_person
 
-from ..factories import PersonFactory, CarpoolFactory, DestinationFactory, RideRequestFactory
+from . import login_person
+from ..factories import (CarpoolFactory, DestinationFactory, PersonFactory,
+                         RideRequestFactory)
 
 
 class TestProfile:
@@ -18,7 +19,7 @@ class TestProfile:
         login_person(testapp, person)
         res = testapp.get('/profile')
         assert res.status_code == HTTPStatus.OK
-        form = res.forms[1]
+        form = res.forms['update-profile-form']
         form['name'] = 'foo'
         form['gender'] = 'Female'
         form['preferred_contact'] = 'email'
