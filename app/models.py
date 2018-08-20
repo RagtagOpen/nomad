@@ -160,6 +160,7 @@ class Carpool(db.Model, UuidMixin):
     reminder_email_sent_at = db.Column(db.DateTime(timezone=True),
                                        nullable=True)
     from_place = db.Column(db.String(120))
+    # Saving the text that was entered in the address autocomplete
     from_seed = db.Column(db.Text)
     from_point = db.Column(Geometry('POINT'))
     leave_time = db.Column(db.DateTime(timezone=True))
