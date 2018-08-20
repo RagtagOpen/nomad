@@ -217,6 +217,7 @@ def new():
             vehicle_description=driver_form.vehicle_description.data,
             notes=driver_form.notes.data,
             driver_id=current_user.id,
+            from_seed=driver_form.departure_seed.data,
         )
         db.session.add(c)
         db.session.commit()
@@ -265,6 +266,7 @@ def edit(uuid):
         vehicle_description=carpool.vehicle_description,
         vehicle_capacity=carpool.max_riders,
         notes=carpool.notes,
+        departure_seed=carpool.from_seed,
     )
 
     visible_destinations = Destination.find_all_visible().all()

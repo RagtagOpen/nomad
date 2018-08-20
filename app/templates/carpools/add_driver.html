@@ -115,7 +115,7 @@ function localInitMap() {
             <div class="two-col-column">
                 <h4>Pickup / Dropoff Location</h4>
                 <label>Find a location on the map:</label>
-                <input type="text" id="location-seed"></input>
+                {{ form.departure_seed(id='location-seed') }}
 
                 {% if form.departure_name.errors %}
                 <div>
