@@ -53,7 +53,7 @@ def oauth_callback(provider):
     if not current_user.is_anonymous:
         return redirect(url_for('carpool.index'))
 
-    social_id = None
+    social_id = username = email = None
     try:
         oauth = OAuthSignIn.get_provider(provider)
         social_id, username, email = oauth.callback()
@@ -61,9 +61,15 @@ def oauth_callback(provider):
         current_app.logger.exception("Couldn't log in a user for some reason")
         sentry.captureException()
 
-    if social_id is None:
+    if email is None:
         flash("For some reason, we couldn't log you in. "
               "Please contact us!", 'error')
+        current_app.logger.warn(
+            "Provider %s didn't give email for social id %s, username %s",
+            provider,
+            social_id,
+            username,
+        )
         return redirect(url_for('carpool.index'))
 
     next_url = None
