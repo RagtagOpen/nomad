@@ -92,7 +92,8 @@ def oauth_callback(provider):
         # Prevent a user from logging in if they log in with a social account
         # that has an email already added to the system. They should log in with
         # the original social account.
-        flash("There was a problem logging you in.", 'error')
+        flash("You've already logged in with another social media account. "
+              "Please use that one to log in.", 'error')
         current_app.logger.warn(
             "User %s logged in with a different social provider "
             "(%s) that had a matching email",
