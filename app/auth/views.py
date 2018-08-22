@@ -53,7 +53,7 @@ def oauth_callback(provider):
     if not current_user.is_anonymous:
         return redirect(url_for('carpool.index'))
 
-    social_id = None
+    social_id = username = email = None
     try:
         oauth = OAuthSignIn.get_provider(provider)
         social_id, username, email = oauth.callback()
@@ -61,14 +61,20 @@ def oauth_callback(provider):
         current_app.logger.exception("Couldn't log in a user for some reason")
         sentry.captureException()
 
-    if social_id is None:
+    if email is None:
         flash("For some reason, we couldn't log you in. "
               "Please contact us!", 'error')
+        current_app.logger.warn(
+            "Provider %s didn't give email for social id %s, username %s",
+            provider,
+            social_id,
+            username,
+        )
         return redirect(url_for('carpool.index'))
 
     next_url = None
 
-    user = Person.query.filter_by(social_id=social_id).first()
+    user = Person.query.filter_by(email=email).first()
     if not user:
         user = Person(social_id=social_id, name=username, email=email)
         db.session.add(user)
@@ -78,8 +84,23 @@ def oauth_callback(provider):
         # Go to the profile now...
         next_url = url_for('auth.profile')
         # ...and after they update their profile, go to the page that referred them here
-        session['next'] = session['login-referrer']
-        del session['login-referrer']
+        login_referrer = session.pop('login-referrer', None)
+        if login_referrer:
+            session['next'] = login_referrer
+
+    elif user and user.social_id != social_id:
+        # Prevent a user from logging in if they log in with a social account
+        # that has an email already added to the system. They should log in with
+        # the original social account.
+        flash("You've already logged in with another social media account. "
+              "Please use that one to log in.", 'error')
+        current_app.logger.warn(
+            "User %s logged in with a different social provider "
+            "(%s) that had a matching email",
+            user.id,
+            provider,
+        )
+        return redirect(url_for('auth.login'))
 
     if user.has_roles('blocked'):
         session.pop('next', None)

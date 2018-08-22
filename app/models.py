@@ -99,7 +99,7 @@ class Person(UserMixin, db.Model, UuidMixin):
     created_at = db.Column(db.DateTime(timezone=True),
                            default=datetime.datetime.utcnow)
     social_id = db.Column(db.String(64), nullable=False, unique=True)
-    email = db.Column(db.String(120))
+    email = db.Column(db.String(120), index=True)
     phone_number = db.Column(db.String(14))
     name = db.Column(db.String(80))
     gender = db.Column(db.String(80))
