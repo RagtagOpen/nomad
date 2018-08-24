@@ -65,16 +65,15 @@ def run_migrations_online():
                 directives[:] = []
                 logger.info('No changes in schema detected.')
 
-    # this function is used to filter out the postgis index / spatial_ref_sys
-    # tables when identifying changes. these are not mentioned in our local
-    # model and as such the migration script sees them as "removed".
+    # this function is used to filter out the spatial_ref_sys table when
+    # identifying changes. this table is not mentioned in our local model and as
+    # such the migration script sees them as "removed".
     # reference: https://github.com/miguelgrinberg/Flask-Migrate/issues/18
     # reference: http://alembic.zzzcomputing.com/en/latest/api/runtime.html
     def include_object(object, name, type_, reflected, compare_to):
-        # two whitelisted elements: index `idx_destinations_point` and table
-        # `spatial_ref_sys`
+        # one whitelisted element for now: index `idx_destinations_point`
+        # will leave the `not any` for future whitelist values
         return not any([
-            type_ == 'index' and name == 'idx_destinations_point',
             type_ == 'table' and name == 'spatial_ref_sys'
         ])
 
