@@ -161,3 +161,31 @@ class TestEmailTemplates:
         assert 'carpool was cancelled by an administrator' not in rendered
         assert 'test_driver_cancelled' in rendered
         assert 'driver gave the following reason' in rendered
+
+    def test_rider_reminder(self, db):
+        driver = PersonFactory()
+        db.session.add(driver)
+        carpool = CarpoolFactory(from_place='from', driver=driver)
+        carpool.driver.phone_number = '408 123-4567'
+        db.session.add(carpool)
+        rider = PersonFactory()
+        db.session.add(rider)
+        ride_request = RideRequestFactory(person=rider, carpool=carpool)
+        db.session.add(ride_request)
+        db.session.commit()
+        rendered = render_template(
+            'email/rider_reminder.html',
+            rider=rider,
+            carpool=carpool,
+        )
+        assert 'and their phone number is' in rendered
+
+        carpool.driver.phone_number = None
+        db.session.add(carpool)
+        db.session.commit()
+        rendered = render_template(
+            'email/rider_reminder.html',
+            rider=rider,
+            carpool=carpool,
+        )
+        assert 'and their phone number is' not in rendered
