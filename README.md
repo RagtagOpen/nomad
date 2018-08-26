@@ -43,6 +43,7 @@
     ```
 
 1.  (Optional) Configure Google Sign-In
+
     In order to test Google authentication you'll need to create a [Console Project](https://developers.google.com/identity/sign-in/web/devconsole-project).  
     For "Where are you calling from?" choose "Web server".  
     For "Authorized redirect URIs" enter http://localhost:5000/callback/google.  
@@ -53,27 +54,9 @@
     echo GOOGLE_CLIENT_SECRET=YOUR_CLIENT_SECRET >> .env
     ```
 
-
 1.  Configure Email Send
-    In order for the app to send email, you'll need to add details about what mail server it should use. For testing, you can use a Mailgun or Gmail account. Add those details to the .env file, too!
 
-```bash
-echo MAIL_SERVER=smtp.mailgun.org >> .env
-echo MAIL_PORT=465 >> .env
-echo MAIL_USE_SSL=1 >> .env
-echo MAIL_USERNAME=your_username >> .env
-echo MAIL_PASSWORD=your_password >> .env
-```
-
-If you want to test emails without actually sending them, you can use [MailDev](http://danfarrelly.nyc/MailDev/) with Docker and the following `.env` configuration:
-
-```bash
-echo MAIL_SERVER=fakesmtp >> .env
-echo MAIL_PORT=25 >> .env
-echo MAIL_USE_SSL=0 >> .env
-```
-
-With that setup, you can run `docker-compose up nomad fakesmtp` and view emails at [http://localhost:8081/](http://localhost:8081/).
+    In order for the app to send email, you'll need to add details about what mail server it should use. See [Sending Email](#sending-email) below for instructions.
 
 ## Running with Docker Compose
 
@@ -229,6 +212,67 @@ Once you have the app running with Docker or locally, you need to add your first
 
 1.  Visit `http://127.0.0.1:5000/admin` to verify your account now has the appropriate role.
 
+## Sending Email
+
+The app has several email templates built in. In order to test them locally, you'll need to set up a few things.
+
+### Reading email in the Flask logs
+
+By default, the email recipient, subject, and body of any outgoing message is written to the app's built-in logger, which is the console where you ran `flask run` from. When the app sends an email (e.g., when requesting a spot in a carpool) look for the email contents in that terminal window.
+
+### Configuring SMTP settings
+
+For more advanced testing, you can configure some SMTP settings to send to an actual mail server.
+
+#### Mailgun or Gmail
+
+For testing, you can use a Mailgun or Gmail account. Edit your .env file and add the following:
+
+```python
+MAIL_LOG_ONLY=false
+MAIL_SERVER=smtp.mailgun.org
+MAIL_PORT=465
+MAIL_USE_SSL=1
+MAIL_USERNAME=your_username
+MAIL_PASSWORD=your_password
+```
+
+#### MailDev
+
+[MailDev](http://danfarrelly.nyc/MailDev/) is a simple Node utility to listen for incoming SMTP connections and display the messages in an ephemeral Inbox.
+
+With Docker, you can use the following `.env` configuration:
+
+```bash
+echo MAIL_SERVER=fakesmtp >> .env
+echo MAIL_PORT=25 >> .env
+echo MAIL_USE_SSL=0 >> .env
+```
+
+With that setup, you can run `docker-compose up nomad fakesmtp` and view emails at [http://localhost:8081/](http://localhost:8081/).
+
+To set up MailDev without Docker, run the following in a separate Terminal from your main one:
+
+```bash
+npm install -g maildev    # this may require sudo on some systems
+maildev
+```
+
+This should listen for email on 127.0.0.1 port 1025 and provide a browser interface at http://localhost:1080 which shows an Inbox of messages sent by the app. Keep that terminal window running in the background.
+
+In your .env file, add the following:
+
+```python
+# Maildev
+MAIL_LOG_ONLY=false
+MAIL_SERVER=localhost
+MAIL_PORT=1025
+MAIL_USE_SSL=false
+MAIL_USE_TLS=false
+```
+
+Then run `source .env` and `flask run` again to activate the changes.
+
 ## Running tests
 
 Using Docker:
@@ -240,6 +284,7 @@ Using Docker:
 Locally:
 
     ```
+    pipenv install -d
     pytest
     ```
 

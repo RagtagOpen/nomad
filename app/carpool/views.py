@@ -145,7 +145,7 @@ def start_geojson():
                 'seats_available': pool.seats_available,
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
-                'leave_time_human': pool.leave_time.strftime(dt_format),
+                'leave_time_human': pool.leave_time_formatted,
                 'return_time_human': pool.return_time.strftime(dt_format),
                 'driver_gender': escape(pool.driver.gender),
                 'is_approximate_location': is_approximate_location,
@@ -497,7 +497,7 @@ def _email_carpool_cancelled(carpool, reason, notify_driver):
         reason = '<reason not given>'
 
     subject = 'Carpool session on {} cancelled'.format(
-        carpool.leave_time.strftime(current_app.config.get('DATE_FORMAT')))
+        carpool.leave_time_formatted)
 
     for rider in riders:
         send_email(
@@ -535,7 +535,7 @@ def _email_driver(carpool, current_user, subject, template_name_specifier, ride_
 
 def _email_driver_ride_requested(carpool, ride_request, current_user):
     subject = '{} requested a ride in carpool on {}'.format(
-        current_user.name, carpool.leave_time)
+        current_user.name, carpool.leave_time_formatted)
 
     _email_driver(carpool, current_user, subject, 'ride_requested', ride_request)
 
@@ -543,9 +543,7 @@ def _email_driver_ride_requested(carpool, ride_request, current_user):
 def _email_ride_status(request, subject_beginning, template_name_specifier):
     subject = '{} for carpool on {}'.format(
         subject_beginning,
-        request.carpool.leave_time.strftime(
-            current_app.config.get('DATE_FORMAT')
-        )
+        request.carpool.leave_time_formatted
     )
 
     send_email(
@@ -574,8 +572,7 @@ def email_driver_rider_cancelled_request(request, carpool, current_user):
 
 def _email_driver_rider_cancelled_request(carpool, current_user):
     subject = '{} cancelled their request to ride in carpool on {}'.format(
-        current_user.name, carpool.leave_time.strftime(
-            current_app.config.get('DATE_FORMAT')))
+        current_user.name, carpool.leave_time_formatted)
 
     _email_driver(carpool, current_user, subject, 'ride_request_cancelled')
 
@@ -583,9 +580,7 @@ def _email_driver_rider_cancelled_request(carpool, current_user):
 def _email_driver_rider_cancelled_approved_request(carpool, current_user):
     subject = '{} withdrew from the carpool on {}'.format(
         current_user.name,
-        carpool.leave_time.strftime(
-            current_app.config.get('DATE_FORMAT')
-        )
+        carpool.leave_time_formatted
     )
 
     _email_driver(carpool, current_user, subject,

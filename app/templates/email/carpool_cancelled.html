@@ -1,7 +1,7 @@
 {% extends "email/_wrapper.html" %}
 
 {% block content %}
-<p>Hello {{ person.name }},</p>
+<p>Hello {{ rider.name }},</p>
 
 <p>Unfortunately, the carpool from {{ carpool.from_place }} to {{ carpool.destination.name }} at {{ carpool.leave_time | humanize }} has been cancelled.</p>
 

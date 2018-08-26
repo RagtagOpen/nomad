@@ -1,7 +1,7 @@
 import datetime
 import uuid
 from dateutil import tz
-from flask import abort
+from flask import abort, current_app
 from flask_login import AnonymousUserMixin, UserMixin
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
@@ -145,6 +145,9 @@ class Person(UserMixin, db.Model, UuidMixin):
 
         return requested_role_set.issubset(our_role_set)
 
+    def __str__(self):
+        return self.name + " (" + self.email + ")"
+
 
 @login_manager.user_loader
 def load_user(id):
@@ -209,6 +212,14 @@ class Carpool(db.Model, UuidMixin):
     def future(self):
         now = datetime.datetime.now().replace(tzinfo=tz.gettz('UTC'))
         return self.leave_time > now
+
+    @property
+    def leave_time_formatted(self):
+        """
+        The carpool leave time, formatted as a string, using the default "short" date
+        format, e.g., "January 1, 2018"
+        """
+        return self.leave_time.strftime(current_app.config.get('DATE_FORMAT_SHORT'))
 
 
 class Destination(db.Model, UuidMixin):

@@ -405,9 +405,7 @@ def destinations_delete(uuid):
 def _send_destination_action_email(destination, verb, template_base):
     for carpool in destination.carpools:
         subject = 'Carpool on {} {}'.format(
-            carpool.leave_time.strftime(
-                current_app.config.get('DATE_FORMAT')
-            ),
+            carpool.leave_time_formatted,
             verb
         )
 
@@ -447,6 +445,7 @@ def destinations_toggle_hidden(uuid):
         flash("Your destination was unhidden", 'success')
 
     return redirect(url_for('admin.destinations_show', uuid=uuid))
+
 
 @admin_bp.route('/admin/emailpreview/<template>')
 def email_preview(template):
