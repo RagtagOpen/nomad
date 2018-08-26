@@ -562,6 +562,20 @@ pre.text {
   white-space: pre-line;
 }
 
+/* CARPOOL DETAIL */
+.carpool-detail .with-buttons {
+	margin-top: auto;
+	margin-botton: auto;
+}
+
+.carpool-detail .passenger-requests {
+	margin-top: 25px;  /* match h4 title */
+	margin-left: 20px;
+}
+
+.carpool-detail .notes {
+	font-style: italic;
+}
 /* MEDIA QUERIES */
 
 @media screen and (max-width:1200px) {
