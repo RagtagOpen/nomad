@@ -151,7 +151,7 @@ function doLogout() {
         <li>
           <form method="POST" action="{{ url_for('auth.logout') }}" id="logout-form">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-            <button type="submit" class="btn">Log out</button>
+            <button type="submit" class="btn btn-logout">Log out</button>
           </form>
         </li>
 {% else %}
@@ -191,7 +191,7 @@ function doLogout() {
             <li>
               <form method="POST" action="{{ url_for('auth.logout') }}">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button type="submit" class="btn">Log out</button>
+                <button type="submit" class="btn btn-logout">Log out</button>
               </form>
             </li>
           </ul>
