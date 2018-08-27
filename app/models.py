@@ -4,6 +4,7 @@ from dateutil import tz
 from flask import abort
 from flask_login import AnonymousUserMixin, UserMixin
 from geoalchemy2 import Geometry
+from geoalchemy2.elements import WKBElement
 from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
 from sqlalchemy.dialects.postgresql import UUID
@@ -198,12 +199,16 @@ class Carpool(db.Model, UuidMixin):
         Returns the from point in a lat-lng string useful for Google Maps,
         e.g., "38.518, -97.328"
         """
+        if isinstance(self.from_point, WKBElement):
+            # Shapely's Point class can extract lat and long from the geometry data type
+            pt = to_shape(self.from_point)
+            lat = pt.y
+            lng = pt.x
+            return "{}, {}".format(lat, lng)
 
-        # Shapely's Point class can extract lat and long from the geometry data type
-        pt = to_shape(self.from_point)
-        lat = pt.y
-        lng = pt.x
-        return "{}, {}".format(lat, lng)
+        # some functional tests don't populate this property, so we need a default
+        # value in case it's not a valid geometry object.
+        return "0, 0"
 
     @property
     def riders(self):
