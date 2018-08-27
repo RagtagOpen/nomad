@@ -3,8 +3,10 @@
 import datetime as dt
 
 import pytest
+from geoalchemy2.shape import from_shape
+from shapely.geometry import Point
 
-from app.models import Person, Role, AnonymousUser, Destination
+from app.models import Person, Role, AnonymousUser, Destination, Carpool
 
 from .factories import CarpoolFactory, PersonFactory, RideRequestFactory, DestinationFactory
 
@@ -245,6 +247,14 @@ class TestCarpool:
         db.session.commit()
 
         assert carpool.seats_available == 3
+
+    def test_lat_lng_calculation(self):
+        # the hex string below represents a PostGIS Geometry object)
+        pt = wkb_element = from_shape(Point(-97.328, 38.518), srid=4326)
+        c = Carpool()
+        c.from_point=pt
+        assert c.from_lat_lng == '38.518, -97.328'
+
 
 @pytest.mark.usefixtures('db')
 class TestDestination:
