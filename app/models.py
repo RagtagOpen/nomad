@@ -193,6 +193,19 @@ class Carpool(db.Model, UuidMixin):
             Person.id.in_(p.person_id for p in requests)).all()
 
     @property
+    def from_lat_lng(self):
+        """
+        Returns the from point in a lat-lng string useful for Google Maps,
+        e.g., "38.518, -97.328"
+        """
+
+        # Shapely's Point class can extract lat and long from the geometry data type
+        pt = to_shape(self.from_point)
+        lat = pt.y
+        lng = pt.x
+        return "{}, {}".format(lat, lng)
+
+    @property
     def riders(self):
         return self.get_riders(['approved'])
 
