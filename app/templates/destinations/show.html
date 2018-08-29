@@ -30,9 +30,11 @@
             {% if destination.future_carpools.count() > 0 %}
             <ul>
                 {% for c in destination.future_carpools %}
-                <li><a href="{{ url_for('carpool.details', uuid=c.uuid) }}">{{ c.from_place }}</a></li>
+                <li>Someone is leaving from <a href="{{ url_for('carpool.details', uuid=c.uuid) }}">{{ c.from_place }}</a> on {{ c.leave_time.date() }} at {{ c.leave_time.time() }} to get to {{ destination.name }}.</li>
                 {% endfor %}
             </ul>
+
+            <p>If none of these work, you can <a href="{{ url_for('carpool.new', destination_id=destination.uuid) }}">create your own ride!</a></p>
             {% else %}
             <a href="{{ url_for('carpool.new', destination_id=destination.uuid) }}">Will you create one?</a>
             {% endif %}
