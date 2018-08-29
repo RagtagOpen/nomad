@@ -1,0 +1,46 @@
+{%- extends "_template.html" %}
+{%- import "bootstrap/wtf.html" as wtf %}
+
+{% block site %}
+<div class="content">
+
+    <div class="fullscreen">
+        {%- with messages = get_flashed_messages(with_categories=True) %}
+        {%- if messages %}
+        <div class="error-messages">
+            {% for cat, msg in messages %}
+            <div class="message {{ cat }}">{{ msg }}</div>
+            {% endfor %}
+        </div>
+        {%- endif %}
+        {%- endwith %}
+
+        <div class="form-page">
+
+            <h2>Carpools to {{ destination.name }}</h2>
+
+            {% if destination.future_carpools.count() == 0 %}
+            <p>There are no carpools going to {{ destination.name }} yet.</p>
+            {% elif destination.future_carpools.count() == 1 %}
+            <p>There is 1 driver taking people to {{ destination.name }}. Will you join them?</p>
+            {% else %}
+            <p>There are {{ destination.future_carpools.count() }} drivers taking people to {{ destination.name }}. Will you join them?</p>
+            {% endif %}
+
+            {% if destination.future_carpools.count() > 0 %}
+            <ul>
+                {% for c in destination.future_carpools %}
+                <li><a href="{{ url_for('carpool.details', uuid=c.uuid) }}">{{ c.from_place }}</a></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <a href="{{ url_for('carpool.new', destination_id=destination.uuid) }}">Will you create one?</a>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
