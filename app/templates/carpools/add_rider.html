@@ -20,7 +20,7 @@
             {{ form.hidden_tag() }}
             <h4>Join this carpool</h4>
             <h1>Confirm your details</h1>
-            <p>When you request a seat, your name, gender, and contact information from your profile will be shared with the driver.  You can update this information on <a href="/profile" target="_blank">your profile page</a>.</p>
+            <p>When you request a seat, your name, gender, and contact information from your profile will be shared with the driver.  You can update this information on <a href="{{ url_for('auth.profile') }}" target="_blank">your profile page</a>.</p>
 
             <div class="top-border">
                 <h4>Questions / Notes to Driver</h4>
