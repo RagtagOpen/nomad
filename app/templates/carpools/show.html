@@ -191,6 +191,10 @@
                     <h4>Additional notes</h4>
                     <p>{{ pool.notes or "(None supplied)"}}</p>
                 </div>
+                <div class="two-col-column">
+                    <h4>Link to this carpool</h4>
+                    <p><a href="{{ request.url }}">{{ request.url }}</a></p>
+                </div>
             </div>
 
         </div>
