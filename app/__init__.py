@@ -96,6 +96,9 @@ def create_app(config_name):
     from .carpool import pool_bp
     app.register_blueprint(pool_bp)
 
+    from .destination import dest_bp
+    app.register_blueprint(dest_bp)
+
     from .auth import auth_bp
     app.register_blueprint(auth_bp)
 

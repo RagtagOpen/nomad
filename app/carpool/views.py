@@ -43,7 +43,7 @@ def index():
 @pool_bp.route('/carpools/find')
 def find():
     query = request.args.get('q', '').strip().replace("'", '')
-    
+
     try:
         lat = request.args.get('lat', type=float)
         lon = request.args.get('lon', type=float)
@@ -195,12 +195,21 @@ def new():
 
     driver_form = DriverForm()
 
-    visible_destinations = Destination.find_all_visible().all()
+    desired_destination_id = request.args.get('destination_id')
+    if desired_destination_id:
+        desired_destination = Destination.find_all_visible().filter_by(uuid=desired_destination_id).first()
+        if not desired_destination:
+            desired_destination_id = None
 
+    visible_destinations = Destination.find_all_visible().all()
     driver_form.destination.choices = [
         (str(r.uuid), r.name) for r in visible_destinations
     ]
-    driver_form.destination.choices.insert(0, ('', "Select one..."))
+
+    if desired_destination_id:
+        driver_form.destination.data = desired_destination_id
+    else:
+        driver_form.destination.choices.insert(0, ('', "Select one..."))
 
     if driver_form.validate_on_submit():
         dest = Destination.first_by_uuid(driver_form.destination.data)

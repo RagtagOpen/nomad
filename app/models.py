@@ -257,6 +257,10 @@ class Destination(db.Model, UuidMixin):
     def find_all_visible(cls):
         return cls.query.filter(cls.hidden == False).order_by(cls.name)
 
+    @property
+    def future_carpools(self):
+        return Carpool.query.filter_by(destination_id=self.id).filter(Carpool.leave_time > db.func.now())
+
     def as_geojson(self):
         """ Returns a GeoJSON Feature object for this Destination. """
         return {
