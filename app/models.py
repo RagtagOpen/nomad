@@ -220,7 +220,6 @@ class Destination(db.Model, UuidMixin):
     hidden = db.Column(db.Boolean(), default=False)
     point = db.Column(Geometry('POINT'))
     name = db.Column(db.String(80))
-    slug = db.Column(db.String(80), index=True)
     address = db.Column(db.String(300))
 
     carpools = relationship("Carpool", cascade="all, delete-orphan")
@@ -228,15 +227,6 @@ class Destination(db.Model, UuidMixin):
     @classmethod
     def find_all_visible(cls):
         return cls.query.filter(cls.hidden == False).order_by(cls.name)
-
-    @classmethod
-    def find_by_slug(cls, slug, include_hidden=False):
-        q = cls.query
-
-        if not include_hidden:
-            q = q.filter_by(hidden=False)
-
-        return q.filter_by(slug=slug).first()
 
     @property
     def future_carpools(self):
