@@ -6,12 +6,9 @@ from flask import (
 )
 
 
-@dest_bp.route('/destinations/<slug>')
-def page(slug):
-    destination = Destination.find_by_slug(slug)
-
-    if not destination:
-        destination = Destination.first_by_uuid(slug)
+@dest_bp.route('/destinations/<uuid>')
+def page(uuid):
+    destination = Destination.first_by_uuid(uuid)
 
     if not destination:
         abort(404)
