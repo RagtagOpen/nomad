@@ -262,14 +262,19 @@ function mapDataCallback(features) {
         map.data.setStyle(function(feature) {
             if (feature.getProperty('is_approximate_location')) {
                 var geo = feature.getGeometry();
-                feature.circle =  new google.maps.Circle({
+                const circle = new google.maps.Circle({
                     map: map,
                     center: geo.get(),
                     radius: 1800,
                     fillColor: '#3090C7',
                     fillOpacity: 0.5,
-                    strokeWeight: 0
+                    strokeWeight: 0,
+                    url: feature.getId(),
                 });
+                circle.addListener('click', function() {
+                    window.location.href = this.url;
+                });
+                feature.circle = circle;
                 return { visible: false };
             } else {
                 return {
