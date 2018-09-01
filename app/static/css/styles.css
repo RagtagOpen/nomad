@@ -138,7 +138,7 @@ select:focus {
 .logo {
 	width: 143px;
 	height: 50px;
-	background: url("../img/logo-default.png") center / contain no-repeat;
+	background: url("../img/logo_ragtag.png") center / contain no-repeat;
 }
 .locationQuery {
 	min-width: 300px;

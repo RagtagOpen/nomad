@@ -1,0 +1,5 @@
+.logo {
+    width: 143px;
+    height: 50px;
+    background: url('../img/logo-demo.png') center / contain no-repeat;
+}
