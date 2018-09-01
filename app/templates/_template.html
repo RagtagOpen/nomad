@@ -42,12 +42,20 @@ $(function() {
 function initMap() {
   const fromOptions = {
     types: ['(regions)'],
-    componentRestrictions: {country: 'us'}
+    componentRestrictions: {country: 'us'},
   };
   $('.location-input').each(function (idx, el) {
     const fromAutocomplete = new google.maps.places.Autocomplete(el, fromOptions);
     fromAutocomplete.addListener('place_changed', function() {
-      const loc = fromAutocomplete.getPlace().geometry.location;
+      const place = fromAutocomplete.getPlace().geometry;
+
+      if (!place) {  // autocomplete did not geocode user text; clear coords
+        $('.ride-form input[name="lat"]').val();
+        $('.ride-form input[name="lng"]').val();
+        return;
+      }
+
+      const loc = place.location;
       if (location.href.indexOf($('#ride-select-form').attr('action')) >= 0) {
         // if on find page already, re-order and re-zoom
         setLatLng(loc.lat(), loc.lng());

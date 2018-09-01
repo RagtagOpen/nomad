@@ -53,9 +53,32 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
     // don't reload page; just update sort and map
     $('.ride-form').submit(function (ev) {
         ev.preventDefault();
+        const input = $('.ride-form .location-input');
+
+        if (!input) {
+            return;  // no user input; don't search
+        }
+
+        const latStr = $('.ride-form input[name="lat"]').val();
+        const lonStr = $('.ride-form input[name="lon"]').val();
+        if (!latStr || !lonStr) {
+            // no result: geocode the first suggestion if there is one
+            let query = '';
+            if ($('.pac-container .pac-item:first').length) {
+                $('.pac-container .pac-item:first').children().each(function () {
+                    query += $(this).text() + ' ';
+                });
+            } else {
+                // otherwise geocode user input
+                query = input.text().trim();
+            }
+            userQuery = query;
+            return geocode(query);
+        }
+
         try {
-            const lat = parseFloat($('.ride-form input[name="lat"]').val());
-            const lng = parseFloat($('.ride-form input[name="lon"]').val());
+            const lat = parseFloat(latStr);
+            const lng = parseFloat(lonStr);
             setLatLng(lat, lng);
             sortDOMResults();
         } catch (e) {
@@ -66,8 +89,8 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
 
 function geoSuccess(position) {
     // zoom to user position if/when they allow location access
-    console.log('event: browser geolocation');
     const coords = position.coords;
+    console.log('event: browser geolocation', coords);
     nearLatLon.lat = coords.latitude;
     nearLatLon.lng = coords.longitude;
     zoomMap();
@@ -87,7 +110,7 @@ function doSearch() {
 function geocode(address) {
     // get from localStorage cache if geocoded within 30d (Google limit)
     const cache = JSON.parse(localStorage.getItem('geocode') || '{}');
-    const q = address.toLowerCase();
+    const q = address.toLowerCase().trim();
     // geocode = {"query": {"ts": 1534038439340, "lat": -97.328, "lng": 38.518}}
     const ts = cache[q] ? cache[q].ts : 0;
     const age = (new Date()).getTime() - ts;
@@ -144,16 +167,17 @@ function sortDOMResults() {
 }
 
 function geocodeResults(results, status) {
-    console.log('event: geocode');
     // got lat/lng for user query
     if (status == 'OK') {
         const location = results[0].geometry.location;
-        setLatLng(location.lat(), nearLatLon.lng);
+        console.log('event: geocode result=', results[0], location.lat(), location.lng());
+        setLatLng(location.lat(), location.lng());
         sortDOMResults();
 
         // save geocoding results
         const cache = JSON.parse(localStorage.getItem('geocode') || '{}');
-        cache[userQuery.toLowerCase()] = {
+        const key = userQuery.toLowerCase().trim();
+        cache[key] = {
             ts: (new Date().getTime()),
             lat: location.lat(),
             lng: location.lng()
@@ -198,6 +222,7 @@ function sortFeaturesByProperty(features, prop) {
 function zoomMap() {
     let features = [];
     if (nearLatLon.lat) {
+        console.log('zooming to nearLatLon', nearLatLon);
         // if nearLatLon, zoom to nearLatLon +- 100km or minimum 3 closest features
         features = carpoolFeatures.slice(0, 3);
         carpoolFeatures.slice(3).forEach(function(feature) {
@@ -224,6 +249,10 @@ function zoomMap() {
         const geo = feature.getGeometry().get();
         bounds.extend(new google.maps.LatLng(geo.lat(), geo.lng()));
     });
+    if (nearLatLon.lat) {
+        // include search location
+        bounds.extend(new google.maps.LatLng(nearLatLon.lat, nearLatLon.lng));
+    }
     map.fitBounds(bounds);
 }
 
