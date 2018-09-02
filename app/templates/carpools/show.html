@@ -17,7 +17,6 @@
 
         <div class="form-page">
 
-            <h2>Carpool: {{ pool.from_place }} to {{ pool.destination.name }}</h2>
             <h4>{{ pool.leave_time | humanize }}</h4>
 
 	          {% if not pool.future %}
@@ -25,10 +24,9 @@
             {%- endif %}
 
         {% set current_user_ride_request = current_user.get_ride_request_in_carpool(pool) %}
+        {% set show_request_cancel_buttons = False %}
 
         {% if pool.future or current_user_ride_request.status == 'approved' or current_user.is_driver(pool) %}
-            <h4>Carpool Status</h4>
-
             {% if current_user_ride_request and current_user_ride_request.status == 'approved'  %}
 
             <div class="two-col-layout">
@@ -129,9 +127,9 @@
             </div>
             {% endif %}
         {% else %}
-
+            {% set show_request_cancel_buttons = True %}
             <div class="two-col-layout">
-                <div class="two-col-column">
+                <div class="two-col-column seats-available">
                     <p>
                     {%- if pool.seats_available > 1 %}
                         There are {{ pool.seats_available }} seats available in this carpool.
@@ -159,14 +157,12 @@
 
             <div class="two-col-layout first-child top-border">
                 <div class="two-col-column">
-                    <h4>Departs</h4>
-                    <p>{{ pool.leave_time | humanize }}</p>
+                    <h4>Departure Point</h4>
+                    <p><a href="https://maps.google.com/?q={{ pool.from_lat_lng | urlencode }}" target="_blank">{{ pool.from_place }}</a></p>
                     <h4>Returns</h4>
                     <p>{{ pool.return_time | humanize }}</p>
                 </div>
                 <div class="two-col-column">
-                    <h4>Departure Point</h4>
-                    <p><a href="https://maps.google.com/?q={{ pool.from_lat_lng | urlencode }}" target="_blank">{{ pool.from_place }}</a></p>
                     <h4>Destination</h4>
                     <p>{{ pool.destination.name }}</p>
                     {% if current_user.is_driver(pool) or (current_user_ride_request and current_user_ride_request.status == 'approved') %}
@@ -187,16 +183,32 @@
                     {% endif %}
                 </div>
                 {% endif %}
+                {% if pool.notes %}
                 <div class="two-col-column">
                     <h4>Additional notes</h4>
-                    <p>{{ pool.notes or "(None supplied)"}}</p>
+                    <p>{{ pool.notes }}</p>
                 </div>
+                {% endif %}
                 <div class="two-col-column">
                     <h4>Link to this carpool</h4>
                     <p><a href="{{ request.url }}">{{ request.url }}</a></p>
                 </div>
             </div>
 
+            {% if show_request_cancel_buttons %}
+            <div class="two-col-layout buttons-bottom">
+                <div class="two-col-column">
+                    {%- if pool.seats_available > 0 %}
+                        <a class="btn btn-primary" href="{{ url_for('carpool.new_rider', carpool_uuid=pool.uuid) }}">Request a seat in carpool</a>
+                    {%- else %}
+                        <a class="btn disabled">No seats available</a>
+                    {%- endif %}
+                    {% if current_user.has_roles('admin') %}
+                        <a class="btn btn-danger" href="{{ url_for('admin.admin_cancel_carpool', uuid=pool.uuid) }}">Cancel this carpool</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 
