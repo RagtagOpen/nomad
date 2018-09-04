@@ -9,7 +9,7 @@ from . import login_person
 
 def register_for_carpool(testapp, carpool_uuid):
     carpool_page = testapp.get('/carpools/{}'.format(carpool_uuid))
-    confirmation_page = carpool_page.click("Request a seat in carpool")
+    confirmation_page = carpool_page.click("Request a seat in carpool", index=0)
     return confirmation_page.forms['join-carpool-form'].submit("Request A Seat").follow()
 
 
