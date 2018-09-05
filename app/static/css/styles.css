@@ -597,6 +597,16 @@ pre.text {
 .carpool-detail .notes {
 	font-style: italic;
 }
+
+.carpool-detail .buttons-bottom {
+	margin-top: 30px;
+}
+
+.carpool-detail .seats-available {
+	margin-top: auto;
+	margin-bottom: auto;
+}
+
 /* MEDIA QUERIES */
 
 @media screen and (max-width:1200px) {
