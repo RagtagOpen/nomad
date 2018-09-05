@@ -174,6 +174,8 @@ class Carpool(db.Model, UuidMixin):
     vehicle_description = db.Column(db.Text)
     driver_id = db.Column(db.Integer, db.ForeignKey('people.id'))
     destination_id = db.Column(db.Integer, db.ForeignKey('destinations.id'))
+    canceled = db.Column(db.Boolean, default=False)
+    cancel_reason = db.Column(db.String, nullable=True)
 
     ride_requests = relationship("RideRequest", cascade="all, delete-orphan")
     destination = relationship("Destination")

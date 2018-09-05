@@ -71,7 +71,7 @@ def approximate_location(geometry):
 
 @pool_bp.route('/carpools/starts.geojson')
 def start_geojson():
-    pools = Carpool.query
+    pools = Carpool.query.filter(Carpool.canceled == False)
 
     if request.args.get('ignore_prior') != 'false':
         pools = pools.filter(Carpool.leave_time >= datetime.datetime.utcnow())
@@ -257,6 +257,10 @@ def details(uuid):
 def edit(uuid):
     carpool = Carpool.uuid_or_404(uuid)
 
+    if carpool.canceled:
+        flash("This carpool has been canceled and can no longer be edited.", 'error')
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
+
     if current_user != carpool.driver:
         flash("You cannot edit a carpool you didn't create.", 'error')
         return redirect(url_for('carpool.details', uuid=carpool.uuid))
@@ -318,6 +322,10 @@ def edit(uuid):
 def new_rider(carpool_uuid):
     carpool = Carpool.uuid_or_404(carpool_uuid)
 
+    if carpool.canceled:
+        flash("This carpool has been canceled and can no longer be edited.", 'error')
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
+
     if current_user.is_driver(carpool):
         flash("You can't request a ride on a carpool you're driving in", 'error')
         return redirect(url_for('carpool.details', uuid=carpool.uuid))
@@ -364,6 +372,11 @@ def new_rider(carpool_uuid):
 @login_required
 def modify_ride_request(carpool_uuid, request_uuid, action):
     carpool = Carpool.uuid_or_404(carpool_uuid)
+
+    if carpool.canceled:
+        flash("This carpool has been canceled and can no longer be edited.", 'error')
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
+
     request = RideRequest.uuid_or_404(request_uuid)
 
     user_is_driver = (current_user.id == carpool.driver_id)
@@ -477,13 +490,17 @@ def cancel(uuid):
         flash("You cannot cancel a carpool you didn't create", 'error')
         return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
+    if carpool.canceled:
+        flash("This carpool has been canceled and can no longer be edited.", 'error')
+        return redirect(url_for('carpool.details', uuid=carpool.uuid))
+
     cancel_form = CancelCarpoolDriverForm()
     if cancel_form.validate_on_submit():
         if cancel_form.submit.data:
 
             cancel_carpool(carpool, cancel_form.reason.data)
 
-            flash("Your carpool was cancelled", 'success')
+            flash("Your carpool was canceled", 'success')
 
             return redirect(url_for('carpool.mine'))
         else:
@@ -494,7 +511,9 @@ def cancel(uuid):
 
 def cancel_carpool(carpool, reason=None, notify_driver=False):
     _email_carpool_cancelled(carpool, reason, notify_driver)
-    db.session.delete(carpool)
+    carpool.canceled = True
+    carpool.cancel_reason = reason
+    db.session.add(carpool)
     db.session.commit()
 
 
