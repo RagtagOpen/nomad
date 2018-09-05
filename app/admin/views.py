@@ -263,6 +263,7 @@ def carpool_list_csv():
                      'leave time', 'return time',
                      'driver name', 'drive email',
                      'max riders', 'ride requests', 'approved riders',
+                     'status', 'reason for cancellation'
                      ])
 
     query = '''
@@ -273,6 +274,8 @@ def carpool_list_csv():
                cp.return_time as return_time,
                dp.name as driver_name, dp.email as driver_email,
                cp.max_riders as max_riders,
+               cp.canceled as canceled,
+               cp.cancel_reason as cancel_reason,
                (select count(*) from riders where carpool_id=cp.id) as request_count,
                (select count(*) from riders where carpool_id=cp.id and status='approved') as approved_count
         from carpools cp
@@ -293,6 +296,8 @@ def carpool_list_csv():
             row.max_riders,
             row.request_count,
             row.approved_count,
+            "Canceled" if row.canceled else 'Active',
+            row.cancel_reason,
         ])
 
     return Response(
