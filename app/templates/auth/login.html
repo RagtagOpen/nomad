@@ -6,15 +6,7 @@
 <div class="content">
 
     <div class="fullscreen">
-        {%- with messages = get_flashed_messages(with_categories=True) %}
-        {%- if messages %}
-        <div class="error-messages">
-            {% for cat, msg in messages %}
-            <div class="message {{ cat }}">{{ msg }}</div>
-            {% endfor %}
-        </div>
-        {%- endif %}
-        {%- endwith %}
+        {% include '_flash_messages.html' %}
         <div class="interstitial-page">
             <h1>Log in to continue</h1>
             <p>Please verify your identity by logging in using one of the services below. We use your login to confirm your identity, and verify your email address. For more info, check out our <a href="{{ config.get('BRANDING_PRIVACY_URL') }}">privacy policy</a>.</p>

@@ -21,6 +21,7 @@
             <th>Max Riders</th>
             <th>All requests (pending and approved)</th>
             <th>Approved Riders</th>
+            <th>Status</th>
             <th>Carpool Details Link</th>
         </tr>
     </thead>
@@ -36,6 +37,7 @@
             <td>{{ carpool.max_riders }}</td>
             <td>{{ carpool.riders_and_potential_riders|length }}</td>
             <td>{{ carpool.riders|length }}</td>
+            <td>{% if carpool.canceled %}Canceled{% else %}Active{% endif %}</td>
             <td><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">Details</a></td>
         </tr>
 {% endfor %}

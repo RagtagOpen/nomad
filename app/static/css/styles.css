@@ -568,14 +568,20 @@ select:focus {
 	display: inline-block;
 	margin-left: 12px;
 }
-.my-rides .carpools {
-	margin-bottom: 30px;
-}
 .my-rides .carpools .buttons {
 	margin: 15px 0 15px 0;
 }
 .my-rides .carpools.past h3, .my-rides .carpools.past h4 {
 	color: #666;
+}
+.my-rides .carpool {
+	border-bottom: 1px solid #999999;
+	margin-bottom: 20px;
+	padding-bottom: 20px;
+}
+.my-rides .carpool:last-of-type {
+	border-bottom: none;
+	margin-bottom: 20px;
 }
 .my-rides .carpool h2 {
 	font: 700 16px/150%;

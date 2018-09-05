@@ -11,15 +11,7 @@
     </h4>
     <h1>{{ user.name or 'Unnamed User' }}</h1>
 
-{%- with messages = get_flashed_messages(with_categories=True) %}
-{%- if messages %}
-<div class="error-messages">
-    {% for cat, msg in messages %}
-    <div class="message {{ cat }}">{{ msg }}</div>
-    {% endfor %}
-</div>
-{%- endif %}
-{%- endwith %}
+    {% include '_flash_messages.html' %}
 
 <dl class="dl-horizontal">
     <dt>Created At</dt>

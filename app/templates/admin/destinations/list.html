@@ -4,6 +4,7 @@
 {% block site %}
 <div class="content">
     <div class="fullscreen">
+    {% include '_flash_messages.html' %}
     <h4><a href="{{ url_for('admin.admin_index') }}">Admin</a>&nbsp;&raquo;&nbsp;
         Destinations
     </h4>

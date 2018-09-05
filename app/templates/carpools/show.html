@@ -5,15 +5,7 @@
 <div class="content carpool-detail">
 
     <div class="fullscreen">
-        {%- with messages = get_flashed_messages(with_categories=True) %}
-        {%- if messages %}
-        <div class="error-messages">
-            {% for cat, msg in messages %}
-            <div class="message {{ cat }}">{{ msg }}</div>
-            {% endfor %}
-        </div>
-        {%- endif %}
-        {%- endwith %}
+        {% include '_flash_messages.html' %}
 
         <div class="form-page">
 
@@ -23,10 +15,17 @@
                 <h3>This carpool has left!</h3>
             {%- endif %}
 
+	          {% if pool.canceled %}
+                <p class="message error">This carpool has been canceled!</p>
+                {% if pool.cancel_reason %}
+                    <p>Reason for cancellation: {{ pool.cancel_reason }}</p>
+                {%- endif %}
+            {%- endif %}
+
         {% set current_user_ride_request = current_user.get_ride_request_in_carpool(pool) %}
         {% set show_request_cancel_buttons = False %}
 
-        {% if pool.future or current_user_ride_request.status == 'approved' or current_user.is_driver(pool) %}
+        {% if (pool.future and not pool.canceled) or current_user_ride_request.status == 'approved' or current_user.is_driver(pool) %}
             {% if current_user_ride_request and current_user_ride_request.status == 'approved'  %}
 
             <div class="two-col-layout">
@@ -74,10 +73,12 @@
                         </p>
                         {% endif %}
                 </div>
+                {% if not pool.canceled %}
                 <div class="two-col-column">
                     <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
                     <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel this carpool</a>
                 </div>
+                {% endif %}
             </div>
 
             {% if pool.get_ride_requests_query().count() %}
