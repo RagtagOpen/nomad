@@ -140,10 +140,8 @@ select:focus {
 	height: 50px;
 	background: url("../img/logo_ragtag.png") center / contain no-repeat;
 }
-.locationQuery {
-	min-width: 300px;
-	background: white url("../img/ic_search_24px.svg") 7px center no-repeat;
-	text-indent: 25px;
+#locationQuery {
+	min-width: 200px;
 }
 .navbar {
     margin-bottom: 0;
@@ -159,6 +157,17 @@ select:focus {
 .navbar-nav li a {
 	line-height: 30px;
 }
+.navbar-form #locationQuery {
+	font-size: 16px;
+	height: 39px;
+	margin-right: 0;
+}
+.navbar-form button {
+	border-radius: 5px;
+	font-size: 18px;
+	padding: 5px 10px;
+}
+
 /** The logout button in the nav is a <button> made to look like a <a> tag **/
 .btn-logout {
     background-color: transparent;
