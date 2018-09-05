@@ -60,16 +60,7 @@ function initMap() {
 {% block site %}
 <div class="content">
     <div class="fullscreen">
-
-{%- with messages = get_flashed_messages(with_categories=True) %}
-{%- if messages %}
-<div class="error-messages">
-    {% for cat, msg in messages %}
-    <div class="message {{ cat }}">{{ msg }}</div>
-    {% endfor %}
-</div>
-{%- endif %}
-{%- endwith %}
+      {% include '_flash_messages.html' %}
 
     <h4><a href="{{ url_for('admin.admin_index') }}">Admin</a>&nbsp;&raquo;&nbsp;
         <a href="{{ url_for('admin.destinations_list') }}">Destinations</a>&nbsp;&raquo;&nbsp;
