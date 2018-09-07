@@ -9,9 +9,9 @@ events {
 }
 
 http {
-        gzip on;
-        gzip_comp_level 2;
-        gzip_min_length 512;
+  gzip on;
+  gzip_comp_level 2;
+  gzip_min_length 512;
 
 	server_tokens off;
 
@@ -30,6 +30,8 @@ http {
 		server unix:/tmp/nginx.socket fail_timeout=0;
  	}
 
+	limit_req_zone $binary_remote_addr zone=apilimit:10m rate=5r/m burst=20 nodelay;
+
 	server {
 		listen <%= ENV["PORT"] %>;
 		server_name _;
@@ -41,6 +43,13 @@ http {
 			proxy_redirect off;
 			proxy_pass http://app_server;
 		}
+
+		location /carpools/starts.geojson {
+			limit_req = apilimit;
+			proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+			proxy_set_header Host $http_host;
+			proxy_redirect off;
+			proxy_pass http://app_server;
+		}
 	}
 }
-
