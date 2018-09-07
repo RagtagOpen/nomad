@@ -20,6 +20,7 @@
             <th>Name</th>
             <th>Address</th>
             <th>Hidden?</th>
+            <th>URL</th>
         </tr>
     </thead>
     <tbody id='search-results'>
@@ -28,6 +29,7 @@
             <td><a href="{{ url_for('admin.destinations_show', uuid=dest.uuid) }}">{{ dest.name }}</a></td>
             <td>{{ dest.address }}</td>
             <td>{{ dest.hidden }}</td>
+            <td><a href="{{ url_for('destination.page', uuid=dest.uuid) }}">{{ request.host_url[0:-1]  + url_for('destination.page', uuid=dest.uuid) }}</a></td>
         </tr>
 {% endfor %}
     </tbody>
