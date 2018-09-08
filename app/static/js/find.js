@@ -50,7 +50,7 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
         geocode(userQuery);
     } else {
         // no location available = no results
-        showNoResults();
+        showNoQuery();
     }
     // don't reload page; just update sort and map
     $('.ride-form').submit(function (ev) {
@@ -228,9 +228,15 @@ function zoomMap() {
     map.fitBounds(bounds);
 }
 
-function showNoResults() {
+function showNoQuery() {
     $('#search-results').append('<div class="result">' +
-        '<h3>No carpools nearby</h3>' +
+        '<h3>Please enter a location to find a nearby ride.</h3>' +
+        '</div>');
+}
+
+function showNoResults(text) {
+    $('#search-results').append('<div class="result">' +
+        '<h3>No carpools nearby.</h3>' +
         '<p>Will you consider <a href="' + newCarpoolUrl + '">starting one</a>?</p>' +
         '</div>');
 }

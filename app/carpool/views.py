@@ -82,24 +82,14 @@ def start_geojson():
     except ValueError:
         abort(400, "Invalid lat/lon format")
 
-    try:
-        near_radius = request.args.get('near.radius', type=int)
-    except ValueError:
-        abort(400, "Invalid radius format")
+    max_distance = 80467  # 50 miles in meters
+    search_point = 'POINT(%s %s)' % (near_lon, near_lat)
 
-    if near_lat and near_lon:
-        center = from_shape(Point(near_lon, near_lat), srid=4326)
-
-        if near_radius:
-            # We're going to say that radius is in meters.
-            # The conversion factor here is based on a 40deg latitude
-            # (roughly around Virginia)
-            radius_degrees = near_radius / 111034.61
-            pools = pools.filter(
-                func.ST_Distance(Carpool.from_point, center) <= radius_degrees
-            )
-
-        pools = pools.order_by(func.ST_Distance(Carpool.from_point, center))
+    # ST_DistanceSphere returns minimum distance in meters between two lon/lat geometries
+    pools = pools.filter(
+        func.ST_DistanceSphere(Carpool.from_point, search_point) <= max_distance
+    )
+    pools = pools.order_by(func.ST_DistanceSphere(Carpool.from_point, search_point))
 
     riders = db.session.query(RideRequest.carpool_id,
                               func.count(RideRequest.id).label('pax')).\
@@ -108,6 +98,8 @@ def start_geojson():
         subquery('riders')
 
     pools = pools.filter(Carpool.from_point.isnot(None)).\
+        filter(Carpool.destination_id == Destination.id).\
+        filter(Destination.hidden.isnot(True)).\
         outerjoin(riders, Carpool.id == riders.c.carpool_id).\
         filter(riders.c.pax.is_(None) | (riders.c.pax < Carpool.max_riders))
 
@@ -121,11 +113,10 @@ def start_geojson():
             filter(RideRequest.person_id == current_user.id)
         for ride in rides:
             confirmed_carpools.append(ride.carpool_id)
+    else:
+        pools = pools.limit(3)
 
     for pool in pools:
-        if (pool.from_point is None) or pool.destination.hidden:
-            continue
-
         # show real location to driver and confirmed passenger
         geometry = mapping(to_shape(pool.from_point))
         if not current_user.is_anonymous and \
