@@ -599,6 +599,11 @@ pre.text {
 }
 
 /* CARPOOL DETAIL */
+.carpool-error {
+	margin-top: 20px;
+}
+
+/* CARPOOL DETAIL */
 .carpool-detail .with-buttons {
 	margin-top: auto;
 	margin-botton: auto;

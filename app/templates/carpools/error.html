@@ -1,0 +1,16 @@
+{%- extends "_template.html" %}
+
+{% block site %}
+<div class="content carpool-error">
+
+    <div class="fullscreen">
+        {% include '_flash_messages.html' %}
+        <div class="alert alert-danger">
+            Sorry, you can be in at most ten carpools.
+            Please try again after some of your carpools have finished.
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

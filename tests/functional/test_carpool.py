@@ -1,16 +1,23 @@
 import urllib
 from datetime import date, datetime, timedelta
+from dateutil import tz
 from http import HTTPStatus
 
 from freezegun import freeze_time
 
+from app.models import PersonRole
 from . import login_person
-
+from ..factories import CarpoolFactory, RideRequestFactory, RoleFactory
 
 def register_for_carpool(testapp, carpool_uuid):
     carpool_page = testapp.get('/carpools/{}'.format(carpool_uuid))
     confirmation_page = carpool_page.click("Request a seat in carpool", index=0)
     return confirmation_page.forms['join-carpool-form'].submit("Request A Seat").follow()
+
+
+def request_carpool_seat(testapp, carpool_uuid):
+    carpool_page = testapp.get('/carpools/{}'.format(carpool_uuid))
+    return carpool_page.click("Request a seat in carpool", index=0)
 
 
 def create_carpool_for_tomorrow(testapp, destination):
@@ -81,3 +88,47 @@ class TestCarpool:
             future_carpools = my_page.html.find(
                 "div", {"class": "carpools future"})
             assert destination.name not in future_carpools.text
+
+    def test_ride_limit(self, testapp, db, full_person):
+        # create 13 future active carpools
+        carpools = []
+        now = datetime.now().replace(tzinfo=tz.gettz('UTC'))
+        leave_time = now + timedelta(days=1)
+        for _ in range(13):
+            return_time = leave_time + timedelta(days=1)
+            carpools.append(CarpoolFactory(leave_time=leave_time, return_time=return_time))
+            leave_time = leave_time + timedelta(days=1)
+        # create ride requests for carpools 0-9
+        for i in range(10):
+            RideRequestFactory(person=full_person, carpool=carpools[i])
+
+        error_msg = 'Sorry, you can be in at most ten carpools.'
+        confirm_msg = 'Confirm your details'
+
+        # 10 ride requests: request a ride as regular user returns error
+        login_person(testapp, full_person)
+        result = request_carpool_seat(testapp, carpools[10].uuid)
+        assert error_msg in result
+
+        # cancel carpool 0
+        carpools[0].canceled = True
+        db.session.add(carpools[0])
+        db.session.commit()
+        # now 9 ride requests: request a ride ok
+        result = request_carpool_seat(testapp, carpools[10].uuid)
+        assert confirm_msg in result
+
+        # set carpool date to past
+        carpools[1].leave_time = datetime.now() - timedelta(days=1)
+        db.session.add(carpools[1])
+        db.session.commit()
+        # now 9 ride requests: request ride ok
+        result = request_carpool_seat(testapp, carpools[11].uuid)
+        assert confirm_msg in result
+
+        # now 10 ride requests: request a ride as admin ok
+        admin_role = RoleFactory(name='admin')
+        db.session.add(PersonRole(person_id=full_person.id, role_id=admin_role.id))
+        db.session.commit()
+        result = request_carpool_seat(testapp, carpools[12].uuid)
+        assert confirm_msg in result
