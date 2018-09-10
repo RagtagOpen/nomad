@@ -345,6 +345,10 @@ def new_rider(carpool_uuid):
             filter(Carpool.canceled.is_(False)).\
             filter(Carpool.leave_time > now)
         if pending.count() >= 10:
+            flash('''
+                Sorry, you can be in at most ten carpools.
+                Please try again after some of your carpools have finished.
+            ''', 'error')
             return render_template('carpools/error.html')
 
 
