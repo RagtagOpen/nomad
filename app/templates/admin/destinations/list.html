@@ -29,7 +29,7 @@
             <td><a href="{{ url_for('admin.destinations_show', uuid=dest.uuid) }}">{{ dest.name }}</a></td>
             <td>{{ dest.address }}</td>
             <td>{{ dest.hidden }}</td>
-            <td><a href="{{ url_for('destination.page', uuid=dest.uuid) }}">{{ request.host_url[0:-1]  + url_for('destination.page', uuid=dest.uuid) }}</a></td>
+            <td><a href="{{ url_for('destination.page', uuid=dest.uuid) }}">{{ url_for('destination.page', uuid=dest.uuid, _external=True) }}</a></td>
         </tr>
 {% endfor %}
     </tbody>
