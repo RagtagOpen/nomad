@@ -101,8 +101,11 @@ class GoogleSignIn(OAuthSignIn):
         )
         me = oauth_session.get('').json()
 
-        if 'sub' not in me:
+        # If the dict is not well-formed, we either error or form it properly.
+        if 'sub' not in me or 'email' not in me:
             raise ValueError("Error with OAuth callback: {}".format(me))
+        if 'name' not in me:
+            me['name'] = ''
 
         return (
             'google$' + me['sub'],
