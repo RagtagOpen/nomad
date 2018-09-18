@@ -340,11 +340,14 @@ def new_rider(carpool_uuid):
     if not current_user.has_roles('admin'):
         now = datetime.datetime.now().replace(tzinfo=tz.gettz('UTC'))
         # ride requests in future, active carpools
-        pending = current_user.get_ride_requests_query().\
+        pending_req = current_user.get_ride_requests_query().\
             filter(RideRequest.carpool_id == Carpool.id).\
             filter(Carpool.canceled.is_(False)).\
             filter(Carpool.leave_time > now)
-        if pending.count() >= 10:
+        driving = current_user.get_driving_carpools().\
+            filter(Carpool.canceled.is_(False)).\
+            filter(Carpool.leave_time > now)
+        if pending_req.count() + driving.count() >= 10:
             flash('''
                 Sorry, you can be in at most ten carpools.
                 Please try again after some of your carpools have finished.
