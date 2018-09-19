@@ -1,0 +1,9 @@
+addReviewers: true
+addAssignees: false
+reviewers:
+  - iandees
+  - jillh510
+  - dryan
+skipKeywords:
+  - wip
+
