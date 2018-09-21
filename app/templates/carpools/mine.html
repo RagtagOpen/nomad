@@ -17,94 +17,89 @@
                         <a class="btn btn-primary" href="{{ url_for('carpool.new') }}">Give a ride</a>
                     </div>
                 </div>
-{% for pool in carpools['future'] %}
-                <div class="carpool">
-                    <h2>{{ pool.leave_time | humanize }}</h2>
-                    <h3>
-                        <a href="{{ url_for('carpool.details', uuid=pool.uuid) }}">{{ pool.from_place }} to {{ pool.destination.name }}</a>
-                    </h3>
+                {% for pool in carpools['future'] %}
+                    <div class="carpool">
+                        <h2>{{ pool.leave_time | humanize }}</h2>
+                        <h3>
+                            <a href="{{ url_for('carpool.details', uuid=pool.uuid) }}">{{ pool.from_place }} to {{ pool.destination.name }}</a>
+                        </h3>
 
-                {% if pool.canceled %}
-                    <p class="message error">This carpool has been canceled.</p>
-                    {% if pool.cancel_reason %}
-                      <p>Reason for cancellation: {{ pool.cancel_reason }}</p>
-                    {%- endif %}
-                {% endif %}
-
-                {% set current_user_ride_request = current_user.get_ride_request_in_carpool(pool) %}
-                {% if current_user_ride_request %}
-                    {% if current_user_ride_request.status == 'approved'  %}
-                    <p class="message success">You’re confirmed for this carpool. Have a good trip!</p>
-
-                    {% elif current_user_ride_request.status == 'cancelled'  %}
-                    <p class="message error">This carpool was cancelled by the driver. <a href="{{ url_for('carpool.find') }}">Try looking for another ride!</a></p>
-
-                    {% elif current_user_ride_request.status == 'requested' %}
-                    <p class="message pending">Your ride request is pending. We’re waiting for your driver to confirm.</p>
-
-                    {% endif %}
-                {% else %}
-                    {% if current_user.is_driver(pool) %}
-                    <div class="buttons">
-                        <a class="btn btn-primary" href="{{ url_for('carpool.details', uuid=pool.uuid) }}">View details</a>
-                        {% if not pool.canceled %}
-                            <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
-                            <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
-                        {% endif %}
-                    </div>
-                    <p class="message success">You’re the driver of this carpool. Thanks for driving!</p>
-
-                    {% endif %}
-                {%- endif %}
-
-                    <div class="two-col-layout first-child ">
-                        <div class="two-col-column">
-                            <h4>Departs</h4>
-                            <p>{{ pool.leave_time | humanize }}</p>
-                            <h4>Returns</h4>
-                            <p>{{ pool.return_time | humanize }}</p>
-                        </div>
-                        <div class="two-col-column">
-                            <h4>Departure Point</h4>
-                            <p><a href="https://maps.google.com/?q={{ pool.from_lat_lng | urlencode }}" target="_blank">{{ pool.from_place }}</a></p>
-                            <h4>Destination</h4>
-                            <p>
-                                {{ pool.destination.name }}
-                            {% if current_user.is_driver(pool) or current_user_ride_request and current_user_ride_request.status == 'approved' %}
-                                <br>
-                                <a href="https://maps.google.com/?q={{ pool.destination.address | urlencode }}" target="_blank">{{ pool.destination.address }}</a>
-                            {% endif %}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="two-col-layout">
-                        <div class="two-col-column">
-                            <h4>Carpool Details</h4>
-                            {% if current_user.is_driver(pool) or current_user_ride_request and current_user_ride_request.status == 'approved' %}
-                                <p>Driver: {{ pool.driver.name }} ({{ pool.driver.gender_string() }})</p>
-                                <p>Vehicle: {{ pool.vehicle_description or "(None supplied)" }}</p>
+                        {% if pool.canceled %}
+                            <p class="message error">This carpool has been canceled.</p>
+                            {% if pool.cancel_reason %}
+                                <p>Reason for cancellation: {{ pool.cancel_reason }}</p>
                             {%- endif %}
-                        </div>
-                        <div class="two-col-column">
-                            <h4>Additional notes</h4>
-                            <p>{{ pool.notes or "(None supplied)"}}</p>
-                        </div>
+                        {% else %}
+                            {% set current_user_ride_request = current_user.get_ride_request_in_carpool(pool) %}
+                            {% if current_user_ride_request %}
+                                {% if current_user_ride_request.status == 'approved'  %}
+                                <p class="message success">You’re confirmed for this carpool. Have a good trip!</p>
+
+                                {% elif current_user_ride_request.status == 'cancelled'  %}
+                                <p class="message error">This carpool was cancelled by the driver. <a href="{{ url_for('carpool.find') }}">Try looking for another ride!</a></p>
+
+                                {% elif current_user_ride_request.status == 'requested' %}
+                                <p class="message pending">Your ride request is pending. We’re waiting for your driver to confirm.</p>
+
+                                {% endif %}
+                            {% elif current_user.is_driver(pool) %}
+                                <div class="buttons">
+                                    <a class="btn btn-primary" href="{{ url_for('carpool.details', uuid=pool.uuid) }}">View details</a>
+                                    <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
+                                    <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
+                                </div>
+                                <p class="message success">You’re the driver of this carpool. Thanks for driving!</p>
+                            {%- endif %}
+
+                            <div class="two-col-layout first-child ">
+                                <div class="two-col-column">
+                                    <h4>Departs</h4>
+                                    <p>{{ pool.leave_time | humanize }}</p>
+                                    <h4>Returns</h4>
+                                    <p>{{ pool.return_time | humanize }}</p>
+                                </div>
+                                <div class="two-col-column">
+                                    <h4>Departure Point</h4>
+                                    <p><a href="https://maps.google.com/?q={{ pool.from_lat_lng | urlencode }}" target="_blank">{{ pool.from_place }}</a></p>
+                                    <h4>Destination</h4>
+                                    <p>
+                                        {{ pool.destination.name }}
+                                    {% if current_user.is_driver(pool) or current_user_ride_request and current_user_ride_request.status == 'approved' %}
+                                        <br>
+                                        <a href="https://maps.google.com/?q={{ pool.destination.address | urlencode }}" target="_blank">{{ pool.destination.address }}</a>
+                                    {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="two-col-layout">
+                                <div class="two-col-column">
+                                    <h4>Carpool Details</h4>
+                                    {% if current_user.is_driver(pool) or current_user_ride_request and current_user_ride_request.status == 'approved' %}
+                                        <p>Driver: {{ pool.driver.name }} ({{ pool.driver.gender_string() }})</p>
+                                        <p>Vehicle: {{ pool.vehicle_description or "(None supplied)" }}</p>
+                                    {%- endif %}
+                                </div>
+                                <div class="two-col-column">
+                                    <h4>Additional notes</h4>
+                                    <p>{{ pool.notes or "(None supplied)"}}</p>
+                                </div>
+                            </div>
+                        {%- endif %}
                     </div>
-                </div>
-{% else %}
-                <h3>You have no upcoming carpools!</h3>
-                <p>
-                    <br>
-                    <a class="btn btn-primary" href="{{ url_for('carpool.new') }}">Create a new carpool</a>&nbsp;&nbsp; or &nbsp;&nbsp;<a class="btn btn-primary" href="{{ url_for('carpool.find') }}">Find a carpool to join</a>
-                </p>
-{% endfor %}
+                {% else %}
+                    <h3>You have no upcoming carpools!</h3>
+                    <p>
+                        <br>
+                        <a class="btn btn-primary" href="{{ url_for('carpool.new') }}">Create a new carpool</a>&nbsp;&nbsp; or &nbsp;&nbsp;<a class="btn btn-primary" href="{{ url_for('carpool.find') }}">Find a carpool to join</a>
+                    </p>
+                {% endfor %}
             </div>
             <div class="carpools past">
-{% if carpools['past'] %}
+            {% if carpools['past'] %}
                 <h1>My past rides</h1>
-{% endif %}
-{% for pool in carpools['past'] %}
+            {% endif %}
+            {% for pool in carpools['past'] %}
                 <div class="carpool">
                     <h4>{{ pool.leave_time | humanize }}</h4>
                     <h3>{{ pool.from_place }} to {{ pool.destination.name }}</h3>
@@ -112,7 +107,7 @@
                     <p class="message success">Thanks for driving!</p>
                     {% endif %}
                 </div>
-{% endfor %}
+            {% endfor %}
             </div>
         </div>
     </div>
