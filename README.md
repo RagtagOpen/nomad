@@ -327,3 +327,7 @@ restart app to reload config from `.env`
   - logo on home page, defined in CSS referenced by `BRANDING_CSS_URL`
   - `BRANDING_HEADLINE_1` and `BRANDING_HEADLINE_1` on home page, below "SHARE YOUR RIDE"
   - `BRANDING_PRIVACY_URL` privacy policy links on [login](app/templates/auth/login.html) and [mobile and desktop nav](app/templates/_template.html)
+  
+# Getting access to the repository
+
+If you would like access to the repository either open an issue and ask for access or talk to one of the maintainers in the project's Slack channel.
