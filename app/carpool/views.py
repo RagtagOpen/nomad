@@ -146,7 +146,7 @@ def start_geojson():
                 'seats_available': pool.seats_available,
                 'leave_time': pool.leave_time.isoformat(),
                 'return_time': pool.return_time.isoformat(),
-                'leave_time_human': pool.leave_time_formatted,
+                'leave_time_human': pool.leave_time.strftime(dt_format),
                 'return_time_human': pool.return_time.strftime(dt_format),
                 'driver_gender': escape(pool.driver.gender),
                 'is_approximate_location': is_approximate_location,
