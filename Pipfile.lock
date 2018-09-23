@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "57c76e6cfc0b2b3783bd3cef3e9c6402fb241c16f9e52b89fc1e2476d8d5afbc"
+            "sha256": "48add4b0fed458dbac2c9670de62a06fb6328470147f319607eac78918554da4"
         },
         "pipfile-spec": 6,
         "requires": {},
@@ -107,9 +107,12 @@
             "version": "==2.2.1"
         },
         "flask-rq2": {
-            "editable": true,
-            "git": "https://github.com/mbarrien/Flask-RQ2.git",
-            "ref": "1e97b8a16c9d5120afa5bc3f3719f68cb77c841c"
+            "hashes": [
+                "sha256:83e28f0279828198e64e1ed52a43fd6b530d9192d9944f4dea30e99e5688c9de",
+                "sha256:d513aa8d3b91eda34091ed8e40d55655e3acff6d37d57197417b14839a066185"
+            ],
+            "index": "pypi",
+            "version": "==18.1"
         },
         "flask-sqlalchemy": {
             "hashes": [
@@ -305,9 +308,9 @@
         },
         "sqlalchemy": {
             "hashes": [
-                "sha256:ef6569ad403520ee13e180e1bfd6ed71a0254192a934ec1dbd3dbf48f4aa9524"
+                "sha256:c5951d9ef1d5404ed04bae5a16b60a0779087378928f997a294d1229c6ca4d3e"
             ],
-            "version": "==1.2.11"
+            "version": "==1.2.12"
         },
         "urllib3": {
             "hashes": [
@@ -420,11 +423,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:453cbbbe5ce6db38717d282b758b917de84802af4288910c12442984bde7b823",
-                "sha256:a8a07f84e680482eb51e244370aaf2caa6301ef265f37c2bdefb3dd3b663f99d"
+                "sha256:0a72d8a9f559c006ba153e0c9b4838efd7b656cf1f993747ba7128770d6eb12c",
+                "sha256:95529588ff4e85114a0b0ad8e9cf0131ca47d46b28230e25366c5aba66b1d854"
             ],
             "index": "pypi",
-            "version": "==3.8.0"
+            "version": "==3.8.1"
         },
         "python-dateutil": {
             "hashes": [

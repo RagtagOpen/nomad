@@ -10,7 +10,7 @@ flask-caching = "*"
 flask-login = "*"
 flask-mail = "*"
 flask-migrate = "*"
-"flask-rq2" = {editable = true, ref = "py37-async", git = "https://github.com/mbarrien/Flask-RQ2.git"}
+"flask-rq2" = "~=18.1"
 flask-sqlalchemy = "*"
 flask-sslify = "*"
 flask-wtf = "*"
