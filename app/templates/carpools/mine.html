@@ -21,6 +21,9 @@
                 <div class="carpool">
                     <h2>{{ pool.leave_time | humanize }}</h2>
                     <h3>
+                        {% if pool.canceled %}
+                        Canceled:
+                        {% endif %}
                         <a href="{{ url_for('carpool.details', uuid=pool.uuid) }}">{{ pool.from_place }} to {{ pool.destination.name }}</a>
                     </h3>
 
@@ -29,33 +32,33 @@
                     {% if pool.cancel_reason %}
                       <p>Reason for cancellation: {{ pool.cancel_reason }}</p>
                     {%- endif %}
-                {% endif %}
-
-                {% set current_user_ride_request = current_user.get_ride_request_in_carpool(pool) %}
-                {% if current_user_ride_request %}
-                    {% if current_user_ride_request.status == 'approved'  %}
-                    <p class="message success">You’re confirmed for this carpool. Have a good trip!</p>
-
-                    {% elif current_user_ride_request.status == 'cancelled'  %}
-                    <p class="message error">This carpool was cancelled by the driver. <a href="{{ url_for('carpool.find') }}">Try looking for another ride!</a></p>
-
-                    {% elif current_user_ride_request.status == 'requested' %}
-                    <p class="message pending">Your ride request is pending. We’re waiting for your driver to confirm.</p>
-
-                    {% endif %}
                 {% else %}
-                    {% if current_user.is_driver(pool) %}
-                    <div class="buttons">
-                        <a class="btn btn-primary" href="{{ url_for('carpool.details', uuid=pool.uuid) }}">View details</a>
-                        {% if not pool.canceled %}
-                            <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
-                            <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
-                        {% endif %}
-                    </div>
-                    <p class="message success">You’re the driver of this carpool. Thanks for driving!</p>
 
-                    {% endif %}
-                {%- endif %}
+                    {% set current_user_ride_request = current_user.get_ride_request_in_carpool(pool) %}
+                    {% if current_user_ride_request %}
+                        {% if current_user_ride_request.status == 'approved'  %}
+                        <p class="message success">You’re confirmed for this carpool. Have a good trip!</p>
+
+                        {% elif current_user_ride_request.status == 'cancelled'  %}
+                        <p class="message error">This carpool was cancelled by the driver. <a href="{{ url_for('carpool.find') }}">Try looking for another ride!</a></p>
+
+                        {% elif current_user_ride_request.status == 'requested' %}
+                        <p class="message pending">Your ride request is pending. We’re waiting for your driver to confirm.</p>
+
+                        {% endif %}
+                    {% else %}
+                        {% if current_user.is_driver(pool) %}
+                        <div class="buttons">
+                            <a class="btn btn-primary" href="{{ url_for('carpool.details', uuid=pool.uuid) }}">View details</a>
+                            {% if not pool.canceled %}
+                                <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
+                                <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
+                            {% endif %}
+                        </div>
+                        <p class="message success">You’re the driver of this carpool. Thanks for driving!</p>
+
+                        {% endif %}
+                    {%- endif %}
 
                     <div class="two-col-layout first-child ">
                         <div class="two-col-column">
@@ -91,6 +94,7 @@
                             <p>{{ pool.notes or "(None supplied)"}}</p>
                         </div>
                     </div>
+                {% endif %}
                 </div>
 {% else %}
                 <h3>You have no upcoming carpools!</h3>
