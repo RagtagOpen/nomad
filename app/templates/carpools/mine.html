@@ -50,10 +50,8 @@
                         {% if current_user.is_driver(pool) %}
                         <div class="buttons">
                             <a class="btn btn-primary" href="{{ url_for('carpool.details', uuid=pool.uuid) }}">View details</a>
-                            {% if not pool.canceled %}
-                                <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
-                                <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
-                            {% endif %}
+                            <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=pool.uuid) }}">Edit your carpool</a>
+                            <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=pool.uuid) }}">Cancel your carpool</a>
                         </div>
                         <p class="message success">You’re the driver of this carpool. Thanks for driving!</p>
 
