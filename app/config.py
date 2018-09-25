@@ -1,5 +1,7 @@
 import os
 
+import raven
+
 
 def int_env(key, default):
     """ Handle empty values for environment variables
@@ -10,6 +12,15 @@ def int_env(key, default):
         return int(default)
 
     return int(val)
+
+
+def get_git_sha():
+    try:
+        return raven.fetch_git_sha(os.path.dirname(os.path.dirname(__file__)))
+    except Exception as e:
+        print(e)
+        pass
+    return os.environ.get('HEROKU_SLUG_COMMIT')
 
 
 class Config:
@@ -65,6 +76,11 @@ class Config:
     USE_SESSION_FOR_NEXT = True
 
     SENTRY_DSN = os.environ.get('SENTRY_DSN')
+    SENTRY_CONFIG = {
+        'dsn': SENTRY_DSN,
+        'release': get_git_sha(),
+        'environment': os.environ.get('CARPOOL_ENV') or 'Unknown',
+    }
 
     DATE_FORMAT = os.environ.get('DATE_FORMAT', '%a %b %-d %Y at %-I:%M %p')
     DATE_FORMAT_SHORT = os.environ.get('DATE_FORMAT_SHORT', '%B %-d, %Y')
