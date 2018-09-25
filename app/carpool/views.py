@@ -77,8 +77,8 @@ def start_geojson():
         pools = pools.filter(Carpool.leave_time >= datetime.datetime.utcnow())
 
     try:
-        near_lat = request.args.get('near.lat', None, type=float)
-        near_lon = request.args.get('near.lon', None, type=float)
+        near_lat = request.args.get('near.lat', type=float)
+        near_lon = request.args.get('near.lon', type=float)
     except ValueError:
         abort(400, "Invalid lat/lon format")
 
