@@ -214,5 +214,21 @@ function doLogout() {
 {% block site %}{% endblock %}
 <!--Zendesk support widget-->
 <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=19972695-e94b-40d7-be27-3f1c22dc0bc5"> </script>
+{% if public_dsn %}
+<!-- Sentry error reporting -->
+<script src="https://browser.sentry-cdn.com/4.0.5/bundle.min.js" integrity="sha384-GBuMTYSVbNX2T8znvVCZnO4rc/izXyS4EMzltAUjjio037UxfHsgG/QoufqAY8mS" crossorigin="anonymous"></script>
+<script>
+  (function() {
+    'use strict';
+    window.Sentry.init(
+      {
+        'dsn': '{{ public_dsn }}',
+        'release': '{{ sentry_commit_hash }}',
+        'environment': '{{ sentry_env }}'
+      }
+    );
+  })();
+</script>
+{% endif %}
 
 {%- endblock %}
