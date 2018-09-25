@@ -28,7 +28,7 @@ http {
 
   upstream app_server {
     server unix:/tmp/nginx.socket fail_timeout=0;
-	}
+  }
 
   limit_req_zone $binary_remote_addr zone=apilimit:10m rate=5r/m;
 
