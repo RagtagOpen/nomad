@@ -2,14 +2,12 @@
 {%- import "bootstrap/wtf.html" as wtf %}
 
 {#
-    load all carpools as geoJSON from /carpools/starts.geojson
-
     /carpools/find.html
-        sort features by leave time
-        zoom map to fit all features
         if user geolocation results,
             sort features by distance from user location
             zoom map to fit features within 100km or at least 3 features
+        else
+            show no results message
 
     /carpools/find.html?q=92683
         get lat/lng of query from Google Geocoder
@@ -30,7 +28,7 @@
     userLatLon.lat = {{lat}};
     userLatLon.lng = {{lon}};
     {% endif %}
-    const geoJSONUrl = "{{ url_for('carpool.start_geojson') }}?"; // eslint-disable-line no-unused-vars
+    const geoJSONUrl = "{{ url_for('carpool.start_geojson') }}"; // eslint-disable-line no-unused-vars
     const newCarpoolUrl = "{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}"; // eslint-disable-line no-unused-vars
 </script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/find.js') }}"></script>
@@ -61,7 +59,7 @@
         <div class="geocode-error">
             Sorry, we can't understand that location. Please try again.
         </div>
-        <div id="search-results">
+        <div id="search-results" class="results-box">
         </div>
     </div>
 
