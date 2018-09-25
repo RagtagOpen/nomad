@@ -55,12 +55,20 @@ def create_app(config_name):
         app.logger.info("Using Sentry")
         sentry = Sentry(app)
 
+    @app.context_processor
+    def sentry_variables():
+        return dict(
+            public_dsn=sentry.client.get_public_dsn(
+                'https') if sentry else None,
+            sentry_env=app.config.get('SENTRY_ENVIRONMENT'),
+            sentry_commit_hash=app.config.get('SENTRY_COMMIT_HASH'),
+        )
+
     @app.errorhandler(500)
     def internal_server_error(error):
         return render_template(
             '500.html',
             event_id=g.sentry_event_id,
-            public_dsn=sentry.client.get_public_dsn('https') if sentry else None
         ), 500
 
     @app.errorhandler(400)

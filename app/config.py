@@ -76,10 +76,12 @@ class Config:
     USE_SESSION_FOR_NEXT = True
 
     SENTRY_DSN = os.environ.get('SENTRY_DSN')
+    SENTRY_ENVIRONMENT = os.environ.get('CARPOOL_ENV') or 'Unknown'
+    SENTRY_COMMIT_HASH = get_git_sha()
     SENTRY_CONFIG = {
         'dsn': SENTRY_DSN,
-        'release': get_git_sha(),
-        'environment': os.environ.get('CARPOOL_ENV') or 'Unknown',
+        'release': SENTRY_COMMIT_HASH,
+        'environment': SENTRY_ENVIRONMENT,
     }
 
     DATE_FORMAT = os.environ.get('DATE_FORMAT', '%a %b %-d %Y at %-I:%M %p')
