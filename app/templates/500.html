@@ -20,13 +20,4 @@
 
 </div>
 
-{% if event_id %}
-<script>
-Raven.showReportDialog({
-    eventId: '{{ event_id }}',
-    dsn: '{{ public_dsn }}'
-});
-</script>
-{% endif %}
-
 {% endblock %}
