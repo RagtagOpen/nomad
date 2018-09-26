@@ -1,5 +1,7 @@
 import os
 
+import raven
+
 
 def int_env(key, default):
     """ Handle empty values for environment variables
@@ -12,6 +14,15 @@ def int_env(key, default):
     return int(val)
 
 
+def get_git_sha():
+    try:
+        return raven.fetch_git_sha(os.path.dirname(os.path.dirname(__file__)))
+    except Exception as e:
+        print(e)
+        pass
+    return os.environ.get('HEROKU_SLUG_COMMIT')
+
+
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', None)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -22,7 +33,7 @@ class Config:
     DEBUG = os.environ.get('FLASK_DEBUG', False)
     VERBOSE_SQLALCHEMY = False
     SSLIFY_ENABLE = False
-    SENTRY_ENABLE = False
+    SENTRY_ENABLE = os.environ.get('SENTRY_ENABLE')
     GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY')
     INTERCOM_KEY = os.environ.get('INTERCOM_KEY')
     GOOGLE_ANALYTICS_ID = os.environ.get('GOOGLE_ANALYTICS_ID')
@@ -65,6 +76,13 @@ class Config:
     USE_SESSION_FOR_NEXT = True
 
     SENTRY_DSN = os.environ.get('SENTRY_DSN')
+    SENTRY_ENVIRONMENT = os.environ.get('CARPOOL_ENV') or 'Unknown'
+    SENTRY_COMMIT_HASH = get_git_sha()
+    SENTRY_CONFIG = {
+        'dsn': SENTRY_DSN,
+        'release': SENTRY_COMMIT_HASH,
+        'environment': SENTRY_ENVIRONMENT,
+    }
 
     DATE_FORMAT = os.environ.get('DATE_FORMAT', '%a %b %-d %Y at %-I:%M %p')
     DATE_FORMAT_SHORT = os.environ.get('DATE_FORMAT_SHORT', '%B %-d, %Y')
