@@ -162,6 +162,6 @@ config = {
     'testing': TestingConfig,
     'staging': StagingConfig,
     'production': ProductionConfig,
-
+    'demo': ProductionConfig,
     'default': DevelopmentConfig
 }
