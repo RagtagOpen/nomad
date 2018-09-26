@@ -51,7 +51,7 @@ def create_app(config_name):
         sslify = SSLify(app)
 
     sentry = None
-    if app.config.get('SENTRY_ENABLE'):
+    if app.config.get('SENTRY_DSN'):
         app.logger.info("Using Sentry")
         sentry = Sentry(app)
 
