@@ -290,10 +290,10 @@ function mapDataCallback(features) {
                         strokeWeight: 0
                     },
                     draggable: false,
-                    map: map
+                    map: map,
+                    url: feature.getId(),
                 });
                 marker.addListener('click', function() {
-                    console.log('click marker', this);
                     window.location.href = this.url;
                 });
                 feature.marker = marker;
