@@ -45,6 +45,9 @@
                         {% elif current_user_ride_request.status == 'requested' %}
                         <p class="message pending">Your ride request is pending. We’re waiting for your driver to confirm.</p>
 
+                        {% elif current_user_ride_request.status == 'denied' %}
+                        <p class="message error">Your ride request was denied by the driver.</p>
+
                         {% endif %}
                     {% else %}
                         {% if current_user.is_driver(pool) %}
