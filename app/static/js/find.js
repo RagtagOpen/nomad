@@ -9,6 +9,8 @@ const geocodeParams = { componentRestrictions: { country: 'US' } };
 const carpoolDistance = {};
 // list of all geoJSON features
 let carpoolFeatures = [];
+// list of the markers currently appearing on the map
+let markers = [];
 
 /* eslint no-use-before-define: 0 */ // no-undef
 /* eslint no-console: 0 */
@@ -83,7 +85,6 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
             const lng = parseFloat(lonStr);
             setLatLng(lat, lng);
         } catch (e) {
-            console.log('no lat/lng');
         }
     });
 }
@@ -91,7 +92,6 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
 function geoSuccess(position) {
     // zoom to user position if/when they allow location access
     const coords = position.coords;
-    console.log('event: browser geolocation', coords);
     setLatLng(coords.latitude, coords.longitude);
     zoomMap();
 }
@@ -103,6 +103,10 @@ function doSearch() {
     map.data.forEach(function(feature) {
         map.data.remove(feature);
     });
+    for (let i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
+    markers = [];
 
     const params = '?near.lat=' + nearLatLon.lat + '&near.lon=' + nearLatLon.lng;
 
@@ -276,19 +280,24 @@ function mapDataCallback(features) {
         map.data.setStyle(function(feature) {
             if (feature.getProperty('is_approximate_location')) {
                 var geo = feature.getGeometry();
-                const circle = new google.maps.Circle({
+                var marker = new google.maps.Marker({
+                    position: geo.get(),
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        fillColor: '#3090C7',
+                        fillOpacity: 0.5,
+                        scale: 25,
+                        strokeWeight: 0
+                    },
+                    draggable: false,
                     map: map,
-                    center: geo.get(),
-                    radius: 1800,
-                    fillColor: '#3090C7',
-                    fillOpacity: 0.5,
-                    strokeWeight: 0,
                     url: feature.getId(),
                 });
-                circle.addListener('click', function() {
+                marker.addListener('click', function() {
                     window.location.href = this.url;
                 });
-                feature.circle = circle;
+                feature.marker = marker;
+                markers.push(marker);
                 return { visible: false };
             } else {
                 return {

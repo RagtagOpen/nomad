@@ -64,8 +64,8 @@ def approximate_location(geometry):
     # 'coordinates': [-121.88632860000001, 37.3382082]
     coord = geometry['coordinates']
     geometry['coordinates'] = [
-        coord[0] + random.uniform(-.02, .02),
-        coord[1] + random.uniform(-.02, .02),
+        round(coord[0], 2) + random.uniform(-.005, .005),
+        round(coord[1], 2) + random.uniform(-.005, .005),
     ]
     return geometry
 
@@ -115,6 +115,7 @@ def start_geojson():
         for ride in rides:
             confirmed_carpools.append(ride.carpool_id)
     else:
+        # anonymous user can only see 3 results
         pools = pools.limit(3)
 
     for pool in pools:
