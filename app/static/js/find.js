@@ -323,6 +323,7 @@ function mapDataCallback(features) {
             '<p>Will you consider <a href="' + newCarpoolUrl + '">starting one</a>?</p>' +
             '</div>';
         results.append(resultdiv);
+        zoomMap();
     }
     results.addClass('results-box');
 
