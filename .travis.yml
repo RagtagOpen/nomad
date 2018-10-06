@@ -8,6 +8,7 @@ addons:
     packages:
     - postgresql-9.5-postgis-2.3
 install:
+  - pip install -U pip==18.0  # Revert once https://github.com/pypa/pipenv/issues/2924 is resolved
   - pip install -U pipenv
   - pipenv install --dev --system --deploy
 cache: pip
