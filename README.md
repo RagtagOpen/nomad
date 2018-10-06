@@ -300,7 +300,7 @@ Organizations using Nomad need to set these environment variables:
 
 These environment variables have reasonable defaults; setting these is optional:
 
-  - `BRANDING_CSS_URL` - URL to CSS with skin-specific overrides; default is no overrides
+  - `BRANDING_CSS_URL` - URL to CSS with skin-specific overrides; default is no overrides. Leading / is required.
   - `BRANDING_HEADLINE_1` - default "Carpool to canvass in battleground districts near you"
   - `BRANDING_HEADLINE_2` - default "Find other volunteers near you and join a carpool."
   - `BRANDING_PRIVACY_URL` - default `/terms.html`; the default [terms.html](app/templates/auth/terms.html) uses values of `BRANDING_ORG_NAME`, `BRANDING_ORG_SITE_NAME`, and `BRANDING_SUPPORT_EMAIL`

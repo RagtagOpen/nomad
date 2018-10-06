@@ -1,0 +1,17 @@
+.logo {
+    width: 68px;
+    height: 51px;
+    background: url("../img/AZ_Dems_logo.png") center / contain no-repeat;
+}
+
+.fullscreen.jumbo {
+    background-color: #161a53;
+}
+
+.jumbo input[type=submit] {
+    background-color: #4897b5;
+}
+
+a {
+    color: #4897b5;
+}
