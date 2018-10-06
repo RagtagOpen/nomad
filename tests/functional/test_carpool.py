@@ -1,8 +1,10 @@
+import http
 import urllib
 from datetime import date, datetime, timedelta
 from dateutil import tz
 from http import HTTPStatus
 
+from flask import url_for
 from freezegun import freeze_time
 
 from app.models import PersonRole
@@ -45,6 +47,13 @@ class TestCarpool:
         my_page = testapp.get('/carpools/mine')
         assert "NYC" in my_page
         assert "You’re the driver of this carpool. Thanks for driving!" in my_page
+
+    def test_carpool_requires_auth(self, testapp, db, request_context):
+        """Regression test for #703"""
+        resp = testapp.get('/carpools/7e39797a')
+        assert resp.status_code == http.HTTPStatus.FOUND
+        location = urllib.parse.urlparse(resp.headers['Location'])
+        assert location.path == url_for('auth.login')
 
     def test_carpool_flow(self, testapp, db, full_person, carpool):
         home = login_person(testapp, full_person)
