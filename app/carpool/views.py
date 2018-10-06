@@ -239,6 +239,7 @@ def new():
 
 
 @pool_bp.route('/carpools/<uuid>', methods=['GET', 'POST'])
+@login_required
 def details(uuid):
     carpool = Carpool.uuid_or_404(uuid)
 
