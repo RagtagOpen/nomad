@@ -245,6 +245,13 @@ function showNoResults(text) {
         '</div>');
 }
 
+function showLoginPrompt(){
+    $('#search-results').append('<div style="padding-top: 20px; display: inline-flex;">' +
+        '<h3 style="margin-right: 10px; padding-top: 4px;">Log in to see more carpools</h3>' +
+        '<a href="/login"><button class="btn btn-primary">Login</button></a>' +
+        '</div>');
+}
+
 function mapDataCallback(features) {
     console.log('event: loaded features');
     var results = $('#search-results');
@@ -314,6 +321,11 @@ function mapDataCallback(features) {
     } else {
         showNoResults();
     }
+
+    if (!userAuthenticated){
+        showLoginPrompt();
+    }
+
     results.addClass('results-box');
 
     map.data.addListener('click', function(event) {
