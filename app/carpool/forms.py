@@ -1,4 +1,5 @@
 import datetime
+import itertools
 from flask import current_app
 from flask_wtf import FlaskForm
 from wtforms import (
@@ -52,7 +53,7 @@ class DriverForm(FlaskForm):
     return_hour = SelectField(choices=time_select_tuples(), default='9')
 
     vehicle_description = StringField()
-    vehicle_capacity = SelectField(choices=[(str(x), x) for x in range(1, 9) + range(55, 56)])
+    vehicle_capacity = SelectField(choices=[(str(x), x) for x in itertools.chain(range(1, 9), [55])])
 
     notes = TextAreaField()
 
