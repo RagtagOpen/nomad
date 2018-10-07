@@ -199,11 +199,11 @@ def user_list_csv():
     output = io.StringIO()
     writer = csv.writer(output)
     writer.writerow(['Nomad carpool drivers and riders'])
-    writer.writerow(['destination', 'carpool leave time', 'carpool return time',
+    writer.writerow(['carpool_id', 'destination', 'carpool leave time', 'carpool return time',
                      'driver/rider', 'name', 'email', 'phone', 'preferred contact method'])
 
     query = '''
-        select d.name destination, cp.leave_time leave_time,
+        select cp.id carpool_id, d.name destination, cp.leave_time leave_time,
             cp.return_time return_time, 'rider' as rider_driver,
             p.name person_name, p.email email, p.phone_number phone,
             p.preferred_contact_method contact
@@ -211,7 +211,7 @@ def user_list_csv():
         where cp.destination_id=d.id and cp.id=r.carpool_id and
             r.status='approved' and r.person_id=p.id
         union
-        select d.name destination, cp.leave_time leave_time,
+        select cp.id carpool_id, d.name destination, cp.leave_time leave_time,
             cp.return_time returntime, 'driver' as rider_driver,
             p.name person_name, p.email email, p.phone_number phone,
             p.preferred_contact_method contact
@@ -221,6 +221,7 @@ def user_list_csv():
     '''
     for row in db.engine.execute(query):
         writer.writerow([
+            row.carpool_id,
             row.destination,
             row.leave_time.strftime('%x %X'),
             row.return_time.strftime('%x %X'),
