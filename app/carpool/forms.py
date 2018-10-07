@@ -52,7 +52,7 @@ class DriverForm(FlaskForm):
     return_hour = SelectField(choices=time_select_tuples(), default='9')
 
     vehicle_description = StringField()
-    vehicle_capacity = SelectField(choices=[(str(x), x) for x in range(1, 9)])
+    vehicle_capacity = SelectField(choices=([(str(x), x) for x in range(1, 9)]+[(str(55), 55)]))
 
     notes = TextAreaField()
 
