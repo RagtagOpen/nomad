@@ -180,7 +180,7 @@
             </div>
 
             <div class="two-col-layout">
-                {% if current_user.is_driver(pool) or (current_user_ride_request and current_user_ride_request.status == 'approved') or current_user_ride_request %}
+                {% if current_user.is_driver(pool) or (current_user_ride_request and current_user_ride_request != 'denied') %}
                 <div class="two-col-column">
                     <h4>Carpool Details</h4>
                     {% if current_user_ride_request and current_user_ride_request.status != 'approved' %}
@@ -191,12 +191,10 @@
                     {% endif %}
                 </div>
                 {% endif %}
-                {% if pool.notes %}
                 <div class="two-col-column">
                     <h4>Additional notes</h4>
-                    <p>{{ pool.notes }}</p>
+                    <p>{{ pool.notes or "(None supplied)"}}</p>
                 </div>
-                {% endif %}
                 <div class="two-col-column">
                     <h4>Link to this carpool</h4>
                     <p><a href="{{ request.url }}">{{ request.url }}</a></p>
