@@ -319,6 +319,8 @@ function mapDataCallback(features) {
             }
         });
     } else {
+
+        zoomMap();
         showNoResults();
     }
 
