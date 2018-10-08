@@ -183,7 +183,7 @@
                 {% if current_user.is_driver(pool) or (current_user_ride_request and current_user_ride_request.status == 'approved') or current_user_ride_request %}
                 <div class="two-col-column">
                     <h4>Carpool Details</h4>
-                    {% if current_user_ride_request %}
+                    {% if current_user_ride_request and current_user_ride_request.status != 'approved' %}
                     <p>Driver Gender: {{ pool.driver.gender_string() }}</p>
                     {% else %}
                     <p>Driver: {{ pool.driver.name }} ({{ pool.driver.gender_string() }})</p>
