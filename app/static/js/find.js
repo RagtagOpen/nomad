@@ -50,6 +50,8 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
         userQuery = null;
     } else if (userQuery) {
         geocode(userQuery);
+    } else if (isDestinationPage) {
+        showDestinationQuery();
     } else {
         // no location available = no results
         showNoQuery();
@@ -235,6 +237,12 @@ function zoomMap() {
 function showNoQuery() {
     $('#search-results').append('<div class="result">' +
         '<h3>Please enter a location to find a nearby ride.</h3>' +
+        '</div>');
+}
+
+function showDestinationQuery() {
+    $('#search-results').append('<div class="result">' +
+        '<h3>Loading carpools for this destination ...</h3>' +
         '</div>');
 }
 
