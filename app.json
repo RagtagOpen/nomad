@@ -70,13 +70,13 @@
       "required": true
     }
   },
-  "addons": [
-    "heroku-postgresql",
-    "heroku-redis"
-  ],
+  "addons": ["heroku-postgresql", "heroku-redis"],
   "buildpacks": [
     {
-      "url": "heroku/python"
+      "url": "https://github.com/beanieboi/nginx-buildpack.git"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-python.git"
     }
   ]
 }
