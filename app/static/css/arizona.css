@@ -4,8 +4,11 @@
     background: url("../img/AZ_Dems_logo.png") center / contain no-repeat;
 }
 
+.fullscreen.jumbo {
+    background-color: #161a53;
+}
+
 .fullscreen.jumbo h1, .fullscreen.jumbo h2, .fullscreen.jumbo h3, .fullscreen.jumbo h4, .fullscreen.jumbo p {
-    color: #e07456;
     font-family: altivo,sans-serif;
 }
 
@@ -14,7 +17,7 @@
 }
 
 .jumbo input[type=submit] {
-    background-color: #4897b5;
+    background-color: #e07456;
 }
 
 a {
