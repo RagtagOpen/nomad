@@ -1,15 +1,39 @@
 {
   "name": "nomad",
   "env": {
+    "BRANDING_CSS_URL": {
+      "required": false
+    },
+    "BRANDING_EMAIL_SIGNATURE": {
+      "required": false
+    },
+    "BRANDING_HEADLINE_1": {
+      "required": false
+    },
+    "BRANDING_HEADLINE_2": {
+      "required": false
+    },
+    "BRANDING_ORG_NAME": {
+      "required": false
+    },
+    "BRANDING_ORG_SITE_NAME": {
+      "required": false
+    },
+    "BRANDING_SUPPORT_EMAIL": {
+      "required": false
+    },
     "BUILD_WITH_GEO_LIBRARIES": "1",
     "CACHE_TYPE": "redis",
     "CARPOOL_ENV": "staging",
-    "FLASK_APP": "wsgi.py",
     "FACEBOOK_CLIENT_ID": {
       "required": true
     },
     "FACEBOOK_CLIENT_SECRET": {
       "required": true
+    },
+    "FLASK_APP": "wsgi.py",
+    "GOOGLE_ANALYTICS_ID": {
+      "required": false
     },
     "GOOGLE_CLIENT_ID": {
       "required": true
@@ -23,8 +47,27 @@
     "INTERCOM_KEY": {
       "required": false
     },
+    "MAIL_DEFAULT_SENDER": "nomad-help@ragtag.org",
+    "MAIL_LOG_ONLY": "false",
+    "MAIL_PASSWORD": {
+      "required": true
+    },
+    "MAIL_PORT": "587",
+    "MAIL_SERVER": "email-smtp.us-east-1.amazonaws.com",
+    "MAIL_USERNAME": {
+      "required": true
+    },
+    "MAIL_USE_SSL": "false",
+    "MAIL_USE_TLS": "true",
+    "RQ_ENABLED": "true",
     "SECRET_KEY": {
       "generator": "secret"
+    },
+    "SENTRY_DSN": {
+      "required": false
+    },
+    "SERVER_NAME": {
+      "required": true
     }
   },
   "addons": [
