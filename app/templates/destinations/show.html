@@ -7,7 +7,7 @@
     let userQuery = '{{user_query}}';  // eslint-disable-line no-unused-vars
     let userLatLon = {};
     let isDestinationPage = true;
-    // we somehow need to set the GeoJSONURL here, but I am not sure how
+    const geoJSONUrl = "{{ url_for('carpool.start_geojson') }}"; // eslint-disable-line no-unused-vars
     let destinationLon = {{destination.as_geojson()['geometry']['coordinates'][0]}};
     let destinationLat = {{destination.as_geojson()['geometry']['coordinates'][1]}};
     const newCarpoolUrl = "{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}"; // eslint-disable-line no-unused-vars
