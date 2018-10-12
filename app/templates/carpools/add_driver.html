@@ -18,6 +18,23 @@ $("#location-seed").on('keydown', function(e) {
     }
 });
 
+const destinationLookup = {
+    {% for destination in destinations %}
+        "{{ destination.uuid }}": "{{ destination.address }}",
+    {% endfor %}
+};
+
+$("#destination").change(function() {
+    var dropdown = document.getElementById('destination');
+    var destinationAddress = document.getElementById('destination-address');
+    if (dropdown.value in destinationLookup){
+        var address = destinationLookup[dropdown.value];
+        destinationAddress.innerText = address;
+        destinationAddress.parentElement.href = "https://maps.google.com/?q=" + encodeURIComponent(address);
+    }
+    destinationAddress.style.display = dropdown.selectedIndex == 0 ? "none" : "";
+});
+
 var map = null;
 function localInitMap() {
     var geocoder = new google.maps.Geocoder;
@@ -93,6 +110,8 @@ function localInitMap() {
             <div class="two-col-column">
                 <h4>Destination</h4>
                 {{ form.destination() }}
+                <br />
+                <a href="" target="_blank"><h4 id="destination-address" style="display: none;"></h4></a>
                 {% if form.destination.errors %}
                 <div>
                 {% for err in form.destination.errors %}
