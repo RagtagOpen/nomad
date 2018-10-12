@@ -1,4 +1,5 @@
 let geocoder;
+let map;
 const defaultLat = 38.518;
 const defaultLon = -97.328;
 // geocoded from userQuery: { lat: 38, lng: -97 }
@@ -25,9 +26,11 @@ let markers = [];
       userQuery - sanitized user query string
 */
 
-// zoom to user location only if no query in URL
-if (!userQuery && !userLatLon.lat && navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(geoSuccess);
+// zoom to user location only if no query in URL and if we're not on a Destination page
+if (!userQuery && !userLatLon.lat && !isDestinationPage && navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(geoSuccess, function() {
+		alert('You did not grant permission for the app to access your location, so we cannot show you your location.')
+	});
 }
 
 function setLatLng(lat, lng) {
@@ -52,6 +55,7 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
         geocode(userQuery);
     } else if (isDestinationPage) {
         showDestinationQuery();
+        setLatLng(destinationLat, destinationLon);
     } else {
         // no location available = no results
         showNoQuery();
@@ -92,6 +96,11 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
 }
 
 function geoSuccess(position) {
+    if (!map){
+        // wait for the map to load before proceeding
+        setTimeout(() => geoSuccess(position), 100);
+        return;
+    }
     // zoom to user position if/when they allow location access
     const coords = position.coords;
     setLatLng(coords.latitude, coords.longitude);

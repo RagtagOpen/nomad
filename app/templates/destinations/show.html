@@ -5,13 +5,11 @@
 <script>
     // sanitized query from URL: q=12345
     let userQuery = '{{user_query}}';  // eslint-disable-line no-unused-vars
+    let userLatLon = {};
     let isDestinationPage = true;
-    const userLatLon = {};
-    {% if lat and lon %}
-    userLatLon.lat = {{lat}};
-    userLatLon.lng = {{lon}};
-    {% endif %}
-    const geoJSONUrl = "{{ url_for('carpool.start_geojson') }}"; // eslint-disable-line no-unused-vars
+    // we somehow need to set the GeoJSONURL here, but I am not sure how
+    let destinationLon = {{destination.as_geojson()['geometry']['coordinates'][0]}};
+    let destinationLat = {{destination.as_geojson()['geometry']['coordinates'][1]}};
     const newCarpoolUrl = "{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}"; // eslint-disable-line no-unused-vars
     const userAuthenticated = "{{current_user.is_authenticated}}" === "True";
 </script>
@@ -22,11 +20,13 @@
 {% block site %}
 
 <div class="content constrained">
-
     <div class="carpool-results">
         <h1 class="visible-lg-block">
             Find rides to {{destination.name}}
         </h1>
+	<h1 class="visible-lg-block">
+	    {{destination.address}}
+	</h1>
         <div id="search-results" class="results-box">
         </div>
     </div>
