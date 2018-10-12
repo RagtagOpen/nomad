@@ -82,6 +82,7 @@ class Config:
         'dsn': SENTRY_DSN,
         'release': SENTRY_COMMIT_HASH,
         'environment': SENTRY_ENVIRONMENT,
+        'name': os.environ.get('SERVER_NAME') or 'Unknown',
     }
 
     DATE_FORMAT = os.environ.get('DATE_FORMAT', '%a %b %-d %Y at %-I:%M %p')
