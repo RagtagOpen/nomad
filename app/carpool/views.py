@@ -142,6 +142,7 @@ def start_geojson():
                 'return_time_human': pool.return_time.strftime(dt_format),
                 'driver_gender': escape(pool.driver.gender),
                 'is_approximate_location': is_approximate_location,
+                'destination_id': pool.destination.id,
                 'hidden': pool.destination.hidden
             },
         })
