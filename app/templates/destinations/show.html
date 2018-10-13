@@ -38,18 +38,18 @@
                     </p>
                 <p>Departs: {{ c.leave_time.strftime(config.get('DATE_FORMAT')) }}</p>
                 <p>Returns: {{ c.return_time.strftime(config.get('DATE_FORMAT')) }}</p>
-					{% if current_user.is_driver(c) %}
-						<p>You are the driver of this carpool</p>
-						<a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=c.uuid) }}">Edit your carpool</a>
-						<a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=c.uuid) }}">Cancel this carpool</a>
-					{% else %}
-						{%- if c.seats_available > 0 %}
-							<a class="btn btn-primary" href="{{ url_for('carpool.details', uuid=c.uuid) }}">Request a seat in carpool</a>
-						{%- endif %}
-						{% if current_user.has_roles('admin') %}
-							<a class="btn btn-danger" href="{{ url_for('admin.admin_cancel_carpool', uuid=c.uuid) }}">Cancel this carpool</a>
-						{% endif %}
-					{% endif %}
+                {% if current_user.is_driver(c) %}
+                    <p>You are the driver of this carpool</p>
+                    <a class="btn btn-primary" href="{{ url_for('carpool.edit', uuid=c.uuid) }}">Edit your carpool</a>
+                    <a class="btn btn-danger" href="{{ url_for('carpool.cancel', uuid=c.uuid) }}">Cancel this carpool</a>
+                {% else %}
+                    {%- if c.seats_available > 0 %}
+                        <a class="btn btn-primary" href="{{ url_for('carpool.details', uuid=c.uuid) }}">Request a seat in carpool</a>
+                    {%- endif %}
+                    {% if current_user.has_roles('admin') %}
+                        <a class="btn btn-danger" href="{{ url_for('admin.admin_cancel_carpool', uuid=c.uuid) }}">Cancel this carpool</a>
+		    {% endif %}
+                {% endif %}
             </div>
             {% endfor %}
 
