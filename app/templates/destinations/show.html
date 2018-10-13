@@ -14,7 +14,7 @@
     const newCarpoolUrl = "{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}"; // eslint-disable-line no-unused-vars
     const userAuthenticated = "{{current_user.is_authenticated}}" === "True";
 </script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/find.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/destinations.js') }}"></script>
 {{super()}}
 {% endblock %}
 
