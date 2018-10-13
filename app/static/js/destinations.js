@@ -15,23 +15,17 @@ let markers = [];
 
 /* eslint no-use-before-define: 0 */ // no-undef
 /* eslint no-console: 0 */
-/* global $: false, geoJSONUrl: false, google: false, map: true, mapStyleDiscreet: false, newCarpoolUrl: false, userLatLon: false, userQuery: true */
+/* global $: false, geoJSONUrl: false, google: false, map: true, mapStyleDiscreet: false, newCarpoolUrl: false */
 
 /*
     externally defined globals
-      geoJSONUrl - URL to get carpool list GeoJSON
       map - Google Map object
-      mapStyleDiscreet - defined in static/js/map-styles.js
+      geoJSONUrl - URL to get carpool list GeoJSON
       newCarpoolUrl - URL to create new carpool
-      userQuery - sanitized user query string
+      destinationId - id of the current destination
+      destinationLon - Longitude of destination
+      destinationLat - Latitude of destination
 */
-
-// zoom to user location only if no query in URL and if we're not on a Destination page
-if (!userQuery && !userLatLon.lat && !isDestinationPage && navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(geoSuccess, function() {
-		alert('No location specified.')
-	});
-}
 
 function setLatLng(lat, lng) {
     nearLatLon.lat = lat;
@@ -43,68 +37,12 @@ function localInitMap() {  // eslint-disable-line no-unused-vars
     // called from _template.html callback when Google Maps API loads
     map = new google.maps.Map(document.getElementById('background-map'), {
         center: { lat: defaultLat, lng: defaultLon },
-        zoom: userQuery ? 11 : 3,
+        zoom: 3,
         styles: mapStyleDiscreet
     });
     geocoder = new google.maps.Geocoder();
-    if (userLatLon.lat) {
-        setLatLng(userLatLon.lat, userLatLon.lng);
-        // ignore query if already have lat/lng
-        userQuery = null;
-    } else if (userQuery) {
-        geocode(userQuery);
-    } else if (isDestinationPage) {
-        showDestinationQuery();
-        setLatLng(destinationLat, destinationLon);
-    } else {
-        // no location available = no results
-        showNoQuery();
-    }
-    // don't reload page; just update sort and map
-    $('.ride-form').submit(function (ev) {
-        ev.preventDefault();
-        const input = $('.ride-form .location-input');
-
-        if (!input) {
-            return;  // no user input; don't search
-        }
-
-        const latStr = $('.ride-form input[name="lat"]').val();
-        const lonStr = $('.ride-form input[name="lon"]').val();
-        if (!latStr || !lonStr) {
-            // no result: geocode the first suggestion if there is one
-            let query = '';
-            if ($('.pac-container .pac-item:first').length) {
-                $('.pac-container .pac-item:first').children().each(function () {
-                    query += $(this).text() + ' ';
-                });
-            } else {
-                // otherwise geocode user input
-                query = input.text().trim();
-            }
-            userQuery = query;
-            return geocode(query);
-        }
-
-        try {
-            const lat = parseFloat(latStr);
-            const lng = parseFloat(lonStr);
-            setLatLng(lat, lng);
-        } catch (e) {
-        }
-    });
-}
-
-function geoSuccess(position) {
-    if (!map){
-        // wait for the map to load before proceeding
-        setTimeout(() => geoSuccess(position), 100);
-        return;
-    }
-    // zoom to user position if/when they allow location access
-    const coords = position.coords;
-    setLatLng(coords.latitude, coords.longitude);
-    zoomMap();
+    showDestinationQuery();
+    setLatLng(destinationLat, destinationLon);
 }
 
 function doSearch() {
@@ -122,23 +60,6 @@ function doSearch() {
     const params = '?near.lat=' + nearLatLon.lat + '&near.lon=' + nearLatLon.lng;
 
     map.data.loadGeoJson(geoJSONUrl + params, null, mapDataCallback);
-}
-
-function geocode(address) {
-    // get from localStorage cache if geocoded within 30d (Google limit)
-    const cache = JSON.parse(localStorage.getItem('geocode') || '{}');
-    const q = address.toLowerCase().trim();
-    // geocode = {"query": {"ts": 1534038439340, "lat": -97.328, "lng": 38.518}}
-    const ts = cache[q] ? cache[q].ts : 0;
-    const age = (new Date()).getTime() - ts;
-
-    $('.geocode-error').hide();
-    if (age < 30 * 24 * 60 * 60 * 1000) {
-        setLatLng(cache[q].lat, cache[q].lng);
-    } else {
-        geocodeParams.address = q;
-        geocoder.geocode(geocodeParams, geocodeResults);
-    }
 }
 
 function deg2rad(deg) {
@@ -243,11 +164,6 @@ function zoomMap() {
     map.fitBounds(bounds);
 }
 
-function showNoQuery() {
-    $('#search-results').append('<div class="result">' +
-        '<h3>Please enter a location to find a nearby ride.</h3>' +
-        '</div>');
-}
 
 function showDestinationQuery() {
     $('#search-results').append('<div class="result">' +
@@ -279,8 +195,7 @@ function mapDataCallback(features) {
         carpoolFeatures = sortFeaturesByDistance(features);
         for (var i = 0; i < carpoolFeatures.length; i++) {
             const feature = features[i];
-            // If we're on a destination page, only show carpools for this destination.
-            if (isDestinationPage && destinationId !== feature.getProperty('destination_id')) {
+            if (destinationId !== feature.getProperty('destination_id')) {
                 continue;
             }
             const geo = feature.getGeometry().get();
@@ -307,7 +222,7 @@ function mapDataCallback(features) {
         }
 
         map.data.setStyle(function(feature) {
-            if (isDestinationPage && destinationId !== feature.getProperty('destination_id')) {
+            if (destinationId !== feature.getProperty('destination_id')) {
                 return { visible: false };
             }
             if (feature.getProperty('is_approximate_location')) {
@@ -344,7 +259,6 @@ function mapDataCallback(features) {
             }
         });
     } else {
-
         zoomMap();
         showNoResults();
     }

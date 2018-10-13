@@ -4,9 +4,6 @@
 {% block scripts %}
 <script>
     // sanitized query from URL: q=12345
-    let userQuery = '{{user_query}}';  // eslint-disable-line no-unused-vars
-    let userLatLon = {};
-    let isDestinationPage = true;
     let destinationId = {{destination.id}};
     const geoJSONUrl = "{{ url_for('carpool.start_geojson') }}"; // eslint-disable-line no-unused-vars
     let destinationLon = {{destination.as_geojson()['geometry']['coordinates'][0]}};
