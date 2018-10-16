@@ -59,7 +59,6 @@ function initMap() {
       if (location.href.indexOf($('#ride-select-form').attr('action')) >= 0) {
         // if on find page already, re-order and re-zoom
         setLatLng(loc.lat(), loc.lng());
-        sortDOMResults();
       } else {
         // go to find/give with lat/lng params
         $('.ride-form input[name="lat"]').val(loc.lat());
