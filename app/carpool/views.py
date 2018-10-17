@@ -246,6 +246,15 @@ def details(uuid):
     return render_template('carpools/show.html', pool=carpool)
 
 
+@pool_bp.route('/carpools/<uuid>/show_admin', methods=['GET', 'POST'])
+@login_required
+def show_admin(uuid):
+    carpool = Carpool.uuid_or_404(uuid)
+    if not current_user.has_roles('admin'):
+        return render_template('carpools/show.html', pool=carpool)
+    return render_template('carpools/show_admin.html', pool=carpool)
+
+
 @pool_bp.route('/carpools/<uuid>/edit', methods=['GET', 'POST'])
 @login_required
 def edit(uuid):
@@ -255,7 +264,7 @@ def edit(uuid):
         flash("This carpool has been canceled and can no longer be edited.", 'error')
         return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
-    if current_user != carpool.driver:
+    if current_user != carpool.driver and not current_user.has_roles('admin'):
         flash("You cannot edit a carpool you didn't create.", 'error')
         return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
@@ -296,7 +305,6 @@ def edit(uuid):
         carpool.max_riders = driver_form.vehicle_capacity.data
         carpool.vehicle_description = driver_form.vehicle_description.data
         carpool.notes = driver_form.notes.data
-        carpool.driver_id = current_user.id
         db.session.add(carpool)
         db.session.commit()
 
@@ -498,7 +506,7 @@ def modify_ride_request(carpool_uuid, request_uuid, action):
 def cancel(uuid):
     carpool = Carpool.uuid_or_404(uuid)
 
-    if carpool.driver_id != current_user.id:
+    if carpool.driver_id != current_user.id and not current_user.has_roles('admin'):
         flash("You cannot cancel a carpool you didn't create", 'error')
         return redirect(url_for('carpool.details', uuid=carpool.uuid))
 
@@ -512,7 +520,7 @@ def cancel(uuid):
 
             cancel_carpool(carpool, cancel_form.reason.data)
 
-            flash("Your carpool was canceled", 'success')
+            flash("This carpool was canceled", 'success')
 
             return redirect(url_for('carpool.mine'))
         else:
