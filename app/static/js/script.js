@@ -1,23 +1,20 @@
-
-
-
 // ======= GOOGLE MAPS ===========
 
-  // Virginia locations
-  var westva = {lat: 38.7624, lng: -79.7170677};
-  var sweetbriar = {lat: 37.5551696, lng: -79.098562};
+// Virginia locations
+var westva = {lat: 38.7624, lng: -79.7170677};
+var sweetbriar = {lat: 37.5551696, lng: -79.098562};
 
-  // Baltimore locations
-  var baltLocations = [
-    {lat: 39.3146481, lng: -76.6419097}, 
-    {lat: 39.336027, lng: -76.574490}, 
-    {lat: 39.278518, lng: -76.640065}, 
-    {lat: 39.277858, lng: -76.542218}, 
-    {lat: 39.351572, lng: -76.641438}
-  ];
-  var baltCenter = {lat: 39.314246, lng: -76.601955};
-  var markers = [];
-  var mapFindRide, mapGiveRide, mapMyRides, mapMini;
+// Baltimore locations
+var baltLocations = [
+  {lat: 39.3146481, lng: -76.6419097},
+  {lat: 39.336027, lng: -76.574490},
+  {lat: 39.278518, lng: -76.640065},
+  {lat: 39.277858, lng: -76.542218},
+  {lat: 39.351572, lng: -76.641438}
+];
+var baltCenter = {lat: 39.314246, lng: -76.601955};
+var markers = [];
+var mapFindRide, mapGiveRide, mapMyRides, mapMini;
 
 function initFindRideMap() {
 
@@ -159,5 +156,3 @@ $(document).ready(function() {
     });
   })
 });
-
-
