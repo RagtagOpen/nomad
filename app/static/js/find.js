@@ -2,6 +2,7 @@
   // Exposing these functions that need to be globally available up top
   window.setLatLng = setLatLng;
   window.localInitMap = localInitMap;
+  let map = null;
 
   let geocoder;
   const defaultLat = 38.518;
@@ -102,6 +103,9 @@
   }
 
   function doSearch() {
+      if (map === null) {
+          return;
+      }
       // get all carpool results as GeoJSON
       var results = $('#search-results');
       results.empty();
@@ -201,6 +205,9 @@
   }
 
   function zoomMap() {
+      if (map === null) {
+          return;
+      }
       let features = [];
       if (nearLatLon.lat) {
           console.log('zooming to nearLatLon', nearLatLon);
@@ -258,6 +265,9 @@
   }
 
   function mapDataCallback(features) {
+      if (map === null) {
+          return;
+      }
       console.log('event: loaded features');
       var results = $('#search-results');
       results.empty();

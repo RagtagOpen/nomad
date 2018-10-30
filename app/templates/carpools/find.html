@@ -20,6 +20,8 @@
 #}
 
 {% block scripts %}
+{{super()}}
+<script type="text/javascript" src="{{ url_for('static', filename='js/find.js') }}"></script>
 <script>
     // sanitized query from URL: q=12345
     let userQuery = '{{user_query}}';  // eslint-disable-line no-unused-vars
@@ -32,8 +34,6 @@
     const newCarpoolUrl = "{{ url_for('carpool.new', lat=loc_lat, lon=loc_lon) }}"; // eslint-disable-line no-unused-vars
     const userAuthenticated = "{{current_user.is_authenticated}}" === "True";
 </script>
-<script type="text/javascript" src="{{ url_for('static', filename='js/find.js') }}"></script>
-{{super()}}
 {% endblock %}
 
 {% block site %}
