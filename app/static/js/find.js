@@ -32,7 +32,7 @@
   */
 
   // zoom to user location only if no query in URL
-  if (!userQuery && !userLatLon.lat && navigator.geolocation) {
+  if (!window.userQuery && !userLatLon.lat && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(geoSuccess);
   }
 
