@@ -118,7 +118,7 @@ def create_app(config_name):
         """ Log out a user that's blocked and send them to the index page. """
         if not current_user.is_anonymous and current_user.has_roles('blocked'):
             flash("There was a problem with your login.", 'error')
-            current_app.logger.warn("Logged out blocked user %s",
+            current_app.logger.warning("Logged out blocked user %s",
                                     current_user.id)
             logout_user()
             return redirect(url_for('auth.login'))

@@ -64,7 +64,7 @@ def oauth_callback(provider):
     if email is None:
         flash("For some reason, we couldn't log you in. "
               "Please contact us!", 'error')
-        current_app.logger.warn(
+        current_app.logger.warning(
             "Provider %s didn't give email for social id %s, username %s",
             provider,
             social_id,
@@ -94,7 +94,7 @@ def oauth_callback(provider):
         # the original social account.
         flash("You've already logged in with another social media account. "
               "Please use that one to log in.", 'error')
-        current_app.logger.warn(
+        current_app.logger.warning(
             "User %s logged in with a different social provider "
             "(%s) that had a matching email",
             user.id,
@@ -105,7 +105,7 @@ def oauth_callback(provider):
     if user.has_roles('blocked'):
         session.pop('next', None)
         flash("There was a problem logging you in.", 'error')
-        current_app.logger.warn("Prevented blocked user %s from logging in",
+        current_app.logger.warning("Prevented blocked user %s from logging in",
                                 user.id)
         return redirect(url_for('auth.login'))
 
