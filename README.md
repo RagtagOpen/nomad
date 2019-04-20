@@ -277,16 +277,16 @@ Then run `source .env` and `flask run` again to activate the changes.
 
 Using Docker:
 
-    ```
-    docker-compose run nomad pytest
-    ```
+   ```
+   docker-compose run nomad pytest
+   ```
 
 Locally:
 
-    ```
-    pipenv install -d
-    pytest
-    ```
+   ```
+   pipenv install -d
+   pytest
+   ```
 
 ## Branding
 
