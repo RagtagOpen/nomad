@@ -38,7 +38,7 @@
             <td>{{ carpool.riders_and_potential_riders|length }}</td>
             <td>{{ carpool.riders|length }}</td>
             <td>{% if carpool.canceled %}Canceled{% else %}Active{% endif %}</td>
-            <td><a href="{{ url_for('carpool.details', uuid=carpool.uuid) }}">Details</a></td>
+            <td><a href="{{ url_for('carpool.show_admin', uuid=carpool.uuid) }}">Details</a></td>
         </tr>
 {% endfor %}
     </tbody>
